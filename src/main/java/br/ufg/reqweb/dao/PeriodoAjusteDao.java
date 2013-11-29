@@ -14,6 +14,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -24,19 +25,23 @@ public class PeriodoAjusteDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
+    
+    @Transactional
     public void adicionar(PeriodoAjuste periodoAjuste) {
         this.sessionFactory.getCurrentSession().save(periodoAjuste);
     }
 
+    @Transactional
     public void atualizar(PeriodoAjuste periodoAjuste) {
         this.sessionFactory.getCurrentSession().update(periodoAjuste);
     }
 
+    @Transactional
     public void excluir(PeriodoAjuste periodoAjuste) {
         this.sessionFactory.getCurrentSession().delete(periodoAjuste);
     }
 
+    @Transactional(readOnly = true)
     public List listar() {
         try {
             List ajusteList = this.sessionFactory.getCurrentSession().createQuery("FROM PeriodoAjuste p ORDER BY p.ano DESC").list();
@@ -47,6 +52,7 @@ public class PeriodoAjusteDao {
         }
     }
 
+    @Transactional(readOnly = true)
     public List procurar(String termo) {
         try {
             Query query = this.sessionFactory.getCurrentSession().

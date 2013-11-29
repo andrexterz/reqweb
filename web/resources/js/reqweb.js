@@ -21,3 +21,4 @@ function dialogHandler(widgetVar, xhr, status, args) {
     }
 }
 
+

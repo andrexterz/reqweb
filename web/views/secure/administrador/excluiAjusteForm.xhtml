@@ -4,13 +4,13 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:form id="dlgExcluiAjusteForm">
         <p:confirmDialog id="exclAjusteDialog" widgetVar="excluirAjusteDialog"
-                         appendTo="@(body)" width="360" 
+                         appendTo="@(body)" width="420" 
                          header="#{msg.ajusteExcluir}"
-                         message="#{msg.ajusteExcluir} #{ajusteBean.itemSelecionado.nome}?" severity="alert">
+                         message="#{msg.ajusteExcluir} #{periodoAjusteBean.itemSelecionado}?" severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaExclAjuste" value="#{msg.sim}"
                                  oncomplete="excluirAjusteDialog.hide()"
-                                 action="#{ajusteBean.excluiAjuste}"
+                                 action="#{periodoAjusteBean.excluiPeriodoAjuste}"
                                  process="@this"
                                  update=":ajusteForm:ajusteToolbar :ajusteForm:tableAjustes :formHeader:systemMessages" />
                 <p:commandButton id="cancelaExclAjuste"

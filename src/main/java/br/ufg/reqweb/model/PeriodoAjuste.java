@@ -7,7 +7,9 @@
 package br.ufg.reqweb.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -112,6 +114,15 @@ public class PeriodoAjuste implements Serializable {
      */
     public void setDataTermino(Date dataTermino) {
         this.dataTermino = dataTermino;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+        return  String.format(Locale.getDefault(),
+                "%d: %s - %s",
+                ano, dateFormat.format(dataInicio),
+                dateFormat.format(dataTermino));
     }
  
 }

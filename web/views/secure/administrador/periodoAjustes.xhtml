@@ -31,7 +31,7 @@
 
                 <h:inputText id="ajusteAjuste" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=ajusteBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaAjustes}" />                
+                <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaPeriodoAjustes}" />                
                 <p:defaultCommand target="ajusteBuscaCommand" />
 
             </h:panelGroup>
@@ -46,10 +46,10 @@
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":dlgExcluiAjusteForm:exclAjusteDialog :ajusteForm:ajusteToolbar" listener="#{periodoAjusteBean.selecionaItem}" />
                 <p:column headerText="#{msg.ano}" styleClass="ajusteColAno">
-                    <h:outputText value="#{ajusteItem.nome}" />
+                    <h:outputText value="#{ajusteItem.ano}" />
                 </p:column>
                 <p:column headerText="#{msg.semestre}" styleClass="ajusteColSemestre">
-                    <h:outputText value="#{ajusteItem.ano}" />
+                    <h:outputText value="#{msg.semestre} #{ajusteItem.semestre.semestre}" />
                 </p:column>    
                 <p:column headerText="#{msg.periodo}" styleClass="ajusteColPeriodo">
                     <h:outputText value="#{ajusteItem.dataInicio} #{msg.prepA} #{ajusteItem.dataTermino}">
@@ -60,3 +60,4 @@
         </h:form>
     </ui:define>
 </ui:composition>
+

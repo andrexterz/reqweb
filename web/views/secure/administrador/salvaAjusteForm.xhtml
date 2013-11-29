@@ -23,13 +23,13 @@
                 <p:row>
                     <p:column>
                         <h:inputHidden value="#{periodoAjusteBean.periodoAjuste.id}" id="ajusteId" />
-                        <h:inputText value="#{periodoAjusteBean.periodoAjuste.ano}" id="ano" />
+                        <p:inputText value="#{periodoAjusteBean.periodoAjuste.ano}" id="ano" />
                     </p:column>
                     <p:column>
-                        <h:selectOneMenu value="#{periodoAjusteBean.periodoAjuste.semestre}" id="semestre" styleClass="ajusteSelect">
+                        <p:selectOneMenu value="#{periodoAjusteBean.periodoAjuste.semestre}" id="semestre" styleClass="ajusteSelect">
                             <f:selectItems value="#{periodoAjusteBean.semestres}"
                                            var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.semestre}" />
-                        </h:selectOneMenu>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -42,17 +42,17 @@
                 </p:row>
                 <p:row>
                     <p:column>
-                        <p:calendar value="#{periodoAjusteBean.periodoAjuste.dataInicio}" id="dataInicio" />
+                        <p:calendar id="dataInicio" pattern="dd/M/yyyy" value="#{periodoAjusteBean.periodoAjuste.dataInicio}" />
                     </p:column>
                     <p:column>
-                        <p:calendar value="#{periodoAjusteBean.periodoAjuste.dataTermino}" id="dataTermino" />
+                        <p:calendar id="dataTermino" pattern="dd/M/yyyy" value="#{periodoAjusteBean.periodoAjuste.dataTermino}" />
                     </p:column>                    
                 </p:row>
             </p:panelGrid>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton value="#{msg.salvar}"
                                  process="@form"
-                                 actionListener="#{periodoAjusteBean.salvaAjuste}"
+                                 actionListener="#{periodoAjusteBean.salvaPeriodoAjuste}"
                                  oncomplete="dialogHandler('dlgNovoAjuste', xhr, status, args)"
                                  update=":formHeader:systemMessages :ajusteForm:tableAjustes :ajusteForm:ajusteToolbar" />
                 <p:commandButton value="#{msg.cancelar}"

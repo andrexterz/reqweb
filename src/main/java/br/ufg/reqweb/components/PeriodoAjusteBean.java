@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,43 @@ public class PeriodoAjusteBean implements Serializable {
         }        
     }
     
+    public String excluiPeriodoAjuste() {
+        FacesMessage msg;
+        if (getItemSelecionado() == null) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        } else {
+            periodoAjusteDao.excluir(itemSelecionado);
+            itemSelecionado = null;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return listaPeriodoAjustes();
+        }        
+    }
+    
+    public String salvaPeriodoAjuste() {
+        FacesMessage msg;
+        RequestContext context = RequestContext.getCurrentInstance();
+        if (periodoAjuste.getAno() == 0 || periodoAjuste.getSemestre() == null || periodoAjuste.getDataInicio() == null || periodoAjuste.getDataTermino() == null) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", messages.getString("dadosInvalidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            context.addCallbackParam("resultado", false);
+            return null;
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosSalvos"));
+            context.addCallbackParam("resultado", true);
+            if (operation.equals(ADICIONA)) {
+                periodoAjusteDao.adicionar(periodoAjuste);
+                itemSelecionado = periodoAjuste;
+            } else {
+                periodoAjusteDao.atualizar(periodoAjuste);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+        return listaPeriodoAjustes();
+    }
+    
     public List getSemestres() {
         List semestres = new ArrayList<Semestre>();
         semestres.addAll(Arrays.asList(Semestre.values()));
@@ -79,6 +117,10 @@ public class PeriodoAjusteBean implements Serializable {
 
     public PeriodoAjuste getItemSelecionado() {
         return itemSelecionado;
+    }
+    
+    public void setItemSelecionado(PeriodoAjuste itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -138,6 +180,10 @@ public class PeriodoAjusteBean implements Serializable {
      */
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
+    }
+
+    private String listaPeriodoAjustes() {
+        return "periodoAjustes";
     }
 
     

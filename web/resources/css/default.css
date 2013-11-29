@@ -263,6 +263,12 @@ input[type=text], input[type=password], select {
     background-position: 0 -32px;
 }
 
+.menuItemSelected {
+    color: #ffff00;
+    text-decoration: none;
+    background-position: 0 -32px;
+}
+
 /*---------- contentContainer ------------------*/
 .contentContainer {
     padding: 0;

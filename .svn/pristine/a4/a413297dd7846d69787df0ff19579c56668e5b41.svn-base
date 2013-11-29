@@ -1,0 +1,52 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+#login
+LoginPage=Login
+login=Enter
+usuario=User
+usuarios=Users
+grupo=Group
+perfil=Profile
+senha=Password
+botaoLogin=sign in
+loginErro=Authentication error
+loginTexto=Web Request System
+retornar = Return to login page
+
+#p\u00e1gina do administrador
+adminHome = Administrator's Page
+
+#curso
+curso = Course
+cursos = Courses
+cursoCodigo = Code
+cursoMatriz = Matrix
+cursoSigla = Acronym
+cursoNovo = New course
+cursoEditar = Modify course
+cursoExcluir = Delete course
+
+#ajuste de matr\u00edcula
+periodoAjuste = Adjustment period
+
+#arquivos
+arquivos = Files
+
+#log
+log = Activity log
+
+#widgets gen\u00e9ricos
+inserir = Insert
+novo = New
+editar = Edit
+autalizar = Update
+excluir = Delete
+salvar = Save
+fechar = Close
+selecionar = Select
+cancelar = Cancel
+
+#records e errors
+dadosSalvos = Data saved successfully
+dadosInvalidos = Invalid data

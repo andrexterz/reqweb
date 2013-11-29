@@ -1,0 +1,58 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.cursos}</ui:define>
+    <ui:define name="content">
+        <ui:include src="salvaCursoForm.xhtml" />
+        <ui:include src="excluiCursoForm.xhtml" />
+        <h:form class="contentTables" id="cursoForm">
+            <h:panelGroup layout="block" id="cursoToolbar"
+                          styleClass="cursoToolbar">
+
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 update=":dlgCursoForm"
+                                 oncomplete="PF('dlgNovoCurso').show()"
+                                 actionListener="#{cursoBean.novoCurso}" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 process="@this"
+                                 update=":dlgCursoForm"
+                                 oncomplete="PF('dlgNovoCurso').show()"
+                                 disabled="#{cursoBean.selecionado == false}"
+                                 actionListener="#{cursoBean.editaCurso}" />
+
+                <p:commandButton value="#{msg.excluir}" disabled="#{cursoBean.selecionado== false}" onclick="excluirCursoDialog.show()" />
+
+                <h:inputText id="cursoBusca" styleClass="searchBox" value="#{cursoBean.termoBusca}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=cursoBuscaCommand] -->
+                <p:commandButton style="visibility: hidden;" id="cursoBuscaCommand"  styleClass="searchCommand alignRight" update="tableCursos" actionListener="#{cursoBean.listaCursos}" />                
+                <p:defaultCommand target="cursoBuscaCommand" />
+
+            </h:panelGroup>
+
+            <p:dataTable id="tableCursos" var="cursoItem"
+                         value="#{cursoBean.cursos}"
+                         rowKey="#{cursoItem.id}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{cursoBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":dlgExcluiCursoForm:exclCursoDialog :cursoForm:cursoToolbar" listener="#{cursoBean.selecionaItem}" />
+                <p:column headerText="#{msg.curso}" styleClass="cursoColNome">
+                    <h:outputText value="#{cursoItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.cursoMatriz}" styleClass="cursoColMatriz">
+                    <h:outputText value="#{cursoItem.matriz}" />
+                </p:column>    
+                <p:column headerText="#{msg.cursoSigla}" styleClass="cursoColSigla">
+                    <h:outputText value="#{cursoItem.sigla}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

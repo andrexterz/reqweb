@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="dlgExcluiAjusteForm">
+        <p:confirmDialog id="exclAjusteDialog" widgetVar="excluirAjusteDialog"
+                         appendTo="@(body)" width="360" 
+                         header="#{msg.ajusteExcluir}"
+                         message="#{msg.ajusteExcluir} #{ajusteBean.itemSelecionado.nome}?" severity="alert">
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton id="confirmaExclAjuste" value="#{msg.sim}"
+                                 oncomplete="excluirAjusteDialog.hide()"
+                                 action="#{ajusteBean.excluiAjuste}"
+                                 process="@this"
+                                 update=":ajusteForm:ajusteToolbar :ajusteForm:tableAjustes :formHeader:systemMessages" />
+                <p:commandButton id="cancelaExclAjuste"
+                                 value="#{msg.nao}"
+                                 onclick="excluirAjusteDialog.hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>
+

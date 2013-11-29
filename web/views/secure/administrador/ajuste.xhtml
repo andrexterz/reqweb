@@ -1,0 +1,62 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.periodoAjuste}</ui:define>
+    <ui:define name="content">
+
+        <ui:include src="salvaAjusteForm.xhtml" />
+        <ui:include src="excluiAjusteForm.xhtml" />
+
+        <h:form class="contentTables" id="ajusteForm">
+            <h:panelGroup layout="block" id="ajusteToolbar"
+                          styleClass="ajusteToolbar">
+
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 update=":dlgAjusteForm"
+                                 oncomplete="PF('dlgNovoAjuste').show()"
+                                 actionListener="#{periodoAjusteBean.novoAjuste}" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 process="@this"
+                                 update=":dlgAjusteForm"
+                                 oncomplete="PF('dlgNovoAjuste').show()"
+                                 disabled="#{periodoAjusteBean.selecionado == false}"
+                                 actionListener="#{periodoAjusteBean.editaAjuste}" />
+
+                <p:commandButton value="#{msg.excluir}" disabled="#{periodoAjusteBean.selecionado== false}" onclick="excluirAjusteDialog.show()" />
+
+                <h:inputText id="ajusteAjuste" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=ajusteBuscaCommand] -->
+                <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaAjustes}" />                
+                <p:defaultCommand target="ajusteBuscaCommand" />
+
+            </h:panelGroup>
+
+            <p:dataTable id="tableAjustes" var="ajusteItem"
+                         value="#{periodoAjusteBean.periodoAjustes}"
+                         rowKey="#{ajusteItem.id}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{periodoAjusteBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":dlgExcluiAjusteForm:exclAjusteDialog :ajusteForm:ajusteToolbar" listener="#{periodoAjusteBean.selecionaItem}" />
+                <p:column headerText="#{msg.ano}" styleClass="ajusteColAno">
+                    <h:outputText value="#{ajusteItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.semestre}" styleClass="ajusteColSemestre">
+                    <h:outputText value="#{ajusteItem.ano}" />
+                </p:column>    
+                <p:column headerText="#{msg.periodo}" styleClass="ajusteColPeriodo">
+                    <h:outputText value="#{ajusteItem.dataInicio} #{msg.prepA} #{ajusteItem.dataTermino}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

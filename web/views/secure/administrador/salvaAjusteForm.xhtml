@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgAjusteForm" modal="true"
+              widgetVar="dlgNovoAjuste" width="380" height="240"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+                <h:outputText value="#{msg.ajusteNovo}" rendered="#{periodoAjusteBean.operation == 'a'}" />
+                <h:outputText value="#{msg.ajusteEditar}" rendered="#{periodoAjusteBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="dlgNovoAjusteForm">
+            <p:panelGrid id="ajusteDlgPanel" styleClass="formGrid" columnClasses="formGridColA, formGridColB">
+                <p:row>
+                    <p:column>
+                        <h:outputLabel for="#{periodoAjusteBean.periodoAjuste.ano}" value="#{msg.ano}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel for="#{periodoAjusteBean.periodoAjuste.semestre}" value="#{msg.semestre}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:inputHidden value="#{periodoAjusteBean.periodoAjuste.id}" id="ajusteId" />
+                        <h:inputText value="#{periodoAjusteBean.periodoAjuste.ano}" id="ano" />
+                    </p:column>
+                    <p:column>
+                        <h:selectOneMenu value="#{periodoAjusteBean.periodoAjuste.semestre}" id="semestre" styleClass="ajusteSelect">
+                            <f:selectItems value="#{periodoAjusteBean.semestres}"
+                                           var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.semestre}" />
+                        </h:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel for="#{periodoAjusteBean.periodoAjuste.dataInicio}" value="#{msg.dataInicio}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel for="#{periodoAjusteBean.periodoAjuste.dataTermino}" value="#{msg.dataTermino}" />
+                    </p:column>                    
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <p:calendar value="#{periodoAjusteBean.periodoAjuste.dataInicio}" id="dataInicio" />
+                    </p:column>
+                    <p:column>
+                        <p:calendar value="#{periodoAjusteBean.periodoAjuste.dataTermino}" id="dataTermino" />
+                    </p:column>                    
+                </p:row>
+            </p:panelGrid>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton value="#{msg.salvar}"
+                                 process="@form"
+                                 actionListener="#{periodoAjusteBean.salvaAjuste}"
+                                 oncomplete="dialogHandler('dlgNovoAjuste', xhr, status, args)"
+                                 update=":formHeader:systemMessages :ajusteForm:tableAjustes :ajusteForm:ajusteToolbar" />
+                <p:commandButton value="#{msg.cancelar}"
+                                 process="@none"
+                                 onclick="PF('dlgNovoAjuste').hide()"/>
+            </h:panelGroup>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

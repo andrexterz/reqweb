@@ -1,0 +1,16 @@
+/**
+ * autor: Andre Luiz F. R. Barca
+ * email: andrexterz@gmail.com
+ */
+
+/*************** generic functions *********************/
+/**
+ * 
+ * @param {type} obj
+ * @returns {undefined}
+ */
+
+function toUpper(obj) {
+    obj.value = obj.value.toUpperCase();
+}
+

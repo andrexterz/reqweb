@@ -8,11 +8,6 @@ package br.ufg.reqweb.auth.servicelocator;
 public class LDAPParametrosConfig {
  
     
-    //testes afonso
-    
-    /*
-     * Implementação do Initial context para LDAP
-     */
     public static final String INITIAL_CTX = "com.sun.jndi.ldap.LdapCtxFactory";
  
     /*
@@ -38,7 +33,7 @@ public class LDAPParametrosConfig {
     
  
     /*
-     *  â€œtop levelâ€� do diretório (base DN)
+     *  diretório (base DN)
      */
  
     public static final String BASE_DN = "dc=dionisio, dc=inf, dc=ufg, dc=br";

@@ -14,13 +14,13 @@ public enum Semestre {
     PRIMEIRO_SEMESTRE(1),
     SEGUNDO_SEMESTRE(2);
     
-    private final int semestre;
+    private final int value;
     
-    private Semestre(int semestre) {
-        this.semestre = semestre;
+    private Semestre(int value) {
+        this.value = value;
     }
     
-    public int getSemestre() {
-        return semestre;
+    public int getValue() {
+        return value;
     }
 }

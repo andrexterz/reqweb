@@ -3,13 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.ufg.reqweb.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,25 +23,28 @@ import javax.persistence.TemporalType;
  *
  * @author André
  */
-
 @Entity
 public class PeriodoAjuste implements Serializable {
+    
+    public PeriodoAjuste() {
+        
+    }
 
     @Id
     @SequenceGenerator(name = "PERIODO_AJUSTE_ID", sequenceName = "periodo_ajuste_periodo_ajuste_id", allocationSize = 1)
     @GeneratedValue(generator = "PERIODO_AJUSTE_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    
+
     @Column
     private int ano;
-    
+
     @Enumerated(EnumType.ORDINAL)
     private Semestre semestre;
-    
+
     @Temporal(TemporalType.DATE)
     private Date dataInicio;
 
-    @Temporal(TemporalType.DATE)    
+    @Temporal(TemporalType.DATE)
     private Date dataTermino;
 
     /**
@@ -118,11 +119,12 @@ public class PeriodoAjuste implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
-        return  String.format(Locale.getDefault(),
-                "%d: %s - %s",
-                ano, dateFormat.format(dataInicio),
-                dateFormat.format(dataTermino));
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+            return String.format("%d: %s - %s", ano, dateFormat.format(dataInicio), dateFormat.format(dataTermino));
+        } catch (NullPointerException e) {
+            return super.toString();
+        }
     }
- 
+
 }

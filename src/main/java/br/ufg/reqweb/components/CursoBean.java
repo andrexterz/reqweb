@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Scope;
 public class CursoBean implements Serializable {
 
     public CursoBean() {
-        curso = null;
+        curso = new Curso();
         itemSelecionado = null;
         operation = null;        
         termoBusca = "";

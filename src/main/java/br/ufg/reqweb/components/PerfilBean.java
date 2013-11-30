@@ -22,7 +22,7 @@ public class PerfilBean implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<Perfil> items;
+	private final List<Perfil> items;
   
     public PerfilBean() {
         this.items = new ArrayList<Perfil>();

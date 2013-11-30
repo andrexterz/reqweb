@@ -446,14 +446,17 @@ input[type=text], input[type=password], select {
 /************************ ajuste **********************************************/
 .ajusteColAno {
     width: 10%;
+    text-align: center;
 }
 
 .ajusteColSemestre {
-    width: 20%;
+    width: 30%;
+    text-align: center;
 }
 
 .ajusteColPeriodo {
-    width: 70%;
+    width: 30%;
+    text-align: center;
 }
 
 .ajusteSelect {
@@ -521,9 +524,9 @@ input[type=text], input[type=password], select {
 .searchBox {
     width: 20%!important;
     float: right;
-    background-image: url("#{resource['img/search.png']}");
-    padding-right: 20px;
-    background-repeat: no-repeat;
-    background-position: 99% 50%;
+    background-image: url("#{resource['img/search.png']}")!important;
+    padding-right: 20px!important;
+    background-repeat: no-repeat!important;
+    background-position: 99% 50%!important;
 }
 

@@ -27,7 +27,7 @@
 
                 <p:commandButton value="#{msg.excluir}" disabled="#{cursoBean.selecionado== false}" onclick="excluirCursoDialog.show()" />
 
-                <h:inputText id="cursoBusca" styleClass="searchBox" value="#{cursoBean.termoBusca}" />
+                <p:inputText id="cursoBusca" styleClass="searchBox" value="#{cursoBean.termoBusca}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=cursoBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="cursoBuscaCommand"  styleClass="searchCommand alignRight" update="tableCursos" actionListener="#{cursoBean.listaCursos}" />                
                 <p:defaultCommand target="cursoBuscaCommand" />
@@ -36,6 +36,7 @@
 
             <p:dataTable id="tableCursos" var="cursoItem"
                          value="#{cursoBean.cursos}"
+                         emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{cursoItem.id}"
                          paginator="true"
                          selectionMode="single"

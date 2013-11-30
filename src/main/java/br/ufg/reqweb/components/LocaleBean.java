@@ -10,6 +10,7 @@ package br.ufg.reqweb.components;
  */
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class LocaleBean {
+public class LocaleBean implements Serializable{
 
     private static final String PT_BR = "pt_BR";
     private static final String EN_US = "en_US";

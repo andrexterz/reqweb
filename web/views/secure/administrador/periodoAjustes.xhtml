@@ -28,8 +28,10 @@
                                  actionListener="#{periodoAjusteBean.editaAjuste}" />
 
                 <p:commandButton value="#{msg.excluir}" disabled="#{periodoAjusteBean.selecionado== false}" onclick="excluirAjusteDialog.show()" />
-
-                <h:inputText id="ajusteAjuste" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
+                <!--    
+                <h:inputText id="ajusteBusca" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
+                -->
+                <p:inputMask id="ajusteBusca" mask="99/99/9999 - 99/99/9999" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=ajusteBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaPeriodoAjustes}" />                
                 <p:defaultCommand target="ajusteBuscaCommand" />
@@ -38,24 +40,32 @@
 
             <p:dataTable id="tableAjustes" var="ajusteItem"
                          value="#{periodoAjusteBean.periodoAjustes}"
+                         emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{ajusteItem.id}"
                          paginator="true"
                          selectionMode="single"
                          selection="#{periodoAjusteBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":dlgExcluiAjusteForm:exclAjusteDialog :ajusteForm:ajusteToolbar" listener="#{periodoAjusteBean.selecionaItem}" />
+                <p:ajax event="rowSelect"
+                        update=":dlgExcluiAjusteForm:exclAjusteDialog :ajusteForm:ajusteToolbar"
+                        listener="#{periodoAjusteBean.selecionaItem}" />
                 <p:column headerText="#{msg.ano}" styleClass="ajusteColAno">
                     <h:outputText value="#{ajusteItem.ano}" />
                 </p:column>
                 <p:column headerText="#{msg.semestre}" styleClass="ajusteColSemestre">
-                    <h:outputText value="#{msg.semestre} #{ajusteItem.semestre.semestre}" />
+                    <h:outputText value="#{msg.semestre} #{ajusteItem.semestre.value}" />
                 </p:column>    
-                <p:column headerText="#{msg.periodo}" styleClass="ajusteColPeriodo">
-                    <h:outputText value="#{ajusteItem.dataInicio} #{msg.prepA} #{ajusteItem.dataTermino}">
+                <p:column headerText="#{msg.dataInicio}" styleClass="ajusteColPeriodo">
+                    <h:outputText value="#{ajusteItem.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>
+                <p:column headerText="#{msg.dataTermino}" styleClass="ajusteColPeriodo">
+                    <h:outputText value="#{ajusteItem.dataTermino}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>                
             </p:dataTable>
         </h:form>
     </ui:define>

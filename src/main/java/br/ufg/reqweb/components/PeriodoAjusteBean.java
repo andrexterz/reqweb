@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 public class PeriodoAjusteBean implements Serializable {
     
     public PeriodoAjusteBean() {
-        periodoAjuste = null;
+        periodoAjuste = new PeriodoAjuste();
         itemSelecionado = null;        
         operation = null;
         termoBusca = "";
@@ -182,7 +182,7 @@ public class PeriodoAjusteBean implements Serializable {
         this.termoBusca = termoBusca;
     }
 
-    private String listaPeriodoAjustes() {
+    public String listaPeriodoAjustes() {
         return "periodoAjustes";
     }
 

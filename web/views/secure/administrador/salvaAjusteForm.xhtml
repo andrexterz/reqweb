@@ -23,9 +23,7 @@
                 <p:row>
                     <p:column>
                         <h:inputHidden value="#{periodoAjusteBean.periodoAjuste.id}" id="ajusteId" />
-                        <p:inputText value="#{periodoAjusteBean.periodoAjuste.ano}" id="ano">
-                            <f
-                        </p:inputText>
+                        <p:inputMask value="#{periodoAjusteBean.periodoAjuste.ano}" mask="9999" id="ano" />
                     </p:column>
                     <p:column>
                         <p:selectOneMenu value="#{periodoAjusteBean.periodoAjuste.semestre}" id="semestre" styleClass="ajusteSelect">

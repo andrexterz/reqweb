@@ -12,7 +12,10 @@ import br.ufg.reqweb.model.Semestre;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -86,7 +89,7 @@ public class PeriodoAjusteBean implements Serializable {
     public String salvaPeriodoAjuste() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        if (periodoAjuste.getAno() == 0 || periodoAjuste.getSemestre() == null || periodoAjuste.getDataInicio() == null || periodoAjuste.getDataTermino() == null) {
+        if (periodoAjuste.getAno() < getMinAno() || periodoAjuste.getSemestre() == null || periodoAjuste.getDataInicio() == null || periodoAjuste.getDataTermino() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", messages.getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
@@ -184,6 +187,11 @@ public class PeriodoAjusteBean implements Serializable {
 
     public String listaPeriodoAjustes() {
         return "periodoAjustes";
+    }
+    
+    
+    public int getMinAno() {
+        return Calendar.getInstance().get(Calendar.YEAR);
     }
 
     

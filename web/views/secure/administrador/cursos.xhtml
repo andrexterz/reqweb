@@ -6,6 +6,12 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:define name="componentTitle">#{msg.cursos}</ui:define>
     <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                jQuery("#cursosLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
         <ui:include src="salvaCursoForm.xhtml" />
         <ui:include src="excluiCursoForm.xhtml" />
         <h:form class="contentTables" id="cursoForm">
@@ -28,6 +34,7 @@
                 <p:commandButton value="#{msg.excluir}" disabled="#{cursoBean.selecionado== false}" onclick="excluirCursoDialog.show()" />
 
                 <p:inputText id="cursoBusca" styleClass="searchBox" value="#{cursoBean.termoBusca}" />
+                <p:watermark for="cursoBusca" value="#{msg.curso}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=cursoBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="cursoBuscaCommand"  styleClass="searchCommand alignRight" update="tableCursos" actionListener="#{cursoBean.listaCursos}" />                
                 <p:defaultCommand target="cursoBuscaCommand" />

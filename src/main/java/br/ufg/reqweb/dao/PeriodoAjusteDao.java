@@ -5,7 +5,6 @@
  */
 package br.ufg.reqweb.dao;
 
-
 import br.ufg.reqweb.model.PeriodoAjuste;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class PeriodoAjusteDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-    
+
     @Transactional
     public void adicionar(PeriodoAjuste periodoAjuste) {
         this.sessionFactory.getCurrentSession().save(periodoAjuste);
@@ -56,11 +55,11 @@ public class PeriodoAjusteDao {
     public List procurar(String termo) {
         try {
             Query query = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM PeriodoAjuste p")
+                    createSQLQuery("SELECT * FROM PeriodoAjuste p WHERE p.ano = :termo")
                     .addEntity(PeriodoAjuste.class);
-            query.setParameter("termo", termo);
+            query.setParameter("termo", Integer.parseInt(termo));
             return query.list();
-        } catch (HibernateException e) {
+        } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<PeriodoAjuste>();
         }

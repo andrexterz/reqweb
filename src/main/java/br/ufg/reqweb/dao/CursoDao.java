@@ -5,7 +5,6 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Curso;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

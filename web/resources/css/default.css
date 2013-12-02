@@ -264,9 +264,9 @@ input[type=text], input[type=password], select {
 }
 
 .menuItemSelected {
-    color: #ffff00;
+    color: #ffff00!important;
     text-decoration: none;
-    background-position: 0 -32px;
+    background-position: 0 -32px!important;
 }
 
 /*---------- contentContainer ------------------*/

@@ -62,7 +62,6 @@ public class CursoBean implements Serializable {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return;
         } else {
             setOperation(EDITA);
             curso = getItemSelecionado();

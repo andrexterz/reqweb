@@ -13,9 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -64,7 +62,6 @@ public class PeriodoAjusteBean implements Serializable {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return;
         } else {
             setOperation(EDITA);
             periodoAjuste = getItemSelecionado();
@@ -161,11 +158,10 @@ public class PeriodoAjusteBean implements Serializable {
     
     public List getPeriodoAjustes() {
         System.out.println("termo da busca: " + getTermoBusca());
-        if (termoBusca.equals("")) {
+        if (termoBusca.equals("") || termoBusca.equals("____")) {
             return periodoAjusteDao.listar();
         }
         else {
-             
             return periodoAjusteDao.procurar(getTermoBusca());
         }
         

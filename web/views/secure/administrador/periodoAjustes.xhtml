@@ -6,7 +6,12 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:define name="componentTitle">#{msg.periodoAjuste}</ui:define>
     <ui:define name="content">
-
+        <script>
+            $(document).ready(function() {
+                jQuery("#periodoAjusteLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
         <ui:include src="salvaAjusteForm.xhtml" />
         <ui:include src="excluiAjusteForm.xhtml" />
 
@@ -31,15 +36,17 @@
                 <!--    
                 <h:inputText id="ajusteBusca" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
                 -->
-                <p:inputMask id="ajusteBusca" mask="99/99/9999 - 99/99/9999" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
+                <p:inputMask id="ajusteBusca" mask="9999" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
+                <p:watermark for="ajusteBusca" value="#{msg.ano}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=ajusteBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaPeriodoAjustes}" />                
                 <p:defaultCommand target="ajusteBuscaCommand" />
 
             </h:panelGroup>
 
-            <p:dataTable id="tableAjustes" var="ajusteItem"
+            <p:dataTable id="tableAjustes"
                          value="#{periodoAjusteBean.periodoAjustes}"
+                         var="ajusteItem"
                          emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{ajusteItem.id}"
                          paginator="true"

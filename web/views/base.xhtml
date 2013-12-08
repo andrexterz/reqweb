@@ -23,7 +23,10 @@
                     <p:panelGrid columns="2" columnClasses="headerColA,headerColB"
                                  styleClass="header" id="mainHeader">
                         <p:column>
-                            <div>ReqWeb</div>
+                            <div>
+                                <p:graphicImage value="#{resource['img/logo-mono-mini.png']}" styleClass="headerLogo" />
+                                <span>ReqWeb</span>
+                            </div>
                             <h:form id="formLocale" styleClass="widgetLocale">
                                 <h:selectOneMenu valueChangeListener="#{localeBean.changeLocale}" onchange="this.form.submit()" value="#{localeBean.locale}">
                                     <f:selectItems value="#{localeBean.localeList}" />

@@ -29,18 +29,19 @@ public class LoginFilter implements Filter  {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest =(HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;        
         HttpSession session = httpRequest.getSession();
         UsuarioBean usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
         if (usuarioBean == null) {
             usuarioBean = new UsuarioBean();
         }
         String path = httpRequest.getContextPath();
+        String url = httpRequest.getRequestURI();
         if (usuarioBean.isAutenticado()) {
             chain.doFilter(request, response);
+            System.out.println("url: " + url);
         } else {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.sendRedirect(path + "/index.jsp");
-
         }
     }
 

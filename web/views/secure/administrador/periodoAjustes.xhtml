@@ -33,19 +33,16 @@
                                  actionListener="#{periodoAjusteBean.editaAjuste}" />
 
                 <p:commandButton value="#{msg.excluir}" disabled="#{periodoAjusteBean.selecionado== false}" onclick="excluirAjusteDialog.show()" />
-                <!--    
-                <h:inputText id="ajusteBusca" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
-                -->
                 <p:inputMask id="ajusteBusca" mask="9999" styleClass="searchBox" value="#{periodoAjusteBean.termoBusca}" />
                 <p:watermark for="ajusteBusca" value="#{msg.ano}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=ajusteBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaPeriodoAjustes}" />                
+                <p:commandButton style="visibility: hidden;" id="ajusteBuscaCommand"  styleClass="searchCommand alignRight" update="tableAjustes" actionListener="#{periodoAjusteBean.listaPeriodoAjustes}" />
                 <p:defaultCommand target="ajusteBuscaCommand" />
 
             </h:panelGroup>
 
             <p:dataTable id="tableAjustes"
-                         value="#{periodoAjusteBean.periodoAjustes}"
+                         value="#{periodoAjusteBean.filtroPeriodoAjustes}"
                          var="ajusteItem"
                          emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{ajusteItem.id}"

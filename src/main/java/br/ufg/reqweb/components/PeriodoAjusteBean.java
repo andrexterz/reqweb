@@ -156,15 +156,18 @@ public class PeriodoAjusteBean implements Serializable {
         this.periodoAjuste = periodoAjuste;
     }
     
-    public List getPeriodoAjustes() {
+    public List getFiltroPeriodoAjustes() {
         boolean found = termoBusca.matches("\\d{4}");
         if (!found) {
             return periodoAjusteDao.listar();
         }
         else {
-            return periodoAjusteDao.procurar(getTermoBusca());
-        }
-        
+            return periodoAjusteDao.procurar(termoBusca);
+        }        
+    }
+    
+    public List getPeriodoAjustes() {
+        return periodoAjusteDao.listar();
     }
 
     /**
@@ -184,7 +187,6 @@ public class PeriodoAjusteBean implements Serializable {
     public String listaPeriodoAjustes() {
         return "periodoAjustes";
     }
-    
     
     public int getMinAno() {
         return Calendar.getInstance().get(Calendar.YEAR);

@@ -42,7 +42,7 @@
             </h:panelGroup>
 
             <p:dataTable id="tableCursos" var="cursoItem"
-                         value="#{cursoBean.cursos}"
+                         value="#{cursoBean.filtroCursos}"
                          emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{cursoItem.id}"
                          paginator="true"

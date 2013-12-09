@@ -44,7 +44,7 @@ public class Login implements Serializable {
 
         if (objLogin.doLogin(usuario, senha)) {
             objLogin.buscaGrupo(grupo);
-            if (objLogin.getGrupo() == null && grupo != "100") {
+            if (objLogin.getGrupo() == null && !grupo.equals("100")) {
                 objLogin = null;
             }
             return objLogin;

@@ -157,8 +157,8 @@ public class PeriodoAjusteBean implements Serializable {
     }
     
     public List getPeriodoAjustes() {
-        System.out.println("termo da busca: " + getTermoBusca());
-        if (termoBusca.equals("") || termoBusca.equals("____")) {
+        boolean found = termoBusca.matches("\\d{4}");
+        if (!found) {
             return periodoAjusteDao.listar();
         }
         else {

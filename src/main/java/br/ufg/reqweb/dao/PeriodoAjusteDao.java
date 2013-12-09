@@ -50,6 +50,18 @@ public class PeriodoAjusteDao {
             return new ArrayList<PeriodoAjuste>();
         }
     }
+    
+    @Transactional(readOnly = true)    
+    public PeriodoAjuste buscar(Long id) {
+        PeriodoAjuste periodoAjuste;
+        try {
+            periodoAjuste = (PeriodoAjuste) this.sessionFactory.getCurrentSession().get(PeriodoAjuste.class, id);
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            periodoAjuste = null;
+        }
+        return periodoAjuste;
+    }
 
     @Transactional(readOnly = true)
     public List procurar(String termo) {

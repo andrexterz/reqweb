@@ -8,22 +8,31 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:composition template="base.xhtml">
-        <ui:define name="title">Login - ReqWeb</ui:define>
+        <ui:define name="title">error - ReqWeb</ui:define>
         <ui:define name="menuTitle"></ui:define>
         <ui:define name="componentTitle">#{msg.LoginPage}</ui:define>
         <ui:define name="menu">
             <p:graphicImage value="#{resource['img/logo-mono.png']}" styleClass="menuContainerLogo" />
         </ui:define>
         <ui:define name="content">
-            <h:panelGrid columns="2" styleClass="loginLayout" columnClasses="loginLayoutColumnA, loginLayoutColumnB" rendered="#{!usuarioBean.autenticado}">
+            <h:panelGrid columns="2" styleClass="loginLayout" columnClasses="loginLayoutColumnA, loginLayoutColumnB">
                 <h:form id="errorForm">
-                    <div class="loginPageText">
-                        <p>REQWEB</p>
-                        <p>#{msg.loginErro}</p>
-                        <h:commandLink value="#{msg.retornar}"
-                    </div>                    
+                    <p:selectOneMenu value="#{localeBean.locale}" valueChangeListener="#{localeBean.changeLocale}">
+                        <f:selectItems value="#{localeBean.localeList}" var="l" />
+                        <p:ajax update="textoA" />
+                    </p:selectOneMenu>
+                    <br />
+                    <p:selectOneMenu value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
+                        <f:selectItems value="#{arquivoBean.periodoAjustes}" var="p" />
+                        <p:ajax update="textoB :formHeader:systemMessages" />
+                    </p:selectOneMenu>
+                    <br />
+                    <h:outputText value="#{localeBean.locale}" id="textoA" />
+                    <br />
+                    <h:outputText value="#{arquivoBean.periodoAjuste}" id="textoB" />
+                    <br />
+                    <h:commandButton value="submit" type="submit" />
                 </h:form>
-
             </h:panelGrid>
         </ui:define>
     </ui:composition>

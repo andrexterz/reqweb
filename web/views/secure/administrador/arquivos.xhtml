@@ -6,63 +6,69 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:define name="componentTitle">#{msg.arquivos}</ui:define>
     <ui:define name="content">
+
         <script>
             $(document).ready(function() {
                 jQuery("#arquivosLnk").addClass("menuItemSelected");
                 console.log("marcando menuItemSelected como selecionado");
             });
         </script>
-
-        <h:form class="contentTables formBody" id="arquivosForm" enctype="multipart/form-data">
-            <h:panelGroup id="disciplinas" layout="block">
-                <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
-                <p:fileUpload id="inputDisciplinas"
-                              label="#{msg.selecionar}"
-                              uploadLabel="#{msg.enviar}"
-                              cancelLabel="#{msg.cancelar}"
-                              fileLimit="1"
-                              multiple="false"
-                              process="@this"                              
-                              fileUploadListener="#{arquivoBean.uploadDisciplinas}"
-                              update=":formHeader:systemMessages disciplinas" />
-            </h:panelGroup>
-            <hr class="separator" />
-
-            <h:panelGroup id="turmas" layout="block">
-                <h:outputLabel for="inputTurmas" value="#{msg.turmas}" />
-                <p:fileUpload id="inputTurmas"
-                              label="#{msg.selecionar}"
-                              uploadLabel="#{msg.enviar}"
-                              cancelLabel="#{msg.cancelar}"
-                              fileLimit="1"
-                              multiple="false"
-                              process="@this"
-                              fileUploadListener="#{arquivoBean.uploadTurmas}"
-                              update=":formHeader:systemMessages turmas" />
-            </h:panelGroup>
-            <hr class="separator" />
-
-            <h:panelGroup id="indicePrioridade" layout="block">
-                <h:panelGrid columns="1" styleClass="formGrid">
-                    <h:outputLabel for="inputPeriodoAjuste" value="#{msg.periodoAjuste}" />
-                    <p:selectOneMenu id="inputPeriodoAjuste" value="">
-                        <f:selectItems value="#{periodoAjusteBean.semestres}"
-                                       var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.value}" />
-                    </p:selectOneMenu>
-                    <h:outputLabel for="inputIndicePrioridade" value="#{msg.indicePrioridade}" />
-                    <p:fileUpload id="inputIndicePrioridade"
+        <h:panelGroup layout="block" styleClass="formBody contentTables">
+            <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
+                <h:panelGroup id="disciplinas" layout="block">
+                    <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
+                    <p:fileUpload id="inputDisciplinas"
                                   label="#{msg.selecionar}"
                                   uploadLabel="#{msg.enviar}"
                                   cancelLabel="#{msg.cancelar}"
                                   fileLimit="1"
                                   multiple="false"
-                                  process="@this"                              
-                                  fileUploadListener="#{arquivoBean.uploadIndicePrioridade}"
-                                  update=":formHeader:systemMessages indicePrioridade" />
-                </h:panelGrid>
-            </h:panelGroup>
+                                  process="@form"                              
+                                  fileUploadListener="#{arquivoBean.uploadDisciplinas}"
+                                  update=":formHeader:systemMessages disciplinas" />
+                </h:panelGroup>
+            </h:form>
+            <hr class="separator" />
+            <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
+                <h:panelGroup id="turmas" layout="block">
+                    <h:outputLabel for="inputTurmas" value="#{msg.turmas}" />
+                    <p:fileUpload id="inputTurmas"
+                                  label="#{msg.selecionar}"
+                                  uploadLabel="#{msg.enviar}"
+                                  cancelLabel="#{msg.cancelar}"
+                                  fileLimit="1"
+                                  multiple="false"
+                                  process="@form"
+                                  fileUploadListener="#{arquivoBean.uploadTurmas}"
+                                  update=":formHeader:systemMessages turmas" />
+                </h:panelGroup>
+            </h:form>                
+            <hr class="separator" />
+            <h:form id="arquivosPeriodoAjusteForm" enctype="multipart/form-data">
+                <h:panelGroup id="indicePrioridade" layout="block">
+                    <h:panelGrid columns="1" styleClass="formGrid">
+                        <h:outputLabel for="inputPeriodoAjuste" value="#{msg.periodoAjuste}" />
+                        <p:selectOneMenu value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
+                            <!-- <f:selectItems value="#{arquivoBean.periodoAjustes}" var="p" /> -->
+                            <f:selectItems value="#{periodoAjusteBean.periodoAjustes}" var="p"
+                                           itemLabel="#{p}" itemValue="#{p.id}"  />
+                            <p:ajax process="@this" update=":formHeader:systemMessages" />
+                        </p:selectOneMenu>
 
-        </h:form>
+                        <h:outputLabel for="inputIndicePrioridade" value="#{msg.indicePrioridade}" />
+                        <p:fileUpload id="inputIndicePrioridade"
+                                      label="#{msg.selecionar}"
+                                      uploadLabel="#{msg.enviar}"
+                                      cancelLabel="#{msg.cancelar}"
+                                      fileLimit="1"
+                                      multiple="false"
+                                      process="@this"
+                                      fileUploadListener="#{arquivoBean.uploadIndicePrioridade}"
+                                      update=":formHeader:systemMessages arquivosPeriodoAjusteForm" />
+                    </h:panelGrid>
+                </h:panelGroup>
+            </h:form>
+        </h:panelGroup>        
     </ui:define>
 </ui:composition>
 

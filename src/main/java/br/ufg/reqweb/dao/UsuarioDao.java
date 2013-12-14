@@ -6,6 +6,7 @@ package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -41,7 +42,7 @@ public class UsuarioDao {
         Usuario usuario;
         try {
             usuario = (Usuario) this.sessionFactory.getCurrentSession().get(Usuario.class, id);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             usuario = null;
         }
         return usuario;

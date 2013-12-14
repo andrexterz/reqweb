@@ -47,7 +47,7 @@ public class PeriodoAjusteDao {
             return ajusteList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
-            return new ArrayList<PeriodoAjuste>();
+            return new ArrayList<>();
         }
     }
     
@@ -73,7 +73,7 @@ public class PeriodoAjusteDao {
             return query.list();
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
-            return new ArrayList<PeriodoAjuste>();
+            return new ArrayList<>();
         }
     }
 

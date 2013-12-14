@@ -69,11 +69,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public boolean isAutenticado() {
-        if (objLogin != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return objLogin != null;
     }
 
     public String getUsuario() {

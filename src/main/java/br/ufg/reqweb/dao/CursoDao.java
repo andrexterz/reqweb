@@ -53,7 +53,7 @@ public class CursoDao {
             return cursoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
-            return new ArrayList<Curso>();
+            return new ArrayList<>();
         }
 
     }
@@ -80,7 +80,7 @@ public class CursoDao {
             return query.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
-            return new ArrayList<Curso>();
+            return new ArrayList<>();
         }
     }
 

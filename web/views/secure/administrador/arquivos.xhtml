@@ -47,7 +47,7 @@
                 <h:panelGroup id="indicePrioridade" layout="block">
                     <h:panelGrid columns="1" styleClass="formGrid">
                         <h:outputLabel for="inputPeriodoAjuste" value="#{msg.periodoAjuste}" />
-                        <p:selectOneMenu value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
+                        <p:selectOneMenu id="inputPeriodoAjuste" value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
                             <f:selectItems value="#{periodoAjusteBean.periodoAjustes}" var="p"
                                            itemLabel="#{p}" itemValue="#{p.id}"  />
                             <p:ajax process="@this" update=":formHeader:systemMessages" />

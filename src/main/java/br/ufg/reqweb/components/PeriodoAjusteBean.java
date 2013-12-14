@@ -106,7 +106,7 @@ public class PeriodoAjusteBean implements Serializable {
     }
     
     public List getSemestres() {
-        List semestres = new ArrayList<Semestre>();
+        List semestres = new ArrayList<>();
         semestres.addAll(Arrays.asList(Semestre.values()));
         return semestres;
     }

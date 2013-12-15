@@ -24,4 +24,14 @@ public enum Semestre {
         return value;
     }
     
+    public static Semestre getSemestre(int value) {
+        if (value == 1) {
+            return Semestre.PRIMEIRO_SEMESTRE;
+        } else if (value == 2) {
+            return  Semestre.SEGUNDO_SEMESTRE;
+        } else {
+            return null;
+        }
+    }
+    
 }

@@ -24,9 +24,9 @@ import javax.persistence.TemporalType;
  * @author André
  */
 @Entity
-public class PeriodoAjuste implements Serializable {
+public class Periodo implements Serializable {
     
-    public PeriodoAjuste() {
+    public Periodo() {
         
     }
 

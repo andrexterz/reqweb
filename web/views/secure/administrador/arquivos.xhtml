@@ -43,12 +43,12 @@
                 </h:panelGroup>
             </h:form>                
             <hr class="separator" />
-            <h:form id="arquivosPeriodoAjusteForm" enctype="multipart/form-data">
+            <h:form id="arquivosPeriodoForm" enctype="multipart/form-data">
                 <h:panelGroup id="indicePrioridade" layout="block">
                     <h:panelGrid columns="1" styleClass="formGrid">
-                        <h:outputLabel for="inputPeriodoAjuste" value="#{msg.periodoAjuste}" />
-                        <p:selectOneMenu id="inputPeriodoAjuste" value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
-                            <f:selectItems value="#{periodoAjusteBean.periodoAjustes}" var="p"
+                        <h:outputLabel for="inputPeriodo" value="#{msg.periodoAjuste}" />
+                        <p:selectOneMenu id="inputPeriodo" value="#{arquivoBean.periodo.id}" valueChangeListener="#{arquivoBean.selecionaPeriodo}">
+                            <f:selectItems value="#{periodoBean.periodos}" var="p"
                                            itemLabel="#{p}" itemValue="#{p.id}"  />
                             <p:ajax process="@this" update=":formHeader:systemMessages" />
                         </p:selectOneMenu>
@@ -62,7 +62,7 @@
                                       multiple="false"
                                       process="@this"
                                       fileUploadListener="#{arquivoBean.uploadIndicePrioridade}"
-                                      update=":formHeader:systemMessages arquivosPeriodoAjusteForm" />
+                                      update=":formHeader:systemMessages arquivosPeriodoForm" />
                     </h:panelGrid>
                 </h:panelGroup>
             </h:form>

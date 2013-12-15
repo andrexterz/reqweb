@@ -458,23 +458,23 @@ input[type=text], input[type=password], select {
     margin-left: 4px;
     margin-right: 4px;
 } 
-/************************ ajuste **********************************************/
-.ajusteColAno {
+/************************ periodo **********************************************/
+.periodoColAno {
     width: 10%;
     text-align: center;
 }
 
-.ajusteColSemestre {
+.periodoColSemestre {
     width: 30%;
     text-align: center;
 }
 
-.ajusteColPeriodo {
+.periodoColPeriodo {
     width: 30%;
     text-align: center;
 }
 
-.ajusteSelect {
+.periodoSelect {
     width: 100%!important;
 }
 

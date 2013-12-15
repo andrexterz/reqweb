@@ -5,8 +5,8 @@
  */
 package br.ufg.reqweb.components;
 
-import br.ufg.reqweb.dao.PeriodoAjusteDao;
-import br.ufg.reqweb.model.PeriodoAjuste;
+import br.ufg.reqweb.dao.PeriodoDao;
+import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.util.CSVParser;
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,16 +29,16 @@ import org.springframework.web.jsf.FacesContextUtils;
 public class ArquivoBean implements Serializable {
 
     public ArquivoBean() {
-        this.periodoAjuste = new PeriodoAjuste();
+        this.periodo = new Periodo();
     }
     
-    private PeriodoAjuste periodoAjuste;
+    private Periodo periodo;
 
     public void uploadDisciplinas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List data;
         try {
-            data = CSVParser.parse(file.getInputstream(), true);
+            data = CSVParser.parse(file.getInputstream());
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
         }
@@ -50,7 +50,7 @@ public class ArquivoBean implements Serializable {
         UploadedFile file = event.getFile();
         List data;
         try {
-            data = CSVParser.parseTurma(file.getInputstream());
+            data = CSVParser.parse(file.getInputstream());
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
         }
@@ -59,11 +59,11 @@ public class ArquivoBean implements Serializable {
     }
 
     public void uploadIndicePrioridade(FileUploadEvent event) {
-        System.out.println("periodo Ajuste:" + periodoAjuste);
+        System.out.println("periodo Ajuste:" + periodo);
         UploadedFile file = event.getFile();
         List data;
         try {
-            data = CSVParser.parse(file.getInputstream(), true);
+            data = CSVParser.parse(file.getInputstream());
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
         }
@@ -72,25 +72,25 @@ public class ArquivoBean implements Serializable {
     }
 
     /**
-     * @return the periodoAjuste
+     * @return the periodo
      */
-    public PeriodoAjuste getPeriodoAjuste() {
-        return periodoAjuste;
+    public Periodo getPeriodo() {
+        return periodo;
     }
 
     /**
-     * @param periodoAjuste the periodoAjuste to set
+     * @param periodo the periodo to set
      */
-    public void setPeriodoAjuste(PeriodoAjuste periodoAjuste) {
-        this.periodoAjuste = periodoAjuste;
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
     }
 
-    public void selecionaPeriodoAjuste(ValueChangeEvent event) {
+    public void selecionaPeriodo(ValueChangeEvent event) {
         ApplicationContext context = FacesContextUtils.getWebApplicationContext(FacesContext.getCurrentInstance());        
-        PeriodoAjusteDao periodoAjusteDao = (PeriodoAjusteDao) context.getBean(PeriodoAjusteDao.class);
-        periodoAjuste = periodoAjusteDao.buscar((Long) event.getNewValue());
+        PeriodoDao periodoDao = (PeriodoDao) context.getBean(PeriodoDao.class);
+        periodo = periodoDao.buscar((Long) event.getNewValue());
         System.out.println("value changed...");
-        FacesMessage msg = new FacesMessage("selected", periodoAjuste.toString());
+        FacesMessage msg = new FacesMessage("selected", periodo.toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 

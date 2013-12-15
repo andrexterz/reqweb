@@ -6,13 +6,13 @@
 
 package br.ufg.reqweb.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 /**
@@ -21,7 +21,7 @@ import javax.persistence.SequenceGenerator;
  */
 
 @Entity
-public class Turma {
+public class Turma implements Serializable {
     
     @Id
     @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id", allocationSize = 1)
@@ -31,8 +31,8 @@ public class Turma {
     @Column
     private String nome;
     
-    @Enumerated(EnumType.ORDINAL)
-    private Semestre semestre;
+    @ManyToOne
+    private Periodo periodo;
     
     //disciplina (falta criar entity)
     //docente (falta entity)
@@ -54,12 +54,12 @@ public class Turma {
         this.nome = nome;
     }
 
-    public Semestre getSemestre() {
-        return semestre;
+    public Periodo getPeriodo() {
+        return periodo;
     }
 
-    public void setSemestre(Semestre semestre) {
-        this.semestre = semestre;
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
     }
 
 }

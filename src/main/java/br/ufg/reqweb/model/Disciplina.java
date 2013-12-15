@@ -22,8 +22,8 @@ import javax.persistence.SequenceGenerator;
 public class Disciplina {
 
     @Id
-    @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id", allocationSize = 1)
-    @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)    
+    @SequenceGenerator(name = "DISCIPLINA_ID", sequenceName = "disciplina_disciplina_id", allocationSize = 1)
+    @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)    
     private Long id;
     
     @Column

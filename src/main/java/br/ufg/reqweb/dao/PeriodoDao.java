@@ -5,7 +5,7 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.PeriodoAjuste;
+import br.ufg.reqweb.model.Periodo;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -20,31 +20,31 @@ import org.springframework.transaction.annotation.Transactional;
  * @author André
  */
 @Repository
-public class PeriodoAjusteDao {
+public class PeriodoDao {
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Transactional
-    public void adicionar(PeriodoAjuste periodoAjuste) {
-        this.sessionFactory.getCurrentSession().save(periodoAjuste);
+    public void adicionar(Periodo periodo) {
+        this.sessionFactory.getCurrentSession().save(periodo);
     }
 
     @Transactional
-    public void atualizar(PeriodoAjuste periodoAjuste) {
-        this.sessionFactory.getCurrentSession().update(periodoAjuste);
+    public void atualizar(Periodo periodo) {
+        this.sessionFactory.getCurrentSession().update(periodo);
     }
 
     @Transactional
-    public void excluir(PeriodoAjuste periodoAjuste) {
-        this.sessionFactory.getCurrentSession().delete(periodoAjuste);
+    public void excluir(Periodo periodo) {
+        this.sessionFactory.getCurrentSession().delete(periodo);
     }
 
     @Transactional(readOnly = true)
     public List listar() {
         try {
-            List ajusteList = this.sessionFactory.getCurrentSession().createQuery("FROM PeriodoAjuste p ORDER BY p.ano DESC").list();
-            return ajusteList;
+            List periodoList = this.sessionFactory.getCurrentSession().createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
+            return periodoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
@@ -52,23 +52,23 @@ public class PeriodoAjusteDao {
     }
     
     @Transactional(readOnly = true)    
-    public PeriodoAjuste buscar(Long id) {
-        PeriodoAjuste periodoAjuste;
+    public Periodo buscar(Long id) {
+        Periodo periodo;
         try {
-            periodoAjuste = (PeriodoAjuste) this.sessionFactory.getCurrentSession().get(PeriodoAjuste.class, id);
+            periodo = (Periodo) this.sessionFactory.getCurrentSession().get(Periodo.class, id);
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
-            periodoAjuste = null;
+            periodo = null;
         }
-        return periodoAjuste;
+        return periodo;
     }
 
     @Transactional(readOnly = true)
     public List procurar(String termo) {
         try {
             Query query = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM PeriodoAjuste p WHERE p.ano = :termo")
-                    .addEntity(PeriodoAjuste.class);
+                    createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo")
+                    .addEntity(Periodo.class);
             query.setParameter("termo", Integer.parseInt(termo));
             return query.list();
         } catch (HibernateException | NumberFormatException e) {

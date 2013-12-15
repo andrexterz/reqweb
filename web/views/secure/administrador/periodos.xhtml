@@ -1,0 +1,77 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.periodos}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                jQuery("#periodosLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
+        <ui:include src="salvaPeriodoForm.xhtml" />
+        <ui:include src="excluiPeriodoForm.xhtml" />
+
+        <h:form class="contentTables" id="periodoForm">
+            <h:panelGroup layout="block" id="periodoToolbar"
+                          styleClass="periodoToolbar">
+
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 update=":dlgPeriodoForm"
+                                 oncomplete="PF('dlgNovoPeriodo').show()"
+                                 actionListener="#{periodoBean.novoPeriodo}" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 process="@this"
+                                 update=":dlgPeriodoForm"
+                                 oncomplete="PF('dlgNovoPeriodo').show()"
+                                 disabled="#{periodoBean.selecionado == false}"
+                                 actionListener="#{periodoBean.editaPeriodo}" />
+
+                <p:commandButton value="#{msg.excluir}" disabled="#{periodoBean.selecionado== false}" onclick="excluirPeriodoDialog.show()" />
+                <p:inputMask id="periodoBusca" mask="9999" styleClass="searchBox" value="#{periodoBean.termoBusca}" />
+                <p:watermark for="periodoBusca" value="#{msg.ano}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=periodoBuscaCommand] -->
+                <p:commandButton style="visibility: hidden;" id="periodoBuscaCommand"  styleClass="searchCommand alignRight" update="tablePeriodos" actionListener="#{periodoBean.listaPeriodos}" />
+                <p:defaultCommand target="periodoBuscaCommand" />
+
+            </h:panelGroup>
+
+            <p:dataTable id="tablePeriodos"
+                         value="#{periodoBean.filtroPeriodos}"
+                         var="periodoItem"
+                         emptyMessage="#{msg.emptyMessage}"
+                         rowKey="#{periodoItem.id}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{periodoBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect"
+                        update=":dlgExcluiPeriodoForm:exclPeriodoDialog :periodoForm:periodoToolbar"
+                        listener="#{periodoBean.selecionaItem}" />
+                <p:column headerText="#{msg.ano}" styleClass="periodoColAno">
+                    <h:outputText value="#{periodoItem.ano}" />
+                </p:column>
+                <p:column headerText="#{msg.semestre}" styleClass="periodoColSemestre">
+                    <h:outputText value="#{msg.semestre} #{periodoItem.semestre.value}" />
+                </p:column>    
+                <p:column headerText="#{msg.dataInicio}" styleClass="periodoColPeriodo">
+                    <h:outputText value="#{periodoItem.dataInicio}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.dataTermino}" styleClass="periodoColPeriodo">
+                    <h:outputText value="#{periodoItem.dataTermino}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>                
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

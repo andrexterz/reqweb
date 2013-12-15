@@ -8,7 +8,7 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:composition template="base.xhtml">
-        <ui:define name="title">error - ReqWeb</ui:define>
+        <ui:define name="title">testes - ReqWeb</ui:define>
         <ui:define name="menuTitle"></ui:define>
         <ui:define name="componentTitle">#{msg.LoginPage}</ui:define>
         <ui:define name="menu">
@@ -22,14 +22,16 @@
                         <p:ajax update="textoA" />
                     </p:selectOneMenu>
                     <br />
-                    <p:selectOneMenu value="#{arquivoBean.periodoAjuste.id}" valueChangeListener="#{arquivoBean.selecionaPeriodoAjuste}">
-                        <f:selectItems value="#{arquivoBean.periodoAjustes}" var="p" />
+                    
+                    <p:selectOneMenu value="#{arquivoBean.periodo.id}" valueChangeListener="#{arquivoBean.selecionaPeriodo}">
+                        <f:selectItems value="#{periodoBean.periodos}" var="p" itemLabel="#{p}" itemValue="#{p.id}" />
                         <p:ajax update="textoB :formHeader:systemMessages" />
                     </p:selectOneMenu>
+                    
                     <br />
                     <h:outputText value="#{localeBean.locale}" id="textoA" />
                     <br />
-                    <h:outputText value="#{arquivoBean.periodoAjuste}" id="textoB" />
+                    <h:outputText value="#{arquivoBean.periodo.ano}" id="textoB" />
                     <br />
                     <h:commandButton value="submit" type="submit" />
                 </h:form>

@@ -25,14 +25,13 @@
           p:url="jdbc:postgresql://localhost/reqweb"
           p:username="web"
           p:password="web" />
-
-
+    
    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-       <property name="dataSource" ref="dataSource"/>
+       <property name="dataSource" ref="dataSource" />
        <property name="annotatedClasses"> 
            <list>
                <value>br.ufg.reqweb.model.Curso</value>
-               <value>br.ufg.reqweb.model.PeriodoAjuste</value>
+               <value>br.ufg.reqweb.model.Periodo</value>
            </list>
        </property>
        <property name="hibernateProperties">
@@ -45,8 +44,6 @@
        </property>
    </bean>
 
-
-    
     <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>

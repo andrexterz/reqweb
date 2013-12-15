@@ -6,8 +6,8 @@
 
 package br.ufg.reqweb.components;
 
-import br.ufg.reqweb.dao.PeriodoAjusteDao;
-import br.ufg.reqweb.model.PeriodoAjuste;
+import br.ufg.reqweb.dao.PeriodoDao;
+import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Semestre;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class PeriodoAjusteBean implements Serializable {
+public class PeriodoBean implements Serializable {
     
-    public PeriodoAjusteBean() {
-        periodoAjuste = new PeriodoAjuste();
+    public PeriodoBean() {
+        periodo = new Periodo();
         itemSelecionado = null;        
         operation = null;
         termoBusca = "";
@@ -42,51 +42,51 @@ public class PeriodoAjusteBean implements Serializable {
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
     private String operation;
-    private PeriodoAjuste periodoAjuste;
-    private PeriodoAjuste itemSelecionado;
+    private Periodo periodo;
+    private Periodo itemSelecionado;
     private String termoBusca;        
     
     @Autowired
-    private PeriodoAjusteDao periodoAjusteDao;
+    private PeriodoDao periodoDao;
 
     private final ResourceBundle messages = ResourceBundle.getBundle(
             "locale.messages",
             FacesContext.getCurrentInstance().getViewRoot().getLocale());
     
-    public void novoAjuste(ActionEvent actionEvent) {
+    public void novoPeriodo(ActionEvent actionEvent) {
         setOperation(ADICIONA);
-        periodoAjuste = new PeriodoAjuste();
+        periodo = new Periodo();
     }
     
-    public void editaAjuste(ActionEvent actionEvent) {
+    public void editaPeriodo(ActionEvent actionEvent) {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             setOperation(EDITA);
-            periodoAjuste = getItemSelecionado();
+            periodo = getItemSelecionado();
         }        
     }
     
-    public String excluiPeriodoAjuste() {
+    public String excluiPeriodo() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return null;
         } else {
-            periodoAjusteDao.excluir(itemSelecionado);
+            periodoDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaPeriodoAjustes();
+            return listaPeriodos();
         }        
     }
     
-    public String salvaPeriodoAjuste() {
+    public String salvaPeriodo() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        if (periodoAjuste.getAno() < getMinAno() || periodoAjuste.getSemestre() == null || periodoAjuste.getDataInicio() == null || periodoAjuste.getDataTermino() == null) {
+        if (periodo.getAno() < getMinAno() || periodo.getSemestre() == null || periodo.getDataInicio() == null || periodo.getDataTermino() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", messages.getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
@@ -95,14 +95,14 @@ public class PeriodoAjusteBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
-                periodoAjusteDao.adicionar(periodoAjuste);
-                itemSelecionado = periodoAjuste;
+                periodoDao.adicionar(periodo);
+                itemSelecionado = periodo;
             } else {
-                periodoAjusteDao.atualizar(periodoAjuste);
+                periodoDao.atualizar(periodo);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-        return listaPeriodoAjustes();
+        return listaPeriodos();
     }
     
     public List getSemestres() {
@@ -115,16 +115,16 @@ public class PeriodoAjusteBean implements Serializable {
         return itemSelecionado != null;
     }
 
-    public PeriodoAjuste getItemSelecionado() {
+    public Periodo getItemSelecionado() {
         return itemSelecionado;
     }
     
-    public void setItemSelecionado(PeriodoAjuste itemSelecionado) {
+    public void setItemSelecionado(Periodo itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
     }
 
     public void selecionaItem(SelectEvent event) {
-        itemSelecionado = (PeriodoAjuste) event.getObject();
+        itemSelecionado = (Periodo) event.getObject();
     }
         
     
@@ -143,31 +143,31 @@ public class PeriodoAjusteBean implements Serializable {
     }
 
     /**
-     * @return the periodoAjuste
+     * @return the periodo
      */
-    public PeriodoAjuste getPeriodoAjuste() {
-        return periodoAjuste;
+    public Periodo getPeriodo() {
+        return periodo;
     }
 
     /**
-     * @param periodoAjuste the periodoAjuste to set
+     * @param periodo the periodo to set
      */
-    public void setPeriodoAjuste(PeriodoAjuste periodoAjuste) {
-        this.periodoAjuste = periodoAjuste;
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
     }
     
-    public List getFiltroPeriodoAjustes() {
+    public List getFiltroPeriodos() {
         boolean found = termoBusca.matches("\\d{4}");
         if (!found) {
-            return periodoAjusteDao.listar();
+            return periodoDao.listar();
         }
         else {
-            return periodoAjusteDao.procurar(termoBusca);
+            return periodoDao.procurar(termoBusca);
         }        
     }
     
-    public List getPeriodoAjustes() {
-        return periodoAjusteDao.listar();
+    public List getPeriodos() {
+        return periodoDao.listar();
     }
 
     /**
@@ -184,8 +184,8 @@ public class PeriodoAjusteBean implements Serializable {
         this.termoBusca = termoBusca;
     }
 
-    public String listaPeriodoAjustes() {
-        return "periodoAjustes";
+    public String listaPeriodos() {
+        return "periodos";
     }
     
     public int getMinAno() {

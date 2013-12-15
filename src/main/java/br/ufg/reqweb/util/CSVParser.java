@@ -6,6 +6,10 @@
 package br.ufg.reqweb.util;
 
 import br.ufg.reqweb.components.ArquivoBean;
+import br.ufg.reqweb.dao.PeriodoDao;
+import br.ufg.reqweb.model.Periodo;
+import br.ufg.reqweb.model.Semestre;
+import br.ufg.reqweb.model.Turma;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -23,39 +28,24 @@ import org.apache.log4j.Logger;
 public class CSVParser {
 
     /**
-     * 
-     *teste de manipulação de strings
-     * depois construir um método para cada tipo de arquivo:
-     * parseTurma, parseDisciplina, parseIndicePrioridade
-     * 
      * @param inputData
-     * @param hasHeader
      * @return
      */
-    public static List parse(InputStream inputData, boolean hasHeader) {
+    public static List parse(InputStream inputData) {
         List header;
         List data = new ArrayList<>();
         BufferedReader bReader = null;
         try {
             String line;
             bReader = new BufferedReader(new InputStreamReader(inputData));
-            
-            if (hasHeader == true) {
-                bReader.readLine();
-            }
             while ((line = bReader.readLine()) != null) {
                 Pattern patt = Pattern.compile(",|;|\t");
                 String[] row;
                 row = patt.split(line);
-                data.add(row);
-                for (int i = 0; i < row.length;i++) {
-                    if (i != row.length-1) {
-                        System.out.print(row[i] + ", ");
-                    } else {
-                        System.out.print(row[i] + "\n");
-                    }
-                    
+                for (int i = 0; i < row.length; i++) {
+                    row[i] = row[i].trim();
                 }
+                data.add(row);
             }
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
@@ -70,46 +60,4 @@ public class CSVParser {
         }
         return data;
     }
-    
-    public static List parseTurma(InputStream inputData) {
-        List header = new ArrayList<>();
-        Pattern patt = Pattern.compile(",|;|\t");        
-        List data = new ArrayList<>();
-        BufferedReader bReader = null;
-        try {
-            String line;
-            bReader = new BufferedReader(new InputStreamReader(inputData));
-            header.addAll(Arrays.asList(patt.split(bReader.readLine())));
-            
-            for (Object c: header) {
-                System.out.println("column: " + c);
-                
-            }
-            while ((line = bReader.readLine()) != null) {
-                String[] row;
-                row = patt.split(line);
-                data.add(row);
-                for (int i = 0; i < row.length;i++) {
-                    if (i != row.length-1) {
-                        System.out.print(row[i] + ", ");
-                    } else {
-                        System.out.print(row[i] + "\n");
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
-        } finally {
-            try {
-                if (bReader != null) {
-                    bReader.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
-            }
-        }
-        return data;
-
-    }
-
 }

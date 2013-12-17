@@ -3,9 +3,11 @@
  * and open the template in the editor.
  */
 package br.ufg.reqweb.model;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,22 +22,22 @@ import javax.persistence.SequenceGenerator;
  */
 @Entity
 public class Usuario implements Serializable {
-    
 
     @Id
     @SequenceGenerator(name = "USUARIO_ID", sequenceName = "usuario_usuario_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "USUARIO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    
+
     @Column
     private String nome;
-    
+
     @Column
     private String login;
-    
+
     @Column
     private String email;
-    
+
+    @ElementCollection(targetClass = Perfil.class)
     @Enumerated(EnumType.STRING)
     private List<Perfil> perfil;
 
@@ -99,7 +101,6 @@ public class Usuario implements Serializable {
     /**
      * @return the perfil
      */
-
     public List<Perfil> getPerfil() {
         return perfil;
     }
@@ -110,12 +111,12 @@ public class Usuario implements Serializable {
     public void setPerfil(List<Perfil> perfil) {
         this.perfil = perfil;
     }
-    
+
     public void adicionaPerfil(Perfil perfil) {
         this.perfil.add(perfil);
     }
-    
+
     public void removePerfil(Perfil perfil) {
-                this.perfil.remove(perfil);
+        this.perfil.remove(perfil);
     }
 }

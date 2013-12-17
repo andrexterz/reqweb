@@ -47,7 +47,7 @@ public class CursoDao {
     }
 
     @Transactional(readOnly = true)
-    public List listar() {
+    public List<Curso> listar() {
         try {
             List cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
             return cursoList;
@@ -71,7 +71,7 @@ public class CursoDao {
     }
 
     @Transactional(readOnly = true)
-    public List procurar(String termo) {
+    public List<Curso> procurar(String termo) {
         try {
             Query query = this.sessionFactory.getCurrentSession().
                     createSQLQuery("SELECT * FROM Curso c WHERE c.nome ~* :termo")

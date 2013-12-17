@@ -46,13 +46,14 @@
             <h:form id="arquivosPeriodoForm" enctype="multipart/form-data">
                 <h:panelGroup id="indicePrioridade" layout="block">
                     <h:panelGrid columns="1" styleClass="formGrid">
+                        <!--
                         <h:outputLabel for="inputPeriodo" value="#{msg.periodoAjuste}" />
                         <p:selectOneMenu id="inputPeriodo" value="#{arquivoBean.periodo.id}" valueChangeListener="#{arquivoBean.selecionaPeriodo}">
                             <f:selectItems value="#{periodoBean.periodos}" var="p"
                                            itemLabel="#{p}" itemValue="#{p.id}"  />
                             <p:ajax process="@this" update=":formHeader:systemMessages" />
                         </p:selectOneMenu>
-
+                        -->
                         <h:outputLabel for="inputIndicePrioridade" value="#{msg.indicePrioridade}" />
                         <p:fileUpload id="inputIndicePrioridade"
                                       label="#{msg.selecionar}"

@@ -6,20 +6,14 @@
 package br.ufg.reqweb.util;
 
 import br.ufg.reqweb.components.ArquivoBean;
-import br.ufg.reqweb.dao.PeriodoDao;
-import br.ufg.reqweb.model.Periodo;
-import br.ufg.reqweb.model.Semestre;
-import br.ufg.reqweb.model.Turma;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *

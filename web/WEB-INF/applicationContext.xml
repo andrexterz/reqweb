@@ -31,7 +31,10 @@
        <property name="annotatedClasses"> 
            <list>
                <value>br.ufg.reqweb.model.Curso</value>
+               <value>br.ufg.reqweb.model.Disciplina</value>               
                <value>br.ufg.reqweb.model.Periodo</value>
+               <value>br.ufg.reqweb.model.Turma</value>
+               <value>br.ufg.reqweb.model.Usuario</value>               
            </list>
        </property>
        <property name="hibernateProperties">

@@ -70,7 +70,7 @@ public class Login implements Serializable {
     }
 
     public List<Login> scanLdap() {
-        List usuarios = new ArrayList<Login>();
+        List<Login> usuarios = new ArrayList<>();
         Attributes matchAttrs = new BasicAttributes(false);
         String[] atributosRetorno = new String[]{"mail", "cn", "uid", "uidNumber", "gidNumber"};
 

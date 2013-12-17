@@ -41,7 +41,7 @@ public class PeriodoDao {
     }
 
     @Transactional(readOnly = true)
-    public List listar() {
+    public List<Periodo> listar() {
         try {
             List periodoList = this.sessionFactory.getCurrentSession().createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
             return periodoList;
@@ -64,7 +64,7 @@ public class PeriodoDao {
     }
 
     @Transactional(readOnly = true)
-    public List procurar(String termo) {
+    public List<Periodo> procurar(String termo) {
         try {
             Query query = this.sessionFactory.getCurrentSession().
                     createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo")

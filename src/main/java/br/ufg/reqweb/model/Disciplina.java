@@ -6,12 +6,11 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,13 +21,14 @@ import javax.persistence.SequenceGenerator;
 public class Disciplina {
 
     @Id
-    @SequenceGenerator(name = "DISCIPLINA_ID", sequenceName = "disciplina_disciplina_id", allocationSize = 1)
-    @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)    
     private Long id;
     
     @Column
     private String nome;
 
+    @OneToMany(mappedBy = "disciplina")
+    private List<Turma> turmas;
+    
     /**
      * @return the id
      */

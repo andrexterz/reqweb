@@ -9,11 +9,8 @@ package br.ufg.reqweb.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -24,8 +21,6 @@ import javax.persistence.SequenceGenerator;
 public class Turma implements Serializable {
     
     @Id
-    @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id", allocationSize = 1)
-    @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)    
     private Long id;
     
     @Column
@@ -34,8 +29,11 @@ public class Turma implements Serializable {
     @ManyToOne
     private Periodo periodo;
     
-    //disciplina (falta criar entity)
-    //docente (falta entity)
+    @ManyToOne
+    private Disciplina disciplina;
+    
+    @ManyToOne
+    private Usuario usuario;
 
     public Long getId() {
         return id;
@@ -45,7 +43,6 @@ public class Turma implements Serializable {
         this.id = id;
     }
     
-
     public String getNome() {
         return nome;
     }
@@ -62,4 +59,32 @@ public class Turma implements Serializable {
         this.periodo = periodo;
     }
 
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(Disciplina disciplina) throws NullPointerException {
+        this.disciplina = disciplina;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        Perfil perfilValido = Perfil.DOCENTE;
+        boolean valido = false;
+        for (Perfil p: usuario.getPerfil()) {
+            if (p.getPapel().equals(perfilValido.getPapel())) {
+                valido = true;
+                perfilValido = p;
+                break;
+            }
+        }
+        if (valido) {
+            this.usuario = usuario;
+        } else {
+            throw new NullPointerException(String.format("Invalid User Group:%s ", perfilValido.getGrupo()));
+        }
+    }
 }

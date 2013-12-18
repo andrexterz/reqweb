@@ -1,0 +1,65 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.usuarios}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                jQuery("#usuariosLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
+        <ui:include src="salvaUsuarioForm.xhtml"  />
+        <ui:include src="excluiUsuarioForm.xhtml" />
+        <h:form class="contentTables" id="usuarioForm">
+            <h:panelGroup layout="block" id="usuarioToolbar">
+                
+                <p:commandButton value="#{msg.usuarioLDAP}"
+                                 process="@this" />
+                
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 update=":dlgUsuarioForm"
+                                 oncomplete="PF('dlgNovoUsuario').show()"
+                                 actionListener="#{usuarioBean.novoUsuario}" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 process="@this"
+                                 update=":dlgUsuarioForm"
+                                 oncomplete="PF('dlgNovoUsuario').show()"
+                                 disabled="#{usuarioBean.selecionado == false}"
+                                 actionListener="#{usuarioBean.editaUsuario}" />
+
+                <p:commandButton value="#{msg.excluir}" disabled="#{usuarioBean.selecionado== false}" onclick="excluirUsuarioDialog.show()" />
+
+                <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
+                <p:watermark for="usuarioBusca" value="#{msg.usuario}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=usuarioBuscaCommand] -->
+                <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" actionListener="#{usuarioBean.listaUsuarios}" />                
+                <p:defaultCommand target="usuarioBuscaCommand" />
+
+            </h:panelGroup>
+
+            <p:dataTable id="tableUsuarios" var="usuarioItem"
+                         value="#{usuarioBean.filtroUsuarios}"
+                         emptyMessage="#{msg.emptyMessage}"
+                         rowKey="#{usuarioItem.id}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{usuarioBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":dlgExcluiUsuarioForm:exclUsuarioDialog :usuarioForm:usuarioToolbar" listener="#{usuarioBean.selecionaItem}" />
+                <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
+                    <h:outputText value="#{usuarioItem.login}" />
+                </p:column>
+                <p:column headerText="#{msg.usuarioNome}" styleClass="usuarioColNome">
+                    <h:outputText value="#{usuarioItem.nome}" />
+                </p:column>    
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

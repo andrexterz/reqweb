@@ -49,7 +49,7 @@ public class CursoDao {
     @Transactional(readOnly = true)
     public List<Curso> listar() {
         try {
-            List cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
+            List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
             return cursoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());

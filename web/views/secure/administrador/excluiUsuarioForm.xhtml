@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="dlgExcluiUsuarioForm">
+        <p:confirmDialog id="exclUsuarioDialog" widgetVar="excluirUsuarioDialog"
+                         appendTo="@(body)" width="360" 
+                         header="#{msg.usuarioExcluir}"
+                         message="#{msg.usuarioExcluir} #{usuarioBean.itemSelecionado.nome}?" severity="alert">
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton id="confirmaExclUsuario" value="#{msg.sim}"
+                                 oncomplete="excluirUsuarioDialog.hide()"
+                                 action="#{usuarioBean.excluiUsuario}"
+                                 process="@this"
+                                 update=":usuarioForm:usuarioToolbar :usuarioForm:tableUsuarios :formHeader:systemMessages" />
+                <p:commandButton id="cancelaExclUsuario"
+                                 value="#{msg.nao}"
+                                 onclick="excluirUsuarioDialog.hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>
+

@@ -1,0 +1,18 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgUsuarioForm" modal="true"
+              widgetVar="dlgNovoUsuario" width="360" height="220"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+                <h:outputText value="#{msg.usuarioNovo}" rendered="#{usuarioBean.operation == 'a'}" />
+                <h:outputText value="#{msg.usuarioEditar}" rendered="#{usuarioBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="dlgNovoUsuarioForm">
+            <h:outputText value="Implementar formulário" />
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

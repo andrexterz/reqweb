@@ -478,7 +478,16 @@ input[type=text], input[type=password], select {
     width: 100%!important;
 }
 
+/************************ usuarios*********************************************/
+.usuarioColLogin {
+    width: 20%;
+    text-align: center;
+}
 
+.usuarioColNome {
+    width: 80%;
+    text-align: center;
+}
 /************************ forms ***********************************************/
 .formBody {
     height: auto;

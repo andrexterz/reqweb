@@ -113,7 +113,7 @@ public class CursoBean implements Serializable {
         return listaCursos();
     }
     
-    public List getFiltroCursos() {
+    public List<Curso> getFiltroCursos() {
         System.out.println("termo da busca: " + termoBusca);
         if (termoBusca.equals("")) {
             return cursoDao.listar();
@@ -124,7 +124,7 @@ public class CursoBean implements Serializable {
         }
     }
     
-    public List getCursos() {
+    public List<Curso> getCursos() {
         return cursoDao.listar();
     }
 
@@ -150,7 +150,10 @@ public class CursoBean implements Serializable {
         this.operation = operation;
     }
     
-    
+    /**
+     * tests if itemSelecionado
+     * @return 
+     */
     public boolean isSelecionado(){
         return itemSelecionado != null;
     }

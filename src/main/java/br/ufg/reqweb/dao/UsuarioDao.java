@@ -6,6 +6,8 @@ package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,17 @@ public class UsuarioDao {
     }
     
     @Transactional(readOnly = true)
+    public List<Usuario> listar() {
+        try {
+            List<Usuario> usuarioList = this.sessionFactory.getCurrentSession().createQuery("FROM Usuario u ORDER BY u.nome ASC").list();
+            return usuarioList;
+        } catch(HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();            
+        }
+    }    
+    
+    @Transactional(readOnly = true)
     public Usuario buscar(Long id) {
         Usuario usuario;
         try {
@@ -46,6 +59,11 @@ public class UsuarioDao {
             usuario = null;
         }
         return usuario;
+    }
+    
+    @Transactional(readOnly = true)    
+    public List<Usuario> procurar(String termo) {
+        return null;
     }
     
 }

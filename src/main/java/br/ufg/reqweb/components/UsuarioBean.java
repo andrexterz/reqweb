@@ -1,12 +1,19 @@
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.auth.Login;
+import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
+import java.util.List;
+import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
+import org.primefaces.event.SelectEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +26,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Component(value = "usuarioBean")
 @Scope(value = "session")
 public class UsuarioBean implements Serializable {
+    
+    @Autowired
+    UsuarioDao usuarioDao;
+    public static final String ADICIONA = "a";
+    public static final String EDITA = "e";
 
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
-    private String usuario;
+    private String login;
     private String senha;
     private String grupo;
     private String matricula;
@@ -30,9 +42,20 @@ public class UsuarioBean implements Serializable {
     private String email;
     private Perfil perfil;
     private Login objLogin;
+    private String operation;
+    private Usuario usuario;
+    private Usuario itemSelecionado;
+    private String termoBusca;
+
+    private final ResourceBundle messages = ResourceBundle.getBundle(
+            "locale.messages",
+            FacesContext.getCurrentInstance().getViewRoot().getLocale());    
 
     public UsuarioBean() {
+        usuario = new Usuario();        
         objLogin = null;
+        operation = null;
+        termoBusca = "";
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
@@ -41,11 +64,11 @@ public class UsuarioBean implements Serializable {
 
         setGrupo(perfil.getGrupo());
 
-        objLogin = Login.autenticar(usuario, senha, grupo);
+        objLogin = Login.autenticar(login, senha, grupo);
 
         
         if (objLogin != null) {
-            log.info(String.format("usuario %s efetuou login", usuario));
+            log.info(String.format("usuario %s efetuou login", login));
             return home();
         } else {
             log.error("erro de autenticação");
@@ -54,7 +77,12 @@ public class UsuarioBean implements Serializable {
             return null;
         }
     }
-
+    
+    public String homeDir() {
+        String homeDir = String.format("/views/secure/%s", perfil.toString()).toLowerCase();
+        return homeDir;        
+    }
+    
     public String home() {
         String home = String.format("/views/secure/%s/%s?faces-redirect=true", perfil.toString(), perfil.toString()).toLowerCase();
         return home;
@@ -67,17 +95,60 @@ public class UsuarioBean implements Serializable {
         session.invalidate();
         return "/views/login?faces-redirect=true";
     }
+    
+    public void novoUsuario(ActionEvent event) {
+        setOperation(ADICIONA);
+        usuario = new Usuario();
+    }
+    
+    public void editaUsuario(ActionEvent event) {
+        if (getItemSelecionado() == null) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            setOperation(EDITA);
+            usuario = getItemSelecionado();
+        }        
+    }
+    
+    public String excluiUsuario() {
+        FacesMessage msg;
+        if (getItemSelecionado() == null) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        } else {
+            usuarioDao.excluir(itemSelecionado);
+            itemSelecionado = null;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return listaUsuarios();
+        }        
+    }
+    
+    public String salvaUsuario() {
+        //implementar
+        return listaUsuarios();
+    }
+    
+    public String listaUsuarios() {
+        return "usuarios";
+    }
+    
+    public void selecionaItem(SelectEvent event) {
+        itemSelecionado = (Usuario) event.getObject();
+    }
 
     public boolean isAutenticado() {
         return objLogin != null;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getSenha() {
@@ -126,5 +197,78 @@ public class UsuarioBean implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * @return the operation
+     */
+    public String getOperation() {
+        return operation;
+    }
+
+    /**
+     * @param operation the operation to set
+     */
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    /**
+     * @return the usuario
+     */
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    /**
+     * @param usuario the usuario to set
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+    
+    public List<Usuario> getFiltroUsuarios() {
+        if (termoBusca.equals("")) {
+            return usuarioDao.listar();
+        }
+        else {
+            return usuarioDao.procurar(termoBusca);
+        }
+    }
+    
+    /**
+     * tests if itemSelecionado
+     * @return 
+     */
+    public boolean isSelecionado() {
+        return itemSelecionado != null;
+    }
+
+    /**
+     * @return the itemSelecionado
+     */
+    public Usuario getItemSelecionado() {
+        return itemSelecionado;
+    }
+
+    /**
+     * @param itemSelecionado the itemSelecionado to set
+     */
+    public void setItemSelecionado(Usuario itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
+    }
+
+    /**
+     * @return the termoBusca
+     */
+    public String getTermoBusca() {
+        return termoBusca;
+    }
+
+    /**
+     * @param termoBusca the termoBusca to set
+     */
+    public void setTermoBusca(String termoBusca) {
+        this.termoBusca = termoBusca;
     }
 }

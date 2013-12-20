@@ -3,9 +3,11 @@ package br.ufg.reqweb.components;
 import br.ufg.reqweb.auth.Login;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -23,12 +25,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author andre
  */
-@Component(value = "usuarioBean")
+@Component
 @Scope(value = "session")
 public class UsuarioBean implements Serializable {
     
     @Autowired
     UsuarioDao usuarioDao;
+    
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
 
@@ -40,7 +43,7 @@ public class UsuarioBean implements Serializable {
     private String matricula;
     private String nome;
     private String email;
-    private Perfil perfil;
+    private PerfilEnum perfil;
     private Login objLogin;
     private String operation;
     private Usuario usuario;
@@ -94,6 +97,29 @@ public class UsuarioBean implements Serializable {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
         return "/views/login?faces-redirect=true";
+    }
+    
+    public String importaUsuarios() {
+        List<Login> infoUsuarios = objLogin.scanLdap();
+        for (Login infoUsuario:infoUsuarios) {
+            Usuario usr = new Usuario();
+            usr.setLogin(infoUsuario.getUsuario());
+            usr.setNome(infoUsuario.getNome());
+            usr.setEmail(infoUsuario.getEmail());
+            for (PerfilEnum pEnum:PerfilEnum.values()) {
+                if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
+                    System.out.println("Perfil: " + pEnum.toString());
+                    System.out.println("Grupo.: " + infoUsuario.getGrupo());
+                    Perfil p = new Perfil();
+                    p.setCurso(Integer.toString(new Random().nextInt()));
+                    p.setPerfil(pEnum);
+                    usr.adicionaPerfil(p);
+                    break;
+                }
+            }
+            usuarioDao.adicionar(usr);
+        }
+        return listaUsuarios();
     }
     
     public void novoUsuario(ActionEvent event) {
@@ -159,11 +185,11 @@ public class UsuarioBean implements Serializable {
         this.senha = senha;
     }
 
-    public Perfil getPerfil() {
+    public PerfilEnum getPerfil() {
         return perfil;
     }
 
-    public void setPerfil(Perfil perfil) {
+    public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
 

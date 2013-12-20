@@ -402,6 +402,22 @@ input[type=text], input[type=password], select {
     margin-right: 0.4em;
 }
 
+
+.loginMessage {
+    list-style: none;
+    color: #ff0000;
+    font-weight: bold;
+    text-align: center;
+    padding-left: 8px;
+    background: bisque;
+    height: 3em;
+    width: 20em;
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    top: 40px;
+}
+
 /************** home *************************/
 .homePageText {
     width: 100%;
@@ -481,12 +497,12 @@ input[type=text], input[type=password], select {
 /************************ usuarios*********************************************/
 .usuarioColLogin {
     width: 20%;
-    text-align: center;
+    text-align: left;
 }
 
 .usuarioColNome {
     width: 80%;
-    text-align: center;
+    text-align: left;
 }
 /************************ forms ***********************************************/
 .formBody {

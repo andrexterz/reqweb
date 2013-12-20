@@ -23,19 +23,6 @@ import javax.persistence.TemporalType;
 @Entity
 public class Curso implements Serializable {
     
-
-	public Curso() {
-        
-    }
-    
-    public Curso (long id, String matriz, String nome, String sigla, Date dataModificacao) {
-        this.id = id;
-        this.matriz = matriz;
-        this.nome = nome;
-        this.sigla = sigla;
-        this.dataModificacao = dataModificacao;
-    }
-
     @Id
     @SequenceGenerator(name = "CURSO_ID", sequenceName = "curso_curso_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)

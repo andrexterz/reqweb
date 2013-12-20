@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author andre
  */
-public class LoginFilter implements Filter  {
+public class LoginFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -28,20 +28,20 @@ public class LoginFilter implements Filter  {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest =(HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;        
-        HttpSession session = httpRequest.getSession();
-        UsuarioBean usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
-        if (usuarioBean == null) {
-            usuarioBean = new UsuarioBean();
-        }
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession(false);
         String path = httpRequest.getContextPath();
-        String url = httpRequest.getRequestURI();
-        if (usuarioBean.isAutenticado()) {
-            System.out.println("req url.: " + url);
-            System.out.println("home dir: " + usuarioBean.homeDir());
-            chain.doFilter(request, response);
-        } else {
+        try {
+            UsuarioBean usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
+            if (usuarioBean.isAutenticado()) {
+                chain.doFilter(request, response);
+                String url = httpRequest.getRequestURI();
+                System.out.println("req url.......: " + url);                
+            } else {
+                httpResponse.sendRedirect(path + "/index.jsp");
+            }
+        } catch (NullPointerException e) {
             httpResponse.sendRedirect(path + "/index.jsp");
         }
     }
@@ -49,7 +49,5 @@ public class LoginFilter implements Filter  {
     @Override
     public void destroy() {
     }
-    
-    
 
 }

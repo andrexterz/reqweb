@@ -1,54 +1,71 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package br.ufg.reqweb.model;
 
 import java.io.Serializable;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.GenerationType;
+//import javax.persistence.Id;
+//import javax.persistence.SequenceGenerator;
+
+
 
 /**
  *
  * @author andre
  */
-public enum Perfil implements Serializable {
+@Embeddable
+public class Perfil implements Serializable {
+    
+//    @Id
+//    @SequenceGenerator(name = "PERFIL_ID", sequenceName = "perfil_perfil_id_seq", allocationSize = 1)
+//    @GeneratedValue(generator = "PERFIL_ID", strategy = GenerationType.SEQUENCE)
+//    private Long id;
+    
+    @Enumerated(EnumType.STRING)
+    private PerfilEnum perfil;
+    
+    private String curso;
 
-        ADMINISTRADOR           ("100", "Administrador"),        
-        COORDENADOR_DE_CURSO    ("101", "Coordenador de Curso"),
-        COORDENADOR_DE_ESTAGIO  ("101", "Coordenador de Estágio"),
-        DOCENTE                 ("101", "Docente"),
-        SECRETARIA              ("201", "Secretaria"),
-        DISCENTE                ("500", "Discente");
+     /**
+     * @return the perfil
+     */
+    public PerfilEnum getPerfil() {
+        return perfil;
+    }
 
-        private Perfil(String grupo, String papel) {
-            this.grupo = grupo;
-            this.papel = papel;
-        }
+    /**
+     * @param perfil the perfil to set
+     */
+    public void setPerfil(PerfilEnum perfil) {
+        this.perfil = perfil;
+    }
+    
+    /**
+     * @return the curso
+     */
+    public String getCurso() {
+        return curso;
+    }
 
-        private final String grupo;
-        private final String papel;
-        private Curso curso = null;
+    /**
+     * @param curso the curso to set
+     */
+    public void setCurso(String curso) {
+        this.curso = curso;
+    }
 
-        public int getId() {
-            return ordinal();
-        }
-
-        public String getGrupo() {
-            return grupo;
-        }
-
-        public String getPapel() {
-            return papel;
-        }
-
-        public Curso getCurso() {
-            return curso;
-        }
-
-        public void setCurso(Curso curso) {
-            this.curso = curso;
-        }
-
-      	public static Perfil getPerfil(int id) {
-            return Perfil.values()[id];
-        }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 }

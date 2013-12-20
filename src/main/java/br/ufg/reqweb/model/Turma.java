@@ -72,12 +72,12 @@ public class Turma implements Serializable {
     }
 
     public void setUsuario(Usuario usuario) {
-        Perfil perfilValido = Perfil.DOCENTE;
+        PerfilEnum perfilValido = PerfilEnum.DOCENTE;
         boolean valido = false;
-        for (Perfil p: usuario.getPerfil()) {
-            if (p.getPapel().equals(perfilValido.getPapel())) {
+        for (Perfil p: usuario.getPerfilList()) {
+            if (p.getPerfil().getPapel().equals(perfilValido.getPapel())) {
                 valido = true;
-                perfilValido = p;
+                perfilValido = p.getPerfil();
                 break;
             }
         }

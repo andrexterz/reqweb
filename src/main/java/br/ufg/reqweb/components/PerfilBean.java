@@ -4,7 +4,7 @@
  */
 package br.ufg.reqweb.components;
 
-import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,26 +16,20 @@ import org.springframework.stereotype.Component;
  * @author andre
  */
 @Component
-public class PerfilBean implements Serializable{
-    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private final List<Perfil> items;
-  
+public class PerfilBean implements Serializable {
+
     public PerfilBean() {
-        this.items = new ArrayList<Perfil>();
-        this.items.addAll(Arrays.asList(Perfil.values()));
+        this.items = new ArrayList<>();
+        this.items.addAll(Arrays.asList(PerfilEnum.values()));
     }
+
+    private static final long serialVersionUID = 1L;
+    private final List<PerfilEnum> items;
 
     /**
      * @return the perfis
      */
-    public List<Perfil> getItems() {
+    public List<PerfilEnum> getItems() {
         return items;
     }
-    
-      
-     
 }

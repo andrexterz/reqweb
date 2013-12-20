@@ -12,12 +12,14 @@
                 console.log("marcando menuItemSelected como selecionado");
             });
         </script>
+        <ui:include src="importaUsuarioForm.xhtml"  />
         <ui:include src="salvaUsuarioForm.xhtml"  />
         <ui:include src="excluiUsuarioForm.xhtml" />
         <h:form class="contentTables" id="usuarioForm">
             <h:panelGroup layout="block" id="usuarioToolbar">
                 
                 <p:commandButton value="#{msg.usuarioLDAP}"
+                                 onclick="importaUsuarioLDAPDialog.show()"
                                  process="@this" />
                 
                 <p:commandButton value="#{msg.novo}"
@@ -33,10 +35,12 @@
                                  disabled="#{usuarioBean.selecionado == false}"
                                  actionListener="#{usuarioBean.editaUsuario}" />
 
-                <p:commandButton value="#{msg.excluir}" disabled="#{usuarioBean.selecionado== false}" onclick="excluirUsuarioDialog.show()" />
+                <p:commandButton value="#{msg.excluir}"
+                                 disabled="#{usuarioBean.selecionado== false}"
+                                 onclick="excluirUsuarioDialog.show()" />
 
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
-                <p:watermark for="usuarioBusca" value="#{msg.usuario}" />
+                <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=usuarioBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" actionListener="#{usuarioBean.listaUsuarios}" />                
                 <p:defaultCommand target="usuarioBuscaCommand" />
@@ -58,7 +62,7 @@
                 </p:column>
                 <p:column headerText="#{msg.usuarioNome}" styleClass="usuarioColNome">
                     <h:outputText value="#{usuarioItem.nome}" />
-                </p:column>    
+                </p:column>
             </p:dataTable>
         </h:form>
     </ui:define>

@@ -5,12 +5,11 @@
 package br.ufg.reqweb.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +22,11 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class Usuario implements Serializable {
 
+    public Usuario() {
+        //inicializar lista por causa do method adicionaPerfil
+        this.perfilList = new ArrayList<>();
+    }
+    
     @Id
     @SequenceGenerator(name = "USUARIO_ID", sequenceName = "usuario_usuario_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "USUARIO_ID", strategy = GenerationType.SEQUENCE)
@@ -37,9 +41,8 @@ public class Usuario implements Serializable {
     @Column
     private String email;
 
-    @ElementCollection(targetClass = Perfil.class)
-    @Enumerated(EnumType.STRING)
-    private List<Perfil> perfil;
+    @ElementCollection
+    private List<Perfil> perfilList;
 
     /**
      * @return the id
@@ -99,24 +102,24 @@ public class Usuario implements Serializable {
     }
 
     /**
-     * @return the perfil
+     * @return the perfilList
      */
-    public List<Perfil> getPerfil() {
-        return perfil;
+    public List<Perfil> getPerfilList() {
+        return perfilList;
     }
 
     /**
-     * @param perfil the perfil to set
+     * @param perfilList the perfilList to set
      */
-    public void setPerfil(List<Perfil> perfil) {
-        this.perfil = perfil;
+    public void setPerfil(List<Perfil> perfilList) {
+        this.perfilList = perfilList;
     }
 
     public void adicionaPerfil(Perfil perfil) {
-        this.perfil.add(perfil);
+        this.perfilList.add(perfil);
     }
 
     public void removePerfil(Perfil perfil) {
-        this.perfil.remove(perfil);
+        this.perfilList.remove(perfil);
     }
 }

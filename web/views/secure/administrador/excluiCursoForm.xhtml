@@ -2,8 +2,8 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:form id="dlgExcluiCursoForm">
-        <p:confirmDialog id="exclCursoDialog" widgetVar="excluirCursoDialog"
+    <h:form id="excluiCursoForm">
+        <p:confirmDialog id="dlgExclCursoDialog" widgetVar="excluirCursoDialog"
                          appendTo="@(body)" width="360" 
                          header="#{msg.cursoExcluir}"
                          message="#{msg.cursoExcluir} #{cursoBean.itemSelecionado.nome}?" severity="alert">

@@ -4,13 +4,13 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgPeriodoForm" modal="true"
-              widgetVar="dlgNovoPeriodo" width="380" height="240"
+              widgetVar="dlgPeriodoVar" width="380" height="240"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
                 <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
                 <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
         </f:facet>
-        <h:form id="dlgNovoPeriodoForm">
+        <h:form id="salvaPeriodoForm">
             <p:panelGrid id="periodoDlgPanel" styleClass="formGrid" columnClasses="formGridColA, formGridColB">
                 <p:row>
                     <p:column>
@@ -53,11 +53,11 @@
                 <p:commandButton value="#{msg.salvar}"
                                  process="@form"
                                  actionListener="#{periodoBean.salvaPeriodo}"
-                                 oncomplete="dialogHandler('dlgNovoPeriodo', xhr, status, args)"
+                                 oncomplete="dialogHandler('dlgPeriodoVar', xhr, status, args)"
                                  update=":formHeader:systemMessages :periodoForm:tablePeriodos :periodoForm:periodoToolbar" />
                 <p:commandButton value="#{msg.cancelar}"
                                  process="@none"
-                                 onclick="PF('dlgNovoPeriodo').hide()"/>
+                                 onclick="PF('dlgPeriodoVar').hide()"/>
             </h:panelGroup>
         </h:form>            
     </p:dialog>

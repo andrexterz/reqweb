@@ -1,13 +1,14 @@
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.auth.Login;
+import br.ufg.reqweb.dao.CursoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -31,6 +32,9 @@ public class UsuarioBean implements Serializable {
     
     @Autowired
     UsuarioDao usuarioDao;
+    
+    @Autowired
+    CursoDao cursoDao;
     
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
@@ -111,7 +115,9 @@ public class UsuarioBean implements Serializable {
                     System.out.println("Perfil: " + pEnum.toString());
                     System.out.println("Grupo.: " + infoUsuario.getGrupo());
                     Perfil p = new Perfil();
-                    p.setCurso(Integer.toString(new Random().nextInt()));
+                    //falta implementar metodologia para atribuir curso correto aos perfis do tipo "discente"
+                    Curso curso = cursoDao.buscar(11L);
+                    p.setCurso(curso);
                     p.setPerfil(pEnum);
                     usr.adicionaPerfil(p);
                     break;

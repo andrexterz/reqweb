@@ -21,14 +21,14 @@
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 update=":dlgPeriodoForm"
-                                 oncomplete="PF('dlgNovoPeriodo').show()"
+                                 update=":salvaPeriodoForm"
+                                 oncomplete="PF('dlgPeriodoVar').show()"
                                  actionListener="#{periodoBean.novoPeriodo}" />
 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":dlgPeriodoForm"
-                                 oncomplete="PF('dlgNovoPeriodo').show()"
+                                 update=":salvaPeriodoForm"
+                                 oncomplete="PF('dlgPeriodoVar').show()"
                                  disabled="#{periodoBean.selecionado == false}"
                                  actionListener="#{periodoBean.editaPeriodo}" />
 
@@ -52,7 +52,7 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect"
-                        update=":dlgExcluiPeriodoForm:exclPeriodoDialog :periodoForm:periodoToolbar"
+                        update=":excluiPeriodoForm:dlgExclPeriodoDialog :periodoForm:periodoToolbar"
                         listener="#{periodoBean.selecionaItem}" />
                 <p:column headerText="#{msg.ano}" styleClass="periodoColAno">
                     <h:outputText value="#{periodoItem.ano}" />

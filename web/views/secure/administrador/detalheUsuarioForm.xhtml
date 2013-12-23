@@ -3,14 +3,13 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgUsuarioForm" modal="true"
-              widgetVar="dlgUsuarioVar" width="360" height="220"
+    <p:dialog id="dlgDetalheUsuarioForm" modal="true"
+              widgetVar="dlgDetalheUsuario" width="360" height="220"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
-                <h:outputText value="#{msg.usuarioNovo}" rendered="#{usuarioBean.operation == 'a'}" />
-                <h:outputText value="#{msg.usuarioEditar}" rendered="#{usuarioBean.operation == 'e'}" />
+            <h:outputText value="#{msg.usuarioDetalhe}" />
         </f:facet>
-        <h:form id="salvaUsuarioForm">
+        <h:form id="detalheUsuarioForm">
             <h:outputText value="Implementar formulário" />
         </h:form>            
     </p:dialog>

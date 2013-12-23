@@ -31,7 +31,7 @@ public class Perfil implements Serializable {
     @Enumerated(EnumType.STRING)
     private PerfilEnum perfil;
     
-    private String curso;
+    private Curso curso;
 
      /**
      * @return the perfil
@@ -50,14 +50,14 @@ public class Perfil implements Serializable {
     /**
      * @return the curso
      */
-    public String getCurso() {
+    public Curso getCurso() {
         return curso;
     }
 
     /**
      * @param curso the curso to set
      */
-    public void setCurso(String curso) {
+    public void setCurso(Curso curso) {
         this.curso = curso;
     }
 

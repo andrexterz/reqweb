@@ -19,14 +19,14 @@
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 update=":dlgCursoForm"
-                                 oncomplete="PF('dlgNovoCurso').show()"
+                                 update=":salvaCursoForm"
+                                 oncomplete="PF('dlgCursoVar').show()"
                                  actionListener="#{cursoBean.novoCurso}" />
 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":dlgCursoForm"
-                                 oncomplete="PF('dlgNovoCurso').show()"
+                                 update=":salvaCursoForm"
+                                 oncomplete="PF('dlgCursoVar').show()"
                                  disabled="#{cursoBean.selecionado == false}"
                                  actionListener="#{cursoBean.editaCurso}" />
 
@@ -49,7 +49,7 @@
                          selection="#{cursoBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":dlgExcluiCursoForm:exclCursoDialog :cursoForm:cursoToolbar" listener="#{cursoBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":excluiCursoForm:dlgExclCursoDialog :cursoForm:cursoToolbar" listener="#{cursoBean.selecionaItem}" />
                 <p:column headerText="#{msg.curso}" styleClass="cursoColNome">
                     <h:outputText value="#{cursoItem.nome}" />
                 </p:column>

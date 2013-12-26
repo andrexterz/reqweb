@@ -19,13 +19,13 @@
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 update=":salvaCursoForm"
+                                 update=":dlgCursoForm"
                                  oncomplete="PF('dlgCursoVar').show()"
                                  actionListener="#{cursoBean.novoCurso}" />
 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":salvaCursoForm"
+                                 update=":dlgCursoForm"
                                  oncomplete="PF('dlgCursoVar').show()"
                                  disabled="#{cursoBean.selecionado == false}"
                                  actionListener="#{cursoBean.editaCurso}" />

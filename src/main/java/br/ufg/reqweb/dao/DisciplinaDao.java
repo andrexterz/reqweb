@@ -62,8 +62,8 @@ public class DisciplinaDao {
     @Transactional(readOnly = true)
     public List<Disciplina> procurar(String termo) {
         try {
-            Query query = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM Disciplina d WHERE d.nome = :termo")
+            Query query = this.sessionFactory.getCurrentSession()
+                    .createSQLQuery("SELECT * FROM Disciplina d WHERE d.nome = :termo")
                     .addEntity(Disciplina.class);
             query.setParameter("termo", termo);
             return query.list();

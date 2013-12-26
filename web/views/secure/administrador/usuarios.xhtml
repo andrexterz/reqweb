@@ -23,25 +23,21 @@
                                  onclick="importaUsuarioLDAPDialog.show()"
                                  process="@this" />
                 
-                <p:commandButton value="#{msg.novo}"
-                                 process="@this"
-                                 update=":salvaUsuarioForm"
-                                 oncomplete="PF('dlgUsuarioVar').show()"
-                                 actionListener="#{usuarioBean.novoUsuario}" />
-
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":salvaUsuarioForm"
+                                 update=":dlgUsuarioForm"
                                  oncomplete="PF('dlgUsuarioVar').show()"
                                  disabled="#{usuarioBean.selecionado == false}"
                                  actionListener="#{usuarioBean.editaUsuario}" />
 
                 <p:commandButton value="#{msg.excluir}"
                                  disabled="#{usuarioBean.selecionado== false}"
-                                 onclick="excluirUsuarioDialog.show()" />
+                                 onclick="PF('excluirUsuarioDialog').show()" />
 
                 <p:commandButton value="#{msg.usuarioDetalheValue}" icon="ui-icon-search"
                                  disabled="#{usuarioBean.selecionado == false}"
+                                 update=":dlgDetalheUsuarioForm"
+                                 oncomplete="PF('dlgDetalheUsuarioVar').show()"
                                  />
 
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
@@ -53,7 +49,8 @@
             </h:panelGroup>
 
             <p:dataTable id="tableUsuarios" var="usuarioItem"
-                         value="#{usuarioBean.filtroUsuarios}"
+                         value="#{usuarioBean.usuarios}"
+                         lazy="true"
                          emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{usuarioItem.id}"
                          paginator="true"
@@ -61,7 +58,7 @@
                          selection="#{usuarioBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar" listener="#{usuarioBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm" listener="#{usuarioBean.selecionaItem}" />
                 <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
                     <h:outputText value="#{usuarioItem.login}" />
                 </p:column>

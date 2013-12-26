@@ -21,13 +21,13 @@
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 update=":salvaPeriodoForm"
+                                 update=":dlgPeriodoForm"
                                  oncomplete="PF('dlgPeriodoVar').show()"
                                  actionListener="#{periodoBean.novoPeriodo}" />
 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":salvaPeriodoForm"
+                                 update=":dlgPeriodoForm"
                                  oncomplete="PF('dlgPeriodoVar').show()"
                                  disabled="#{periodoBean.selecionado == false}"
                                  actionListener="#{periodoBean.editaPeriodo}" />

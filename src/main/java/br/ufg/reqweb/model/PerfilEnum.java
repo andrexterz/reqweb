@@ -12,10 +12,10 @@ import java.io.Serializable;
  */
 public enum PerfilEnum implements Serializable {
 
-        ADMINISTRADOR           ("100", "Administrador"),        
+        ADMINISTRADOR           ("100", "Administrador"),
+        DOCENTE                 ("101", "Docente"),
         COORDENADOR_DE_CURSO    ("101", "Coordenador de Curso"),
         COORDENADOR_DE_ESTAGIO  ("101", "Coordenador de Estágio"),
-        DOCENTE                 ("101", "Docente"),
         SECRETARIA              ("201", "Secretaria"),
         DISCENTE                ("500", "Discente");
 

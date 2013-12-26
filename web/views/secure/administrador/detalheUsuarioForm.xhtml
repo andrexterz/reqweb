@@ -2,15 +2,39 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDetalheUsuarioForm" modal="true"
-              widgetVar="dlgDetalheUsuario" width="360" height="220"
+              widgetVar="dlgDetalheUsuarioVar" width="360" height="200"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}" />
         </f:facet>
         <h:form id="detalheUsuarioForm">
-            <h:outputText value="Implementar formulário" />
+            <p:panelGrid columns="2" styleClass="formGrid">
+                <h:outputText value="#{msg.usuario}" />
+                <h:outputText value="#{usuarioBean.itemSelecionado.login}" />
+
+                <h:outputText value="#{msg.usuarioNome}" />
+                <h:outputText value="#{usuarioBean.itemSelecionado.nome}" />
+
+                <h:outputText value="#{msg.usuarioEmail}" />
+                <h:outputText value="#{usuarioBean.itemSelecionado.email}" />                
+
+                <h:outputText value="#{msg.perfil}" />
+                <p:column>
+                    <c:if test="#{usuarioBean.selecionado}">
+                        <ui:repeat value="#{usuarioBean.perfis}" var="p">
+                            <h:outputText value="#{p.perfil.papel}" />
+                        </ui:repeat>
+                    </c:if>
+                </p:column>
+            </p:panelGrid>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton value="#{msg.fechar}"
+                                 process="@none"
+                                 onclick="PF('dlgDetalheUsuarioVar').hide()"/>
+            </h:panelGroup>            
         </h:form>            
     </p:dialog>
 </ui:composition>

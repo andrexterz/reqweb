@@ -9,13 +9,13 @@
                          message="#{msg.cursoExcluir} #{cursoBean.itemSelecionado.nome}?" severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaExclCurso" value="#{msg.sim}"
-                                 oncomplete="excluirCursoDialog.hide()"
+                                 oncomplete="PF('excluirCursoDialog').hide()"
                                  action="#{cursoBean.excluiCurso}"
                                  process="@this"
                                  update=":cursoForm:cursoToolbar :cursoForm:tableCursos :formHeader:systemMessages" />
                 <p:commandButton id="cancelaExclCurso"
                                  value="#{msg.nao}"
-                                 onclick="excluirCursoDialog.hide()" 
+                                 onclick="PF('excluirCursoDialog').hide()" 
                                  type="button" /> 
             </h:panelGroup>
         </p:confirmDialog>

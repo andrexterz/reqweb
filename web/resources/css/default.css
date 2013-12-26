@@ -521,6 +521,10 @@ input[type=text], input[type=password], select {
     width: 100%;
 }
 
+.formGrid tr {
+    border: none!important;
+}
+
 .formGrid td {
     border: none!important;
     background: none!important;
@@ -547,16 +551,16 @@ input[type=text], input[type=password], select {
 }
 
 .formFooterButtons {
-    margin: 10% 0 10% 0;
+    margin: 15% 0 0 0;
 }
 
 .formFooterButtons button:first-child {
-    color: blue;
+    color: #2e3192!important;
     margin-right: 8px;
 }
 
 .formFooterButtons button:last-child {
-    color: red;
+    color: #ff0000!important;
     margin-left: 8px;
 }
 

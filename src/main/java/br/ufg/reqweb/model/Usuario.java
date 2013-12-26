@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class Usuario implements Serializable {
     @Column
     private String email;
 
-    @ElementCollection
+    @ElementCollection(targetClass = Perfil.class, fetch = FetchType.LAZY)
     private List<Perfil> perfilList;
 
     /**

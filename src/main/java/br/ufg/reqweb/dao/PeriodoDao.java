@@ -43,7 +43,8 @@ public class PeriodoDao {
     @Transactional(readOnly = true)
     public List<Periodo> listar() {
         try {
-            List periodoList = this.sessionFactory.getCurrentSession().createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
+            List<Periodo> periodoList = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
             return periodoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -66,8 +67,8 @@ public class PeriodoDao {
     @Transactional(readOnly = true)
     public List<Periodo> procurar(String termo) {
         try {
-            Query query = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo")
+            Query query = this.sessionFactory.getCurrentSession()
+                    .createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo")
                     .addEntity(Periodo.class);
             query.setParameter("termo", Integer.parseInt(termo));
             return query.list();

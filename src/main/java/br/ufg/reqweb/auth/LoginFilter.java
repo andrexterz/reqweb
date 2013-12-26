@@ -6,6 +6,7 @@ package br.ufg.reqweb.auth;
 
 import br.ufg.reqweb.components.UsuarioBean;
 import java.io.IOException;
+import javax.faces.application.ViewExpiredException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -41,7 +42,7 @@ public class LoginFilter implements Filter {
             } else {
                 httpResponse.sendRedirect(path + "/index.jsp");
             }
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | ViewExpiredException e) {
             httpResponse.sendRedirect(path + "/index.jsp");
         }
     }

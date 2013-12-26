@@ -9,6 +9,7 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -16,6 +17,8 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,43 +39,50 @@ public class UsuarioBean implements Serializable {
     @Autowired
     CursoDao cursoDao;
     
-    public static final String ADICIONA = "a";
-    public static final String EDITA = "e";
-
+    private LazyDataModel<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
     private String login;
     private String senha;
     private String grupo;
-    private String matricula;
-    private String nome;
-    private String email;
     private PerfilEnum perfil;
     private Login objLogin;
-    private String operation;
     private Usuario usuario;
     private Usuario itemSelecionado;
     private String termoBusca;
-
+    
     private final ResourceBundle messages = ResourceBundle.getBundle(
             "locale.messages",
             FacesContext.getCurrentInstance().getViewRoot().getLocale());    
-
+    
     public UsuarioBean() {
         usuario = new Usuario();        
         objLogin = null;
-        operation = null;
         termoBusca = "";
+        usuarios = new LazyDataModel<Usuario>() {
+            @Override
+            public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+                setPageSize(pageSize);
+                List<Usuario> usuarioList;
+                if (termoBusca.equals("")) {
+                    usuarioList = usuarioDao.listar(first, pageSize);
+                    setRowCount(usuarioDao.count());
+                } else {
+                    usuarioList = usuarioDao.procurar(termoBusca);
+                    setRowCount(usuarioList.size());
+                }
+                return usuarioList;
+            }
+        };
     }
-
+    
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
-
+        
         setGrupo(perfil.getGrupo());
-
+        
         objLogin = Login.autenticar(login, senha, grupo);
-
         
         if (objLogin != null) {
             log.info(String.format("usuario %s efetuou login", login));
@@ -94,7 +104,7 @@ public class UsuarioBean implements Serializable {
         String home = String.format("/views/secure/%s/%s?faces-redirect=true", perfil.toString(), perfil.toString()).toLowerCase();
         return home;
     }
-
+    
     public String authLogout() {
         objLogin = null;
         System.out.println("usuario efetuou logout");
@@ -105,12 +115,12 @@ public class UsuarioBean implements Serializable {
     
     public String importaUsuarios() {
         List<Login> infoUsuarios = objLogin.scanLdap();
-        for (Login infoUsuario:infoUsuarios) {
+        for (Login infoUsuario : infoUsuarios) {
             Usuario usr = new Usuario();
             usr.setLogin(infoUsuario.getUsuario());
             usr.setNome(infoUsuario.getNome());
             usr.setEmail(infoUsuario.getEmail());
-            for (PerfilEnum pEnum:PerfilEnum.values()) {
+            for (PerfilEnum pEnum : PerfilEnum.values()) {
                 if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                     System.out.println("Perfil: " + pEnum.toString());
                     System.out.println("Grupo.: " + infoUsuario.getGrupo());
@@ -128,17 +138,11 @@ public class UsuarioBean implements Serializable {
         return listaUsuarios();
     }
     
-    public void novoUsuario(ActionEvent event) {
-        setOperation(ADICIONA);
-        usuario = new Usuario();
-    }
-    
     public void editaUsuario(ActionEvent event) {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
-            setOperation(EDITA);
             usuario = getItemSelecionado();
         }        
     }
@@ -170,79 +174,57 @@ public class UsuarioBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Usuario) event.getObject();
     }
-
+    
     public boolean isAutenticado() {
         return objLogin != null;
     }
-
+    
     public String getLogin() {
         return login;
     }
-
+    
     public void setLogin(String login) {
         this.login = login;
     }
-
+    
     public String getSenha() {
         return senha;
     }
-
+    
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
+    
+    public List<Perfil> getPerfis() {
+        return usuarioDao.buscar(itemSelecionado.getId()).getPerfilList();
+    }
+    
     public PerfilEnum getPerfil() {
         return perfil;
     }
-
+    
     public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
-
+    
     public String getGrupo() {
-        return grupo;
+        return objLogin.getGrupo();
     }
-
+    
     public void setGrupo(String grupo) {
         this.grupo = grupo;
     }
-
+    
     public String getMatricula() {
-        return matricula;
+        return objLogin.getMatricula();
     }
-
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
-
+    
     public String getNome() {
-        return nome;
+        return objLogin.getNome();
     }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
+    
     public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
-     * @return the operation
-     */
-    public String getOperation() {
-        return operation;
-    }
-
-    /**
-     * @param operation the operation to set
-     */
-    public void setOperation(String operation) {
-        this.operation = operation;
+        return objLogin.getEmail();
     }
 
     /**
@@ -262,15 +244,19 @@ public class UsuarioBean implements Serializable {
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
             return usuarioDao.listar();
-        }
-        else {
+        } else {
             return usuarioDao.procurar(termoBusca);
         }
     }
     
+    public LazyDataModel<Usuario> getUsuarios() {
+        return usuarios;
+    }    
+
     /**
      * tests if itemSelecionado
-     * @return 
+     *
+     * @return
      */
     public boolean isSelecionado() {
         return itemSelecionado != null;

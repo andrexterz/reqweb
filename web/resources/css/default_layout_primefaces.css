@@ -1,11 +1,7 @@
-/* 
-    Created on : 06/01/2014, 15:21:49
-    Author     : André
-*/
-
-/*************************** primefaces theme *********************************/
+/* primefaces theme */
 .ui-widget {
     font-size: 90%!important;
+    font-family: "Lucida Grande", lucida, "Helvetica CE", sans-serif;    
 }
 
 .ui-layout-unit-content{
@@ -13,16 +9,26 @@
     padding:0!important;
 }
 
-/*************************** reqweb generic ***********************************/
-
+/*-------- reqweb styles -------------*/
 html {
-    background: #dfdfdf;
+    background: #d4eef9;
 }
 
 body {
-    font-size: 90%!important;
-    font-family: "Lucida Grande", lucida, "Helvetica CE", sans-serif;    
-    color: #000000;
+    background-color: #fff;
+    font-size: 12pt;
+    color: #000;
+    border: 1px solid #aaa;
+    -webkit-box-shadow: 2px 2px 8px #444;
+    -moz-box-shadow: 2px 2px 8px #444;
+    box-shadow: 2px 2px 8px #444;
+}
+
+#content {
+    margin: 0;
+    width: auto;
+    height: auto;
+    padding: 0;
 }
 
 .squareBorders {
@@ -70,31 +76,40 @@ input[type=text], input[type=password], select {
     width: 100%;
 }
 
-/*********************************** header ***********************************/
-#header {
-    position: absolute;
-    width: auto;
-    height: 70px;
-    top: 0;
-    right: 0;
-    bottom: auto;
-    left: 0;
-    background: #ccc;
+.separator {
+    border-width: thin;
+    border-style: solid;
+    border-color: #999;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
-#header table {
+
+/*---------- header ------------------*/
+.headerContainer {
+    padding:0!important;
+    border:none;
+}
+
+.header {
     width: 100%;
+    margin: 0;
+    border:none;
+    border-collapse: collapse;
+    padding: 0!important;
+    height: 100%;
 }
-#header tr {
+
+.header tr {
     border: none;
 }
 
 
-#header form {
+.header form {
     height: 100%;
     background: none;
 }
 
-#header div {
+.header div {
     float: left;
     display: inline;
 }
@@ -121,8 +136,8 @@ input[type=text], input[type=password], select {
     width: auto!important;
     font-size: 80%;
     color: #eee;
-    background: #555;
-    border: 1px solid #555;
+    background: #777;
+    border: 1px solid #777;
 }
 
 
@@ -130,7 +145,7 @@ input[type=text], input[type=password], select {
     color: white;
     font-size: 14pt;
     width: 60%;
-    background-color: #555;
+    background-color: #666;
     border: none;
     border-width: 0!important;
     border-style: none;
@@ -199,15 +214,28 @@ input[type=text], input[type=password], select {
 .headerIcon:hover {
     background-position: 0 -48px;
 }
-/*********************************** menu *************************************/
-#menu {
-    position: absolute;
-    top: 72px;
-    right: auto;
-    bottom: 34px;
-    left: 0;
-    width: 224px;
-    background: #555;
+/*---------- content ------------------*/
+.container {
+    padding:0!important;
+    border:none;
+}
+
+.menuContainer {
+    border: none;
+    padding: 0;
+}
+
+.menuContainer > div:first-child{
+    border: none;
+    border-radius: 0 0 16px 0;
+    background: #666;
+}
+
+.menuContainerLogo{
+    display: block;
+    margin-top: 3em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .menuTop {
@@ -224,13 +252,7 @@ input[type=text], input[type=password], select {
     text-align: center;
 }
 
-.menuContainerLogo{
-    display: block;
-    margin-top: 3em;
-    margin-left: auto;
-    margin-right: auto;
-}
-
+/*********** menu itens **************************/
 .menuItens {
     margin-top: 8px;
     margin-left: 8px;
@@ -262,19 +284,51 @@ input[type=text], input[type=password], select {
     background-position: 0 -32px!important;
 }
 
-/*********************************** content **********************************/
-#content {
-    position: absolute;
-    width: auto;
-    height: auto;
-    top: 72px;
-    right: 0;
-    bottom: 34px;    
-    left: 226px;
+/*---------- contentContainer ------------------*/
+.contentContainer {
+    padding: 0;
+}
+
+.contentContainer > div:first-child {
+    background: #bdccd4;
+    padding: 0;
+}
+
+/*---------- footer ------------------*/
+.footer {
+    display: block;
+    width: 100%;
     background: #bdccd4;
 }
 
-/****************************** content elements ******************************/
+.footer div {
+    position: relative;
+    background: #bdccd4;
+
+}
+
+.footerColA {
+    color: #333;
+    float: left;
+    width: 80%;
+    padding-left: 10%;
+    text-align: center;
+}
+
+.footerColB {
+    color: #ff0000;
+    font-weight: bold;
+    float: right;
+    width: 10%;
+    text-align: right;
+}
+
+.footerColB img {
+    margin-right: 16px;
+}
+
+
+/*---------- login ------------------*/
 .loginLayout {
     width: 100%;
     border: none;
@@ -518,38 +572,3 @@ input[type=text], input[type=password], select {
     background-position: 99% 50%!important;
 }
 
-
-/*********************************** footer ***********************************/
-#footer {
-    position: absolute;
-    width: auto;
-    height: 16px;
-    top: auto;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    display: table-cell;
-    background: #bdccd4;
-}
-
-.footerColA {
-    color: #333;
-    float: left;
-    width: 80%;
-    padding-left: 10%;
-    text-align: center;
-}
-
-.footerColB {
-    color: #ff0000;
-    font-weight: bold;
-    float: right;
-    width: 10%;
-    text-align: right;
-}
-
-.footerColB img {
-    margin-right: 16px;
-}

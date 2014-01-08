@@ -1,0 +1,20 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="componentTitle">#{msg.usuarios}</ui:define>
+    <ui:define name="content">
+        <h:form class="formBody contentTables" id="importaUsuariosForm">
+
+            <h:outputText value="#{usuarioBean.length} #{msg.usuarios}. #{msg.processando}" styleClass="genericLabel" />
+            <h:panelGrid columns="2" styleClass="usuarioImp" columnClasses="usuarioImpColA, usuarioImpColB">            
+                <p:progressBar id="progressBarUsuario"
+                               widgetVar="pbUsuario"
+                               value="#{usuarioBean.progress}"
+                               labelTemplate="{value}%" />
+                <p:commandButton value="#{msg.cancelar}" action="#{usuarioBean.cancelImpUsuarios()}" styleClass="alignRight cancel"  />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -45,6 +45,9 @@ public class UsuarioBean implements Serializable {
     private String login;
     private String senha;
     private String grupo;
+    private int progress;
+    private int length;
+    private boolean cancelImportaUsuarios;
     private PerfilEnum perfil;
     private Login objLogin;
     private Usuario usuario;
@@ -58,6 +61,9 @@ public class UsuarioBean implements Serializable {
     public UsuarioBean() {
         usuario = new Usuario();        
         objLogin = null;
+        length = 0;
+        progress = 0;
+        cancelImportaUsuarios = false;
         termoBusca = "";
         usuarios = new LazyDataModel<Usuario>() {
             @Override
@@ -115,15 +121,23 @@ public class UsuarioBean implements Serializable {
     
     public String importaUsuarios() {
         List<Login> infoUsuarios = objLogin.scanLdap();
+        //informacao para progressbar
+        length = infoUsuarios.size();
+        progress = 0;
+        int counter = 0;
         for (Login infoUsuario : infoUsuarios) {
+            if (cancelImportaUsuarios == true) {
+                cancelImportaUsuarios = false;
+                break;
+            }
+            counter ++;
+            progress = counter/length; 
             Usuario usr = new Usuario();
             usr.setLogin(infoUsuario.getUsuario());
             usr.setNome(infoUsuario.getNome());
             usr.setEmail(infoUsuario.getEmail());
             for (PerfilEnum pEnum : PerfilEnum.values()) {
                 if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
-                    System.out.println("Perfil: " + pEnum.toString());
-                    System.out.println("Grupo.: " + infoUsuario.getGrupo());
                     Perfil p = new Perfil();
                     //falta implementar metodologia para atribuir curso correto aos perfis do tipo "discente"
                     Curso curso = cursoDao.buscar(11L);
@@ -137,7 +151,19 @@ public class UsuarioBean implements Serializable {
         }
         return listaUsuarios();
     }
+
+    public int getLength() {
+        return length;
+    }
     
+    public int getProgress() {
+        return progress;
+    }
+    
+    public void cancelImpUsuarios() {
+        cancelImportaUsuarios = true;
+    }
+
     public void editaUsuario(ActionEvent event) {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));

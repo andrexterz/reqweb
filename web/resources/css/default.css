@@ -21,7 +21,7 @@ html {
 
 body {
     font-size: 90%!important;
-    font-family: "Lucida Grande", lucida, "Helvetica CE", sans-serif;    
+    font-family: "Lucida Grande", lucida, "Helvetica CE", sans-serif!important;    
     color: #000000;
 }
 
@@ -363,7 +363,7 @@ input[type=text], input[type=password], select {
     top: 40px;
 }
 
-/************** home *************************/
+/********************************** home **************************************/
 .homePageText {
     width: 100%;
     margin-top: 15%;
@@ -396,7 +396,7 @@ input[type=text], input[type=password], select {
 }
 
 
-/********************** cursos *********************/
+/********************************** cursos ************************************/
 .cursoColNome {
     width: 70%;
 }
@@ -419,7 +419,7 @@ input[type=text], input[type=password], select {
     margin-left: 4px;
     margin-right: 4px;
 } 
-/************************ periodo **********************************************/
+/************************************* periodo ********************************/
 .periodoColAno {
     width: 10%;
     text-align: center;
@@ -439,7 +439,7 @@ input[type=text], input[type=password], select {
     width: 100%!important;
 }
 
-/************************ usuarios*********************************************/
+/********************************* usuarios************************************/
 .usuarioColLogin {
     width: 20%;
     text-align: left;
@@ -449,12 +449,28 @@ input[type=text], input[type=password], select {
     width: 80%;
     text-align: left;
 }
-/************************ forms ***********************************************/
+
+.usuarioImp {
+    width: 100%;
+}
+
+.usuarioImpColA {
+    width: 90%;
+}
+
+.usuarioImpColB {
+    width: 10%;
+}
+/************************************ forms ***********************************/
 .formBody {
+    position: absolute;
+    top: 32px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    width: auto;
     height: auto;
     background: #eee;
-    margin-left: 1%;
-    margin-right: 1%;
     padding: 2%;
     border: #aaa 1px solid;
     -webkit-border-radius: 2px;
@@ -518,6 +534,23 @@ input[type=text], input[type=password], select {
     background-position: 99% 50%!important;
 }
 
+.genericLabel {
+    color: #2e3192;
+    font-size: 12pt;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 8pt;
+}
+
+.confirm {
+    color: #2e3192!important;
+    margin-right: 8px;    
+}
+
+.cancel {
+    color: #ff0000!important;
+    margin-left: 8px;
+}
 
 /*********************************** footer ***********************************/
 #footer {

@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Component
 @Scope(value = "session")
 public class UsuarioBean implements Serializable {
-    
+
     @Autowired
     UsuarioDao usuarioDao;
-    
+
     @Autowired
     CursoDao cursoDao;
-    
+
     private LazyDataModel<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
@@ -46,22 +46,20 @@ public class UsuarioBean implements Serializable {
     private String senha;
     private String grupo;
     private int progress;
-    private int length;
     private boolean cancelImportaUsuarios;
     private PerfilEnum perfil;
     private Login objLogin;
     private Usuario usuario;
     private Usuario itemSelecionado;
     private String termoBusca;
-    
+
     private final ResourceBundle messages = ResourceBundle.getBundle(
             "locale.messages",
-            FacesContext.getCurrentInstance().getViewRoot().getLocale());    
-    
+            FacesContext.getCurrentInstance().getViewRoot().getLocale());
+
     public UsuarioBean() {
-        usuario = new Usuario();        
+        usuario = new Usuario();
         objLogin = null;
-        length = 0;
         progress = 0;
         cancelImportaUsuarios = false;
         termoBusca = "";
@@ -81,15 +79,15 @@ public class UsuarioBean implements Serializable {
             }
         };
     }
-    
+
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
-        
+
         setGrupo(perfil.getGrupo());
-        
+
         objLogin = Login.autenticar(login, senha, grupo);
-        
+
         if (objLogin != null) {
             log.info(String.format("usuario %s efetuou login", login));
             return home();
@@ -100,17 +98,17 @@ public class UsuarioBean implements Serializable {
             return null;
         }
     }
-    
+
     public String homeDir() {
         String homeDir = String.format("/views/secure/%s", perfil.toString()).toLowerCase();
-        return homeDir;        
+        return homeDir;
     }
-    
+
     public String home() {
         String home = String.format("/views/secure/%s/%s?faces-redirect=true", perfil.toString(), perfil.toString()).toLowerCase();
         return home;
     }
-    
+
     public String authLogout() {
         objLogin = null;
         System.out.println("usuario efetuou logout");
@@ -118,24 +116,25 @@ public class UsuarioBean implements Serializable {
         session.invalidate();
         return "/views/login?faces-redirect=true";
     }
-    
+
     public String importaUsuarios() {
         List<Login> infoUsuarios = objLogin.scanLdap();
         //informacao para progressbar
-        length = infoUsuarios.size();
+        int counter = 0;        
+        int length = infoUsuarios.size();
         progress = 0;
-        int counter = 0;
         for (Login infoUsuario : infoUsuarios) {
             if (cancelImportaUsuarios == true) {
                 cancelImportaUsuarios = false;
                 break;
             }
-            counter ++;
-            progress = counter/length; 
+            ++counter;
+            progress = (int) ((counter / (float) length) * 100);
             Usuario usr = new Usuario();
             usr.setLogin(infoUsuario.getUsuario());
             usr.setNome(infoUsuario.getNome());
             usr.setEmail(infoUsuario.getEmail());
+
             for (PerfilEnum pEnum : PerfilEnum.values()) {
                 if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                     Perfil p = new Perfil();
@@ -152,12 +151,12 @@ public class UsuarioBean implements Serializable {
         return listaUsuarios();
     }
 
-    public int getLength() {
-        return length;
-    }
-    
     public int getProgress() {
         return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
     
     public void cancelImpUsuarios() {
@@ -170,9 +169,9 @@ public class UsuarioBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             usuario = getItemSelecionado();
-        }        
+        }
     }
-    
+
     public String excluiUsuario() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
@@ -185,70 +184,70 @@ public class UsuarioBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return listaUsuarios();
-        }        
+        }
     }
-    
+
     public String salvaUsuario() {
         //implementar
         return listaUsuarios();
     }
-    
+
     public String listaUsuarios() {
         return "usuarios";
     }
-    
+
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Usuario) event.getObject();
     }
-    
+
     public boolean isAutenticado() {
         return objLogin != null;
     }
-    
+
     public String getLogin() {
         return login;
     }
-    
+
     public void setLogin(String login) {
         this.login = login;
     }
-    
+
     public String getSenha() {
         return senha;
     }
-    
+
     public void setSenha(String senha) {
         this.senha = senha;
     }
-    
+
     public List<Perfil> getPerfis() {
         return usuarioDao.buscar(itemSelecionado.getId()).getPerfilList();
     }
-    
+
     public PerfilEnum getPerfil() {
         return perfil;
     }
-    
+
     public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
-    
+
     public String getGrupo() {
         return objLogin.getGrupo();
     }
-    
+
     public void setGrupo(String grupo) {
         this.grupo = grupo;
     }
-    
+
     public String getMatricula() {
         return objLogin.getMatricula();
     }
-    
+
     public String getNome() {
         return objLogin.getNome();
     }
-    
+
     public String getEmail() {
         return objLogin.getEmail();
     }
@@ -266,7 +265,7 @@ public class UsuarioBean implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
+
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
             return usuarioDao.listar();
@@ -274,10 +273,10 @@ public class UsuarioBean implements Serializable {
             return usuarioDao.procurar(termoBusca);
         }
     }
-    
+
     public LazyDataModel<Usuario> getUsuarios() {
         return usuarios;
-    }    
+    }
 
     /**
      * tests if itemSelecionado

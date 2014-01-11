@@ -21,7 +21,9 @@
                 
                 <p:commandButton value="#{msg.usuarioLDAP}"
                                  onclick="importaUsuarioLDAPDialog.show()"
-                                 process="@this" />
+                                 process="@this">
+                    <f:setPropertyActionListener target="#{usuarioBean.progress}" value="0" />
+                </p:commandButton>
                 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"

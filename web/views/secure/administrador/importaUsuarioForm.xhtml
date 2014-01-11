@@ -9,12 +9,26 @@
                          header="#{msg.usuarioImportaLDAP}"
                          message="#{msg.usuarioMensagemLDAP}?"
                          appendTo="@(body)">
+
+            <h:panelGrid columns="2" styleClass="usuarioImp" columnClasses="usuarioImpColA, usuarioImpColB">
+                <p:progressBar id="progressBarUsuario"
+                               interval="1000"
+                               ajax="true"
+                               widgetVar="pbImpUsuario"
+                               value="#{usuarioBean.progress}"
+                               labelTemplate="{value}%">
+                    <!--p:ajax oncomplete="PF('importButton').enable()" /-->
+                </p:progressBar>
+                <p:commandButton value="#{msg.cancelar}" action="#{usuarioBean.cancelImpUsuarios()}" styleClass="alignRight cancel"  />
+            </h:panelGrid>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaImpUsuario" value="#{msg.sim}"
+                                 widgetVar="importButton"
+                                 onclick="progressBarHandler()"
                                  oncomplete="importaUsuarioLDAPDialog.hide()"
                                  action="#{usuarioBean.importaUsuarios}"
                                  process="@this"
-                                 update=":usuarioForm:usuarioToolbar :usuarioForm:tableUsuarios :formHeader:systemMessages" />
+                                 update=":usuarioLDAPForm:progressBarUsuario :usuarioForm:tableUsuarios :formHeader:systemMessages" />
                 <p:commandButton id="cancelaImpUsuario"
                                  value="#{msg.nao}"
                                  onclick="importaUsuarioLDAPDialog.hide()" 

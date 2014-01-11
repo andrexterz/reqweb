@@ -21,4 +21,9 @@ function dialogHandler(widgetVar, xhr, status, args) {
     }
 }
 
+function progressBarHandler(event) {
+    PF("importButton").disable();
+    PF("pbImpUsuario").start();
+}
+
 

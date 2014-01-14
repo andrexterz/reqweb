@@ -23,7 +23,12 @@ import javax.persistence.SequenceGenerator;
 @Entity
 public class Usuario implements Serializable {
 
-    public Usuario() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Usuario() {
         //inicializar lista por causa do method adicionaPerfil
         this.perfilList = new ArrayList<>();
     }

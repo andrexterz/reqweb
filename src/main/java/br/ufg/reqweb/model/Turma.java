@@ -20,7 +20,12 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Turma implements Serializable {
     
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     private Long id;
     
     @Column

@@ -4,10 +4,11 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.Usuario;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -26,6 +27,13 @@ public class UsuarioDao {
     public void adicionar(Usuario usuario) {
         this.sessionFactory.getCurrentSession().save(usuario);
     }
+    
+    @Transactional
+    public void adicionar(List<Usuario> usuarios) {
+        for (Usuario u : usuarios) {
+            this.sessionFactory.getCurrentSession().save(u);
+        }
+    }
 
     @Transactional
     public void atualizar(Usuario usuario) {
@@ -37,7 +45,8 @@ public class UsuarioDao {
     public void excluir(Usuario usuario) {
         this.sessionFactory.getCurrentSession().delete(usuario);
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Usuario> listar() {
         try {
@@ -49,6 +58,7 @@ public class UsuarioDao {
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Usuario> listar(int firstResult, int maxResult) {
         try {
@@ -80,7 +90,8 @@ public class UsuarioDao {
         }
         return usuario;
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Usuario> procurar(String termo) {
         try {

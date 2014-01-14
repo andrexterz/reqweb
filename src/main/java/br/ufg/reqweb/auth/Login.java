@@ -74,7 +74,7 @@ public class Login implements Serializable {
         Attributes matchAttrs = new BasicAttributes(false);
         String[] atributosRetorno = new String[]{"mail", "cn", "uid", "uidNumber", "gidNumber"};
 
-        NamingEnumeration resultado;
+        NamingEnumeration<?> resultado;
         try {
             resultado = ctx.search(
                     LDAPParametrosConfig.SEARCHBASE,
@@ -87,7 +87,7 @@ public class Login implements Serializable {
                 SearchResult sr = (SearchResult) resultado.next();
                 Attributes atributos = sr.getAttributes();
 
-                for (NamingEnumeration todosAtributos = atributos.getAll(); todosAtributos.hasMore();) {
+                for (NamingEnumeration<?> todosAtributos = atributos.getAll(); todosAtributos.hasMore();) {
                     Attribute attrib = (Attribute) todosAtributos.next();
                     String nomeAtributo = attrib.getID();
 
@@ -122,7 +122,7 @@ public class Login implements Serializable {
         matchAttrs.put(new BasicAttribute("uid", usuario));
         matchAttrs.put(new BasicAttribute("gidNumber", grupo));
 
-        NamingEnumeration resultado;
+        NamingEnumeration<?> resultado;
         try {
             resultado = ctx.search(
                     LDAPParametrosConfig.SEARCHBASE, matchAttrs,
@@ -132,7 +132,7 @@ public class Login implements Serializable {
                 SearchResult sr = (SearchResult) resultado.next();
                 Attributes atributos = sr.getAttributes();
 
-                for (NamingEnumeration todosAtributos = atributos.getAll(); todosAtributos.hasMore();) {
+                for (NamingEnumeration<?> todosAtributos = atributos.getAll(); todosAtributos.hasMore();) {
                     Attribute attrib = (Attribute) todosAtributos.next();
                     String nomeAtributo = attrib.getID();
 

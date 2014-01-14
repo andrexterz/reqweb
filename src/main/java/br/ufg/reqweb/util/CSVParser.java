@@ -23,11 +23,10 @@ public class CSVParser {
 
     /**
      * @param inputData
-     * @return
+     * @return List<String[]>
      */
-    public static List parse(InputStream inputData) {
-        List header;
-        List data = new ArrayList<>();
+    public static List<String[]> parse(InputStream inputData) {
+        List<String[]> data = new ArrayList<>();
         BufferedReader bReader = null;
         try {
             String line;

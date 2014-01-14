@@ -17,7 +17,12 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class Perfil implements Serializable {
     
-    @Enumerated(EnumType.STRING)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Enumerated(EnumType.STRING)
     private PerfilEnum perfil;
     
     private Curso curso;

@@ -455,11 +455,11 @@ input[type=text], input[type=password], select {
 }
 
 .usuarioImpColA {
-    width: 90%;
+    width: 92%;
 }
 
 .usuarioImpColB {
-    width: 10%;
+    width: 8%;
 }
 /************************************ forms ***********************************/
 .formBody {

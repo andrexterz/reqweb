@@ -105,8 +105,8 @@ public class PeriodoBean implements Serializable {
         return listaPeriodos();
     }
     
-    public List getSemestres() {
-        List semestres = new ArrayList<>();
+    public List<Semestre> getSemestres() {
+        List<Semestre> semestres = new ArrayList<>();
         semestres.addAll(Arrays.asList(Semestre.values()));
         return semestres;
     }
@@ -156,7 +156,7 @@ public class PeriodoBean implements Serializable {
         this.periodo = periodo;
     }
     
-    public List getFiltroPeriodos() {
+    public List<Periodo> getFiltroPeriodos() {
         boolean found = termoBusca.matches("\\d{4}");
         if (!found) {
             return periodoDao.listar();
@@ -166,7 +166,7 @@ public class PeriodoBean implements Serializable {
         }        
     }
     
-    public List getPeriodos() {
+    public List<Periodo> getPeriodos() {
         return periodoDao.listar();
     }
 

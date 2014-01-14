@@ -22,8 +22,23 @@ function dialogHandler(widgetVar, xhr, status, args) {
 }
 
 function progressBarHandler(event) {
-    PF("importButton").disable();
+    PF("confirmImpButton").disable();
+    PF("cancelImpButton").disable();
+    PF("stopImpButton").enable();
     PF("pbImpUsuario").start();
+}
+
+function progressBarComplete(event) {
+    PF("confirmImpButton").enable();
+    PF("cancelImpButton").enable();
+    PF("stopImpButton").disable();
+}
+
+function progressBarCancel(event){
+    PF("confirmImpButton").enable();
+    PF("cancelImpButton").enable();
+    PF("stopImpButton").disable();    
+    PF("pbImpUsuario").cancel();    
 }
 
 

@@ -23,7 +23,12 @@ import javax.persistence.TemporalType;
 @Entity
 public class Curso implements Serializable {
     
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @SequenceGenerator(name = "CURSO_ID", sequenceName = "curso_curso_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)
     private long id;

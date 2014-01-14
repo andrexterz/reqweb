@@ -6,8 +6,10 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Periodo;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -40,6 +42,7 @@ public class PeriodoDao {
         this.sessionFactory.getCurrentSession().delete(periodo);
     }
 
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Periodo> listar() {
         try {
@@ -63,7 +66,8 @@ public class PeriodoDao {
         }
         return periodo;
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Periodo> procurar(String termo) {
         try {

@@ -36,7 +36,7 @@ public class LDAPServiceLocator {
     public DirContext getContext(String usuario, String senha) throws NamingException {
 
 
-        Hashtable env = new Hashtable(11);
+        Hashtable<String, String> env = new Hashtable<String, String>(11);
 
         // Especifica a fabrica de INITIAL CONTEXT
         env.put(Context.INITIAL_CONTEXT_FACTORY, LDAPParametrosConfig.INITIAL_CTX);

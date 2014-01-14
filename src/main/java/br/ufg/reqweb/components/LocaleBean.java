@@ -23,7 +23,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocaleBean implements Serializable{
 
-    private static final String PT_BR = "pt_BR";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final String PT_BR = "pt_BR";
     private static final String EN_US = "en_US";
     private static final List<SelectItem> LOCALES;
     static {

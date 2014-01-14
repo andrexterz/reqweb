@@ -8,6 +8,7 @@ import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -39,14 +40,15 @@ public class UsuarioBean implements Serializable {
     @Autowired
     CursoDao cursoDao;
 
-    private LazyDataModel<Usuario> usuarios;
+    private final LazyDataModel<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
     private String login;
     private String senha;
     private String grupo;
     private int progress;
-    private boolean cancelImportaUsuarios;
+    private volatile boolean cancelImportaUsuarios;
+    private Thread tImportJob;
     private PerfilEnum perfil;
     private Login objLogin;
     private Usuario usuario;
@@ -62,9 +64,12 @@ public class UsuarioBean implements Serializable {
         objLogin = null;
         progress = 0;
         cancelImportaUsuarios = false;
+        tImportJob = null;
         termoBusca = "";
         usuarios = new LazyDataModel<Usuario>() {
-            @Override
+           private static final long serialVersionUID = 1L;
+
+			@Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 List<Usuario> usuarioList;
@@ -118,49 +123,65 @@ public class UsuarioBean implements Serializable {
     }
 
     public String importaUsuarios() {
-        List<Login> infoUsuarios = objLogin.scanLdap();
         //informacao para progressbar
-        int counter = 0;        
-        int length = infoUsuarios.size();
+        final List<Usuario> usrList = new ArrayList<>();
         progress = 0;
-        for (Login infoUsuario : infoUsuarios) {
-            if (cancelImportaUsuarios == true) {
-                cancelImportaUsuarios = false;
-                break;
-            }
-            ++counter;
-            progress = (int) ((counter / (float) length) * 100);
-            Usuario usr = new Usuario();
-            usr.setLogin(infoUsuario.getUsuario());
-            usr.setNome(infoUsuario.getNome());
-            usr.setEmail(infoUsuario.getEmail());
+        cancelImportaUsuarios = false;
+        tImportJob = new Thread() {
+            @Override
+            public void run() {
+                List<Login> infoUsuarios = objLogin.scanLdap();
+                int length = infoUsuarios.size();
+                int counter = 0;
+                for (Login infoUsuario : infoUsuarios) {
+                    if (!cancelImportaUsuarios) {
+                        System.out.println("cancelado? " + cancelImportaUsuarios);
+                        counter++;
+                        progress = (int) ((counter / (float) length) * 100);
+                        Usuario usr = new Usuario();
+                        usr.setLogin(infoUsuario.getUsuario());
+                        usr.setNome(infoUsuario.getNome());
+                        usr.setEmail(infoUsuario.getEmail());
 
-            for (PerfilEnum pEnum : PerfilEnum.values()) {
-                if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
-                    Perfil p = new Perfil();
-                    //falta implementar metodologia para atribuir curso correto aos perfis do tipo "discente"
-                    Curso curso = cursoDao.buscar(11L);
-                    p.setCurso(curso);
-                    p.setPerfil(pEnum);
-                    usr.adicionaPerfil(p);
-                    break;
+                        for (PerfilEnum pEnum : PerfilEnum.values()) {
+                            if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
+                                Perfil p = new Perfil();
+                                //falta implementar metodologia para atribuir curso correto aos perfis do tipo "discente"
+                                Curso curso = cursoDao.buscar(11L);
+                                p.setCurso(curso);
+                                p.setPerfil(pEnum);
+                                usr.adicionaPerfil(p);
+                                break;
+                            }
+                            usrList.add(usr);
+                        }
+                    } else {
+                        usrList.removeAll(usrList);
+                        break;
+                    }
                 }
+                usuarioDao.adicionar(usrList);
             }
-            usuarioDao.adicionar(usr);
-        }
+        };
+        tImportJob.start();
         return listaUsuarios();
     }
 
-    public int getProgress() {
-        return progress;
+    public void cancelImpUsuarios(ActionEvent event) {
+        System.out.println("Cancelando importação...");
+        cancelImportaUsuarios = true;
+        try {
+            tImportJob.join();
+        } catch (NullPointerException | InterruptedException e) {
+            System.out.println("thread is null");
+        }
+
     }
 
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
-    
-    public void cancelImpUsuarios() {
-        cancelImportaUsuarios = true;
+    public void handleCompletImpUsuarios() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("dadosSalvos"), "");
+        context.addMessage(null, msg);
     }
 
     public void editaUsuario(ActionEvent event) {
@@ -240,6 +261,18 @@ public class UsuarioBean implements Serializable {
         this.grupo = grupo;
     }
 
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public boolean isCancelImportaUsuarios() {
+        return cancelImportaUsuarios == true;
+    }
+    
     public String getMatricula() {
         return objLogin.getMatricula();
     }

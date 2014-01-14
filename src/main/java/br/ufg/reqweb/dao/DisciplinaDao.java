@@ -7,8 +7,10 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Disciplina;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -58,7 +60,8 @@ public class DisciplinaDao {
         }
         return disciplina;
     }
-        
+
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Disciplina> procurar(String termo) {
         try {

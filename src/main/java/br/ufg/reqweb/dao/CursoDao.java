@@ -5,10 +5,12 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Curso;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -46,10 +48,11 @@ public class CursoDao {
         this.sessionFactory.getCurrentSession().delete(curso);
     }
 
-    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
     public List<Curso> listar() {
         try {
-            List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
+        	List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
             return cursoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -69,7 +72,8 @@ public class CursoDao {
         }
         return curso;
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Curso> procurar(String termo) {
         try {

@@ -18,7 +18,7 @@
                                value="#{usuarioBean.progress}"
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{usuarioBean.handleCompletImpUsuarios}"
-                            update=":formHeader:systemMessages"
+                            update=":formHeader:systemMessages :usuarioForm:tableUsuarios"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
@@ -26,9 +26,9 @@
                                  widgetVar="stopImpButton"
                                  title="#{msg.cancelar}"
                                  icon="ui-icon-cancel"
-                                 disabled="#{!usuarioBean.cancelImportaUsuarios}"
-                                 oncomplete="progressBarCancel()"
                                  update="paraImpButton"
+                                 disabled="#{usuarioBean.stopImportaUsuarios}"
+                                 oncomplete="progressBarCancel()"
                                  actionListener="#{usuarioBean.cancelImpUsuarios}"
                                  styleClass="alignRight cancel"  />
             </h:panelGrid>

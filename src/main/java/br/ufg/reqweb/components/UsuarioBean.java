@@ -47,7 +47,7 @@ public class UsuarioBean implements Serializable {
     private String senha;
     private String grupo;
     private int progress;
-    private volatile boolean cancelImportaUsuarios;
+    private volatile boolean stopImportaUsuarios;
     private Thread tImportJob;
     private PerfilEnum perfil;
     private Login objLogin;
@@ -63,7 +63,7 @@ public class UsuarioBean implements Serializable {
         usuario = new Usuario();
         objLogin = null;
         progress = 0;
-        cancelImportaUsuarios = false;
+        stopImportaUsuarios = true;
         tImportJob = null;
         termoBusca = "";
         usuarios = new LazyDataModel<Usuario>() {
@@ -126,7 +126,7 @@ public class UsuarioBean implements Serializable {
         //informacao para progressbar
         final List<Usuario> usrList = new ArrayList<>();
         progress = 0;
-        cancelImportaUsuarios = false;
+        stopImportaUsuarios = false;
         tImportJob = new Thread() {
             @Override
             public void run() {
@@ -134,8 +134,7 @@ public class UsuarioBean implements Serializable {
                 int length = infoUsuarios.size();
                 int counter = 0;
                 for (Login infoUsuario : infoUsuarios) {
-                    if (!cancelImportaUsuarios) {
-                        System.out.println("cancelado? " + cancelImportaUsuarios);
+                    if (!stopImportaUsuarios) {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
                         Usuario usr = new Usuario();
@@ -169,8 +168,9 @@ public class UsuarioBean implements Serializable {
 
     public void cancelImpUsuarios(ActionEvent event) {
         System.out.println("Cancelando importação...");
-        cancelImportaUsuarios = true;
+        stopImportaUsuarios = true;
         try {
+            Thread.sleep(2000);
             tImportJob.join();
         } catch (NullPointerException | InterruptedException e) {
             System.out.println("thread is null");
@@ -269,8 +269,8 @@ public class UsuarioBean implements Serializable {
         this.progress = progress;
     }
 
-    public boolean isCancelImportaUsuarios() {
-        return cancelImportaUsuarios == true;
+    public boolean getStopImportaUsuarios() {
+        return stopImportaUsuarios;
     }
     
     public String getMatricula() {

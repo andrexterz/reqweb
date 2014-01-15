@@ -20,10 +20,10 @@
             <h:panelGroup layout="block" id="usuarioToolbar">
                 
                 <p:commandButton value="#{msg.usuarioLDAP}"
-                                 onclick="importaUsuarioLDAPDialog.show()"
-                                 process="@this">
-                    <f:setPropertyActionListener target="#{usuarioBean.progress}" value="0" />
-                </p:commandButton>
+                                 oncomplete="handleImportDialog()"
+                                 update=":usuarioLDAPForm:paraImpButton"
+                                 actionListener="#{usuarioBean.setupImportUsuarios}"
+                                 process="@this" />
                 
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"

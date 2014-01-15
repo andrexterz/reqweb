@@ -55,21 +55,15 @@ public class UsuarioBean implements Serializable {
     private Usuario itemSelecionado;
     private String termoBusca;
 
-    private final ResourceBundle messages = ResourceBundle.getBundle(
-            "locale.messages",
-            FacesContext.getCurrentInstance().getViewRoot().getLocale());
-
     public UsuarioBean() {
         usuario = new Usuario();
         objLogin = null;
-        progress = 0;
-        stopImportaUsuarios = true;
         tImportJob = null;
         termoBusca = "";
         usuarios = new LazyDataModel<Usuario>() {
-           private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			@Override
+            @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 List<Usuario> usuarioList;
@@ -122,10 +116,13 @@ public class UsuarioBean implements Serializable {
         return "/views/login?faces-redirect=true";
     }
 
-    public String importaUsuarios() {
-        //informacao para progressbar
-        final List<Usuario> usrList = new ArrayList<>();
+    public void setupImportUsuarios(ActionEvent event) {
         progress = 0;
+        stopImportaUsuarios = true;
+    }
+
+    public void importaUsuarios() {
+        final List<Usuario> usrList = new ArrayList<>();
         stopImportaUsuarios = false;
         tImportJob = new Thread() {
             @Override
@@ -141,7 +138,6 @@ public class UsuarioBean implements Serializable {
                         usr.setLogin(infoUsuario.getUsuario());
                         usr.setNome(infoUsuario.getNome());
                         usr.setEmail(infoUsuario.getEmail());
-
                         for (PerfilEnum pEnum : PerfilEnum.values()) {
                             if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                                 Perfil p = new Perfil();
@@ -163,30 +159,31 @@ public class UsuarioBean implements Serializable {
             }
         };
         tImportJob.start();
-        return listaUsuarios();
     }
 
     public void cancelImpUsuarios(ActionEvent event) {
-        System.out.println("Cancelando importação...");
-        stopImportaUsuarios = true;
+        setupImportUsuarios(event);
         try {
             Thread.sleep(2000);
-            tImportJob.join();
-        } catch (NullPointerException | InterruptedException e) {
-            System.out.println("thread is null");
-        }
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
+            context.addMessage(null, msg);
 
+        } catch (NullPointerException | InterruptedException e) {
+            log.error("no thread to cancel");
+        }
     }
 
     public void handleCompletImpUsuarios() {
+        stopImportaUsuarios = true;
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, messages.getString("dadosSalvos"), "");
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
         context.addMessage(null, msg);
     }
 
     public void editaUsuario(ActionEvent event) {
         if (getItemSelecionado() == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             usuario = getItemSelecionado();
@@ -196,13 +193,13 @@ public class UsuarioBean implements Serializable {
     public String excluiUsuario() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return null;
         } else {
             usuarioDao.excluir(itemSelecionado);
             itemSelecionado = null;
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return listaUsuarios();
         }
@@ -272,7 +269,7 @@ public class UsuarioBean implements Serializable {
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
     }
-    
+
     public String getMatricula() {
         return objLogin.getMatricula();
     }

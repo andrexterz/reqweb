@@ -48,11 +48,10 @@ public class CursoDao {
         this.sessionFactory.getCurrentSession().delete(curso);
     }
 
-    @SuppressWarnings("unchecked")
-	@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Curso> listar() {
         try {
-        	List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
+            List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
             return cursoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -72,8 +71,7 @@ public class CursoDao {
         }
         return curso;
     }
-    
-    @SuppressWarnings("unchecked")
+
     @Transactional(readOnly = true)
     public List<Curso> procurar(String termo) {
         try {

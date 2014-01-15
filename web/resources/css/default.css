@@ -8,11 +8,6 @@
     font-size: 90%!important;
 }
 
-.ui-layout-unit-content{
-    visibility: hidden;
-    padding:0!important;
-}
-
 /*************************** reqweb generic ***********************************/
 
 html {
@@ -39,6 +34,14 @@ body {
 
 .alignCenter {
     text-align: center;
+}
+
+.hiddenItem {
+    visibility: hidden;
+}
+
+.visibleItem {
+    visibility: visible;
 }
 
 .messages {

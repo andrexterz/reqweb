@@ -8,28 +8,27 @@ package br.ufg.reqweb.components;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import org.springframework.stereotype.Component;
 
-
 @Component
-public class LocaleBean implements Serializable{
+public class LocaleBean implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static final String PT_BR = "pt_BR";
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private static final String PT_BR = "pt_BR";
     private static final String EN_US = "en_US";
     private static final List<SelectItem> LOCALES;
+
     static {
         LOCALES = new ArrayList<SelectItem>(2);
         LOCALES.add(new SelectItem(EN_US, "English"));
@@ -64,6 +63,13 @@ public class LocaleBean implements Serializable{
         locale = event.getNewValue().toString();
         FacesContext context = FacesContext.getCurrentInstance();
         context.getViewRoot().setLocale(new Locale(locale));
+    }
+    
+    public static ResourceBundle getMessageBundle() {
+        ResourceBundle messages = ResourceBundle.getBundle(
+            "locale.messages",
+            FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        return messages;
     }
 
 }

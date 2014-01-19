@@ -14,13 +14,16 @@ import javax.faces.context.FacesContext;
 import org.springframework.stereotype.Component;
 
 import br.ufg.reqweb.model.Curso;
-import java.util.ResourceBundle;
+import java.util.Set;
 import javax.faces.event.ActionEvent;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  *
@@ -33,23 +36,21 @@ public class CursoBean implements Serializable {
     public CursoBean() {
         curso = new Curso();
         itemSelecionado = null;
-        operation = null;        
+        operation = null;
         termoBusca = "";
     }
 
     private static final long serialVersionUID = 1L;
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
-
+    @Autowired
+    Validator validator;
     @Autowired
     private CursoDao cursoDao;
     private Curso curso;
     private Curso itemSelecionado;
     private String operation;//a: adiciona | e: edita
     private String termoBusca;
-    private final ResourceBundle messages = ResourceBundle.getBundle(
-            "locale.messages",
-            FacesContext.getCurrentInstance().getViewRoot().getLocale());
 
     public void novoCurso(ActionEvent event) {
         setOperation(ADICIONA);
@@ -59,8 +60,9 @@ public class CursoBean implements Serializable {
     }
 
     public void editaCurso(ActionEvent event) {
+
         if (getItemSelecionado() == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             setOperation(EDITA);
@@ -71,13 +73,13 @@ public class CursoBean implements Serializable {
     public String excluiCurso() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return null;
         } else {
             cursoDao.excluir(itemSelecionado);
             itemSelecionado = null;
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return listaCursos();
         }
@@ -94,13 +96,10 @@ public class CursoBean implements Serializable {
     public String salvaCurso() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        if (curso.getMatriz().equals("") || curso.getNome().equals("") || curso.getSigla().equals("")) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", messages.getString("dadosInvalidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            context.addCallbackParam("resultado", false);
-            return null;
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosSalvos"));
+        Set<ConstraintViolation<Curso>> errors = validator.validate(curso);
+        System.out.println(errors.size() + " errors occurred.");
+        if (errors.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
                 cursoDao.adicionar(curso);
@@ -109,21 +108,25 @@ public class CursoBean implements Serializable {
                 cursoDao.atualizar(curso);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            return listaCursos();
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            context.addCallbackParam("resultado", false);
+            return null;
         }
-        return listaCursos();
     }
-    
+
     public List<Curso> getFiltroCursos() {
         System.out.println("termo da busca: " + termoBusca);
         if (termoBusca.equals("")) {
             return cursoDao.listar();
-        }
-        else {
-             
+        } else {
+
             return cursoDao.procurar(termoBusca);
         }
     }
-    
+
     public List<Curso> getCursos() {
         return cursoDao.listar();
     }
@@ -149,12 +152,13 @@ public class CursoBean implements Serializable {
     public void setOperation(String operation) {
         this.operation = operation;
     }
-    
+
     /**
      * tests if itemSelecionado
-     * @return 
+     *
+     * @return
      */
-    public boolean isSelecionado(){
+    public boolean isSelecionado() {
         return itemSelecionado != null;
     }
 
@@ -185,6 +189,5 @@ public class CursoBean implements Serializable {
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
     }
-    
-    
+
 }

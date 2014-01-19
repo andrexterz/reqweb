@@ -71,6 +71,21 @@ public class CursoDao {
         }
         return curso;
     }
+    
+    public Curso buscar(String sigla) {
+        Curso curso;
+        try {
+            curso = (Curso) this.sessionFactory.getCurrentSession()
+                    .createSQLQuery("SELECT * FROM Curso c WHERE c.sigla = :sigla")
+                    .addEntity(Curso.class)
+                    .setParameter("sigla", sigla)
+                    .uniqueResult();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            curso = null;
+        }
+        return curso;
+    }
 
     @Transactional(readOnly = true)
     public List<Curso> procurar(String termo) {

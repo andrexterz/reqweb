@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -22,30 +22,28 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Curso implements Serializable {
-    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	@Id
+    private static final long serialVersionUID = 1L;
+    @Id
     @SequenceGenerator(name = "CURSO_ID", sequenceName = "curso_curso_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)
     private long id;
-    
-    @Column
+
+    @Column(length = 8, unique = true, nullable = false)
+    @Size(min = 2, max = 8)
     private String matriz;
-    
-    @Column
+
+    @Column(length = 100, nullable = false)
+    @Size(min = 5, max = 100)
     private String nome;
-    
-    @Column(length = 6)
+
+    @Column(length = 6, unique = true, nullable = false)
+    @Size(min = 2, max = 6)
     private String sigla;
-    
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataModificacao;
-       
+
     public long getId() {
         return id;
     }
@@ -53,7 +51,7 @@ public class Curso implements Serializable {
     public void setId(long id) {
         this.id = id;
     }
-    
+
     /**
      *
      * @return
@@ -61,13 +59,13 @@ public class Curso implements Serializable {
     public String getMatriz() {
         return matriz;
     }
-    
+
     /**
      *
      * @param matriz
      */
     public void setMatriz(String matriz) {
-        this.matriz = matriz;
+        this.matriz = matriz.toUpperCase();
     }
 
     /**
@@ -81,7 +79,7 @@ public class Curso implements Serializable {
      * @param nome the nome to set
      */
     public void setNome(String nome) {
-        this.nome = nome;
+        this.nome = nome.toUpperCase();
     }
 
     /**
@@ -95,7 +93,7 @@ public class Curso implements Serializable {
      * @param sigla the sigla to set
      */
     public void setSigla(String sigla) {
-        this.sigla = sigla;
+        this.sigla = sigla.toUpperCase();
     }
 
     /**

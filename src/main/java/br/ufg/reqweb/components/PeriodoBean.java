@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -49,10 +48,6 @@ public class PeriodoBean implements Serializable {
     @Autowired
     private PeriodoDao periodoDao;
 
-    private final ResourceBundle messages = ResourceBundle.getBundle(
-            "locale.messages",
-            FacesContext.getCurrentInstance().getViewRoot().getLocale());
-    
     public void novoPeriodo(ActionEvent actionEvent) {
         setOperation(ADICIONA);
         periodo = new Periodo();
@@ -60,7 +55,7 @@ public class PeriodoBean implements Serializable {
     
     public void editaPeriodo(ActionEvent actionEvent) {
         if (getItemSelecionado() == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             setOperation(EDITA);
@@ -71,13 +66,13 @@ public class PeriodoBean implements Serializable {
     public String excluiPeriodo() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", messages.getString("itemSelecionar"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return null;
         } else {
             periodoDao.excluir(itemSelecionado);
             itemSelecionado = null;
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosExcluidos"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return listaPeriodos();
         }        
@@ -87,12 +82,12 @@ public class PeriodoBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         if (periodo.getAno() < getMinAno() || periodo.getSemestre() == null || periodo.getDataInicio() == null || periodo.getDataTermino() == null) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", messages.getString("dadosInvalidos"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
             return null;
         } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", messages.getString("dadosSalvos"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
                 periodoDao.adicionar(periodo);

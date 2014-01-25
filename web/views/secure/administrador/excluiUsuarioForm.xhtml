@@ -7,7 +7,7 @@
                          appendTo="@(body)" width="360" 
                          header="#{msg.usuarioExcluir}"
                          message="#{msg.usuarioExcluir} #{usuarioBean.itemSelecionado.nome}?" severity="alert">
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
                 <p:commandButton id="confirmaExclUsuario" value="#{msg.sim}"
                                  oncomplete="excluirUsuarioDialog.hide()"
                                  action="#{usuarioBean.excluiUsuario}"

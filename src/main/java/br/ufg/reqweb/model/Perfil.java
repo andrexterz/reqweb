@@ -16,18 +16,18 @@ import javax.persistence.Enumerated;
  */
 @Embeddable
 public class Perfil implements Serializable {
-    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	@Enumerated(EnumType.STRING)
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Enumerated(EnumType.STRING)
     private PerfilEnum perfil;
-    
+
     private Curso curso;
 
-     /**
+    /**
      * @return the perfil
      */
     public PerfilEnum getPerfil() {
@@ -40,7 +40,7 @@ public class Perfil implements Serializable {
     public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
-    
+
     /**
      * @return the curso
      */

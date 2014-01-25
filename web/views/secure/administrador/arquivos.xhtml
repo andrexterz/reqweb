@@ -11,10 +11,28 @@
                 jQuery("#arquivosLnk").addClass("menuItemSelected");
             });
         </script>
+        <ui:include src="disciplinasForm.xhtml" />
+        <ui:include src="excluiDisciplinaForm.xhtml" />
+        <h:form class="contentTables" id="arquivoForm">
+            <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
+                <p:commandButton title="#{msg.disciplinas}"
+                                 value="#{msg.disciplinas}"
+                                 process="@this"
+                                 update=":disciplinasForm:tableDiscplinas"
+                                 oncomplete="PF('dlgDisciplinasFormVar').show()"
+                                 icon="ui-icon-search" />
+            </h:panelGroup>
+        </h:form>
+
         <h:panelGroup layout="block" styleClass="formBody contentTables">
+
             <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
                 <h:panelGroup id="disciplinas" layout="block">
                     <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
+                    <p:commandButton title="#{msg.disciplinasPrevisualizar}"
+                                     icon="ui-icon-zoomin"
+                                     styleClass="arquivoPreviewIcon"
+                                      />
                     <p:fileUpload id="inputDisciplinas"
                                   label="#{msg.selecionar}"
                                   uploadLabel="#{msg.enviar}"
@@ -22,7 +40,7 @@
                                   fileLimit="1"
                                   multiple="false"
                                   process="@form"                              
-                                  fileUploadListener="#{arquivoBean.uploadDisciplinas}"
+                                  fileUploadListener="#{disciplinaBean.uploadDisciplinas}"
                                   update=":formHeader:systemMessages disciplinas" />
                 </h:panelGroup>
             </h:form>

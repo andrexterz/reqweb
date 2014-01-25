@@ -5,27 +5,29 @@
  */
 package br.ufg.reqweb.components;
 
+import br.ufg.reqweb.dao.CursoDao;
 import br.ufg.reqweb.dao.DisciplinaDao;
-import br.ufg.reqweb.dao.PeriodoDao;
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
-import br.ufg.reqweb.model.Periodo;
-import br.ufg.reqweb.model.Semestre;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.util.CSVParser;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.jsf.FacesContextUtils;
 
 /**
  *
@@ -35,14 +37,84 @@ import org.springframework.web.jsf.FacesContextUtils;
 public class ArquivoBean implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ArquivoBean() {
+    @Autowired
+    private CursoDao cursoDao;
+
+    @Autowired
+    private DisciplinaDao disciplinaDao;
+    private String termoBusca;
+    private List<Disciplina> disciplinaListPreview;
+    private final LazyDataModel<Disciplina> disciplinas;
+    private List<Turma> turmas;
+
+    public ArquivoBean() {
+        disciplinaListPreview = new ArrayList<>();
+        turmas = new ArrayList<>();
+        termoBusca = "";
+        disciplinas = new LazyDataModel<Disciplina>() {
+            
+            @Override
+            public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+                setPageSize(pageSize);
+                List<Disciplina> disciplinaList;
+                if (termoBusca.equals("")) {
+                    disciplinaList = disciplinaDao.find(first, pageSize);
+                    setRowCount(disciplinaDao.count());
+                } else {
+                    disciplinaList = disciplinaDao.find(termoBusca);
+                    setRowCount(disciplinaList.size());
+                }
+                return disciplinaList;
+            }
+            
+        };
     }
 
     public void uploadDisciplinas(FileUploadEvent event) {
+        UploadedFile file = event.getFile();
+        List<String[]> data;
+        disciplinaListPreview = new ArrayList<>();
+        try {
+            data = CSVParser.parse(file.getInputstream());
+            Curso c = null;
+            for (int i = 1; i < data.size(); i++) {
+                String[] row = data.get(i);
+                Long codigo = Long.parseLong(row[0].trim());
+                String nome = row[1].trim();
+                String matriz = row[2].trim();
+                Disciplina d = new Disciplina();
+                if (c != null) {
+                    if (!c.getMatriz().equals(matriz)) {
+                        c = cursoDao.findByMatriz(matriz);
+                        System.out.println("row[2]: " + matriz + "\tmatriz: " + c.getMatriz());
+                    }
+                } else {
+                    System.out.println("curso é nulo");
+                    c = cursoDao.findByMatriz(matriz);
+
+                }
+                d.setCodigo(codigo);
+                d.setNome(nome);
+                d.setCurso(c);
+                disciplinaListPreview.add(d);
+            }
+            disciplinaDao.adicionar(disciplinaListPreview);
+        } catch (IOException ex) {
+            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
+        }
+        FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void uploadTurmas(FileUploadEvent event) {
+
+    }
+
+    public void uploadIndicePrioridade(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
         try {
@@ -55,63 +127,12 @@ public class ArquivoBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void uploadTurmas(FileUploadEvent event) {
-        UploadedFile file = event.getFile();
-        List<String[]> data;
-        Turma turma;
-        ApplicationContext context = FacesContextUtils.getWebApplicationContext(FacesContext.getCurrentInstance());
-        DisciplinaDao disciplinaDao = context.getBean(DisciplinaDao.class);
-        PeriodoDao periodoDao = context.getBean(PeriodoDao.class);
-
-        try {
-            data = CSVParser.parse(file.getInputstream());
-            String[] row;
-            //primeira linha apos o cabecalho
-            row = data.get(1);
-            List<Periodo> periodos = periodoDao.procurar(row[1]);
-            Disciplina disciplina = disciplinaDao.buscar(Long.parseLong(row[4]));
-            Periodo periodo = null;
-            if (periodos.size() > 0 || disciplina == null) {
-                for (Periodo p : periodos) {
-                    if (p.getSemestre() == Semestre.getSemestre(Integer.parseInt(row[3]))) {
-                        periodo = p;
-                        break;
-                    }
-                }
-
-            } else {
-                throw new NullPointerException();
-            }
-            for (int i = 1; i < data.size(); i++) {
-                row = data.get(i);
-                turma = new Turma();
-                turma.setId(Long.parseLong(row[0]));
-                turma.setNome(row[2]);
-                turma.setPeriodo(periodo);
-            }
-            FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao ler arquivo", null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (NullPointerException ex) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Periodo ou  Disciplina não cadastrados", null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        }
-
+    public LazyDataModel<Disciplina> getDisciplinas() {
+        return disciplinas;
     }
 
-    public void uploadIndicePrioridade(FileUploadEvent event) {
-        UploadedFile file = event.getFile();
-        List<String[]> data;
-        try {
-            data = CSVParser.parse(file.getInputstream());
-            System.out.println(data);	
-        } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
-        }
-        FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+    public List<Turma> getTurmas() {
+        return turmas;
     }
+
 }

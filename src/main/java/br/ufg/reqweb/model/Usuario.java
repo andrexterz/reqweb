@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -24,27 +25,30 @@ import javax.persistence.SequenceGenerator;
 public class Usuario implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public Usuario() {
+    public Usuario() {
         //inicializar lista por causa do method adicionaPerfil
         this.perfilList = new ArrayList<>();
     }
-    
+
     @Id
     @SequenceGenerator(name = "USUARIO_ID", sequenceName = "usuario_usuario_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "USUARIO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column
+    @NotNull
     private String nome;
 
     @Column
+    @NotNull
     private String login;
 
     @Column
+    @NotNull
     private String email;
 
     @ElementCollection(targetClass = Perfil.class, fetch = FetchType.LAZY)

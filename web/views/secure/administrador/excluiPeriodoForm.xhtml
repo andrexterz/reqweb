@@ -7,7 +7,7 @@
                          appendTo="@(body)" width="420" 
                          header="#{msg.periodoExcluir}"
                          message="#{msg.periodoExcluir} #{periodoBean.itemSelecionado}?" severity="alert">
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
                 <p:commandButton id="confirmaExclPeriodo" value="#{msg.sim}"
                                  oncomplete="excluirPeriodoDialog.hide()"
                                  action="#{periodoBean.excluiPeriodo}"

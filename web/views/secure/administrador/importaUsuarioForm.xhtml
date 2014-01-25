@@ -32,8 +32,8 @@
                                  actionListener="#{usuarioBean.cancelImpUsuarios}"
                                  styleClass="alignRight cancel"  />
             </h:panelGrid>
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
-                <p:commandButton id="confirmaImpUsuario" value="#{msg.usuarioImportar}"
+            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
+                <p:commandButton id="confirmaImpUsuario" value="#{msg.importar}"
                                  widgetVar="confirmImpButton"
                                  onclick="progressBarHandler()"
                                  action="#{usuarioBean.importaUsuarios}"

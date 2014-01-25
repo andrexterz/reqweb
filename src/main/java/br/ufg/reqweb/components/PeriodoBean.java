@@ -154,15 +154,15 @@ public class PeriodoBean implements Serializable {
     public List<Periodo> getFiltroPeriodos() {
         boolean found = termoBusca.matches("\\d{4}");
         if (!found) {
-            return periodoDao.listar();
+            return periodoDao.findAll();
         }
         else {
-            return periodoDao.procurar(termoBusca);
+            return periodoDao.find(termoBusca);
         }        
     }
     
     public List<Periodo> getPeriodos() {
-        return periodoDao.listar();
+        return periodoDao.findAll();
     }
 
     /**

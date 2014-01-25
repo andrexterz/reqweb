@@ -6,11 +6,16 @@
 
 package br.ufg.reqweb.model;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -18,13 +23,21 @@ import javax.persistence.OneToMany;
  */
 
 @Entity
-public class Disciplina {
+public class Disciplina implements Serializable {
 
     @Id
+    @SequenceGenerator(name = "DISCIPLINA_ID", sequenceName = "disciplina_disciplina_id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     
-    @Column
+    @Column(unique = true, nullable = false)
+    private Long codigo;
+    
+    @Column(nullable = false)
     private String nome;
+    
+    @ManyToOne
+    private Curso curso;
 
     @OneToMany(mappedBy = "disciplina")
     private List<Turma> turmas;
@@ -42,7 +55,21 @@ public class Disciplina {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    /**
+     * @return the codigo
+     */
+    public Long getCodigo() {
+        return codigo;
+    }
 
+    /**
+     * @param codigo the codigo to set
+     */
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
+    
     /**
      * @return the nome
      */
@@ -56,5 +83,19 @@ public class Disciplina {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
+
+    /**
+     * @return the curso
+     */
+    public Curso getCurso() {
+        return curso;
+    }
+
+    /**
+     * @param curso the curso to set
+     */
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+ 
 }

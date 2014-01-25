@@ -34,10 +34,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class UsuarioBean implements Serializable {
 
     @Autowired
-    UsuarioDao usuarioDao;
+    private UsuarioDao usuarioDao;
 
     @Autowired
-    CursoDao cursoDao;
+    private CursoDao cursoDao;
 
     private final LazyDataModel<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
@@ -67,10 +67,10 @@ public class UsuarioBean implements Serializable {
                 setPageSize(pageSize);
                 List<Usuario> usuarioList;
                 if (termoBusca.equals("")) {
-                    usuarioList = usuarioDao.listar(first, pageSize);
+                    usuarioList = usuarioDao.find(first, pageSize);
                     setRowCount(usuarioDao.count());
                 } else {
-                    usuarioList = usuarioDao.procurar(termoBusca);
+                    usuarioList = usuarioDao.find(termoBusca);
                     setRowCount(usuarioList.size());
                 }
                 return usuarioList;
@@ -140,8 +140,8 @@ public class UsuarioBean implements Serializable {
                         for (PerfilEnum pEnum : PerfilEnum.values()) {
                             if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                                 Perfil p = new Perfil();
-                                //falta implementar metodologia para atribuir curso correto aos perfis do tipo "discente"
-                                Curso curso = cursoDao.buscar(11L);
+                                //corrigir: atribuir curso correto aos perfis do tipo "discente" pela sigla
+                                Curso curso = cursoDao.findById(11L);
                                 p.setCurso(curso);
                                 p.setPerfil(pEnum);
                                 usr.adicionaPerfil(p);
@@ -238,7 +238,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public List<Perfil> getPerfis() {
-        return usuarioDao.buscar(itemSelecionado.getId()).getPerfilList();
+        return usuarioDao.findById(itemSelecionado.getId()).getPerfilList();
     }
 
     public PerfilEnum getPerfil() {
@@ -297,9 +297,9 @@ public class UsuarioBean implements Serializable {
 
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
-            return usuarioDao.listar();
+            return usuarioDao.findAll();
         } else {
-            return usuarioDao.procurar(termoBusca);
+            return usuarioDao.find(termoBusca);
         }
     }
 

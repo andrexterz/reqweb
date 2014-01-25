@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,6 +34,13 @@ public class DisciplinaDao {
     }
     
     @Transactional
+    public void adicionar(List<Disciplina> disciplinas) {
+        for (Disciplina d:disciplinas) {
+            this.sessionFactory.getCurrentSession().save(d);
+        }
+    }
+    
+    @Transactional
     public void atualizar(Disciplina disciplina) {
         this.sessionFactory.getCurrentSession().update(disciplina);
     }
@@ -45,12 +51,7 @@ public class DisciplinaDao {
         }
 
     @Transactional(readOnly = true)
-    public List<Disciplina> listar() {
-        return null;
-    }
-
-    @Transactional(readOnly = true)
-    public Disciplina buscar(Long id) {
+    public Disciplina findById(Long id) {
         Disciplina disciplina;
         try {
             disciplina = (Disciplina) this.sessionFactory.getCurrentSession().get(Disciplina.class, id);
@@ -61,18 +62,60 @@ public class DisciplinaDao {
         return disciplina;
     }
 
-    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
-    public List<Disciplina> procurar(String termo) {
+    public List<Disciplina> find(String termo) {
         try {
-            Query query = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Disciplina d WHERE d.nome = :termo")
-                    .addEntity(Disciplina.class);
-            query.setParameter("termo", termo);
-            return query.list();
+            List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
+                    .createSQLQuery("SELECT * FROM Disciplina d WHERE d.nome ~* :termo")
+                    .addEntity(Disciplina.class)
+                    .setParameter("termo", termo)
+                    .list();
+            return disciplinas;
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Disciplina> find(int firstResult, int maxResult) {
+        try {
+            List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Disciplina d ORDER BY d.nome")
+                    .setFirstResult(firstResult)
+                    .setMaxResults(maxResult)
+                    .list();
+            return disciplinas;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+            
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Disciplina> findAll() {
+        try {
+            List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
+                    .createSQLQuery("SELECT * FROM Disciplina d")
+                    .addEntity(Disciplina.class)
+                    .list();
+            return disciplinas;
+        } catch (HibernateException | NumberFormatException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    @Transactional(readOnly = true)
+    public int count() {
+        try {
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(d) FROM Disciplina d")
+                    .uniqueResult()).intValue();
+            return result;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return 0;
+        }        
     }
 }

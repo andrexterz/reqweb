@@ -25,13 +25,13 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Periodo implements Serializable {
-    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	@Id
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Id
     @SequenceGenerator(name = "PERIODO_AJUSTE_ID", sequenceName = "periodo_ajuste_periodo_ajuste_id", allocationSize = 1)
     @GeneratedValue(generator = "PERIODO_AJUSTE_ID", strategy = GenerationType.SEQUENCE)
     private Long id;

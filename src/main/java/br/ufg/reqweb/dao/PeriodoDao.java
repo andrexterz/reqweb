@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -42,21 +41,8 @@ public class PeriodoDao {
         this.sessionFactory.getCurrentSession().delete(periodo);
     }
 
-    @SuppressWarnings("unchecked")
-    @Transactional(readOnly = true)
-    public List<Periodo> listar() {
-        try {
-            List<Periodo> periodoList = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
-            return periodoList;
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-    
     @Transactional(readOnly = true)    
-    public Periodo buscar(Long id) {
+    public Periodo findById(Long id) {
         Periodo periodo;
         try {
             periodo = (Periodo) this.sessionFactory.getCurrentSession().get(Periodo.class, id);
@@ -67,19 +53,29 @@ public class PeriodoDao {
         return periodo;
     }
     
-    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
-    public List<Periodo> procurar(String termo) {
+    public List<Periodo> find(String termo) {
         try {
-            Query query = this.sessionFactory.getCurrentSession()
+            List<Periodo> periodos = this.sessionFactory.getCurrentSession()
                     .createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo")
-                    .addEntity(Periodo.class);
-            query.setParameter("termo", Integer.parseInt(termo));
-            return query.list();
+                    .addEntity(Periodo.class)
+                    .setParameter("termo", Integer.parseInt(termo)).list();
+            return periodos;
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<Periodo> findAll() {
+        try {
+            List<Periodo> periodoList = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Periodo p ORDER BY p.ano DESC").list();
+            return periodoList;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 }

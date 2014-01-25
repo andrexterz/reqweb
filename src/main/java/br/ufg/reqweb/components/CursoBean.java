@@ -23,7 +23,6 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  *
@@ -33,18 +32,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 @Scope(value = "session")
 public class CursoBean implements Serializable {
 
-    public CursoBean() {
-        curso = new Curso();
-        itemSelecionado = null;
-        operation = null;
-        termoBusca = "";
-    }
-
     private static final long serialVersionUID = 1L;
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
     @Autowired
-    Validator validator;
+    private Validator validator;
     @Autowired
     private CursoDao cursoDao;
     private Curso curso;
@@ -52,6 +44,13 @@ public class CursoBean implements Serializable {
     private String operation;//a: adiciona | e: edita
     private String termoBusca;
 
+    public CursoBean() {
+        curso = new Curso();
+        itemSelecionado = null;
+        operation = null;
+        termoBusca = "";
+    }    
+    
     public void novoCurso(ActionEvent event) {
         setOperation(ADICIONA);
         curso = new Curso();
@@ -97,7 +96,6 @@ public class CursoBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Set<ConstraintViolation<Curso>> errors = validator.validate(curso);
-        System.out.println(errors.size() + " errors occurred.");
         if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
@@ -120,15 +118,15 @@ public class CursoBean implements Serializable {
     public List<Curso> getFiltroCursos() {
         System.out.println("termo da busca: " + termoBusca);
         if (termoBusca.equals("")) {
-            return cursoDao.listar();
+            return cursoDao.findAll();
         } else {
 
-            return cursoDao.procurar(termoBusca);
+            return cursoDao.find(termoBusca);
         }
     }
 
     public List<Curso> getCursos() {
-        return cursoDao.listar();
+        return cursoDao.findAll();
     }
 
     /**

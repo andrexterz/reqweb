@@ -442,7 +442,42 @@ input[type=text], input[type=password], select {
     width: 100%!important;
 }
 
-/********************************* usuarios************************************/
+/********************************* arquivos ***********************************/
+.arquivoToolbar {
+    margin: 8px;
+}
+
+.arquivoToolbarWidgets {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.arquivoPreviewIcon {
+    width: 32px;
+    height: 16px;
+    margin-left: 2px;
+    margin-right: 2px;
+    vertical-align: text-bottom;
+}
+
+.eyeGlassIcon {
+    background-image: url("#{resource['img/search.png']}")!important;
+    background-position-y: 3px;
+}
+
+/********************************* disciplinas ********************************/
+.disciplinaColA {
+    width: 5%;
+}
+
+.disciplinaColB {
+    width: 50%;
+}
+
+.disciplinaColC {
+    width: 45%;
+}
+/********************************* usuarios ***********************************/
 .usuarioColLogin {
     width: 20%;
     text-align: left;
@@ -467,7 +502,7 @@ input[type=text], input[type=password], select {
 /************************************ forms ***********************************/
 .formBody {
     position: absolute;
-    top: 32px;
+    top: 64px;
     right: 8px;
     bottom: 8px;
     left: 8px;
@@ -514,8 +549,35 @@ input[type=text], input[type=password], select {
     color: #fff;
 }
 
+.formToobar {
+    margin-bottom: 6px;
+    padding: 4px;
+    background-color: #e5e5e5;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.confirDialogButtons {
+    margin-top: 20px;
+}
+
+.confirDialogButtons button:first-child {
+    color: #2e3192!important;
+    margin-right: 8px;
+}
+
+.confirDialogButtons button:last-child {
+    color: #ff0000!important;
+    margin-left: 8px;
+}
+
 .formFooterButtons {
-    margin: 15% 0 0 0;
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
 }
 
 .formFooterButtons button:first-child {

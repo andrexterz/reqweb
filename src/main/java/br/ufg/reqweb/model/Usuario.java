@@ -8,14 +8,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  *
@@ -39,19 +41,20 @@ public class Usuario implements Serializable {
     @GeneratedValue(generator = "USUARIO_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column
     @NotNull
+    @Column(nullable = false)
     private String nome;
 
-    @Column
     @NotNull
+    @Column(unique = true, nullable = false)
     private String login;
 
-    @Column
     @NotNull
+    @Column(unique = true, nullable = false)
     private String email;
-
-    @ElementCollection(targetClass = Perfil.class, fetch = FetchType.LAZY)
+    
+    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<Perfil> perfilList;
 
     /**

@@ -102,26 +102,35 @@ public class DisciplinaBean implements Serializable {
         }
     }
 
-    public String excluiDisciplina() {
+    public void excluiDisciplina() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return null;
         } else {
             disciplinaDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaDisciplinas();
         }
     }
 
     public void salvaDisciplinas() {
-        disciplinaDao.adicionar(disciplinaListPreview);
+        FacesMessage msg;
+        RequestContext context = RequestContext.getCurrentInstance();
+        List<Disciplina> items = new ArrayList<>();
+        for (Disciplina d: disciplinaListPreview) {
+            Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
+            if (errors.isEmpty()) {
+                items.add(d);
+            }
+        }
+        disciplinaDao.adicionar(items);
+        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public String salvaDisciplina() {
+    public void salvaDisciplina() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
@@ -135,12 +144,10 @@ public class DisciplinaBean implements Serializable {
                 disciplinaDao.atualizar(disciplina);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaDisciplinas();
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
-            return null;
         }
     }
 
@@ -183,7 +190,7 @@ public class DisciplinaBean implements Serializable {
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
         }
-        FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+        FacesMessage msg = new FacesMessage("info", String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 

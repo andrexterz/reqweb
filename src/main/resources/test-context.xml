@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -14,23 +13,25 @@
        
     <context:component-scan base-package="br.ufg.reqweb.dao" />
     
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-          p:driverClassName="org.postgresql.Driver"
-          p:url="jdbc:postgresql://localhost/reqweb"
-          p:username="web"
-          p:password="web" />
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://localhost/reqweb" />
+        <property name="username" value="web" />
+        <property name="password" value="web" />
+    </bean> 
     
    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
        <property name="dataSource" ref="dataSource" />
        <property name="annotatedClasses"> 
            <list>
                <value>br.ufg.reqweb.model.Curso</value>
+               <value>br.ufg.reqweb.model.Usuario</value>
            </list>
        </property>
        <property name="hibernateProperties">
            <props>
                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-               <prop key="hibernate.show_sql">true</prop> 
+               <prop key="hibernate.show_sql">false</prop> 
                <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
                <prop key="hibernate.hbm2ddl.auto">update</prop>
            </props>

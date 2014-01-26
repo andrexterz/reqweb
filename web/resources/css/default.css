@@ -527,6 +527,8 @@ input[type=text], input[type=password], select {
 .formGrid td {
     border: none!important;
     background: none!important;
+    padding-left: 0!important;
+    padding-right: 0!important;
 }
 
 .formGridColA {
@@ -615,6 +617,31 @@ input[type=text], input[type=password], select {
 .cancel {
     color: #ff0000!important;
     margin-left: 8px;
+}
+/*********************************** perfil ***********************************/
+.perfilGrid {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.perfilTitle {
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    background: #b3b3b3;
+}
+
+.perfilColA {
+    width: 20%;
+}
+
+.perfilColB {
+    width: 30%;
+}
+
+.perfilColC {
+    width: 50%;
 }
 
 /*********************************** footer ***********************************/

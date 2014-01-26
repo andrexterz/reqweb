@@ -11,10 +11,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import org.apache.log4j.Logger;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
@@ -38,6 +43,9 @@ public class UsuarioBean implements Serializable {
 
     @Autowired
     private CursoDao cursoDao;
+    
+    @Autowired
+    Validator validator;
 
     private final LazyDataModel<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
@@ -140,14 +148,24 @@ public class UsuarioBean implements Serializable {
                         for (PerfilEnum pEnum : PerfilEnum.values()) {
                             if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                                 Perfil p = new Perfil();
-                                //corrigir: atribuir curso correto aos perfis do tipo "discente" pela sigla
-                                Curso curso = cursoDao.findById(11L);
-                                p.setCurso(curso);
+                                Pattern patt = Pattern.compile("\\D+(?=(\\d+))");
+                                Matcher mat = patt.matcher(usr.getLogin());
+                                Curso curso;
+                                if (mat.find()) {
+                                    curso = cursoDao.findBySigla(mat.group().toUpperCase());
+                                } else {
+                                    curso = null;
+                                }
+                                p.setUsuario(usr);
+                                p.setCurso(curso);                                
                                 p.setPerfil(pEnum);
                                 usr.adicionaPerfil(p);
                                 break;
                             }
-                            usrList.add(usr);
+                            Set<ConstraintViolation<Usuario>> errors = validator.validate(usr);
+                            if (errors.isEmpty()) {
+                                usrList.add(usr);
+                            }
                         }
                     } else {
                         usrList.removeAll(usrList);

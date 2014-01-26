@@ -5,31 +5,57 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDetalheUsuarioForm" modal="true"
-              widgetVar="dlgDetalheUsuarioVar" width="360" height="200"
+              widgetVar="dlgDetalheUsuarioVar" width="380" height="200"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}" />
         </f:facet>
         <h:form id="detalheUsuarioForm">
-            <p:panelGrid columns="2" styleClass="formGrid">
-                <h:outputText value="#{msg.usuario}" />
-                <h:outputText value="#{usuarioBean.itemSelecionado.login}" />
-
-                <h:outputText value="#{msg.usuarioNome}" />
-                <h:outputText value="#{usuarioBean.itemSelecionado.nome}" />
-
-                <h:outputText value="#{msg.usuarioEmail}" />
-                <h:outputText value="#{usuarioBean.itemSelecionado.email}" />                
-
-                <h:outputText value="#{msg.perfil}" />
-                <p:column>
-                    <c:if test="#{usuarioBean.selecionado}">
-                        <ui:repeat value="#{usuarioBean.perfis}" var="p">
-                            <h:outputText value="#{p.perfil.papel}" />
-                        </ui:repeat>
-                    </c:if>
-                </p:column>
+            <p:panelGrid styleClass="formGrid" columnClasses="formGridColA, formGridColB">
+                <p:row>
+                    <p:column>
+                        <h:outputText value="#{msg.usuario}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.itemSelecionado.login}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputText value="#{msg.usuarioNome}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.itemSelecionado.nome}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputText value="#{msg.usuarioEmail}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.itemSelecionado.email}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="2">
+                        <c:if test="#{usuarioBean.selecionado}">
+                            <table class="perfilGrid">
+                                <tr>
+                                    <th class="perfilTitle" colspan="3"><h:outputText value="#{msg.perfis}"/></th>
+                                </tr>
+                                <ui:repeat value="#{usuarioBean.itemSelecionado.perfilList}" var="p">
+                                    <tr>
+                                        <td class="perfilColA"><h:outputText value="#{msg.perfil}" /></td>
+                                        <td class="perfilColB"><h:outputText value="#{p.perfil.papel}" /></td>
+                                        <td class="perfilColC"><h:outputText value="#{p.curso.nome}" /></td>
+                                    </tr>                                        
+                                </ui:repeat>                                    
+                            </table>
+                        </c:if>
+                    </p:column>                        
+                </p:row>
             </p:panelGrid>
+
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton value="#{msg.fechar}"
                                  process="@none"

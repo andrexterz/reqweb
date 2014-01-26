@@ -12,6 +12,7 @@
         <h:form id="disciplinasForm">
             <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToobar">
                 <p:commandButton value="#{msg.excluir}"
+                                 disabled="#{!disciplinaBean.selecionado}"
                                  oncomplete="PF('excluirDisciplinaDialog').show()"
                                  process="@this" />
                 <p:menuButton value="#{msg.curso}" id="cursoMenu">
@@ -26,12 +27,12 @@
                 <p:commandButton style="visibility: hidden;"
                                  id="disciplinaBuscaCommand"
                                  styleClass="searchCommand alignRight"
-                                 update="tableDiscplinas"
+                                 update="tableDisciplinas"
                                  actionListener="#{disciplinaBean.listaDisciplinas}" />
                 <p:defaultCommand target="disciplinaBuscaCommand" />
 
             </h:panelGroup>            
-            <p:dataTable id="tableDiscplinas"
+            <p:dataTable id="tableDisciplinas"
                          paginator="true"
                          value="#{disciplinaBean.disciplinas}"
                          var="disciplinaItem"
@@ -42,7 +43,7 @@
                          selection="#{disciplinaBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar" listener="#{disciplinaBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar :excluiDisciplinaForm" listener="#{disciplinaBean.selecionaItem}" />
                 <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
                     <h:outputText value="#{disciplinaItem.codigo}" />
                 </p:column>

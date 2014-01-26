@@ -2,16 +2,19 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:form id="excluiCursoForm">
+    <h:form id="excluiDisciplinaForm">
         <p:confirmDialog id="dlgExclDisciplinaDialog" widgetVar="excluirDisciplinaDialog"
-                         appendTo="@(body)" width="360" 
-                         header="incluir mensagem excluir disciplina no locale_pt/_en"
-                         message="mensagem aqui?" severity="alert">
+                         appendTo="@(body)" width="420" 
+                         header="#{msg.excluir} #{msg.disciplina}"
+                         message="#{msg.excluir} #{msg.disciplina} #{disciplinaBean.itemSelecionado.nome}?"
+                         severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
-                <p:commandButton id="confirmaExclCurso" value="#{msg.sim}"
+                <p:commandButton id="confirmaExclDisciplina" value="#{msg.sim}"
                                  oncomplete="PF('excluirDisciplinaDialog').hide()"
-                                 process="@this" />
-                <p:commandButton id="cancelaExclCurso"
+                                 action="#{disciplinaBean.excluiDisciplina}"
+                                 process="@this"
+                                 update=":disciplinasForm:disciplinasToolbar :disciplinasForm:tableDisciplinas :formHeader:systemMessages" />
+                <p:commandButton id="cancelaExclDisciplina"
                                  value="#{msg.nao}"
                                  onclick="PF('excluirDisciplinaDialog').hide()" 
                                  type="button" /> 

@@ -18,9 +18,19 @@
                 <p:commandButton title="#{msg.disciplinas}"
                                  value="#{msg.disciplinas}"
                                  process="@this"
-                                 update=":disciplinasForm:tableDiscplinas"
+                                 update=":disciplinasForm:tableDisciplinas"
                                  oncomplete="PF('dlgDisciplinasFormVar').show()"
                                  icon="ui-icon-search" />
+                
+                <p:commandButton title="#{msg.turmas}"
+                                 value="#{msg.turmas}"
+                                 process="@this"
+                                 icon="ui-icon-search" />
+
+                <p:commandButton title="#{msg.indicePrioridade}"
+                                 value="#{msg.indicePrioridade}"
+                                 process="@this"
+                                 icon="ui-icon-search" />                
             </h:panelGroup>
         </h:form>
 

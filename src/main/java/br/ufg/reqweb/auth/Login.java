@@ -6,6 +6,7 @@ package br.ufg.reqweb.auth;
 
 import br.ufg.reqweb.auth.servicelocator.LDAPParametrosConfig;
 import br.ufg.reqweb.auth.servicelocator.LDAPServiceLocator;
+import br.ufg.reqweb.model.PerfilEnum;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,7 +84,6 @@ public class Login implements Serializable {
 
             while (resultado.hasMore()) {
                 Login itemLogin = new Login();
-                usuarios.add(itemLogin);
                 SearchResult sr = (SearchResult) resultado.next();
                 Attributes atributos = sr.getAttributes();
 
@@ -108,6 +108,10 @@ public class Login implements Serializable {
                     }
 
                 }
+                if (!itemLogin.getGrupo().equals(PerfilEnum.ADMINISTRADOR.getGrupo())) {
+                    usuarios.add(itemLogin);
+                }
+
             }
         } catch (NamingException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);

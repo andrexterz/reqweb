@@ -7,13 +7,10 @@
 package br.ufg.reqweb.teste;
 
 import br.ufg.reqweb.util.CSVParser;
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,7 +51,13 @@ public class CSVParserTest {
     
     @Test
     public void testParseFile() throws FileNotFoundException {
-        InputStream inp = new FileInputStream("G:/espweb/x.tcc/turmas.csv");
+        InputStream inp;
+        try {
+            inp = new FileInputStream("G:/espweb/x.tcc/turmas.csv");
+        } catch (FileNotFoundException e) {
+            inp = new FileInputStream("/media/usb0/espweb/x.tcc/turmas.csv");
+        }
+        
         List<String[]> lines = CSVParser.parse(inp);
         for (String[] tokens:lines) {
             for (String token:tokens) {

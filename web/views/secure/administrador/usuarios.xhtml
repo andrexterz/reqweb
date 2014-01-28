@@ -18,13 +18,13 @@
         <ui:include src="detalheUsuarioForm.xhtml" />
         <h:form class="contentTables" id="usuarioForm">
             <h:panelGroup layout="block" id="usuarioToolbar">
-                
+
                 <p:commandButton value="#{msg.usuarioLDAP}"
-                                 oncomplete="handleImportDialog()"
-                                 update=":usuarioLDAPForm:paraImpButton"
+                                 oncomplete="handleImportDialog('importaUsuarioLDAPDialogVar')"
+                                 update=":usuarioLDAPForm:paraImpButton :usuarioLDAPForm:progressBarUsuario"
                                  actionListener="#{usuarioBean.setupImportUsuarios}"
                                  process="@this" />
-                
+
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
                                  update=":dlgUsuarioForm"
@@ -64,6 +64,9 @@
                 <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
                     <h:outputText value="#{usuarioItem.login}" />
                 </p:column>
+                <p:column headerText="#{msg.usuarioMatricula}" styleClass="usuarioColMatricula">
+                    <h:outputText value="#{usuarioItem.matricula}" />
+                </p:column>                
                 <p:column headerText="#{msg.usuarioNome}" styleClass="usuarioColNome">
                     <h:outputText value="#{usuarioItem.nome}" />
                 </p:column>

@@ -23,6 +23,7 @@ import org.hibernate.annotations.CascadeType;
  *
  * @author andre
  */
+
 @Entity
 public class Usuario implements Serializable {
 
@@ -49,6 +50,9 @@ public class Usuario implements Serializable {
     @Column(unique = true, nullable = false)
     private String login;
 
+    @Column(unique = true)
+    private String matricula;
+    
     @NotNull
     @Column(unique = true, nullable = false)
     private String email;
@@ -99,6 +103,25 @@ public class Usuario implements Serializable {
     public void setLogin(String login) {
         this.login = login;
     }
+    
+    /**
+     * 
+     * @return the matricula
+     */
+
+    public String getMatricula() {
+        return matricula;
+    }
+    
+    /**
+     * 
+     * @param matricula 
+     */
+
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
+    
 
     /**
      * @return the email

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -36,6 +38,7 @@ public class Login implements Serializable {
     private String usuario;
     private String nome;
     private String grupo;
+    private String uid;
     private String matricula;
     private String email;
     private DirContext ctx;
@@ -96,6 +99,15 @@ public class Login implements Serializable {
                     }
                     if (nomeAtributo.equals("uid")) {
                         itemLogin.setUsuario((String) attrib.get());
+                        if (itemLogin.grupo.equals("500")) {
+                            Pattern patt = Pattern.compile("\\d+");
+                            Matcher mat = patt.matcher(itemLogin.getUsuario());
+                            if (mat.find()) {
+                                itemLogin.setMatricula(mat.group());
+                            }
+                        } else {
+                            this.matricula = null;
+                        }                        
                     }
                     if (nomeAtributo.equals("mail")) {
                         itemLogin.setEmail((String) attrib.get());
@@ -104,7 +116,7 @@ public class Login implements Serializable {
                         itemLogin.setNome((String) attrib.get());
                     }
                     if (nomeAtributo.equals("uidNumber")) {
-                        itemLogin.setMatricula((String) attrib.get());
+                        itemLogin.setUid((String) attrib.get());
                     }
 
                 }
@@ -145,6 +157,15 @@ public class Login implements Serializable {
                     }
                     if (nomeAtributo.equals("uid")) {
                         this.usuario = (String) attrib.get();
+                        if (this.grupo.equals("500")) {
+                            Pattern patt = Pattern.compile("\\d+");
+                            Matcher mat = patt.matcher(this.usuario);
+                            if (mat.find()) {
+                                this.matricula = mat.group();
+                            }
+                        } else {
+                            this.matricula = null;
+                        }
                     }
                     if (nomeAtributo.equals("mail")) {
                         this.email = (String) attrib.get();
@@ -153,7 +174,7 @@ public class Login implements Serializable {
                         this.nome = (String) attrib.get();
                     }
                     if (nomeAtributo.equals("uidNumber")) {
-                        this.matricula = (String) attrib.get();
+                        this.uid = (String) attrib.get();
                     }
 
                 }
@@ -185,6 +206,22 @@ public class Login implements Serializable {
         this.grupo = grupo;
     }
 
+    /**
+     * 
+     * @return 
+     */
+    public String getUid() {
+        return uid;
+    }
+    
+    /**
+     * 
+     * @param uid 
+     */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+    
     /**
      * @return the matricula
      */

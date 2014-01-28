@@ -4,19 +4,19 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgPeriodoForm" modal="true"
-              widgetVar="dlgPeriodoVar" width="380" height="240"
+              widgetVar="dlgPeriodoVar" width="400" height="240"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
                 <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
                 <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
         </f:facet>
         <h:form id="salvaPeriodoForm">
-            <p:panelGrid id="periodoDlgPanel" styleClass="formGrid" columnClasses="formGridColA, formGridColB">
+            <p:panelGrid id="periodoDlgPanel" styleClass="formGrid">
                 <p:row>
-                    <p:column>
+                    <p:column styleClass="formGridColA">
                         <h:outputLabel for="#{periodoBean.periodo.ano}" value="#{msg.ano}" />
                     </p:column>
-                    <p:column>
+                    <p:column styleClass="formGridColB">
                         <h:outputLabel for="#{periodoBean.periodo.semestre}" value="#{msg.semestre}" />
                     </p:column>
                 </p:row>
@@ -26,7 +26,7 @@
                         <p:inputMask value="#{periodoBean.periodo.ano}" mask="9999" id="ano" />
                     </p:column>
                     <p:column>
-                        <p:selectOneMenu value="#{periodoBean.periodo.semestre}" id="semestre" styleClass="periodoSelect">
+                        <p:selectOneMenu value="#{periodoBean.periodo.semestre}" id="semestre">
                             <f:selectItems value="#{periodoBean.semestres}"
                                            var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.value}" />
                         </p:selectOneMenu>
@@ -42,10 +42,10 @@
                 </p:row>
                 <p:row>
                     <p:column>
-                        <p:calendar id="dataInicio" pattern="dd/M/yyyy" value="#{periodoBean.periodo.dataInicio}" />
+                        <p:calendar id="dataInicio" pattern="dd/M/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataInicio}" />
                     </p:column>
                     <p:column>
-                        <p:calendar id="dataTermino" pattern="dd/M/yyyy" value="#{periodoBean.periodo.dataTermino}" />
+                        <p:calendar id="dataTermino" pattern="dd/M/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataTermino}" />
                     </p:column>                    
                 </p:row>
             </p:panelGrid>

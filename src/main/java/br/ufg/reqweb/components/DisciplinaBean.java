@@ -47,14 +47,18 @@ public class DisciplinaBean implements Serializable {
 
     @Autowired
     private DisciplinaDao disciplinaDao;
-    
+
     @Autowired
     private Validator validator;
-    
+
+    private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private String termoBusca;
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
+    private Thread tImportJob;
     private String operation;
+    private int progress;
+    private volatile boolean stopImportaDisciplinas;
     private Disciplina disciplina;
     private Disciplina itemSelecionado;
     private List<Disciplina> disciplinaListPreview;
@@ -64,6 +68,7 @@ public class DisciplinaBean implements Serializable {
         disciplinaListPreview = new ArrayList<>();
         termoBusca = "";
         operation = null;
+        tImportJob = null;
         disciplina = new Disciplina();
         itemSelecionado = null;
         disciplinas = new LazyDataModel<Disciplina>() {
@@ -116,18 +121,30 @@ public class DisciplinaBean implements Serializable {
     }
 
     public void salvaDisciplinas() {
-        FacesMessage msg;
-        RequestContext context = RequestContext.getCurrentInstance();
-        List<Disciplina> items = new ArrayList<>();
-        for (Disciplina d: disciplinaListPreview) {
-            Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
-            if (errors.isEmpty()) {
-                items.add(d);
+        stopImportaDisciplinas = false;
+        tImportJob = new Thread() {
+            @Override
+            public void run() {
+                List<Disciplina> items = new ArrayList<>();
+                int length = disciplinaListPreview.size();
+                int counter = 0;
+                for (Disciplina d : disciplinaListPreview) {
+                    if (!stopImportaDisciplinas) {
+                        counter++;
+                        progress = (int) ((counter / (float) length) * 100);
+                        Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
+                        if (errors.isEmpty()) {
+                            items.add(d);
+                        }
+                    } else {
+                        items.clear();
+                        break;
+                    }
+                }
+                disciplinaDao.adicionar(items);
             }
-        }
-        disciplinaDao.adicionar(items);
-        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        };
+        tImportJob.start();
     }
 
     public void salvaDisciplina() {
@@ -154,7 +171,7 @@ public class DisciplinaBean implements Serializable {
     public String listaDisciplinas() {
         return "disciplinas";
     }
-    
+
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Disciplina) event.getObject();
     }
@@ -194,8 +211,37 @@ public class DisciplinaBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    public void handleCompleteImpDisciplinas() {
+        stopImportaDisciplinas = true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        context.addMessage(null, msg);
+    }
+
+    public void setupImportDisciplinas(ActionEvent event) {
+        progress = 0;
+        stopImportaDisciplinas = true;
+    }
+
+    public void cancelImpDiscipinas(ActionEvent event) {
+        setupImportDisciplinas(event);
+        try {
+            Thread.sleep(2000);
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
+            context.addMessage(null, msg);
+
+        } catch (NullPointerException | InterruptedException e) {
+            log.error("no thread to cancel");
+        }
+    }
+
     public LazyDataModel<Disciplina> getDisciplinas() {
         return disciplinas;
+    }
+
+    public List<Disciplina> getDisciplinaListPreview() {
+        return disciplinaListPreview;
     }
 
     public String getTermoBusca() {
@@ -212,6 +258,18 @@ public class DisciplinaBean implements Serializable {
 
     public void setOperation(String operation) {
         this.operation = operation;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public boolean getStopImportaDisciplinas() {
+        return stopImportaDisciplinas;
     }
 
     public Disciplina getDisciplina() {

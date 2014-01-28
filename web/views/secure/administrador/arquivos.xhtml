@@ -12,6 +12,7 @@
             });
         </script>
         <ui:include src="disciplinasForm.xhtml" />
+        <ui:include src="disciplinasPreviewForm.xhtml" />
         <ui:include src="excluiDisciplinaForm.xhtml" />
         <h:form class="contentTables" id="arquivoForm">
             <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
@@ -21,7 +22,7 @@
                                  update=":disciplinasForm:tableDisciplinas"
                                  oncomplete="PF('dlgDisciplinasFormVar').show()"
                                  icon="ui-icon-search" />
-                
+
                 <p:commandButton title="#{msg.turmas}"
                                  value="#{msg.turmas}"
                                  process="@this"
@@ -36,28 +37,34 @@
 
         <h:panelGroup layout="block" styleClass="formBody contentTables">
 
-            <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
+            <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
                 <h:panelGroup id="disciplinas" layout="block">
                     <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
-                    <p:commandButton title="#{msg.disciplinasPrevisualizar}"
-                                     icon="ui-icon-zoomin"
-                                     styleClass="arquivoPreviewIcon"
-                                      />
+                    <p:commandLink title="#{msg.disciplinasPrevisualizar}"
+                                   actionListener="#{disciplinaBean.setupImportDisciplinas}"
+                                   update=":disciplinasPreviewForm:progressBarDisciplinas"
+                                   oncomplete="handleImportDialog('dlgDisciplinasPreviewFormVar')">
+                        <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
+                    </p:commandLink>
                     <p:fileUpload id="inputDisciplinas"
                                   label="#{msg.selecionar}"
                                   uploadLabel="#{msg.enviar}"
                                   cancelLabel="#{msg.cancelar}"
                                   fileLimit="1"
                                   multiple="false"
-                                  process="@form"                              
+                                  process="@form"
+                                  oncomplete="PF('dlgDisciplinasPreviewFormVar').show()"
                                   fileUploadListener="#{disciplinaBean.uploadDisciplinas}"
-                                  update=":formHeader:systemMessages disciplinas" />
+                                  update=":disciplinasPreviewForm:tablePreviewDisciplinas :disciplinasPreviewForm:progressBarDisciplinas :formHeader:systemMessages disciplinas" />
                 </h:panelGroup>
             </h:form>
             <hr class="separator" />
-            <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
+            <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
                 <h:panelGroup id="turmas" layout="block">
                     <h:outputLabel for="inputTurmas" value="#{msg.turmas}" />
+                    <p:commandLink title="#{msg.turmasPrevisualizar}">
+                        <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
+                    </p:commandLink>                    
                     <p:fileUpload id="inputTurmas"
                                   label="#{msg.selecionar}"
                                   uploadLabel="#{msg.enviar}"
@@ -72,16 +79,10 @@
             <hr class="separator" />
             <h:form id="arquivosPeriodoForm" enctype="multipart/form-data">
                 <h:panelGroup id="indicePrioridade" layout="block">
-                    <h:panelGrid columns="1" styleClass="formGrid">
-                        <!--
-                        <h:outputLabel for="inputPeriodo" value="#{msg.periodoAjuste}" />
-                        <p:selectOneMenu id="inputPeriodo" value="#{arquivoBean.periodo.id}" valueChangeListener="#{arquivoBean.selecionaPeriodo}">
-                            <f:selectItems value="#{periodoBean.periodos}" var="p"
-                                           itemLabel="#{p}" itemValue="#{p.id}"  />
-                            <p:ajax process="@this" update=":formHeader:systemMessages" />
-                        </p:selectOneMenu>
-                        -->
                         <h:outputLabel for="inputIndicePrioridade" value="#{msg.indicePrioridade}" />
+                        <p:commandLink title="#{msg.indicePrioridadePrevisualizar}">
+                            <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
+                        </p:commandLink>                        
                         <p:fileUpload id="inputIndicePrioridade"
                                       label="#{msg.selecionar}"
                                       uploadLabel="#{msg.enviar}"
@@ -91,7 +92,6 @@
                                       process="@this"
                                       fileUploadListener="#{arquivoBean.uploadIndicePrioridade}"
                                       update=":formHeader:systemMessages arquivosPeriodoForm" />
-                    </h:panelGrid>
                 </h:panelGroup>
             </h:form>
         </h:panelGroup>        

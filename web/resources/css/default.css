@@ -54,7 +54,6 @@ body {
 
 label {
     color: #2e3192;
-    font-size: 12pt;
     font-weight: bold;
 }
 
@@ -254,13 +253,13 @@ input[type=text], input[type=password], select {
 }
 
 .menuItens a:hover {
-    color: #ffff00;
+    color: #a5d0ff;
     text-decoration: none;
     background-position: 0 -32px;
 }
 
 .menuItemSelected {
-    color: #ffff00!important;
+    color: #a5d0ff!important;
     text-decoration: none;
     background-position: 0 -32px!important;
 }
@@ -438,8 +437,8 @@ input[type=text], input[type=password], select {
     text-align: center;
 }
 
-.periodoSelect {
-    width: 100%!important;
+.calendarWidget {
+    width: auto;
 }
 
 /********************************* arquivos ***********************************/
@@ -452,17 +451,15 @@ input[type=text], input[type=password], select {
     margin-right: 2px;
 }
 
-.arquivoPreviewIcon {
-    width: 32px;
-    height: 16px;
-    margin-left: 2px;
-    margin-right: 2px;
-    vertical-align: text-bottom;
+.iconPreview {
+    margin-left: 4px;
+    margin-right: 4px;
 }
 
 .eyeGlassIcon {
     background-image: url("#{resource['img/search.png']}")!important;
     background-position-y: 3px;
+    background-repeat: no-repeat;
 }
 
 /********************************* disciplinas ********************************/
@@ -483,20 +480,25 @@ input[type=text], input[type=password], select {
     text-align: left;
 }
 
-.usuarioColNome {
-    width: 80%;
+.usuarioColMatricula {
+    width: 20%;
     text-align: left;
 }
 
-.usuarioImp {
+.usuarioColNome {
+    width: 60%;
+    text-align: left;
+}
+
+.progressbar {
     width: 100%;
 }
 
-.usuarioImpColA {
+.progressbarColA {
     width: 92%;
 }
 
-.usuarioImpColB {
+.progressbarColB {
     width: 8%;
 }
 /************************************ forms ***********************************/
@@ -527,8 +529,6 @@ input[type=text], input[type=password], select {
 .formGrid td {
     border: none!important;
     background: none!important;
-    padding-left: 0!important;
-    padding-right: 0!important;
 }
 
 .formGridColA {
@@ -551,7 +551,7 @@ input[type=text], input[type=password], select {
     color: #fff;
 }
 
-.formToobar {
+.formToolbar {
     margin-bottom: 6px;
     padding: 4px;
     background-color: #e5e5e5;
@@ -561,16 +561,28 @@ input[type=text], input[type=password], select {
     border: 1px solid #ccc;
 }
 
-.confirDialogButtons {
+.formToolbarButtons {
+    margin-left: 2px!important;
+    margin-right: 2px!important;
+}
+.confirmDialogButtons {
     margin-top: 20px;
 }
 
-.confirDialogButtons button:first-child {
+.formToolbarLabel {
+    color: #2e3192;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 8pt;
+}
+.confirmDialogButtons button:first-child {
     color: #2e3192!important;
     margin-right: 8px;
 }
 
-.confirDialogButtons button:last-child {
+.confirmDialogButtons button:last-child {
     color: #ff0000!important;
     margin-left: 8px;
 }
@@ -601,14 +613,6 @@ input[type=text], input[type=password], select {
     background-position: 99% 50%!important;
 }
 
-.genericLabel {
-    color: #2e3192;
-    font-size: 12pt;
-    font-weight: bold;
-    display: inline-block;
-    margin-bottom: 8pt;
-}
-
 .confirm {
     color: #2e3192!important;
     margin-right: 8px;    
@@ -621,15 +625,23 @@ input[type=text], input[type=password], select {
 /*********************************** perfil ***********************************/
 .perfilGrid {
     width: 100%;
+    border: 1px solid #ccc;
     border-collapse: collapse;
     text-align: left;
+    margin-top: 8px;
+}
+
+.perfilGrid td, th {
+    padding-left: 0!important;
+    padding-right: 0!important;
+}
+
+.perfilGrid tr:nth-child(n+1) {
+    background: #dcdcdc;
 }
 
 .perfilTitle {
     text-align: center;
-    color: #000;
-    font-weight: bold;
-    background: #b3b3b3;
 }
 
 .perfilColA {

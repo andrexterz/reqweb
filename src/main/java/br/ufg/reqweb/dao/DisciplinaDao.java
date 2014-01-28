@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Disciplina;
@@ -21,34 +20,33 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author andre
  */
-
 @Repository
 public class DisciplinaDao {
-    
+
     @Autowired
     private SessionFactory sessionFactory;
-    
+
     @Transactional
     public void adicionar(Disciplina disciplina) {
         this.sessionFactory.getCurrentSession().save(disciplina);
     }
-    
+
     @Transactional
     public void adicionar(List<Disciplina> disciplinas) {
-        for (Disciplina d:disciplinas) {
+        for (Disciplina d : disciplinas) {
             this.sessionFactory.getCurrentSession().save(d);
         }
     }
-    
+
     @Transactional
     public void atualizar(Disciplina disciplina) {
         this.sessionFactory.getCurrentSession().update(disciplina);
     }
-    
+
     @Transactional
     public void excluir(Disciplina disciplina) {
         this.sessionFactory.getCurrentSession().delete(disciplina);
-        }
+    }
 
     @Transactional(readOnly = true)
     public Disciplina findById(Long id) {
@@ -76,7 +74,7 @@ public class DisciplinaDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
     public List<Disciplina> find(int firstResult, int maxResult) {
         try {
@@ -89,10 +87,10 @@ public class DisciplinaDao {
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
-            
+
         }
     }
-    
+
     @Transactional(readOnly = true)
     public List<Disciplina> findAll() {
         try {
@@ -106,6 +104,7 @@ public class DisciplinaDao {
             return new ArrayList<>();
         }
     }
+
     @Transactional(readOnly = true)
     public int count() {
         try {
@@ -116,6 +115,6 @@ public class DisciplinaDao {
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return 0;
-        }        
+        }
     }
 }

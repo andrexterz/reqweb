@@ -39,6 +39,7 @@ public class CursoBean implements Serializable {
     private Validator validator;
     @Autowired
     private CursoDao cursoDao;
+    
     private Curso curso;
     private Curso itemSelecionado;
     private String operation;//a: adiciona | e: edita
@@ -59,7 +60,6 @@ public class CursoBean implements Serializable {
     }
 
     public void editaCurso(ActionEvent event) {
-
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -124,7 +124,7 @@ public class CursoBean implements Serializable {
             return cursoDao.find(termoBusca);
         }
     }
-
+    
     public List<Curso> getCursos() {
         return cursoDao.findAll();
     }
@@ -172,6 +172,10 @@ public class CursoBean implements Serializable {
      */
     public void setItemSelecionado(Curso itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
+    }
+
+    public void selecionaItemListener(ActionEvent event) {
+        itemSelecionado = (Curso) event.getComponent().getAttributes().get("cursoItem");
     }
 
     /**

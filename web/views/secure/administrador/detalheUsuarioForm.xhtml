@@ -5,7 +5,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDetalheUsuarioForm" modal="true"
-              widgetVar="dlgDetalheUsuarioVar" width="380" height="200"
+              widgetVar="dlgDetalheUsuarioVar" width="380" height="260"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}" />
@@ -19,6 +19,14 @@
                     <p:column>
                         <h:outputText value="#{usuarioBean.itemSelecionado.login}" />
                     </p:column>
+                </p:row>
+                <p:row>                
+                    <p:column>
+                        <h:outputText value="#{msg.usuarioMatricula}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.itemSelecionado.matricula}" />
+                    </p:column>                
                 </p:row>
                 <p:row>
                     <p:column>
@@ -41,11 +49,11 @@
                         <c:if test="#{usuarioBean.selecionado}">
                             <table class="perfilGrid">
                                 <tr>
-                                    <th class="perfilTitle" colspan="3"><h:outputText value="#{msg.perfis}"/></th>
+                                    <th class="perfilTitle ui-widget-header" colspan="3"><h:outputText value="#{msg.perfis}"/></th>
                                 </tr>
                                 <ui:repeat value="#{usuarioBean.itemSelecionado.perfilList}" var="p">
                                     <tr>
-                                        <td class="perfilColA"><h:outputText value="#{msg.perfil}" /></td>
+                                        <td class="perfilColA"><h:outputLabel value="#{msg.perfil}" /></td>
                                         <td class="perfilColB"><h:outputText value="#{p.perfil.papel}" /></td>
                                         <td class="perfilColC"><h:outputText value="#{p.curso.nome}" /></td>
                                     </tr>                                        

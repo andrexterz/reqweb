@@ -9,6 +9,7 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,12 +54,12 @@ public class UsuarioBean implements Serializable {
     private String login;
     private String senha;
     private String grupo;
+    private PerfilEnum perfil;
+    private Usuario usuario;    
     private int progress;
     private volatile boolean stopImportaUsuarios;
     private Thread tImportJob;
-    private PerfilEnum perfil;
     private Login objLogin;
-    private Usuario usuario;
     private Usuario itemSelecionado;
     private String termoBusca;
 
@@ -137,6 +138,10 @@ public class UsuarioBean implements Serializable {
                 List<Login> infoUsuarios = objLogin.scanLdap();
                 int length = infoUsuarios.size();
                 int counter = 0;
+                Map<String,Curso> cursoMap = new HashMap();
+                for (Curso c: cursoDao.findAll()) {
+                    cursoMap.put(c.getSigla(), c);
+                }
                 for (Login infoUsuario : infoUsuarios) {
                     if (!stopImportaUsuarios) {
                         counter++;
@@ -145,6 +150,7 @@ public class UsuarioBean implements Serializable {
                         usr.setLogin(infoUsuario.getUsuario());
                         usr.setNome(infoUsuario.getNome());
                         usr.setEmail(infoUsuario.getEmail());
+                        usr.setMatricula(infoUsuario.getMatricula());
                         for (PerfilEnum pEnum : PerfilEnum.values()) {
                             if (pEnum.getGrupo().equals(infoUsuario.getGrupo())) {
                                 Perfil p = new Perfil();
@@ -152,7 +158,7 @@ public class UsuarioBean implements Serializable {
                                 Matcher mat = patt.matcher(usr.getLogin());
                                 Curso curso;
                                 if (mat.find()) {
-                                    curso = cursoDao.findBySigla(mat.group().toUpperCase());
+                                    curso = cursoMap.get(mat.group().toUpperCase());//cursoDao.findBySigla(mat.group().toUpperCase());
                                 } else {
                                     curso = null;
                                 }
@@ -168,7 +174,7 @@ public class UsuarioBean implements Serializable {
                             }
                         }
                     } else {
-                        usrList.removeAll(usrList);
+                        usrList.clear();
                         break;
                     }
                 }
@@ -191,7 +197,7 @@ public class UsuarioBean implements Serializable {
         }
     }
 
-    public void handleCompletImpUsuarios() {
+    public void handleCompleteImpUsuarios() {
         stopImportaUsuarios = true;
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");

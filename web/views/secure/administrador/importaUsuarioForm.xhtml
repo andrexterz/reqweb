@@ -5,19 +5,19 @@
     <h:form id="usuarioLDAPForm">
         <p:confirmDialog id="dlgImpUsuarioLDAPDialog"
                          closable="false"
-                         widgetVar="importaUsuarioLDAPDialog"
+                         widgetVar="importaUsuarioLDAPDialogVar"
                          width="420"
                          header="#{msg.usuarioImportaLDAP}"
                          message="#{msg.usuarioMensagemLDAP}?"
                          appendTo="@(body)">
-            <h:panelGrid columns="2" styleClass="usuarioImp" columnClasses="usuarioImpColA, usuarioImpColB">
+            <h:panelGrid columns="2" styleClass="progressbar" columnClasses="progressbarColA, progressbarColB">
                 <p:progressBar id="progressBarUsuario"
                                interval="1500"
                                ajax="true"
                                widgetVar="pbImpUsuario"
                                value="#{usuarioBean.progress}"
                                labelTemplate="{value}%">
-                    <p:ajax event="complete" listener="#{usuarioBean.handleCompletImpUsuarios}"
+                    <p:ajax event="complete" listener="#{usuarioBean.handleCompleteImpUsuarios}"
                             update="paraImpButton :formHeader:systemMessages :usuarioForm:tableUsuarios"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>
@@ -28,14 +28,14 @@
                                  icon="ui-icon-cancel"
                                  update="paraImpButton progressBarUsuario :formHeader:systemMessages"
                                  disabled="#{usuarioBean.stopImportaUsuarios}"
-                                 oncomplete="progressBarCancel()"
+                                 oncomplete="progressBarCancel('pbImpUsuario')"
                                  actionListener="#{usuarioBean.cancelImpUsuarios}"
                                  styleClass="alignRight cancel"  />
             </h:panelGrid>
-            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaImpUsuario" value="#{msg.importar}"
                                  widgetVar="confirmImpButton"
-                                 onclick="progressBarHandler()"
+                                 onclick="progressBarHandler('pbImpUsuario')"
                                  action="#{usuarioBean.importaUsuarios}"
                                  process="@this"
                                  update="paraImpButton :usuarioLDAPForm:progressBarUsuario :formHeader:systemMessages" />
@@ -43,7 +43,7 @@
                 <p:commandButton id="cancelaImpUsuario"
                                  widgetVar="cancelImpButton"
                                  value="#{msg.fechar}"
-                                 oncomplete="importaUsuarioLDAPDialog.hide()" 
+                                 oncomplete="importaUsuarioLDAPDialogVar.hide()" 
                                  actionListener="#{usuarioBean.listaUsuarios()}"
                                  update=":usuarioForm:tableUsuarios" />
             </h:panelGroup>

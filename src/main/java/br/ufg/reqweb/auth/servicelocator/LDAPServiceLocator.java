@@ -42,7 +42,7 @@ public class LDAPServiceLocator {
         env.put(Context.INITIAL_CONTEXT_FACTORY, LDAPParametrosConfig.INITIAL_CTX);
         // Especifica o IP/Nome e a porta do servidor LDAP
         env.put(Context.PROVIDER_URL, LDAPParametrosConfig.SERVIDOR);
-        // As linhas abaixo sÃ£o usadas quando o servidor LDAP nÃ£o permite busca como anonymous             
+        // As linhas abaixo são usadas quando o servidor LDAP não permite busca como anonymous             
         //env.put(Context.SECURITY_PRINCIPAL, LDAPParametrosConfig.ADMIN_DN );                
         //Especifia o tipo de autenticação
         env.put(Context.SECURITY_AUTHENTICATION, "simple");   //com none não confere senha // auf

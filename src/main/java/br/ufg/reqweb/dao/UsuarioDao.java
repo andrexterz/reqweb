@@ -10,7 +10,6 @@ import br.ufg.reqweb.model.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,6 +40,7 @@ public class UsuarioDao {
             session.save(usuario);
             for (Perfil p : usuario.getPerfilList()) {
                 session.save(p);
+                
             }
         }
     }
@@ -56,7 +56,6 @@ public class UsuarioDao {
         this.sessionFactory.getCurrentSession().delete(usuario);
     }
 
-    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<Usuario> findAll() {
         try {
@@ -94,7 +93,6 @@ public class UsuarioDao {
         Usuario usuario;
         try {
             usuario = (Usuario) this.sessionFactory.getCurrentSession().get(Usuario.class, id);
-            Hibernate.initialize(usuario.getPerfilList());
         } catch (HibernateException e) {
             usuario = null;
         }

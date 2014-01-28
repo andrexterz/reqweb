@@ -21,15 +21,15 @@ function dialogHandler(widgetVar, xhr, status, args) {
     }
 }
 
-function handleImportDialog(event) {
+function handleImportDialog(widget, event) {
         PF("confirmImpButton").jq.show();
-        PF("importaUsuarioLDAPDialog").show();
+        PF(widget).show();
 }
 
-function progressBarHandler(event) {
+function progressBarHandler(widget, event) {
     PF("confirmImpButton").disable();
     PF("cancelImpButton").disable();
-    PF("pbImpUsuario").start();
+    PF(widget).start();
 }
 
 function progressBarComplete(event) {
@@ -38,10 +38,10 @@ function progressBarComplete(event) {
     PF("confirmImpButton").jq.hide();
 }
 
-function progressBarCancel(event){
+function progressBarCancel(widget, event){
     PF("confirmImpButton").enable();
     PF("cancelImpButton").enable();
-    PF("pbImpUsuario").cancel();    
+    PF(widget).cancel();
 }
 
 

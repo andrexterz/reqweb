@@ -2,7 +2,8 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDisciplinasForm" modal="true"
               widgetVar="dlgDisciplinasFormVar" width="80%" height="390"
               resizable="false" appendTo="@(body)">
@@ -10,25 +11,38 @@
             <h:outputText value="#{msg.disciplinas}" />
         </f:facet>
         <h:form id="disciplinasForm">
-            <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToobar">
+            <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.excluir}"
+                                 styleClass="formToolbarButtons"
                                  disabled="#{!disciplinaBean.selecionado}"
                                  oncomplete="PF('excluirDisciplinaDialog').show()"
                                  process="@this" />
-                <p:menuButton value="#{msg.curso}" id="cursoMenu">
-                    <p:menuitem value="1" /> 
-                    <p:menuitem value="2" /> 
-                    <p:menuitem value="3" /> 
+
+                <p:menuButton value="#{msg.curso}">
+                    <c:forEach items="#{cursoBean.cursos}" var="cursoItem">
+                        <p:menuitem value="#{cursoItem.nome}" update=":disciplinasForm:cursoSelLabel" actionListener="#{cursoBean.selecionaItemListener}">
+                            <f:attribute name="cursoItem" value="#{cursoItem}" />
+                        </p:menuitem>
+                    </c:forEach>
                 </p:menuButton>
 
-                <p:inputText id="disciplinaBusca" styleClass="searchBox" value="#{disciplinaBean.termoBusca}" />
+                <p:outputLabel id="cursoSelLabel"
+                               styleClass="formToolbarLabel"
+                               value="#{cursoBean.itemSelecionado.nome}" />
+
+                <p:inputText id="disciplinaBusca"
+                             styleClass="searchBox"
+                             value="#{disciplinaBean.termoBusca}" />
+
                 <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
+
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
                 <p:commandButton style="visibility: hidden;"
                                  id="disciplinaBuscaCommand"
                                  styleClass="searchCommand alignRight"
                                  update="tableDisciplinas"
                                  actionListener="#{disciplinaBean.listaDisciplinas}" />
+
                 <p:defaultCommand target="disciplinaBuscaCommand" />
 
             </h:panelGroup>            

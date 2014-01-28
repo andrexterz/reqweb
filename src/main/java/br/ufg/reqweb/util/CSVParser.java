@@ -30,7 +30,7 @@ public class CSVParser {
         BufferedReader bReader = null;
         try {
             String line;
-            bReader = new BufferedReader(new InputStreamReader(inputData));
+            bReader = new BufferedReader(new InputStreamReader(inputData, "UTF-8"));
             while ((line = bReader.readLine()) != null) {
                 Pattern patt = Pattern.compile(",|;|\t");
                 String[] row;

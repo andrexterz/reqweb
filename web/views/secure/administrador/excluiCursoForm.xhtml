@@ -7,7 +7,7 @@
                          appendTo="@(body)" width="360" 
                          header="#{msg.cursoExcluir}"
                          message="#{msg.cursoExcluir} #{cursoBean.itemSelecionado.nome}?" severity="alert">
-            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaExclCurso" value="#{msg.sim}"
                                  oncomplete="PF('excluirCursoDialog').hide()"
                                  action="#{cursoBean.excluiCurso}"

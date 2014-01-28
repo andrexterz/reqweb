@@ -8,7 +8,7 @@
                          header="#{msg.excluir} #{msg.disciplina}"
                          message="#{msg.excluir} #{msg.disciplina} #{disciplinaBean.itemSelecionado.nome}?"
                          severity="alert">
-            <h:panelGroup layout="block" styleClass="alignCenter confirDialogButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaExclDisciplina" value="#{msg.sim}"
                                  oncomplete="PF('excluirDisciplinaDialog').hide()"
                                  action="#{disciplinaBean.excluiDisciplina}"

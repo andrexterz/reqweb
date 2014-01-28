@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgDisciplinasPreviewForm" modal="true"
+              widgetVar="dlgDisciplinasPreviewFormVar" width="80%" height="390"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.importar} #{msg.disciplinas}" />
+        </f:facet>
+        <h:form id="disciplinasPreviewForm">
+            <p:dataTable id="tablePreviewDisciplinas"
+                         paginator="true"
+                         value="#{disciplinaBean.disciplinaListPreview}"
+                         var="disciplinaItem"
+                         emptyMessage="#{msg.emptyMessage}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
+                    <h:outputText value="#{disciplinaItem.codigo}" />
+                </p:column>
+                <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
+                    <h:outputText value="#{disciplinaItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
+                    <h:outputText value="#{disciplinaItem.curso.nome}" />
+                </p:column>
+            </p:dataTable>
+            <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
+                <p:progressBar id="progressBarDisciplinas"
+                               interval="1500"
+                               ajax="true"
+                               widgetVar="pbImpDisciplina"
+                               value="#{disciplinaBean.progress}"
+                               labelTemplate="{value}%">
+                    <p:ajax event="complete" listener="#{disciplinaBean.handleCompleteImpDisciplinas}"
+                            update="paraImpButton :formHeader:systemMessages :disciplinasPreviewForm:tablePreviewDisciplinas"
+                            oncomplete="progressBarComplete()" />
+                </p:progressBar>
+                <p:commandButton id="paraImpButton"
+                                 process="@this"
+                                 widgetVar="stopImpButton"
+                                 title="#{msg.cancelar}"
+                                 icon="ui-icon-cancel"
+                                 update="paraImpButton progressBarDisciplinas :formHeader:systemMessages"
+                                 disabled="#{disciplinaBean.stopImportaDisciplinas}"
+                                 oncomplete="progressBarCancel('pbImpDisciplina')"
+                                 actionListener="#{disciplinaBean.cancelImpDiscipinas}"
+                                 styleClass="alignRight cancel"  />                
+            </h:panelGrid>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton id="confirmaImpDisciplinas" value="#{msg.importar}"
+                                 widgetVar="confirmImpButton"
+                                 onclick="progressBarHandler('pbImpDisciplina')"
+                                 action="#{disciplinaBean.salvaDisciplinas}"
+                                 process="@this"
+                                 update="paraImpButton progressBarDisciplinas :formHeader:systemMessages" />
+
+                <p:commandButton id="cancelaImpDisciplinas"
+                                 widgetVar="cancelImpButton"
+                                 value="#{msg.fechar}"
+                                 oncomplete="dlgDisciplinasPreviewFormVar.hide()" 
+                                 update=":disciplinasPreviewForm:tablePreviewDisciplinas" />
+            </h:panelGroup>            
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

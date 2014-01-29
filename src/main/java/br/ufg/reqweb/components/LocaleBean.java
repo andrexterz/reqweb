@@ -16,9 +16,11 @@ import java.util.ResourceBundle;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope(value = "session")
 public class LocaleBean implements Serializable {
 
     /**

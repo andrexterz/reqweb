@@ -4,27 +4,47 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgDisciplinasPreviewForm" modal="true"
-              widgetVar="dlgDisciplinasPreviewFormVar" width="80%" height="390"
+              widgetVar="dlgDisciplinasPreviewFormVar" width="80%" height="420"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.disciplinas}" />
         </f:facet>
         <h:form id="disciplinasPreviewForm">
+            <h:panelGroup layout="block" id="disciplinasPreviewToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.excluir}"
+                                 styleClass="formToolbarButtons"
+                                 disabled="#{!disciplinaBean.previewSelecionado}"
+                                 actionListener="#{disciplinaBean.excluiDisciplinaPreview}"
+                                 update=":disciplinasPreviewForm :disciplinasPreviewForm:confirmaImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas"
+                                 process="@this" />
+
+                <p:commandButton value="#{msg.limpar}"
+                                 styleClass="formToolbarButtons"
+                                 actionListener="#{disciplinaBean.excluiArquivoUploaded}"
+                                 update=":disciplinasPreviewForm:confirmaImpDisciplinas :arquivosDisciplinasForm:previewImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas"
+                                 process="@this" />
+                
+
+            </h:panelGroup>            
             <p:dataTable id="tablePreviewDisciplinas"
                          paginator="true"
                          value="#{disciplinaBean.disciplinaListPreview}"
-                         var="disciplinaItem"
+                         var="disciplinaItemPreview"
+                         selection="#{disciplinaBean.itemPreviewSelecionado}"
+                         rowKey="#{disciplinaItemPreview.codigo}"
+                         selectionMode="single"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
-                         rows="10" pageLinks="5">
+                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
+                <p:ajax event="rowSelect" update=":disciplinasPreviewForm:disciplinasPreviewToolbar" listener="#{disciplinaBean.selecionaItem}" />
                 <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
-                    <h:outputText value="#{disciplinaItem.codigo}" />
+                    <h:outputText value="#{disciplinaItemPreview.codigo}" />
                 </p:column>
                 <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
-                    <h:outputText value="#{disciplinaItem.nome}" />
+                    <h:outputText value="#{disciplinaItemPreview.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
-                    <h:outputText value="#{disciplinaItem.curso.nome}" />
+                    <h:outputText value="#{disciplinaItemPreview.curso.nome}" />
                 </p:column>
             </p:dataTable>
             <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
@@ -52,6 +72,7 @@
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaImpDisciplinas" value="#{msg.importar}"
                                  widgetVar="confirmImpButton"
+                                 disabled="#{!disciplinaBean.arquivoUploaded}"
                                  onclick="progressBarHandler('pbImpDisciplina')"
                                  action="#{disciplinaBean.salvaDisciplinas}"
                                  process="@this"

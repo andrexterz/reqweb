@@ -20,6 +20,7 @@ import javax.faces.event.ActionEvent;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@Scope(value = "session")
 public class PeriodoBean implements Serializable {
     
     public PeriodoBean() {

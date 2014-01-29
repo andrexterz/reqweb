@@ -9,13 +9,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author andre
  */
+
 @Component
+@Scope(value = "session")
 public class PerfilBean implements Serializable {
 
     public PerfilBean() {

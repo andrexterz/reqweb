@@ -400,14 +400,11 @@ input[type=text], input[type=password], select {
 
 /********************************** cursos ************************************/
 .cursoColNome {
-    width: 70%;
+    width: 80%;
 }
 
-.cursoColMatriz {
-    width: 20%;
-}
 .cursoColSigla {
-    width: 10%;
+    width: 20%;
 }
 
 .cursoToobar {
@@ -454,6 +451,10 @@ input[type=text], input[type=password], select {
 .iconPreview {
     margin-left: 4px;
     margin-right: 4px;
+}
+
+.rowPreview {
+    color: green;
 }
 
 .eyeGlassIcon {
@@ -575,7 +576,6 @@ input[type=text], input[type=password], select {
     display: inline-block;
     margin-left: 4px;
     margin-right: 4px;
-    margin-bottom: 8pt;
 }
 .confirmDialogButtons button:first-child {
     color: #2e3192!important;

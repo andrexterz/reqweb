@@ -29,10 +29,6 @@ public class Curso implements Serializable {
     @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)
     private long id;
 
-    @Column(length = 8, unique = true, nullable = false)
-    @Size(min = 2, max = 8)
-    private String matriz;
-
     @Column(length = 100, nullable = false)
     @Size(min = 5, max = 100)
     private String nome;
@@ -50,22 +46,6 @@ public class Curso implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getMatriz() {
-        return matriz;
-    }
-
-    /**
-     *
-     * @param matriz
-     */
-    public void setMatriz(String matriz) {
-        this.matriz = matriz.toUpperCase();
     }
 
     /**

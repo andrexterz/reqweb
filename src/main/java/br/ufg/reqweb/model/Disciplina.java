@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -30,12 +31,15 @@ public class Disciplina implements Serializable {
     @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     
+    @NotNull
     @Column(unique = true, nullable = false)
     private Long codigo;
     
+    @NotNull
     @Column(nullable = false)
     private String nome;
     
+    @NotNull
     @ManyToOne
     private Curso curso;
 

@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgCursoForm" modal="true"
-              widgetVar="dlgCursoVar" width="360" height="230"
+              widgetVar="dlgCursoVar" width="360" height="140"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.cursoNovo}" rendered="#{cursoBean.operation == 'a'}" />
@@ -16,29 +16,19 @@
             <f:validateBean disabled="true">
                 <p:panelGrid id="cursoDlgPanel" styleClass="formGrid">
                     <p:row>
-                        <p:column>
-                            <h:outputLabel for="#{cursoBean.curso.matriz}" value="#{msg.cursoMatriz}" />
-                        </p:column>
-                        <p:column>
+                        <p:column styleClass="cursoColSigla">
                             <h:outputLabel for="#{cursoBean.curso.sigla}" value="#{msg.cursoSigla}" />
                         </p:column>
-                    </p:row>
-                    <p:row>
-                        <p:column>
-                            <h:inputHidden value="#{cursoBean.curso.id}" id="cursoId" />
-                            <p:inputText value="#{cursoBean.curso.matriz}" id="cursoMatriz" />
-                        </p:column>
-                        <p:column>
-                            <p:inputText value="#{cursoBean.curso.sigla}" id="cursoSigla"  />
-                        </p:column>
-                    </p:row>
-                    <p:row>
-                        <p:column colspan="2">
+                        <p:column styleClass="cursoColNome">
                             <h:outputLabel for="#{cursoBean.curso.nome}" value="#{msg.curso}" />
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column colspan="2">
+                        <p:column>
+                            <p:inputText value="#{cursoBean.curso.sigla}" id="cursoSigla" maxlength="6"  />
+                        </p:column>
+                        
+                        <p:column>
                             <p:inputText value="#{cursoBean.curso.nome}" id="cursoNome" />
                         </p:column>
                     </p:row>

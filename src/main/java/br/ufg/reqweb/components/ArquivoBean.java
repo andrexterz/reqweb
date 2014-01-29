@@ -27,6 +27,7 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Component;
  * @author André
  */
 @Component
+@Scope(value = "session")
 public class ArquivoBean implements Serializable {
 
     /**
@@ -74,43 +76,7 @@ public class ArquivoBean implements Serializable {
         };
     }
 
-    public void uploadDisciplinas(FileUploadEvent event) {
-        UploadedFile file = event.getFile();
-        List<String[]> data;
-        disciplinaListPreview = new ArrayList<>();
-        try {
-            data = CSVParser.parse(file.getInputstream());
-            Curso c = null;
-            for (int i = 1; i < data.size(); i++) {
-                String[] row = data.get(i);
-                Long codigo = Long.parseLong(row[0].trim());
-                String nome = row[1].trim();
-                String matriz = row[2].trim();
-                Disciplina d = new Disciplina();
-                if (c != null) {
-                    if (!c.getMatriz().equals(matriz)) {
-                        c = cursoDao.findByMatriz(matriz);
-                        System.out.println("row[2]: " + matriz + "\tmatriz: " + c.getMatriz());
-                    }
-                } else {
-                    System.out.println("curso é nulo");
-                    c = cursoDao.findByMatriz(matriz);
-
-                }
-                d.setCodigo(codigo);
-                d.setNome(nome);
-                d.setCurso(c);
-                disciplinaListPreview.add(d);
-            }
-            disciplinaDao.adicionar(disciplinaListPreview);
-        } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
-        }
-        FacesMessage msg = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
-    public void uploadTurmas(FileUploadEvent event) {
+   public void uploadTurmas(FileUploadEvent event) {
 
     }
 

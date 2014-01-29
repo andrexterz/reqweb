@@ -40,7 +40,9 @@
             <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
                 <h:panelGroup id="disciplinas" layout="block">
                     <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
-                    <p:commandLink title="#{msg.disciplinasPrevisualizar}"
+                    <p:commandLink id="previewImpDisciplinas"
+                                   title="#{msg.disciplinasPrevisualizar}"
+                                   disabled="#{!disciplinaBean.arquivoUploaded}"
                                    actionListener="#{disciplinaBean.setupImportDisciplinas}"
                                    update=":disciplinasPreviewForm:progressBarDisciplinas"
                                    oncomplete="handleImportDialog('dlgDisciplinasPreviewFormVar')">
@@ -55,7 +57,7 @@
                                   process="@form"
                                   oncomplete="PF('dlgDisciplinasPreviewFormVar').show()"
                                   fileUploadListener="#{disciplinaBean.uploadDisciplinas}"
-                                  update=":disciplinasPreviewForm:tablePreviewDisciplinas :disciplinasPreviewForm:progressBarDisciplinas :formHeader:systemMessages disciplinas" />
+                                  update=":disciplinasPreviewForm:confirmaImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas :disciplinasPreviewForm:progressBarDisciplinas :formHeader:systemMessages disciplinas" />
                 </h:panelGroup>
             </h:form>
             <hr class="separator" />

@@ -13,6 +13,7 @@ import br.ufg.reqweb.util.CSVParser;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +30,16 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author andre
  */
+
 @Component
+@Scope(value = "session")
 public class DisciplinaBean implements Serializable {
 
     /**
@@ -61,16 +65,18 @@ public class DisciplinaBean implements Serializable {
     private volatile boolean stopImportaDisciplinas;
     private Disciplina disciplina;
     private Disciplina itemSelecionado;
-    private List<Disciplina> disciplinaListPreview;
+    private Disciplina itemPreviewSelecionado;
+    private Map<Long,Disciplina> disciplinaListPreview;
     private final LazyDataModel<Disciplina> disciplinas;
 
     public DisciplinaBean() {
-        disciplinaListPreview = new ArrayList<>();
+        disciplinaListPreview = new HashMap();
         termoBusca = "";
         operation = null;
         tImportJob = null;
         disciplina = new Disciplina();
         itemSelecionado = null;
+        itemPreviewSelecionado = null;
         disciplinas = new LazyDataModel<Disciplina>() {
 
             @Override
@@ -128,7 +134,7 @@ public class DisciplinaBean implements Serializable {
                 List<Disciplina> items = new ArrayList<>();
                 int length = disciplinaListPreview.size();
                 int counter = 0;
-                for (Disciplina d : disciplinaListPreview) {
+                for (Disciplina d : disciplinaListPreview.values()) {
                     if (!stopImportaDisciplinas) {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
@@ -175,40 +181,46 @@ public class DisciplinaBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Disciplina) event.getObject();
     }
-
+    
+    public void selecionaItemPreview(SelectEvent event) {
+        itemPreviewSelecionado = (Disciplina) event.getObject();
+    }
+    
     public void uploadDisciplinas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
-        disciplinaListPreview = new ArrayList<>();
+        disciplinaListPreview = new HashMap();
         try {
             data = CSVParser.parse(file.getInputstream());
-            Curso c = null;
+            Map<String, Curso> cursoMap = new HashMap();
+            for (Curso c : cursoDao.findAll()) {
+                cursoMap.put(c.getSigla(), c);
+            }
             for (int i = 1; i < data.size(); i++) {
                 String[] row = data.get(i);
                 Long codigo = Long.parseLong(row[0].trim());
                 String nome = row[1].trim();
-                String matriz = row[2].trim();
+                String sigla = row[2].trim().toUpperCase();
                 Disciplina d = new Disciplina();
-                if (c != null) {
-                    if (!c.getMatriz().equals(matriz)) {
-                        c = cursoDao.findByMatriz(matriz);
-                        System.out.println("row[2]: " + matriz + "\tmatriz: " + c.getMatriz());
-                    }
-                } else {
-                    System.out.println("curso é nulo");
-                    c = cursoDao.findByMatriz(matriz);
-
-                }
                 d.setCodigo(codigo);
                 d.setNome(nome);
-                d.setCurso(c);
-                disciplinaListPreview.add(d);
+                d.setCurso(cursoMap.get(sigla));
+                disciplinaListPreview.put(d.getCodigo(),d);
             }
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
         }
         FacesMessage msg = new FacesMessage("info", String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")));
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+    
+    public void excluiArquivoUploaded(ActionEvent event) {
+        disciplinaListPreview.clear();
+    }
+    
+    public void excluiDisciplinaPreview() {
+        disciplinaListPreview.remove(itemPreviewSelecionado.getCodigo());
+        itemPreviewSelecionado = null;
     }
 
     public void handleCompleteImpDisciplinas() {
@@ -241,7 +253,11 @@ public class DisciplinaBean implements Serializable {
     }
 
     public List<Disciplina> getDisciplinaListPreview() {
-        return disciplinaListPreview;
+        return new ArrayList<>(disciplinaListPreview.values());
+    }
+    
+    public boolean isArquivoUploaded() {
+        return disciplinaListPreview.size() > 0;
     }
 
     public String getTermoBusca() {
@@ -291,5 +307,17 @@ public class DisciplinaBean implements Serializable {
     public void setItemSelecionado(Disciplina itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
     }
+    
+    public boolean isPreviewSelecionado() {
+        return itemPreviewSelecionado != null;
+    }
 
+    public Disciplina getItemPreviewSelecionado() {
+        return itemPreviewSelecionado;
+    }
+
+    public void setItemPreviewSelecionado(Disciplina itemPreviewSelecionado) {
+        this.itemPreviewSelecionado = itemPreviewSelecionado;
+    }
+    
 }

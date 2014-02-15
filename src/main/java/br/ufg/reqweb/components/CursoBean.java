@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import org.springframework.stereotype.Component;
 
 import br.ufg.reqweb.model.Curso;
+import java.util.ArrayList;
 import java.util.Set;
 import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
@@ -44,12 +45,14 @@ public class CursoBean implements Serializable {
     private Curso itemSelecionado;
     private String operation;//a: adiciona | e: edita
     private String termoBusca;
+    public List<Curso> cursos;
 
     public CursoBean() {
         curso = new Curso();
         itemSelecionado = null;
         operation = null;
         termoBusca = "";
+        cursos = new ArrayList<>();
     }    
     
     public void novoCurso(ActionEvent event) {
@@ -126,9 +129,13 @@ public class CursoBean implements Serializable {
     }
     
     public List<Curso> getCursos() {
-        return cursoDao.findAll();
+        if (cursos.isEmpty() | cursoDao.count() > cursos.size()) {
+            cursos = cursoDao.findAll();
+        }
+        return cursos;
     }
 
+   
     /**
      * @return the curso
      */

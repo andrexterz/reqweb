@@ -17,10 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author andre
- */
 @Repository
 public class CursoDao {
 
@@ -117,5 +113,18 @@ public class CursoDao {
             return new ArrayList<>();
         }
     }
+    
+    @Transactional(readOnly = true)
+    public int count() {
+        try {
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(c) FROM Curso c")
+                    .uniqueResult()).intValue();
+            return result;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return 0;
+        }
+    }    
 
 }

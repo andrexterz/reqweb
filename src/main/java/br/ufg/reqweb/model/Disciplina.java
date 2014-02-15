@@ -16,7 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -31,16 +33,16 @@ public class Disciplina implements Serializable {
     @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     
-    @NotNull
     @Column(unique = true, nullable = false)
+    @Min(value = 1)
     private Long codigo;
     
-    @NotNull
     @Column(nullable = false)
+    @Size(min = 3, max = 100)
     private String nome;
     
+    @ManyToOne(optional = false)
     @NotNull
-    @ManyToOne
     private Curso curso;
 
     @OneToMany(mappedBy = "disciplina")
@@ -85,7 +87,7 @@ public class Disciplina implements Serializable {
      * @param nome the nome to set
      */
     public void setNome(String nome) {
-        this.nome = nome;
+        this.nome = nome.toUpperCase();
     }
 
     /**

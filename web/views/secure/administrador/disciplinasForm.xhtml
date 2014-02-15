@@ -12,24 +12,35 @@
         </f:facet>
         <h:form id="disciplinasForm">
             <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 actionListener="#{disciplinaBean.novaDisciplina}"
+                                 oncomplete="PF('dlgDisciplinaVar').show()"
+                                 update="tableDisciplinas :salvaDisciplinaForm" />
+                
+                <p:commandButton value="#{msg.editar}"
+                                 disabled="#{!disciplinaBean.selecionado}"
+                                 process="@this"
+                                 actionListener="#{disciplinaBean.editaDisciplina}"
+                                 oncomplete="PF('dlgDisciplinaVar').show()"
+                                 update="tableDisciplinas :salvaDisciplinaForm" />
+
+                
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"
+                                 update="tableDisciplinas"
                                  disabled="#{!disciplinaBean.selecionado}"
                                  oncomplete="PF('excluirDisciplinaDialog').show()"
                                  process="@this" />
 
-                <p:menuButton value="#{msg.curso}">
+                <p:menuButton id="selecionaCurso"
+                    value="#{!cursoBean.selecionado ? msg.curso: cursoBean.itemSelecionado.nome}">
                     <c:forEach items="#{cursoBean.cursos}" var="cursoItem">
-                        <p:menuitem value="#{cursoItem.nome}" update=":disciplinasForm:cursoSelLabel" actionListener="#{cursoBean.selecionaItemListener}">
+                        <p:menuitem value="#{cursoItem.nome}" update="selecionaCurso" actionListener="#{cursoBean.selecionaItemListener}">
                             <f:attribute name="cursoItem" value="#{cursoItem}" />
                         </p:menuitem>
                     </c:forEach>
                 </p:menuButton>
-
-                <p:outputLabel id="cursoSelLabel"
-                               styleClass="formToolbarLabel"
-                               value="#{cursoBean.itemSelecionado.nome}" />
-
                 <p:inputText id="disciplinaBusca"
                              styleClass="searchBox"
                              value="#{disciplinaBean.termoBusca}" />

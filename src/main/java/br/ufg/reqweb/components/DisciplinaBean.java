@@ -20,6 +20,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
@@ -37,7 +38,6 @@ import org.springframework.stereotype.Component;
  *
  * @author andre
  */
-
 @Component
 @Scope(value = "session")
 public class DisciplinaBean implements Serializable {
@@ -64,9 +64,10 @@ public class DisciplinaBean implements Serializable {
     private int progress;
     private volatile boolean stopImportaDisciplinas;
     private Disciplina disciplina;
+    private Curso curso;
     private Disciplina itemSelecionado;
     private Disciplina itemPreviewSelecionado;
-    private Map<Long,Disciplina> disciplinaListPreview;
+    private Map<Long, Disciplina> disciplinaListPreview;
     private final LazyDataModel<Disciplina> disciplinas;
 
     public DisciplinaBean() {
@@ -75,6 +76,7 @@ public class DisciplinaBean implements Serializable {
         operation = null;
         tImportJob = null;
         disciplina = new Disciplina();
+        curso = new Curso();
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         disciplinas = new LazyDataModel<Disciplina>() {
@@ -100,7 +102,6 @@ public class DisciplinaBean implements Serializable {
     public void novaDisciplina(ActionEvent event) {
         setOperation(ADICIONA);
         disciplina = new Disciplina();
-
     }
 
     public void editaDisciplina(ActionEvent event) {
@@ -110,6 +111,14 @@ public class DisciplinaBean implements Serializable {
         } else {
             setOperation(EDITA);
             disciplina = getItemSelecionado();
+            FacesContext context = FacesContext.getCurrentInstance();
+            CursoBean cursoBean = (CursoBean) context.getELContext().getELResolver().getValue(context.getELContext(), null, "cursoBean");
+            for (Curso c: cursoBean.getCursos()) {
+                if (disciplina.getCurso().getId() == c.getId()) {
+                    curso = c;
+                    break;
+                }
+            }
         }
     }
 
@@ -153,11 +162,13 @@ public class DisciplinaBean implements Serializable {
         tImportJob.start();
     }
 
-    public void salvaDisciplina() {
+    public String salvaDisciplina() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
+        disciplina.setCurso(curso);
         Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
-        if (errors.isEmpty()) {
+        System.out.println(errors.size() + " erros ocorreram.");
+        if (errors.isEmpty() && curso.getId() > 0) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
@@ -167,10 +178,12 @@ public class DisciplinaBean implements Serializable {
                 disciplinaDao.atualizar(disciplina);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            return listaDisciplinas();
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
+            return null;
         }
     }
 
@@ -181,11 +194,21 @@ public class DisciplinaBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Disciplina) event.getObject();
     }
-    
+
     public void selecionaItemPreview(SelectEvent event) {
         itemPreviewSelecionado = (Disciplina) event.getObject();
     }
-    
+
+    public void selecionaCurso(ValueChangeEvent event) {
+        long value;
+        try {
+            value = (Long) event.getNewValue();
+            curso = cursoDao.findById(value);            
+        } catch (NullPointerException e) {
+            curso = null;
+        }
+    }
+
     public void uploadDisciplinas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
@@ -205,7 +228,7 @@ public class DisciplinaBean implements Serializable {
                 d.setCodigo(codigo);
                 d.setNome(nome);
                 d.setCurso(cursoMap.get(sigla));
-                disciplinaListPreview.put(d.getCodigo(),d);
+                disciplinaListPreview.put(d.getCodigo(), d);
             }
         } catch (IOException ex) {
             Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
@@ -213,11 +236,11 @@ public class DisciplinaBean implements Serializable {
         FacesMessage msg = new FacesMessage("info", String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")));
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-    
+
     public void excluiArquivoUploaded(ActionEvent event) {
         disciplinaListPreview.clear();
     }
-    
+
     public void excluiDisciplinaPreview() {
         disciplinaListPreview.remove(itemPreviewSelecionado.getCodigo());
         itemPreviewSelecionado = null;
@@ -255,7 +278,7 @@ public class DisciplinaBean implements Serializable {
     public List<Disciplina> getDisciplinaListPreview() {
         return new ArrayList<>(disciplinaListPreview.values());
     }
-    
+
     public boolean isArquivoUploaded() {
         return disciplinaListPreview.size() > 0;
     }
@@ -296,6 +319,14 @@ public class DisciplinaBean implements Serializable {
         this.disciplina = disciplina;
     }
 
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+    
     public boolean isSelecionado() {
         return itemSelecionado != null;
     }
@@ -307,7 +338,7 @@ public class DisciplinaBean implements Serializable {
     public void setItemSelecionado(Disciplina itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
     }
-    
+
     public boolean isPreviewSelecionado() {
         return itemPreviewSelecionado != null;
     }
@@ -319,5 +350,5 @@ public class DisciplinaBean implements Serializable {
     public void setItemPreviewSelecionado(Disciplina itemPreviewSelecionado) {
         this.itemPreviewSelecionado = itemPreviewSelecionado;
     }
-    
+
 }

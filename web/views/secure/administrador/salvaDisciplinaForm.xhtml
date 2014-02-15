@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgDisciplinaForm" modal="true"
+              widgetVar="dlgDisciplinaVar" width="360" height="340"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.disciplinaNovo}" rendered="#{disciplinaBean.operation == 'a'}" />
+            <h:outputText value="#{msg.disciplinaEditar}" rendered="#{disciplinaBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="salvaDisciplinaForm">
+            <!--validacao do lado do servidor utilizando beanValidator -->
+            <!--tag anula Validation PhaseListener do JSF -->
+            <f:validateBean disabled="true">
+                <p:panelGrid columns="1" id="disciplinaDlgPanel" styleClass="formGrid">
+                    <p:outputLabel for="disciplinaCodigo" value="#{msg.codigo}" />
+                    <p:inputText id="disciplinaCodigo" value="#{disciplinaBean.disciplina.codigo}" styleClass="disciplinaCodigo" size="6" maxlength="6" />
+                    <p:outputLabel for="disciplinaNome" value="#{msg.disciplina}"  />                    
+                    <p:inputText value="#{disciplinaBean.disciplina.nome}" id="disciplinaNome" />
+                    <p:outputLabel for="cursoDisciplina" value="#{msg.curso}"  />
+                    <p:selectOneMenu id="cursoDisciplina"
+                                     value="#{disciplinaBean.curso}"
+                                     converter="#{cursoConverter}">
+                        <f:selectItem itemLabel="#{msg.curso}" />
+                        <f:selectItems value="#{cursoBean.cursos}" var="cursoItem" itemLabel="#{cursoItem.nome}" itemValue="#{cursoItem}"/>
+                    </p:selectOneMenu>
+                    <p:message for="cursoDisciplina" showSummary="true" showDetail="true" />
+                </p:panelGrid>
+                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{disciplinaBean.salvaDisciplina}"
+                                     oncomplete="dialogHandler('dlgDisciplinaVar', xhr, status, args)"
+                                     update=":salvaDisciplinaForm :formHeader:systemMessages :disciplinasForm:tableDisciplinas :disciplinasForm:disciplinasToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@none"
+                                     update=":salvaDisciplinaForm"
+                                     onclick="PF('dlgDisciplinaVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

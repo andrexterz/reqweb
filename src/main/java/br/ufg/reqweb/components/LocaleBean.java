@@ -32,7 +32,7 @@ public class LocaleBean implements Serializable {
     private static final List<SelectItem> LOCALES;
 
     static {
-        LOCALES = new ArrayList<SelectItem>(2);
+        LOCALES = new ArrayList<>(2);
         LOCALES.add(new SelectItem(EN_US, "English"));
         LOCALES.add(new SelectItem(PT_BR, "Português"));
     }

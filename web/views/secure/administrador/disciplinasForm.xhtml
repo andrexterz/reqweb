@@ -17,7 +17,7 @@
                                  actionListener="#{disciplinaBean.novaDisciplina}"
                                  oncomplete="PF('dlgDisciplinaVar').show()"
                                  update="tableDisciplinas :salvaDisciplinaForm" />
-                
+
                 <p:commandButton value="#{msg.editar}"
                                  disabled="#{!disciplinaBean.selecionado}"
                                  process="@this"
@@ -25,22 +25,18 @@
                                  oncomplete="PF('dlgDisciplinaVar').show()"
                                  update="tableDisciplinas :salvaDisciplinaForm" />
 
-                
+
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"
                                  update="tableDisciplinas"
                                  disabled="#{!disciplinaBean.selecionado}"
                                  oncomplete="PF('excluirDisciplinaDialog').show()"
                                  process="@this" />
-
-                <p:menuButton id="selecionaCurso"
-                    value="#{!cursoBean.selecionado ? msg.curso: cursoBean.itemSelecionado.nome}">
-                    <c:forEach items="#{cursoBean.cursos}" var="cursoItem">
-                        <p:menuitem value="#{cursoItem.nome}" update="selecionaCurso" actionListener="#{cursoBean.selecionaItemListener}">
-                            <f:attribute name="cursoItem" value="#{cursoItem}" />
-                        </p:menuitem>
-                    </c:forEach>
-                </p:menuButton>
+                
+                <!-- substituir este campo por autocomplete -->
+                <p:inputText id="cursoFiltro" styleClass="autoComplete" />
+                <p:watermark for="cursoFiltro" value="#{msg.curso}" />
+                
                 <p:inputText id="disciplinaBusca"
                              styleClass="searchBox"
                              value="#{disciplinaBean.termoBusca}" />

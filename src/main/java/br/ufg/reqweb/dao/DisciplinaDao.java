@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.dao;
 
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 
 import java.util.ArrayList;
@@ -58,6 +59,25 @@ public class DisciplinaDao {
             disciplina = null;
         }
         return disciplina;
+    }
+    
+    @Transactional(readOnly = true)    
+    public List<Disciplina> findByCurso(String termo, Curso curso) {
+        try {
+            String query = (termo.isEmpty()) ?
+                    "SELECT * FROM Disciplina d INNER JOIN Curso as c WHERE c.id = :cursoId":
+                    "SELECT * FROM Disciplina d INNER JOIN Curso as c WHERE c.id = :cursoId and d.nome ~* :termo";
+            List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
+                    .createSQLQuery(query)
+                    .addEntity(Disciplina.class)
+                    .addEntity(Curso.class)
+                    .setParameter("cursoId", curso.getId())
+                    .list();
+            return disciplinas;
+        } catch (HibernateException | NumberFormatException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }        
     }
 
     @Transactional(readOnly = true)

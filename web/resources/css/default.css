@@ -616,6 +616,15 @@ input[type=text], input[type=password], select {
     margin-left: 8px;
 }
 
+.autoComplete {
+    width: 20%!important;
+    margin-left: 4px;
+    padding-right: 20px!important;
+    background-image: url("#{resource['img/filter.png']}")!important;    
+    background-repeat: no-repeat!important;
+    background-position: 99% 50%!important;    
+}
+
 .searchBox {
     width: 20%!important;
     float: right;

@@ -85,6 +85,9 @@ public class DisciplinaBean implements Serializable {
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 List<Disciplina> disciplinaList;
+                if (curso != null) {
+                    System.out.println("curso selecionado: " + curso.getNome());
+                }
                 if (termoBusca.equals("")) {
                     disciplinaList = disciplinaDao.find(first, pageSize);
                     setRowCount(disciplinaDao.count());
@@ -200,10 +203,8 @@ public class DisciplinaBean implements Serializable {
     }
 
     public void selecionaCurso(ValueChangeEvent event) {
-        long value;
         try {
-            value = (Long) event.getNewValue();
-            curso = cursoDao.findById(value);            
+            curso = (Curso) event.getNewValue();
         } catch (NullPointerException e) {
             curso = null;
         }
@@ -230,11 +231,12 @@ public class DisciplinaBean implements Serializable {
                 d.setCurso(cursoMap.get(sigla));
                 disciplinaListPreview.put(d.getCodigo(), d);
             }
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")),"");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")),"");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-        FacesMessage msg = new FacesMessage("info", String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")));
-        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void excluiArquivoUploaded(ActionEvent event) {

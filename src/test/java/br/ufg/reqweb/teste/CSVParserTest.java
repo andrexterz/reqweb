@@ -6,11 +6,7 @@
 
 package br.ufg.reqweb.teste;
 
-import br.ufg.reqweb.util.CSVParser;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

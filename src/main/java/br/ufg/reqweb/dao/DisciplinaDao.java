@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,24 +61,28 @@ public class DisciplinaDao {
         }
         return disciplina;
     }
-    
-    @Transactional(readOnly = true)    
+
+    @Transactional(readOnly = true)
     public List<Disciplina> findByCurso(String termo, Curso curso) {
         try {
-            String query = (termo.isEmpty()) ?
-                    "SELECT * FROM Disciplina d INNER JOIN Curso as c WHERE c.id = :cursoId":
-                    "SELECT * FROM Disciplina d INNER JOIN Curso as c WHERE c.id = :cursoId and d.nome ~* :termo";
-            List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery(query)
-                    .addEntity(Disciplina.class)
-                    .addEntity(Curso.class)
-                    .setParameter("cursoId", curso.getId())
-                    .list();
+            List<Disciplina> disciplinas;
+            if (termo.isEmpty()) {
+                disciplinas = this.sessionFactory.getCurrentSession()
+                        .createQuery("FROM Disciplina d WHERE d.curso.id = :cursoId")
+                        .setParameter("cursoId", curso.getId())
+                        .list();
+            } else {
+                disciplinas = this.sessionFactory.getCurrentSession()
+                        .createCriteria(Disciplina.class)
+                        .add(Restrictions.like("nome", "%" + termo.toUpperCase() + "%"))
+                        .add(Restrictions.eq("curso.id", curso.getId()))
+                        .list();
+            }
             return disciplinas;
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
-        }        
+        }
     }
 
     @Transactional(readOnly = true)

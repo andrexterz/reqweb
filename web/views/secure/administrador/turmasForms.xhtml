@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog>
+        <f:facet name="header">
+            <h:outputText value="#{msg.turmas}" />
+        </f:facet>
+        <h:form id="turmasForm">
+            <h:panelGroup layout="block" id="turmasToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 actionListener="#{turmaBean.novaTurma}"
+                                 oncomplete="PF('dlgTurmaVar').show()"
+                                 update="tableTurmas :salvaTurmaForm" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 disabled="#{!turmaBean.selecionado}"
+                                 process="@this"
+                                 actionListener="#{turmaBean.editaTurma}"
+                                 oncomplete="PF('dlgTurmaVar').show()"
+                                 update="tableTurmas :salvaTurmaForm" />
+
+
+                <p:commandButton value="#{msg.excluir}"
+                                 styleClass="formToolbarButtons"
+                                 update="tableTurmas"
+                                 disabled="#{!turmaBean.selecionado}"
+                                 oncomplete="PF('excluirTurmaDialog').show()"
+                                 process="@this" />
+                
+                <p:inputText id="turmaBusca"
+                             styleClass="searchBox"
+                             value="#{turmaBean.termoBusca}" />
+
+                <p:watermark for="turmaBusca" value="#{msg.turma}" />
+
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=turmaCommand] -->
+                <p:commandButton style="visibility: hidden;"
+                                 id="turmaBuscaCommand"
+                                 styleClass="searchCommand alignRight"
+                                 update="tableTurmas"
+                                 actionListener="#{turmaBean.listaTurmas}" />
+
+                <p:defaultCommand target="turmaBuscaCommand" />
+
+            </h:panelGroup>            
+            <p:dataTable id="tableTurmas"
+                         paginator="true"
+                         value="#{turmaBean.turmas}"
+                         var="turmaItem"
+                         lazy="true"
+                         emptyMessage="#{msg.emptyMessage}"
+                         rowKey="#{turmaItem.id}"
+                         selectionMode="single"
+                         selection="#{turmaBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":turmasForm:turmasToolbar :excluiTurmaForm" listener="#{turmaBean.selecionaItem}" />
+                <p:column headerText="#{msg.turma}" styleClass="turmaColA">
+                    <h:outputText value="#{turmaItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.disciplina}" styleClass="turmaColB">
+                    <h:outputText value="#{turmaItem.disciplina}" />
+                </p:column>
+                <p:column headerText="#{msg.docente}" styleClass="turmaColC">
+                    <h:outputText value="#{turmaItem.usuario}" />
+                </p:column>
+            </p:dataTable>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton value="#{msg.fechar}"
+                                 process="@none"
+                                 onclick="PF('dlgTurmasFormVar').hide()"/>
+            </h:panelGroup>            
+        </h:form>
+    </p:dialog>
+</ui:composition>

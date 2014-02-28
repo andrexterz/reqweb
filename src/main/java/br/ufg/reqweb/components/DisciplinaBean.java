@@ -10,7 +10,6 @@ import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.util.CSVParser;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +75,7 @@ public class DisciplinaBean implements Serializable {
         operation = null;
         tImportJob = null;
         disciplina = new Disciplina();
-        curso = new Curso();
+        curso = null;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         disciplinas = new LazyDataModel<Disciplina>() {
@@ -86,14 +85,16 @@ public class DisciplinaBean implements Serializable {
                 setPageSize(pageSize);
                 List<Disciplina> disciplinaList;
                 if (curso != null) {
-                    System.out.println("curso selecionado: " + curso.getNome());
-                }
-                if (termoBusca.equals("")) {
-                    disciplinaList = disciplinaDao.find(first, pageSize);
-                    setRowCount(disciplinaDao.count());
-                } else {
-                    disciplinaList = disciplinaDao.find(termoBusca);
+                    disciplinaList = disciplinaDao.findByCurso(termoBusca, curso);
                     setRowCount(disciplinaList.size());
+                } else {
+                    if (termoBusca.equals("")) {
+                        disciplinaList = disciplinaDao.find(first, pageSize);
+                        setRowCount(disciplinaDao.count());
+                    } else {
+                        disciplinaList = disciplinaDao.find(termoBusca);
+                        setRowCount(disciplinaList.size());
+                    }
                 }
                 return disciplinaList;
             }
@@ -116,7 +117,7 @@ public class DisciplinaBean implements Serializable {
             disciplina = getItemSelecionado();
             FacesContext context = FacesContext.getCurrentInstance();
             CursoBean cursoBean = (CursoBean) context.getELContext().getELResolver().getValue(context.getELContext(), null, "cursoBean");
-            for (Curso c: cursoBean.getCursos()) {
+            for (Curso c : cursoBean.getCursos()) {
                 if (disciplina.getCurso().getId() == c.getId()) {
                     curso = c;
                     break;
@@ -170,7 +171,6 @@ public class DisciplinaBean implements Serializable {
         RequestContext context = RequestContext.getCurrentInstance();
         disciplina.setCurso(curso);
         Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
-        System.out.println(errors.size() + " erros ocorreram.");
         if (errors.isEmpty() && curso.getId() > 0) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
@@ -202,6 +202,14 @@ public class DisciplinaBean implements Serializable {
         itemPreviewSelecionado = (Disciplina) event.getObject();
     }
 
+    public void autoCompleteSelecionaCurso(SelectEvent event) {
+        try {
+            curso = (Curso) event.getObject();
+        } catch (NullPointerException e) {
+            curso = null;
+        }
+    }
+
     public void selecionaCurso(ValueChangeEvent event) {
         try {
             curso = (Curso) event.getNewValue();
@@ -231,10 +239,10 @@ public class DisciplinaBean implements Serializable {
                 d.setCurso(cursoMap.get(sigla));
                 disciplinaListPreview.put(d.getCodigo(), d);
             }
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")),"");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (IOException ex) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")),"");
+        } catch (Exception ex) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -328,7 +336,7 @@ public class DisciplinaBean implements Serializable {
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
-    
+
     public boolean isSelecionado() {
         return itemSelecionado != null;
     }

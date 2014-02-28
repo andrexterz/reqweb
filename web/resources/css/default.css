@@ -487,6 +487,18 @@ input[type=text], input[type=password], select {
 .disciplinaColC {
     width: 45%;
 }
+
+/************************************ turmas **********************************/
+.turmaColA {
+    width: 10%;
+}
+.turmaColB {
+    width: 50%;
+}
+.turmaColC {
+    width: 40%;
+}
+
 /********************************* usuarios ***********************************/
 .usuarioColLogin {
     width: 20%;
@@ -616,7 +628,7 @@ input[type=text], input[type=password], select {
     margin-left: 8px;
 }
 
-.autoComplete {
+.autoComplete input {
     width: 20%!important;
     margin-left: 4px;
     padding-right: 20px!important;

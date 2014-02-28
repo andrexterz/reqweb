@@ -123,9 +123,18 @@ public class CursoBean implements Serializable {
         if (termoBusca.equals("")) {
             return cursoDao.findAll();
         } else {
-
             return cursoDao.find(termoBusca);
         }
+    }
+    
+    public List<Curso> autoCompleteCursos(String query) {
+        List<Curso> suggestions = new ArrayList<>();
+        for (Curso c: getCursos()) {
+            if (c.getNome().toLowerCase().contains(query.toLowerCase())) {
+                suggestions.add(c);
+            }
+        }
+        return suggestions;
     }
     
     public List<Curso> getCursos() {

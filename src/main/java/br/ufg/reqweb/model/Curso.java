@@ -24,10 +24,12 @@ import javax.validation.constraints.Size;
 public class Curso implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    
     @Id
     @SequenceGenerator(name = "CURSO_ID", sequenceName = "curso_curso_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     @Column(length = 100, nullable = false)
     @Size(min = 5, max = 100)
@@ -88,5 +90,20 @@ public class Curso implements Serializable {
      */
     public void setDataModificacao(Date dataModificacao) {
         this.dataModificacao = dataModificacao;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj == null)? (this == obj): (obj instanceof Curso && ((Curso) obj).id == id);
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "@" + id;
     }
 }

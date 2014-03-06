@@ -45,7 +45,7 @@ public class CursoBean implements Serializable {
     private Curso itemSelecionado;
     private String operation;//a: adiciona | e: edita
     private String termoBusca;
-    public List<Curso> cursos;
+    private List<Curso> cursos;
 
     public CursoBean() {
         curso = new Curso();
@@ -138,7 +138,7 @@ public class CursoBean implements Serializable {
     }
     
     public List<Curso> getCursos() {
-        if (cursos.isEmpty() | cursoDao.count() > cursos.size()) {
+        if (cursos.isEmpty() | cursoDao.count() != cursos.size()) {
             cursos = cursoDao.findAll();
         }
         return cursos;

@@ -15,6 +15,11 @@
         <ui:include src="disciplinasPreviewForm.xhtml" />
         <ui:include src="excluiDisciplinaForm.xhtml" />
         <ui:include src="salvaDisciplinaForm.xhtml" />
+        
+        <ui:include src="turmasForm.xhtml" />
+        <ui:include src="salvaTurmaForm.xhtml" />
+        <ui:include src="excluiTurmaForm.xhtml" />
+        
         <h:form class="contentTables" id="arquivoForm">
             <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
                 <p:commandButton title="#{msg.disciplinas}"
@@ -27,6 +32,7 @@
                 <p:commandButton title="#{msg.turmas}"
                                  value="#{msg.turmas}"
                                  process="@this"
+                                 oncomplete="PF('dlgTurmasFormVar').show()"
                                  icon="ui-icon-search" />
 
                 <p:commandButton title="#{msg.indicePrioridade}"
@@ -75,7 +81,6 @@
                                   fileLimit="1"
                                   multiple="false"
                                   process="@form"
-                                  fileUploadListener="#{arquivoBean.uploadTurmas}"
                                   update=":formHeader:systemMessages turmas" />
                 </h:panelGroup>
             </h:form>                
@@ -93,7 +98,6 @@
                                       fileLimit="1"
                                       multiple="false"
                                       process="@this"
-                                      fileUploadListener="#{arquivoBean.uploadIndicePrioridade}"
                                       update=":formHeader:systemMessages arquivosPeriodoForm" />
                 </h:panelGroup>
             </h:form>

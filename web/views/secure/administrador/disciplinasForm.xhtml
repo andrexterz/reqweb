@@ -51,15 +51,14 @@
                 <p:commandButton style="visibility: hidden;"
                                  id="disciplinaBuscaCommand"
                                  styleClass="searchCommand alignRight"
-                                 update="tableDisciplinas"
-                                 actionListener="#{disciplinaBean.listaDisciplinas}" />
+                                 update="tableDisciplinas" />
 
                 <p:defaultCommand target="disciplinaBuscaCommand" />
 
             </h:panelGroup>            
             <p:dataTable id="tableDisciplinas"
                          paginator="true"
-                         value="#{disciplinaBean.disciplinas}"
+                         value="#{disciplinaBean.disciplinasDataModel}"
                          var="disciplinaItem"
                          lazy="true"
                          emptyMessage="#{msg.emptyMessage}"

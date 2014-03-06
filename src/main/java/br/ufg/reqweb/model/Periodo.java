@@ -119,6 +119,16 @@ public class Periodo implements Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return (obj == null)? (this == obj): (obj instanceof Periodo && ((Periodo) obj).id == id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
+    }
+
+    @Override
     public String toString() {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");

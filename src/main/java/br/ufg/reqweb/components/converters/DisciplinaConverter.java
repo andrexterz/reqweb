@@ -5,9 +5,10 @@
  */
 package br.ufg.reqweb.components.converters;
 
-import br.ufg.reqweb.components.CursoBean;
-import br.ufg.reqweb.dao.CursoDao;
-import br.ufg.reqweb.model.Curso;
+import br.ufg.reqweb.dao.DisciplinaDao;
+import br.ufg.reqweb.model.Disciplina;
+import java.util.HashMap;
+import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -19,22 +20,30 @@ import org.springframework.stereotype.Component;
  * @author andre
  */
 @Component
-public class CursoConverter implements Converter {
-    
+public class DisciplinaConverter implements Converter {
+
     @Autowired
-    CursoDao cursoDao;
+    DisciplinaDao disciplinaDao;
+
+    private final Map<String, Disciplina> disciplinas = new HashMap<String, Disciplina>();
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Curso curso = cursoDao.findById(Long.parseLong(value));
-        return curso;
+        if (value != null && !value.isEmpty()) {
+            return disciplinas.get(value);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        try {
-            return Long.toString(((Curso) value).getId());
-        } catch (NullPointerException e) {
+        Disciplina obj = (Disciplina) value;
+        if (obj != null && obj.getId() != null) {
+            String key = Long.toString(obj.getId());
+            disciplinas.put(key, obj);
+            return key;
+        } else {
             return null;
         }
     }

@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgTurmaForm" modal="true"
+              widgetVar="dlgTurmaVar" width="360" height="340"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.turmaNovo}" rendered="#{turmaBean.operation == 'a'}" />
+            <h:outputText value="#{msg.turmaEditar}" rendered="#{turmaBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="salvaTurmaForm">
+            <!--validacao do lado do servidor utilizando beanValidator -->
+            <!--tag anula Validation PhaseListener do JSF -->
+            <f:validateBean disabled="true">
+                <p:panelGrid columns="1" id="turmaDlgPanel" styleClass="formGrid">
+                    <p:outputLabel for="turmaNome" value="#{msg.turma}"  />
+                    <p:inputText value="#{turmaBean.turma.nome}" id="turmaNome" />
+                    <p:outputLabel for="disciplinaTurma" value="#{msg.disciplina}"  />
+                    <p:selectOneMenu id="disciplinaTurma"
+                                     value="#{turmaBean.disciplina}"
+                                     converter="#{disciplinaConverter}">
+                        <f:selectItem itemLabel="#{msg.disciplina}" />
+                        <f:selectItems value="#{disciplinaBean.disciplinas}"
+                                       var="disciplinaItem"
+                                       itemLabel="#{disciplinaItem.nome}" itemValue="#{disciplinaItem}"/>
+                    </p:selectOneMenu>
+                    <p:message for="disciplinaTurma" />
+                    <h:outputText id="disciplinatxt" value=" disciplina: #{turmaBean.disciplina.nome}" />
+                </p:panelGrid>
+                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{turmaBean.salvaTurma}"
+                                     oncomplete="dialogHandler('dlgTurmaVar', xhr, status, args)"
+                                     update="disciplinatxt :salvaTurmaForm :formHeader:systemMessages :turmasForm:tableTurmas :turmasForm:turmasToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@none"
+                                     update=":salvaTurmaForm"
+                                     onclick="PF('dlgTurmaVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

@@ -3,7 +3,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog>
+    <p:dialog widgetVar="dlgTurmasFormVar" appendTo="@(body)"
+              modal="true" resizable="false" width="80%" height="390">
         <f:facet name="header">
             <h:outputText value="#{msg.turmas}" />
         </f:facet>

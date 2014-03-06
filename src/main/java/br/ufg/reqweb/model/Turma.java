@@ -8,8 +8,11 @@ package br.ufg.reqweb.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -18,12 +21,11 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Turma implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
+    @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column

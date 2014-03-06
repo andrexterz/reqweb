@@ -6,6 +6,7 @@
 
 package br.ufg.reqweb.teste;
 
+import br.ufg.reqweb.model.Disciplina;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.After;
@@ -19,9 +20,9 @@ import static org.junit.Assert.*;
  *
  * @author andre
  */
-public class RegexpTest {
+public class GenericTest {
     
-    public RegexpTest() {
+    public GenericTest() {
     }
     
     @BeforeClass
@@ -42,7 +43,10 @@ public class RegexpTest {
 
     @Test
     public void testExpressions() {
-        assertTrue(true == true);
+        Long v1 = 1l;
+        Long v2 = 1l;
+        System.out.println("v1 == v2? " + (v1 == v2));
+        
 //        Pattern pat = Pattern.compile("\\D+(?=(\\d+))");
 //        String [] names = {"si10178", "cc10023", "amanda", "msc10426","afonso", "es10311"};
 //        for (String s:names) {

@@ -38,7 +38,6 @@ public class LoginFilter implements Filter {
             if (usuarioBean.isAutenticado()) {
                 chain.doFilter(request, response);
                 String url = httpRequest.getRequestURI();
-                System.out.println("req url.......: " + url);                
             } else {
                 httpResponse.sendRedirect(path + "/index.jsp");
             }

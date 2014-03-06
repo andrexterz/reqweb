@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
@@ -67,7 +66,8 @@ public class DisciplinaBean implements Serializable {
     private Disciplina itemSelecionado;
     private Disciplina itemPreviewSelecionado;
     private Map<Long, Disciplina> disciplinaListPreview;
-    private final LazyDataModel<Disciplina> disciplinas;
+    private List<Disciplina> disciplinas;
+    private final LazyDataModel<Disciplina> disciplinasDataModel;
 
     public DisciplinaBean() {
         disciplinaListPreview = new HashMap();
@@ -78,7 +78,8 @@ public class DisciplinaBean implements Serializable {
         curso = null;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
-        disciplinas = new LazyDataModel<Disciplina>() {
+        disciplinas = new ArrayList<>();
+        disciplinasDataModel = new LazyDataModel<Disciplina>() {
 
             @Override
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
@@ -166,7 +167,7 @@ public class DisciplinaBean implements Serializable {
         tImportJob.start();
     }
 
-    public String salvaDisciplina() {
+    public void salvaDisciplina() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         disciplina.setCurso(curso);
@@ -181,17 +182,11 @@ public class DisciplinaBean implements Serializable {
                 disciplinaDao.atualizar(disciplina);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaDisciplinas();
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
-            return null;
         }
-    }
-
-    public String listaDisciplinas() {
-        return "disciplinas";
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -205,14 +200,6 @@ public class DisciplinaBean implements Serializable {
     public void autoCompleteSelecionaCurso(SelectEvent event) {
         try {
             curso = (Curso) event.getObject();
-        } catch (NullPointerException e) {
-            curso = null;
-        }
-    }
-
-    public void selecionaCurso(ValueChangeEvent event) {
-        try {
-            curso = (Curso) event.getNewValue();
         } catch (NullPointerException e) {
             curso = null;
         }
@@ -281,7 +268,14 @@ public class DisciplinaBean implements Serializable {
         }
     }
 
-    public LazyDataModel<Disciplina> getDisciplinas() {
+    public LazyDataModel<Disciplina> getDisciplinasDataModel() {
+        return disciplinasDataModel;
+    }
+    
+    public List<Disciplina> getDisciplinas() {
+        if (disciplinas.isEmpty() | disciplinaDao.count() != disciplinas.size()) {
+            disciplinas = disciplinaDao.findAll();
+        }
         return disciplinas;
     }
 

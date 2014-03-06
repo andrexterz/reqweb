@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>teste</title>
+        <link type="text/css" rel="stylesheet"
+              href="#{resource['css/default.css']}" />        
+    </h:head>
+    <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
+        <h:form id="formTest">
+            <h:panelGrid columns="1" style="background: bisque; width: 100%;">
+                <p:selectOneMenu id="selectTest1"
+                                 value="#{disciplinaBean.disciplina}"
+                                 converter="#{disciplinaConverter}">
+                    <f:selectItems value="#{disciplinaBean.disciplinas}"
+                                   var="itemd"
+                                   itemLabel="#{itemd.nome} #{itemd.hashCode()}" itemValue="#{itemd}"/>
+                </p:selectOneMenu>
+                <h:outputText id="txt1" value="disciplina #{disciplinaBean.disciplina}" />
+                <p:commandButton value="update"
+                                 update="txt1" />
+                <p:messages autoUpdate="true" />
+            </h:panelGrid>
+            <p:dataTable id="tableDisciplinas"
+                         paginator="true"
+                         value="#{disciplinaBean.disciplinasDataModel}"
+                         var="disciplinaItem"
+                         lazy="true"
+                         emptyMessage="#{msg.emptyMessage}"
+                         rowKey="#{disciplinaItem.id}"
+                         selectionMode="single"
+                         selection="#{disciplinaBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":formTest:txt2" listener="#{disciplinaBean.selecionaItem}" />
+                <p:column headerText="hashCode" styleClass="disciplinaColA">
+                    <h:outputText value="#{disciplinaItem.hashCode()}" />
+                </p:column>
+                <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
+                    <h:outputText value="#{disciplinaItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
+                    <h:outputText value="#{disciplinaItem.curso.nome}" />
+                </p:column>
+            </p:dataTable>
+            <h:outputText id="txt2" value="disciplina #{disciplinaBean.itemSelecionado}" />
+        </h:form>        
+    </h:body>
+</html>
+

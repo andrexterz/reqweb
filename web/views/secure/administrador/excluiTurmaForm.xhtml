@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="excluiTurmaForm">
+        <p:confirmDialog id="dlgExclTurmaDialog" widgetVar="excluirTurmaDialog"
+                         appendTo="@(body)" width="420" 
+                         header="#{msg.excluir} #{msg.turma}"
+                         message="#{msg.excluir} #{msg.turma} #{turmaBean.itemSelecionado.nome}?"
+                         severity="alert">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
+                <p:commandButton id="confirmaExclTurma" value="#{msg.sim}"
+                                 oncomplete="PF('excluirTurmaDialog').hide()"
+                                 action="#{turmaBean.excluiTurma}"
+                                 process="@this"
+                                 update=":turmasForm:turmasToolbar :turmasForm:tableTurmas :formHeader:systemMessages" />
+                <p:commandButton id="cancelaExclTurma"
+                                 value="#{msg.nao}"
+                                 onclick="PF('excluirTurmaDialog').hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>
+

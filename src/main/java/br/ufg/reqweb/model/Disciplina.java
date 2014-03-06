@@ -7,18 +7,15 @@
 package br.ufg.reqweb.model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
 
 /**
  *
@@ -27,26 +24,23 @@ import javax.validation.constraints.Size;
 
 @Entity
 public class Disciplina implements Serializable {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @SequenceGenerator(name = "DISCIPLINA_ID", sequenceName = "disciplina_disciplina_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     
-    @Column(unique = true, nullable = false)
-    @Min(value = 1)
+    @Column
     private Long codigo;
     
-    @Column(nullable = false)
-    @Size(min = 3, max = 100)
+    @Column
     private String nome;
     
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
     private Curso curso;
-
-    @OneToMany(mappedBy = "disciplina")
-    private List<Turma> turmas;
     
     /**
      * @return the id
@@ -61,7 +55,7 @@ public class Disciplina implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     /**
      * @return the codigo
      */
@@ -75,7 +69,7 @@ public class Disciplina implements Serializable {
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
-    
+
     /**
      * @return the nome
      */
@@ -87,7 +81,7 @@ public class Disciplina implements Serializable {
      * @param nome the nome to set
      */
     public void setNome(String nome) {
-        this.nome = nome.toUpperCase();
+        this.nome = nome;
     }
 
     /**
@@ -102,6 +96,20 @@ public class Disciplina implements Serializable {
      */
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }    
+    
+    @Override
+    public boolean equals(Object obj) {
+        return (obj == null)? (this == obj): (obj instanceof Disciplina && ((Disciplina) obj).getId() == getId());
     }
- 
+
+    @Override
+    public int hashCode() {
+        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)): super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "@" + getId();
+    }
 }

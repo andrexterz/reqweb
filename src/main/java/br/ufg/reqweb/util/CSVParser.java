@@ -5,7 +5,6 @@
  */
 package br.ufg.reqweb.util;
 
-import br.ufg.reqweb.components.ArquivoBean;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,14 +40,14 @@ public class CSVParser {
                 data.add(row);
             }
         } catch (IOException ex) {
-            Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
+            Logger.getLogger(CSVParser.class).error(ex.getMessage());
         } finally {
             try {
                 if (bReader != null) {
                     bReader.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ArquivoBean.class).error(ex.getMessage());
+                Logger.getLogger(CSVParser.class).error(ex.getMessage());
             }
         }
         return data;

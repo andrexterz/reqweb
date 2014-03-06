@@ -25,12 +25,10 @@ public class DisciplinaConverter implements Converter {
     @Autowired
     DisciplinaDao disciplinaDao;
 
-    private final Map<String, Disciplina> disciplinas = new HashMap<String, Disciplina>();
-
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         if (value != null && !value.isEmpty()) {
-            return disciplinas.get(value);
+            return disciplinaDao.findById(Long.parseLong(value));
         } else {
             return null;
         }
@@ -40,10 +38,8 @@ public class DisciplinaConverter implements Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         Disciplina obj = (Disciplina) value;
         if (obj != null && obj.getId() != null) {
-            String key = Long.toString(obj.getId());
-            disciplinas.put(key, obj);
-            return key;
-        } else {
+            return Long.toString(obj.getId());
+         } else {
             return null;
         }
     }

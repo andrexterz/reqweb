@@ -100,7 +100,13 @@ public class Disciplina implements Serializable {
     
     @Override
     public boolean equals(Object obj) {
-        return (obj == null)? (this == obj): (obj instanceof Disciplina && ((Disciplina) obj).getId() == getId());
+        if (obj != null) {
+            long v1 = (id == null) ? Long.MIN_VALUE: id;
+            long v2 = ((Disciplina) obj).getId();
+            return (obj instanceof Disciplina && v1 == v2);
+        } else {
+            return false;
+        }
     }
 
     @Override

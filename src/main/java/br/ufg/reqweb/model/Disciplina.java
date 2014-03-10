@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -32,9 +33,11 @@ public class Disciplina implements Serializable {
     @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
     
-    @Column
+    @NotNull
+    @Column(unique = true)
     private Long codigo;
     
+    @NotNull
     @Column
     private String nome;
     
@@ -101,9 +104,7 @@ public class Disciplina implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj != null) {
-            long v1 = (id == null) ? Long.MIN_VALUE: id;
-            long v2 = ((Disciplina) obj).getId();
-            return (obj instanceof Disciplina && v1 == v2);
+            return ((obj instanceof Disciplina) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Disciplina) obj).getId());
         } else {
             return false;
         }

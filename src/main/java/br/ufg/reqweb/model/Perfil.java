@@ -22,7 +22,8 @@ import javax.persistence.SequenceGenerator;
  */
 @Entity
 public class Perfil implements Serializable {
-
+    
+    
     /**
      *
      */
@@ -35,7 +36,7 @@ public class Perfil implements Serializable {
     
     
     @Enumerated(EnumType.STRING)
-    private PerfilEnum perfil;
+    private PerfilEnum tipoPerfil;
 
     @ManyToOne
     private Usuario usuario;
@@ -44,17 +45,31 @@ public class Perfil implements Serializable {
     private Curso curso;
 
     /**
-     * @return the perfil
+     * @return the id
      */
-    public PerfilEnum getPerfil() {
-        return perfil;
+    public Long getId() {
+        return id;
     }
 
     /**
-     * @param perfil the perfil to set
+     * @param id the id to set
      */
-    public void setPerfil(PerfilEnum perfil) {
-        this.perfil = perfil;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the perfilTipo
+     */
+    public PerfilEnum getTipoPerfil() {
+        return tipoPerfil;
+    }
+
+    /**
+     * @param tipoPerfil the perfilTipo to set
+     */
+    public void setTipoPerfil(PerfilEnum tipoPerfil) {
+        this.tipoPerfil = tipoPerfil;
     }
 
     /**
@@ -84,4 +99,24 @@ public class Perfil implements Serializable {
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null) {
+            return ((obj instanceof Perfil) && ((long) ((getId() == null) ? Long.MIN_VALUE: getId())) == (long) ((Perfil) obj).getId());
+        } else {
+            return false;
+        }
+        
+    }
+
+    @Override
+    public int hashCode() {
+        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)): super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "@" + getId();
+    }    
 }

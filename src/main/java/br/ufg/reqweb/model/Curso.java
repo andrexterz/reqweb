@@ -94,7 +94,11 @@ public class Curso implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj == null)? (this == obj): (obj instanceof Curso && ((Curso) obj).id == id);
+        if (obj != null) {
+            return ((obj instanceof Curso) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Curso) obj).getId());
+        } else {
+            return false;
+        }
     }
 
     @Override

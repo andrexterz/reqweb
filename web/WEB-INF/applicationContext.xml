@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
        
-    <context:component-scan base-package="br.ufg.reqweb.components, br.ufg.reqweb.dao" />
+    <context:component-scan base-package="br.ufg.reqweb.components, br.ufg.reqweb.dao, br.ufg.reqweb.model" />
     <!-- mvc not used with jsf -->
     <!--mvc:annotation-driven /-->
     <!-- JSR-303 validator -->
@@ -39,6 +39,7 @@
                 <value>br.ufg.reqweb.model.Turma</value>
                 <value>br.ufg.reqweb.model.Usuario</value>
                 <value>br.ufg.reqweb.model.Perfil</value>
+                <value>br.ufg.reqweb.model.Permissao</value>
             </list>
         </property>
         <property name="hibernateProperties">

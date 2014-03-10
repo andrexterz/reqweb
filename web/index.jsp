@@ -12,6 +12,6 @@
         <title>REQWEB</title>
     </head>
     <body>
-        <% response.sendRedirect("views/login.xhtml"); %>
+        <% response.sendRedirect("/reqweb/views/login.xhtml"); %>
     </body>
 </html>

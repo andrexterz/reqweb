@@ -43,9 +43,10 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        Long v1 = 1l;
-        Long v2 = 1l;
-        System.out.println("v1 == v2? " + (v1 == v2));
+        Long v1 = 129L;
+        Long v2 = 129L;
+        System.out.println("v1 == v2? " + (v1 == v2));//false if its value exceeds interval -127 to 128
+        System.out.println("v1 equals v2? " + (v1.equals(v2)));//true
         
 //        Pattern pat = Pattern.compile("\\D+(?=(\\d+))");
 //        String [] names = {"si10178", "cc10023", "amanda", "msc10426","afonso", "es10311"};

@@ -80,9 +80,9 @@ public class Turma implements Serializable {
         PerfilEnum perfilValido = PerfilEnum.DOCENTE;
         boolean valido = false;
         for (Perfil p : usuario.getPerfilList()) {
-            if (p.getPerfil().getPapel().equals(perfilValido.getPapel())) {
+            if (p.getTipoPerfil().getPapel().equals(perfilValido.getPapel())) {
                 valido = true;
-                perfilValido = p.getPerfil();
+                perfilValido = p.getTipoPerfil();
                 break;
             }
         }
@@ -92,4 +92,23 @@ public class Turma implements Serializable {
             throw new NullPointerException(String.format("Invalid User Group:%s ", perfilValido.getGrupo()));
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null) {
+            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Turma) obj).getId());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "@" + id;
+    }    
 }

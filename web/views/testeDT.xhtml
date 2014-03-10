@@ -12,41 +12,36 @@
     <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
         <h:form id="formTest">
             <h:panelGrid columns="1" style="background: bisque; width: 100%;">
-                <p:selectOneMenu id="selectTest1"
-                                 value="#{disciplinaBean.disciplina}"
-                                 converter="#{disciplinaConverter}">
-                    <f:selectItems value="#{disciplinaBean.disciplinas}"
-                                   var="itemd"
-                                   itemLabel="#{itemd.nome} #{itemd.hashCode()}" itemValue="#{itemd}"/>
-                </p:selectOneMenu>
-                <h:outputText id="txt1" value="disciplina #{disciplinaBean.disciplina}" />
-                <p:commandButton value="update"
-                                 update="txt1" />
-                <p:messages autoUpdate="true" />
-            </h:panelGrid>
-            <p:dataTable id="tableDisciplinas"
-                         paginator="true"
-                         value="#{disciplinaBean.disciplinasDataModel}"
-                         var="disciplinaItem"
-                         lazy="true"
-                         emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{disciplinaItem.id}"
-                         selectionMode="single"
-                         selection="#{disciplinaBean.itemSelecionado}"
-                         paginatorPosition="bottom"
-                         rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":formTest:txt2" listener="#{disciplinaBean.selecionaItem}" />
-                <p:column headerText="hashCode" styleClass="disciplinaColA">
-                    <h:outputText value="#{disciplinaItem.hashCode()}" />
-                </p:column>
-                <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
-                    <h:outputText value="#{disciplinaItem.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
-                    <h:outputText value="#{disciplinaItem.curso.nome}" />
-                </p:column>
-            </p:dataTable>
-            <h:outputText id="txt2" value="disciplina #{disciplinaBean.itemSelecionado}" />
+                <p:outputLabel for="permissaoNome"
+                               value="permissao" />
+                <p:inputText id="permissaoNome" value="#{permissaoBean.permissao.nome}" />
+                <p:outputLabel for="permissaoURL"
+                               value="url" />
+                <p:inputText id="permissaoURL" value="#{permissaoBean.permissao.url}" />
+                <p:outputLabel for="selecionaPerfil"
+                               title="pressione shift para selecionar mais de um item"
+                               value="perfis permitidos " />
+                <p:selectManyMenu id="selecionaPerfil" value="#{permissaoBean.tipoPerfil}"
+                                  converter="#{perfilEnumConverter}"
+                                  style="width: 300px;">
+                    <f:selectItems value="#{perfilBean.items}"
+                                   var="tipoPerfil"
+                                   itemLabel="#{tipoPerfil.papel}"
+                                   itemValue="#{tipoPerfil}" />
+                    
+                </p:selectManyMenu>
+                
+                <p:commandButton value="new" update="i0" actionListener="#{permissaoBean.novaPermissao}" />
+                <p:commandButton value="submit" update="i1 i2 i3" actionListener="#{permissaoBean.salvaPermissao}" />
+
+            <p:separator />
+            <h:outputText id="i0" value="#{permissaoBean.operation}" />
+            <h:outputText id="i1" value="#{permissaoBean.permissao.nome}" />
+            <h:outputText id="i2" value="#{permissaoBean.permissao.url}" />
+            <h:dataTable id="i3" value="#{permissaoBean.tipoPerfil}" var="rowPerfil">
+                <h:column>#{rowPerfil}</h:column>
+            </h:dataTable>
+            </h:panelGrid>            
         </h:form>        
     </h:body>
 </html>

@@ -63,7 +63,7 @@ public class CursoBean implements Serializable {
     }
 
     public void editaCurso(ActionEvent event) {
-        if (getItemSelecionado() == null) {
+        if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
@@ -72,34 +72,28 @@ public class CursoBean implements Serializable {
         }
     }
 
-    public String excluiCurso() {
+    public void excluiCurso() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return null;
         } else {
             cursoDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaCursos();
         }
-    }
-
-    public String listaCursos() {
-        return "cursos";
     }
 
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Curso) event.getObject();
     }
 
-    public String salvaCurso() {
+    public void salvaCurso() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Set<ConstraintViolation<Curso>> errors = validator.validate(curso);
-        if (errors.isEmpty()) {
+        if (errors.isEmpty() && cursoDao.isUnique(curso.getSigla())) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
@@ -109,12 +103,10 @@ public class CursoBean implements Serializable {
                 cursoDao.atualizar(curso);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaCursos();
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
-            return null;
         }
     }
 

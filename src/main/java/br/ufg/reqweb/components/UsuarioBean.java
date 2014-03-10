@@ -164,7 +164,7 @@ public class UsuarioBean implements Serializable {
                                 }
                                 p.setUsuario(usr);
                                 p.setCurso(curso);                                
-                                p.setPerfil(pEnum);
+                                p.setTipoPerfil(pEnum);
                                 usr.adicionaPerfil(p);
                                 break;
                             }

@@ -1,0 +1,191 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package br.ufg.reqweb.components;
+
+import br.ufg.reqweb.dao.PermissaoDao;
+import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.model.Permissao;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+/**
+ *
+ * @author andre
+ */
+
+@Component
+public class PermissaoBean implements Serializable {
+    
+    public PermissaoBean() {
+        permissao = new Permissao();
+        itemSelecionado = null;        
+        operation = null;
+        termoBusca = "";        
+    }
+    
+    @Autowired
+    PermissaoDao permissaoDao;
+    
+    @Autowired
+    private Validator validator;
+
+    public static final String ADICIONA = "a";
+    public static final String EDITA = "e";
+    private Permissao permissao;
+    private List<PerfilEnum> tipoPerfil;
+    private Permissao itemSelecionado;
+    private String operation;
+    private String termoBusca;
+    
+    public void novaPermissao(ActionEvent event) {
+        setOperation(ADICIONA);
+        permissao = new Permissao();
+    }
+    
+    public void editaPermissao(ActionEvent event) {
+        if (!isSelecionado()) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            
+        } else {
+            setOperation(EDITA);
+            permissao = getItemSelecionado();
+        }
+    }
+    
+    public void excluiPermissao () {
+        FacesMessage msg;
+        if (getItemSelecionado() == null) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            permissaoDao.excluir(itemSelecionado);
+            itemSelecionado = null;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }                
+    }
+    
+    public void salvaPermissao() {
+        FacesMessage msg;
+        RequestContext context = RequestContext.getCurrentInstance();
+        permissao.setTipoPerfil(tipoPerfil);        
+        Set<ConstraintViolation<Permissao>> errors = validator.validate(permissao);
+        if (errors.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
+            context.addCallbackParam("resultado", true);
+            if (operation.equals(ADICIONA)) {
+                permissaoDao.adicionar(permissao);
+                itemSelecionado = permissao;
+            } else {
+                permissaoDao.atualizar(permissao);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, msg);            
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            context.addCallbackParam("resultado", false);
+        }
+    }
+    
+    public void selecionaItem(SelectEvent event) {
+        itemSelecionado = (Permissao) event.getObject();
+    }
+    
+    /**
+     * @return the permissao
+     */
+    public Permissao getPermissao() {
+        return permissao;
+    }
+
+    /**
+     * @param permissao the permissao to set
+     */
+    public void setPermissao(Permissao permissao) {
+        this.permissao = permissao;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<PerfilEnum> getTipoPerfil() {
+        return tipoPerfil;
+    }
+
+    /**
+     *
+     * @param tipoPerfil
+     */
+    public void setTipoPerfil(List<PerfilEnum> tipoPerfil) {
+        this.tipoPerfil = tipoPerfil;
+    }
+    
+
+    /**
+     *
+     * @return true if item is selected or false otherwise.
+     */
+    public boolean isSelecionado() {
+        return itemSelecionado != null;
+    }
+    
+    /**
+     * @return the itemSelecionado
+     */
+    public Permissao getItemSelecionado() {
+        return itemSelecionado;
+    }
+
+    /**
+     * @param itemSelecionado the itemSelecionado to set
+     */
+    public void setItemSelecionado(Permissao itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
+    }
+
+    /**
+     * @return the operation
+     */
+    public String getOperation() {
+        return operation;
+    }
+
+    /**
+     * @param operation the operation to set
+     */
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    /**
+     * @return the termoBusca
+     */
+    public String getTermoBusca() {
+        return termoBusca;
+    }
+
+    /**
+     * @param termoBusca the termoBusca to set
+     */
+    public void setTermoBusca(String termoBusca) {
+        this.termoBusca = termoBusca;
+    }
+}

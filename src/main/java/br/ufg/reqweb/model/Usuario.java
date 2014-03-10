@@ -7,6 +7,7 @@ package br.ufg.reqweb.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -158,4 +159,25 @@ public class Usuario implements Serializable {
     public void removePerfil(Perfil perfil) {
         this.perfilList.remove(perfil);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null) {
+            return ((obj instanceof Usuario) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Usuario) obj).getId());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+    
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "@" + id;
+    }    
 }

@@ -46,7 +46,7 @@
 
             <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
                 <h:panelGroup id="disciplinas" layout="block">
-                    <h:outputLabel for="inputDisciplinas" value="#{msg.disciplinas}" />
+                    <h:outputLabel for="inputDisciplinas" value="#{msg.uploadArquivos} - #{msg.disciplinas}" />
                     <p:commandLink id="previewImpDisciplinas"
                                    title="#{msg.disciplinasPrevisualizar}"
                                    disabled="#{!disciplinaBean.arquivoUploaded}"
@@ -70,7 +70,7 @@
             <hr class="separator" />
             <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
                 <h:panelGroup id="turmas" layout="block">
-                    <h:outputLabel for="inputTurmas" value="#{msg.turmas}" />
+                    <h:outputLabel for="inputTurmas" value="#{msg.uploadArquivos} - #{msg.turmas}" />
                     <p:commandLink title="#{msg.turmasPrevisualizar}">
                         <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
                     </p:commandLink>                    
@@ -87,7 +87,7 @@
             <hr class="separator" />
             <h:form id="arquivosPeriodoForm" enctype="multipart/form-data">
                 <h:panelGroup id="indicePrioridade" layout="block">
-                        <h:outputLabel for="inputIndicePrioridade" value="#{msg.indicePrioridade}" />
+                        <h:outputLabel for="inputIndicePrioridade" value="#{msg.uploadArquivos} - #{msg.indicePrioridade}" />
                         <p:commandLink title="#{msg.indicePrioridadePrevisualizar}">
                             <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
                         </p:commandLink>                        

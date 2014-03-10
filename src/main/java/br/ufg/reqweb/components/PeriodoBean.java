@@ -39,6 +39,9 @@ public class PeriodoBean implements Serializable {
         termoBusca = "";
     }
 
+    @Autowired
+    private PeriodoDao periodoDao;
+
     private static final long serialVersionUID = 1L;
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
@@ -47,8 +50,6 @@ public class PeriodoBean implements Serializable {
     private Periodo itemSelecionado;
     private String termoBusca;        
     
-    @Autowired
-    private PeriodoDao periodoDao;
 
     public void novoPeriodo(ActionEvent actionEvent) {
         setOperation(ADICIONA);
@@ -56,7 +57,7 @@ public class PeriodoBean implements Serializable {
     }
     
     public void editaPeriodo(ActionEvent actionEvent) {
-        if (getItemSelecionado() == null) {
+        if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
@@ -65,29 +66,26 @@ public class PeriodoBean implements Serializable {
         }        
     }
     
-    public String excluiPeriodo() {
+    public void excluiPeriodo() {
         FacesMessage msg;
-        if (getItemSelecionado() == null) {
+        if (!isSelecionado()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return null;
         } else {
             periodoDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaPeriodos();
         }        
     }
     
-    public String salvaPeriodo() {
+    public void salvaPeriodo() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         if (periodo.getAno() < getMinAno() || periodo.getSemestre() == null || periodo.getDataInicio() == null || periodo.getDataTermino() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
-            return null;
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
@@ -99,7 +97,6 @@ public class PeriodoBean implements Serializable {
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-        return listaPeriodos();
     }
     
     public List<Semestre> getSemestres() {

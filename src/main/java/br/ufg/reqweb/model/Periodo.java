@@ -120,7 +120,11 @@ public class Periodo implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj == null)? (this == obj): (obj instanceof Periodo && ((Periodo) obj).id == id);
+        if (obj != null) {
+            return ((obj instanceof Periodo) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Periodo) obj).getId());
+        } else {
+            return false;
+        }
     }
     
     @Override

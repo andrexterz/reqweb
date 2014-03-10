@@ -110,7 +110,7 @@ public class DisciplinaBean implements Serializable {
     }
 
     public void editaDisciplina(ActionEvent event) {
-        if (getItemSelecionado() == null) {
+        if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
@@ -153,7 +153,7 @@ public class DisciplinaBean implements Serializable {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
                         Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
-                        if (errors.isEmpty()) {
+                        if (errors.isEmpty() && disciplinaDao.isUnique(d.getCodigo())) {
                             items.add(d);
                         }
                     } else {
@@ -172,7 +172,7 @@ public class DisciplinaBean implements Serializable {
         RequestContext context = RequestContext.getCurrentInstance();
         disciplina.setCurso(curso);
         Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
-        if (errors.isEmpty() && curso.getId() > 0) {
+        if (errors.isEmpty() && curso.getId() > 0 && disciplinaDao.isUnique(disciplina.getCodigo())) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {

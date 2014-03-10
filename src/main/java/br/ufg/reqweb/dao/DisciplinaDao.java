@@ -129,6 +129,19 @@ public class DisciplinaDao {
             return new ArrayList<>();
         }
     }
+    
+    @Transactional(readOnly = true)
+    public boolean isUnique(Long codigo) {
+        try {
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(d) FROM Disciplina d WHERE d.codigo = :sigla")
+                    .setParameter("codigo", codigo)
+                    .uniqueResult()).intValue();
+            return (result == 0);
+        } catch (HibernateException e) {
+            return false;
+        }
+    }    
 
     @Transactional(readOnly = true)
     public int count() {

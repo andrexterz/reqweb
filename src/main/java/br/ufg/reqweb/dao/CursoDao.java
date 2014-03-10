@@ -66,7 +66,7 @@ public class CursoDao {
         }
         return curso;
     }
-    
+
     @Transactional(readOnly = true)
     public Curso findBySigla(String sigla) {
         Curso curso;
@@ -82,7 +82,7 @@ public class CursoDao {
         }
         return curso;
     }
-    
+
     @Transactional(readOnly = true)
     public Curso findByMatriz(String matriz) {
         Curso curso;
@@ -113,7 +113,20 @@ public class CursoDao {
             return new ArrayList<>();
         }
     }
-    
+
+    @Transactional(readOnly = true)
+    public boolean isUnique(String sigla) {
+        try {
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(c) FROM Curso c WHERE c.sigla = :sigla")
+                    .setParameter("sigla", sigla)
+                    .uniqueResult()).intValue();
+            return (result == 0);
+        } catch (HibernateException e) {
+            return false;
+        }
+    }
+
     @Transactional(readOnly = true)
     public int count() {
         try {
@@ -125,6 +138,6 @@ public class CursoDao {
             System.out.println("query error: " + e.getMessage());
             return 0;
         }
-    }    
+    }
 
 }

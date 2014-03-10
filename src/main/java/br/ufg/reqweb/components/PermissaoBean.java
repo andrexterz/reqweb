@@ -107,6 +107,15 @@ public class PermissaoBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Permissao) event.getObject();
     }
+
+    /***
+     * 
+     * @return  the permissoes
+     */
+    public List<Permissao> getPermissoes() {
+        return permissaoDao.findAll();
+    }
+    
     
     /**
      * @return the permissao

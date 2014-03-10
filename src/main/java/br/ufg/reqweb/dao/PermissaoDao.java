@@ -55,9 +55,11 @@ public class PermissaoDao {
     }
     
     @Transactional(readOnly = true)
-    public List<Permissao> findByPerfil(PerfilEnum TipoPerfil) {
+    public List<Permissao> findByPerfil(PerfilEnum tipoPerfil) {
         List<Permissao> permissaoList = sessionFactory.getCurrentSession()
-                .createSQLQuery("SELECT p FROM Permissao p WHERE :tipoPerfil IN (SELECT tipoPerfil from Permissao p where )").list();
+                .createSQLQuery("SELECT p FROM Permissao p WHERE :tipoPerfil IN p.TipoPerfil")
+                .addEntity(Permissao.class).setParameter("tipoPerfil", tipoPerfil)
+                .list();
         return permissaoList;
     }
     

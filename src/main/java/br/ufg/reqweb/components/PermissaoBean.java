@@ -34,6 +34,7 @@ public class PermissaoBean implements Serializable {
     
     public PermissaoBean() {
         permissao = new Permissao();
+        permissoes = null;
         itemSelecionado = null;        
         operation = null;
         termoBusca = "";        
@@ -48,7 +49,8 @@ public class PermissaoBean implements Serializable {
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
     private Permissao permissao;
-    private PerfilEnum tipoPerfi;
+    private List<Permissao> permissoes;
+    private PerfilEnum tipoPerfil;
     private List<PerfilEnum> tipoPerfis;
     private Permissao itemSelecionado;
     private String operation;
@@ -108,13 +110,19 @@ public class PermissaoBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Permissao) event.getObject();
     }
+    
+    public void filtraPermissoesPorTipoPerfil() {
+        if (tipoPerfil != null) {
+            permissoes = permissaoDao.findByPerfil(tipoPerfil);
+        }
+    }
 
     /***
      * 
      * @return  the permissoes
      */
     public List<Permissao> getPermissoes() {
-        return permissaoDao.findAll();
+        return permissoes;
     }
     
     
@@ -131,10 +139,28 @@ public class PermissaoBean implements Serializable {
     public void setPermissao(Permissao permissao) {
         this.permissao = permissao;
     }
+    
+    /**
+     * 
+     * @return  tipoPerfil
+     */
+    public PerfilEnum getTipoPerfil() {
+        return tipoPerfil;
+    }
+
+    /**
+     * 
+     * @param tipoPerfil 
+     */
+    public void setTipoPerfil(PerfilEnum tipoPerfil) {
+        this.tipoPerfil = tipoPerfil;
+    }
+    
+    
 
     /**
      *
-     * @return
+     * @return tipoPerfis
      */
     public List<PerfilEnum> getTipoPerfis() {
         return tipoPerfis;

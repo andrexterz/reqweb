@@ -11,7 +11,7 @@
               href="#{resource['css/default.css']}" />        
     </h:head>
     <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
-        <h:form id="formTest">
+        <h:form id="formTest1">
             <h:panelGrid columns="1" style="background: bisque; width: 100%;">
                 <p:outputLabel for="permissaoNome"
                                value="permissao" />
@@ -33,26 +33,30 @@
                 </p:selectManyMenu>
 
                 <p:commandButton value="new" actionListener="#{permissaoBean.novaPermissao}" />
-                <p:commandButton value="submit" update="t" actionListener="#{permissaoBean.salvaPermissao}" />
-
-                <p:separator />
-                <p:selectOneMenu value="#{perfilBean.perfil}" converter="#{perfilEnumConverter}" >
-                    <f:selectItems value="#{perfilBean.items}" />
-                </p:selectOneMenu>
-                <p:dataTable id="t" value="#{permissaoBean.permissoes}" var="rowPermissao">
-                    <p:column headerText="id">#{rowPermissao.id}</p:column>
-                    <p:column headerText="permissao">#{rowPermissao.nome}</p:column>
-                    <p:column headerText="url">#{rowPermissao.url}</p:column>
-                    <p:column headerText="perfil">
-                        <ul>
-                            <ui:repeat value="#{rowPermissao.tipoPerfil}" var="tp">
-                                <li>#{tp}</li>
-                            </ui:repeat>
-                        </ul>                        
-                    </p:column>
-                </p:dataTable>
+                <p:commandButton value="submit" update=":formTest2:t" actionListener="#{permissaoBean.salvaPermissao}" />
             </h:panelGrid>            
         </h:form>        
+        <p:separator />        
+        <h:form id="formTest2">
+            <p:selectOneMenu value="#{permissaoBean.tipoPerfil}" converter="#{perfilEnumConverter}" >
+                <f:selectItems value="#{perfilBean.items}" />
+            </p:selectOneMenu>
+            <p:commandButton value="filter by role" update="t" actionListener="#{permissaoBean.filtraPermissoesPorTipoPerfil}" />
+            <p:dataTable id="t" value="#{permissaoBean.permissoes}" var="rowPermissao">
+                <p:column headerText="id">#{rowPermissao.id}</p:column>
+                <p:column headerText="permissao">#{rowPermissao.nome}</p:column>
+                <p:column headerText="url">
+                    <h:link value="#{rowPermissao.url}" outcome="secure/administrador/#{rowPermissao.url}" />
+                </p:column>
+                <p:column headerText="perfil">
+                    <ul>
+                        <ui:repeat value="#{rowPermissao.tipoPerfil}" var="tp">
+                            <li>#{tp.papel}</li>
+                        </ui:repeat>
+                    </ul>                        
+                </p:column>
+            </p:dataTable>
+        </h:form>
     </h:body>
 </html>
 

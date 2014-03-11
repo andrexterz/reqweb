@@ -27,17 +27,20 @@ public class PeriodoConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Periodo periodo = (Periodo) periodoDao.findById(Long.parseLong(value));
-        return periodo;
+        try {
+           return (Periodo) periodoDao.findById(Long.parseLong(value));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        try {
-            return Long.toString(((Periodo) value).getId());
-        } catch (NullPointerException e) {
+        Periodo obj = (Periodo) value;
+        if (obj != null && obj.getId() != null) {
+            return Long.toString(obj.getId());
+         } else {
             return null;
-        }        
+        }
     }
-    
 }

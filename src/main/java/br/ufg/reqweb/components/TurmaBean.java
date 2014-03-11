@@ -89,7 +89,16 @@ public class TurmaBean {
     }
 
     public void excluiTurma() {
-        
+        FacesMessage msg;
+        if (getItemSelecionado() == null) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            turmaDao.excluir(itemSelecionado);
+            itemSelecionado = null;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }        
     }
     
     public void salvaTurmas () {

@@ -45,7 +45,7 @@
             <p:dataTable id="t" value="#{permissaoBean.permissoes}" var="rowPermissao">
                 <p:column headerText="id">#{rowPermissao.id}</p:column>
                 <p:column headerText="permissao">#{rowPermissao.nome}</p:column>
-                <p:column headerText="url">
+                <p:column headerText="nome da pagina">
                     <h:link value="#{rowPermissao.url}" outcome="secure/administrador/#{rowPermissao.url}" />
                 </p:column>
                 <p:column headerText="perfil">

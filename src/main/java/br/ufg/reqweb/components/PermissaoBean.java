@@ -48,7 +48,8 @@ public class PermissaoBean implements Serializable {
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
     private Permissao permissao;
-    private List<PerfilEnum> tipoPerfil;
+    private PerfilEnum tipoPerfi;
+    private List<PerfilEnum> tipoPerfis;
     private Permissao itemSelecionado;
     private String operation;
     private String termoBusca;
@@ -85,7 +86,7 @@ public class PermissaoBean implements Serializable {
     public void salvaPermissao() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        permissao.setTipoPerfil(tipoPerfil);        
+        permissao.setTipoPerfil(tipoPerfis);        
         Set<ConstraintViolation<Permissao>> errors = validator.validate(permissao);
         if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
@@ -135,16 +136,16 @@ public class PermissaoBean implements Serializable {
      *
      * @return
      */
-    public List<PerfilEnum> getTipoPerfil() {
-        return tipoPerfil;
+    public List<PerfilEnum> getTipoPerfis() {
+        return tipoPerfis;
     }
 
     /**
      *
-     * @param tipoPerfil
+     * @param tipoPerfis
      */
-    public void setTipoPerfil(List<PerfilEnum> tipoPerfil) {
-        this.tipoPerfil = tipoPerfil;
+    public void setTipoPerfis(List<PerfilEnum> tipoPerfis) {
+        this.tipoPerfis = tipoPerfis;
     }
     
 

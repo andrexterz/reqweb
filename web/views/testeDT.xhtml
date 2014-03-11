@@ -22,7 +22,7 @@
                 <p:outputLabel for="selecionaPerfil"
                                title="pressione shift para selecionar mais de um item"
                                value="perfis permitidos " />
-                <p:selectManyMenu id="selecionaPerfil" value="#{permissaoBean.tipoPerfil}"
+                <p:selectManyMenu id="selecionaPerfil" value="#{permissaoBean.tipoPerfis}"
                                   converter="#{perfilEnumConverter}"
                                   style="width: 300px;">
                     <f:selectItems value="#{perfilBean.items}"
@@ -36,6 +36,9 @@
                 <p:commandButton value="submit" update="t" actionListener="#{permissaoBean.salvaPermissao}" />
 
                 <p:separator />
+                <p:selectOneMenu value="#{perfilBean.perfil}" converter="#{perfilEnumConverter}" >
+                    <f:selectItems value="#{perfilBean.items}" />
+                </p:selectOneMenu>
                 <p:dataTable id="t" value="#{permissaoBean.permissoes}" var="rowPermissao">
                     <p:column headerText="id">#{rowPermissao.id}</p:column>
                     <p:column headerText="permissao">#{rowPermissao.nome}</p:column>

@@ -93,7 +93,7 @@ public class CursoBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Set<ConstraintViolation<Curso>> errors = validator.validate(curso);
-        if (errors.isEmpty() && cursoDao.isUnique(curso.getSigla())) {
+        if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {

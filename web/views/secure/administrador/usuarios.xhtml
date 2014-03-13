@@ -45,13 +45,13 @@
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
                 <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=usuarioBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" actionListener="#{usuarioBean.listaUsuarios}" />                
+                <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" />                
                 <p:defaultCommand target="usuarioBuscaCommand" />
 
             </h:panelGroup>
 
             <p:dataTable id="tableUsuarios" var="usuarioItem"
-                         value="#{usuarioBean.usuarios}"
+                         value="#{usuarioBean.usuariosDataModel}"
                          lazy="true"
                          emptyMessage="#{msg.emptyMessage}"
                          rowKey="#{usuarioItem.id}"

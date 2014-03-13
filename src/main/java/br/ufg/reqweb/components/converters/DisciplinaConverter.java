@@ -41,5 +41,4 @@ public class DisciplinaConverter implements Converter {
             return null;
         }
     }
-
 }

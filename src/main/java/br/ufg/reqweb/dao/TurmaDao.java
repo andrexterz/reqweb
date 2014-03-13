@@ -69,6 +69,21 @@ public class TurmaDao {
     }
 
     @Transactional(readOnly = true)
+    public List<Turma> find(int firstResult, int maxResult) {
+        try {
+            List<Turma> turma = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Turma t ORDER BY t.nome")
+                    .setFirstResult(firstResult)
+                    .setMaxResults(maxResult)
+                    .list();
+            return turma;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<Turma> findAll() {
         try {
             List<Turma> turmas = this.sessionFactory.getCurrentSession()
@@ -81,5 +96,18 @@ public class TurmaDao {
             return new ArrayList<>();
         }
     }
+    
+    @Transactional(readOnly = true)
+    public int count() {
+        try {
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(t) FROM Turma t")
+                    .uniqueResult()).intValue();
+            return result;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return 0;
+        }
+    }    
 
 }

@@ -44,18 +44,19 @@ public class UsuarioBean implements Serializable {
 
     @Autowired
     private CursoDao cursoDao;
-    
+
     @Autowired
     Validator validator;
 
-    private final LazyDataModel<Usuario> usuarios;
+    private final LazyDataModel<Usuario> usuariosDataModel;
+    private List<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
     private String login;
     private String senha;
     private String grupo;
     private PerfilEnum perfil;
-    private Usuario usuario;    
+    private Usuario usuario;
     private int progress;
     private volatile boolean stopImportaUsuarios;
     private Thread tImportJob;
@@ -64,11 +65,12 @@ public class UsuarioBean implements Serializable {
     private String termoBusca;
 
     public UsuarioBean() {
+        usuarios = new ArrayList<>();
         usuario = new Usuario();
         objLogin = null;
         tImportJob = null;
         termoBusca = "";
-        usuarios = new LazyDataModel<Usuario>() {
+        usuariosDataModel = new LazyDataModel<Usuario>() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -138,8 +140,8 @@ public class UsuarioBean implements Serializable {
                 List<Login> infoUsuarios = objLogin.scanLdap();
                 int length = infoUsuarios.size();
                 int counter = 0;
-                Map<String,Curso> cursoMap = new HashMap();
-                for (Curso c: cursoDao.findAll()) {
+                Map<String, Curso> cursoMap = new HashMap();
+                for (Curso c : cursoDao.findAll()) {
                     cursoMap.put(c.getSigla(), c);
                 }
                 for (Login infoUsuario : infoUsuarios) {
@@ -163,7 +165,7 @@ public class UsuarioBean implements Serializable {
                                     curso = null;
                                 }
                                 p.setUsuario(usr);
-                                p.setCurso(curso);                                
+                                p.setCurso(curso);
                                 p.setTipoPerfil(pEnum);
                                 usr.adicionaPerfil(p);
                                 break;
@@ -213,28 +215,21 @@ public class UsuarioBean implements Serializable {
         }
     }
 
-    public String excluiUsuario() {
+    public void excluiUsuario() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return null;
         } else {
             usuarioDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            return listaUsuarios();
         }
     }
 
-    public String salvaUsuario() {
+    public void salvaUsuario() {
         //implementar
-        return listaUsuarios();
-    }
-
-    public String listaUsuarios() {
-        return "usuarios";
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -319,6 +314,30 @@ public class UsuarioBean implements Serializable {
         this.usuario = usuario;
     }
 
+    public List<Usuario> findUsuario(String query) {
+        return usuarioDao.find(query);
+    }
+
+    public List<Usuario> findDocente(String query) {
+        return usuarioDao.find(query, PerfilEnum.DOCENTE);
+    }
+
+    public List<Usuario> findDiscente(String query) {
+        return usuarioDao.find(query, PerfilEnum.DISCENTE);
+    }
+
+    public List<Usuario> findCoordenadorCurso(String query) {
+        return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_CURSO);
+    }
+
+    public List<Usuario> findCoordenadorEstagio(String query) {
+        return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_ESTAGIO);
+    }
+
+    public List<Usuario> findSecretaria(String query) {
+        return usuarioDao.find(query, PerfilEnum.SECRETARIA);
+    }
+
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
             return usuarioDao.findAll();
@@ -327,7 +346,14 @@ public class UsuarioBean implements Serializable {
         }
     }
 
-    public LazyDataModel<Usuario> getUsuarios() {
+    public LazyDataModel<Usuario> getUsuariosDataModel() {
+        return usuariosDataModel;
+    }
+
+    public List<Usuario> getUsuarios() {
+        if (usuarios.isEmpty() | usuarioDao.count() != usuarios.size()) {
+            usuarios = usuarioDao.findAll();
+        }
         return usuarios;
     }
 

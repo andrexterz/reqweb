@@ -3,18 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.TurmaDao;
 import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Turma;
+import br.ufg.reqweb.model.Usuario;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -28,18 +32,17 @@ import org.springframework.stereotype.Component;
  *
  * @author andre
  */
-
 @Component
 @Scope(value = "session")
 public class TurmaBean {
-    
+
     private static final long serialVersionUID = 1L;
     @Autowired
     Validator validator;
     @Autowired
     TurmaDao turmaDao;
     private Turma turma;
-    private Disciplina disciplina;
+    private Usuario usuario;
     private Turma itemSelecionado;
     private Turma itemPreviewSelecionado;
     private String termoBusca;
@@ -49,34 +52,32 @@ public class TurmaBean {
     private String operation;
     private int progress;
     private volatile boolean stopImportaTurmas;
-    private Map<Long,Turma> turmaListPreview;
+    private Map<Long, Turma> turmaListPreview;
     private final LazyDataModel turmas;
-    
-    public TurmaBean(){
+
+    public TurmaBean() {
         turma = new Turma();
-        disciplina = null;
         operation = null;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         termoBusca = null;
         turmas = new LazyDataModel<Turma>() {
             @Override
-            public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters ) {
+            public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 List<Turma> turmaList;
-                //falta implementar busca
-                // modificar DAO para ficar igual ao da disciplina find(first, pageSize) {...}
-                turmaList = turmaDao.findAll();
+                turmaList = turmaDao.find(first, pageSize);
+                setRowCount(turmaDao.count());
                 return turmaList;
             }
         };
     }
-    
+
     public void novaTurma(ActionEvent event) {
         setOperation(ADICIONA);
         turma = new Turma();
     }
-    
+
     public void editaTurma(ActionEvent event) {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
@@ -98,37 +99,51 @@ public class TurmaBean {
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        }        
-    }
-    
-    public void salvaTurmas () {
-        
-    }
-    
-    public void salvaTurma() {
-        System.out.println("disciplina selecionada: " + disciplina);
-        FacesMessage msg;
-        RequestContext context = RequestContext.getCurrentInstance();
-        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-        //context.addCallbackParam("resultado", true);        
-    }
-    
-    public void selecionaItem (SelectEvent event) {
-
-    }
-    
-    public void selecionaItemPreview(SelectEvent event) {
-        
-    }
-    
-    public void selecionaDisciplina(ValueChangeEvent event) {
-        try {
-            disciplina = (Disciplina) event.getNewValue();
-        } catch (NullPointerException e) {
-            disciplina = null;
         }
     }
-    
+
+    public void salvaTurmas() {
+
+    }
+
+    public void salvaTurma() {
+        FacesMessage msg;
+        RequestContext context = RequestContext.getCurrentInstance();
+        turma.setUsuario(usuario);
+        Set<ConstraintViolation<Turma>> errors = validator.validate(turma);
+        if (errors.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
+            context.addCallbackParam("resultado", true);
+            if (operation.equals(ADICIONA)) {
+                turmaDao.adicionar(turma);
+                itemSelecionado = turma;
+            } else {
+                turmaDao.atualizar(turma);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            context.addCallbackParam("resultado", false);
+        }
+    }
+
+    public void selecionaItem(SelectEvent event) {
+
+    }
+
+    public void selecionaItemPreview(SelectEvent event) {
+
+    }
+
+    public void autoCompleteSelecionaUsuario(SelectEvent event) {
+        try {
+            usuario = (Usuario) event.getObject();
+        } catch (NullPointerException e) {
+            usuario = null;
+        }
+    }
+
     public Turma getTurma() {
         return turma;
     }
@@ -137,14 +152,14 @@ public class TurmaBean {
         this.turma = turma;
     }
 
-    public Disciplina getDisciplina() {
-        return disciplina;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setDisciplina(Disciplina disciplina) {
-        this.disciplina = disciplina;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
-    
+
     public boolean isSelecionado() {
         return itemSelecionado != null;
     }
@@ -157,10 +172,10 @@ public class TurmaBean {
         this.itemSelecionado = itemSelecionado;
     }
 
-    public boolean isPreviewSelecionado () {
+    public boolean isPreviewSelecionado() {
         return itemPreviewSelecionado != null;
     }
-    
+
     public Turma getItemPreviewSelecionado() {
         return itemPreviewSelecionado;
     }
@@ -176,7 +191,7 @@ public class TurmaBean {
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
     }
-    
+
     public String getOperation() {
         return operation;
     }
@@ -192,11 +207,11 @@ public class TurmaBean {
     public void setProgress(int progress) {
         this.progress = progress;
     }
-    
+
     public boolean getStopImportaTurmas() {
         return stopImportaTurmas;
     }
-    
+
     public Map<Long, Turma> getTurmaListPreview() {
         return turmaListPreview;
     }

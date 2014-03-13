@@ -54,7 +54,7 @@
                                 <ui:repeat value="#{usuarioBean.itemSelecionado.perfilList}" var="p">
                                     <tr>
                                         <td class="perfilColA"><h:outputLabel value="#{msg.perfil}" /></td>
-                                        <td class="perfilColB"><h:outputText value="#{p.perfil.papel}" /></td>
+                                        <td class="perfilColB"><h:outputText value="#{p.tipoPerfil.papel}" /></td>
                                         <td class="perfilColC"><h:outputText value="#{p.curso.nome}" /></td>
                                     </tr>                                        
                                 </ui:repeat>                                    

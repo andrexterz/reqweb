@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -27,7 +28,8 @@ public class Turma implements Serializable {
     @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-
+    
+    @NotNull
     @Column
     private String nome;
 

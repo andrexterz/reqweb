@@ -5,6 +5,7 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 
 import java.util.ArrayList;
@@ -111,6 +112,21 @@ public class UsuarioDao {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Usuario> find(String termo, PerfilEnum tipoPerfil) {
+        try {
+            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
+                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil AND lower(u.nome) LIKE lower(:termo)")
+                    .setParameter("tipoPerfil", tipoPerfil)
+                    .setParameter("termo", "%" + termo + "%")
+                    .list();
+            return usuarios;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }        
     }
 
     @Transactional(readOnly = true)

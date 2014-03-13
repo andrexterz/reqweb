@@ -41,8 +41,7 @@
                 <p:commandButton style="visibility: hidden;"
                                  id="turmaBuscaCommand"
                                  styleClass="searchCommand alignRight"
-                                 update="tableTurmas"
-                                 actionListener="#{turmaBean.listaTurmas}" />
+                                 update="tableTurmas" />
 
                 <p:defaultCommand target="turmaBuscaCommand" />
 
@@ -63,10 +62,10 @@
                     <h:outputText value="#{turmaItem.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.disciplina}" styleClass="turmaColB">
-                    <h:outputText value="#{turmaItem.disciplina}" />
+                    <h:outputText value="#{turmaItem.disciplina.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.docente}" styleClass="turmaColC">
-                    <h:outputText value="#{turmaItem.usuario}" />
+                    <h:outputText value="#{turmaItem.usuario.nome}" />
                 </p:column>
             </p:dataTable>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package br.ufg.reqweb.components.converters;
 
-import br.ufg.reqweb.components.CursoBean;
-import br.ufg.reqweb.dao.CursoDao;
-import br.ufg.reqweb.model.Curso;
+import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Usuario;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -18,17 +18,16 @@ import org.springframework.stereotype.Component;
  *
  * @author andre
  */
+
 @Component
-public class CursoConverter implements Converter {
-    
+public class UsuarioConverter implements Converter {
     @Autowired
-    CursoDao cursoDao;
+    UsuarioDao usuarioDao;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
         try {
-        Curso curso = cursoDao.findById(Long.parseLong(value));
-        return curso;
+            return usuarioDao.findById(Long.parseLong(value));
         } catch (NumberFormatException e) {
             return null;
         }
@@ -36,13 +35,11 @@ public class CursoConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        Curso obj = (Curso) value;
+        Usuario obj = (Usuario) value;
         if (obj != null && obj.getId() != null) {
             return Long.toString(obj.getId());
          } else {
             return null;
         }
-
-    }
-
+    } 
 }

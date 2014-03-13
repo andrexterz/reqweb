@@ -42,11 +42,19 @@ public class Curso implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataModificacao;
 
-    public long getId() {
+    /**
+     *
+     * @return
+     */
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    /**
+     *
+     * @param id
+     */
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -28,7 +28,7 @@ public class Turma implements Serializable {
     @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)
     private Long id;
-    
+
     @NotNull
     @Column
     private String nome;
@@ -40,7 +40,7 @@ public class Turma implements Serializable {
     private Disciplina disciplina;
 
     @ManyToOne
-    private Usuario usuario;
+    private Usuario docente;
 
     public Long getId() {
         return id;
@@ -55,7 +55,7 @@ public class Turma implements Serializable {
     }
 
     public void setNome(String nome) {
-        this.nome = nome.toUpperCase();;
+        this.nome = nome.toUpperCase();
     }
 
     public Periodo getPeriodo() {
@@ -74,31 +74,35 @@ public class Turma implements Serializable {
         this.disciplina = disciplina;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getDocente() {
+        return docente;
     }
 
-    public void setUsuario(Usuario usuario) {
-        PerfilEnum perfilValido = PerfilEnum.DOCENTE;
-        boolean valido = false;
-        for (Perfil p : usuario.getPerfilList()) {
-            if (p.getTipoPerfil().getPapel().equals(perfilValido.getPapel())) {
-                valido = true;
-                perfilValido = p.getTipoPerfil();
-                break;
+    public void setDocente(Usuario docente) {
+        if (docente != null) {
+            PerfilEnum perfilValido = PerfilEnum.DOCENTE;
+            boolean valido = false;
+            for (Perfil p : docente.getPerfilList()) {
+                if (p.getTipoPerfil().getPapel().equals(perfilValido.getPapel())) {
+                    valido = true;
+                    perfilValido = p.getTipoPerfil();
+                    break;
+                }
             }
-        }
-        if (valido) {
-            this.usuario = usuario;
+            if (valido) {
+                this.docente = docente;
+            } else {
+                throw new NullPointerException(String.format("Invalid User Group:%s ", perfilValido.getGrupo()));
+            }
         } else {
-            throw new NullPointerException(String.format("Invalid User Group:%s ", perfilValido.getGrupo()));
+            this.docente = null;
         }
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj != null) {
-            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Turma) obj).getId());
+            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE : id)) == (long) ((Turma) obj).getId());
         } else {
             return false;
         }
@@ -106,11 +110,11 @@ public class Turma implements Serializable {
 
     @Override
     public int hashCode() {
-        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
+        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)) : super.hashCode();
     }
 
     @Override
     public String toString() {
         return this.getClass().getName() + "@" + id;
-    }    
+    }
 }

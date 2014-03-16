@@ -10,6 +10,7 @@ import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.util.CSVParser;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +154,7 @@ public class DisciplinaBean implements Serializable {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
                         Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
-                        if (errors.isEmpty() && disciplinaDao.isUnique(d.getCodigo())) {
+                        if (errors.isEmpty()) {
                             items.add(d);
                         }
                     } else {
@@ -228,7 +229,7 @@ public class DisciplinaBean implements Serializable {
             }
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (Exception ex) {
+        } catch (IOException | NumberFormatException ex) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }

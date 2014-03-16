@@ -115,19 +115,6 @@ public class CursoDao {
     }
 
     @Transactional(readOnly = true)
-    public boolean isUnique(String sigla) {
-        try {
-            int result = ((Long) this.sessionFactory.getCurrentSession()
-                    .createQuery("SELECT COUNT(c) FROM Curso c WHERE c.sigla = :sigla")
-                    .setParameter("sigla", sigla)
-                    .uniqueResult()).intValue();
-            return (result == 0);
-        } catch (HibernateException e) {
-            return false;
-        }
-    }
-
-    @Transactional(readOnly = true)
     public int count() {
         try {
             int result = ((Long) this.sessionFactory.getCurrentSession()

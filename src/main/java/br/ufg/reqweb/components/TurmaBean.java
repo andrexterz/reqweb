@@ -6,9 +6,6 @@
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.TurmaDao;
-import br.ufg.reqweb.model.Disciplina;
-import br.ufg.reqweb.model.Perfil;
-import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
 import java.util.List;
@@ -17,7 +14,6 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
@@ -42,7 +38,7 @@ public class TurmaBean {
     @Autowired
     TurmaDao turmaDao;
     private Turma turma;
-    private Usuario usuario;
+    private Usuario docente;
     private Turma itemSelecionado;
     private Turma itemPreviewSelecionado;
     private String termoBusca;
@@ -76,6 +72,7 @@ public class TurmaBean {
     public void novaTurma(ActionEvent event) {
         setOperation(ADICIONA);
         turma = new Turma();
+        setDocente(null);
     }
 
     public void editaTurma(ActionEvent event) {
@@ -85,6 +82,7 @@ public class TurmaBean {
         } else {
             setOperation(EDITA);
             turma = getItemSelecionado();
+            setDocente(turma.getDocente());
             FacesContext context = FacesContext.getCurrentInstance();
         }
     }
@@ -109,7 +107,7 @@ public class TurmaBean {
     public void salvaTurma() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        turma.setUsuario(usuario);
+        turma.setDocente(docente);
         Set<ConstraintViolation<Turma>> errors = validator.validate(turma);
         if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
@@ -136,11 +134,11 @@ public class TurmaBean {
 
     }
 
-    public void autoCompleteSelecionaUsuario(SelectEvent event) {
+    public void autoCompleteSelecionaDocente(SelectEvent event) {
         try {
-            usuario = (Usuario) event.getObject();
+            docente = (Usuario) event.getObject();
         } catch (NullPointerException e) {
-            usuario = null;
+            docente = null;
         }
     }
 
@@ -152,12 +150,12 @@ public class TurmaBean {
         this.turma = turma;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getDocente() {
+        return docente;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setDocente(Usuario docente) {
+        this.docente = docente;
     }
 
     public boolean isSelecionado() {

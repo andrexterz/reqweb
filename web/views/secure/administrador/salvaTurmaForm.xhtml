@@ -33,15 +33,15 @@
                         <f:selectItem itemLabel="#{msg.periodo}" />
                         <f:selectItems value="#{periodoBean.periodos}" var="periodoItem" itemLabel="#{periodoItem.toString()}" itemValue="#{periodoItem}"/>
                     </p:selectOneMenu>
-                    <p:outputLabel for="filtroUsuario" value="#{msg.docente}" />
-                    <p:autoComplete id="filtroUsuario" value="#{turmaBean.usuario}"
+                    <p:outputLabel for="filtroDocente" value="#{msg.docente}" />
+                    <p:autoComplete id="filtroDocente" value="#{turmaBean.docente}"
                                     converter="#{usuarioConverter}"
                                     minQueryLength="3" maxResults="10" var="u"
                                     itemLabel="#{u.nome}" itemValue="#{u}"
                                     forceSelection="true" completeMethod="#{usuarioBean.findDocente}">
-                        <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaUsuario}" />
+                        <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaDocente}" />
                     </p:autoComplete>
-                    <p:watermark value="#{msg.docente}" for="filtroUsuario" />
+                    <p:watermark value="#{msg.docente}" for="filtroDocente" />
                 </p:panelGrid>
                 <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                     <p:commandButton value="#{msg.salvar}"

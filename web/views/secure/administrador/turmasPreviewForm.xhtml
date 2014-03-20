@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgTurmasPreviewForm" modal="true"
+              widgetVar="dlgTurmasPreviewFormVar" width="80%" height="460"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.importar} #{msg.turmas}" />
+        </f:facet>
+        <h:form id="turmasPreviewForm">
+            <h:panelGroup layout="block" id="turmasPreviewToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.excluir}"
+                                 styleClass="formToolbarButtons"
+                                 disabled="#{!turmaBean.previewSelecionado}"
+                                 actionListener="#{turmaBean.excluiTurmaPreview}"
+                                 update=":turmasPreviewForm :turmasPreviewForm:confirmaImpTurmas :turmasPreviewForm:tablePreviewTurmas"
+                                 process="@this" />
+
+                <p:commandButton value="#{msg.limpar}"
+                                 styleClass="formToolbarButtons"
+                                 actionListener="#{turmaBean.excluiArquivoUploaded}"
+                                 update=":turmasPreviewForm:confirmaImpTurmas :arquivosTurmasForm:previewImpTurmas :turmasPreviewForm:tablePreviewTurmas"
+                                 process="@this" />
+                
+
+            </h:panelGroup>            
+            <p:dataTable id="tablePreviewTurmas"
+                         paginator="true"
+                         value="#{turmaBean.turmaListPreview}"
+                         var="turmaItemPreview"
+                         selection="#{turmaBean.itemPreviewSelecionado}"
+                         rowKey="#{turmaItemPreview.id}"
+                         selectionMode="single"
+                         emptyMessage="#{msg.emptyMessage}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
+                <p:ajax event="rowSelect" update=":turmasPreviewForm:turmasPreviewToolbar" listener="#{turmaBean.selecionaItem}" />
+                <p:column headerText="#{msg.turma}" styleClass="turmaColA">
+                    <h:outputText value="#{turmaItemPreview.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.disciplina}" styleClass="turmaColB">
+                    <h:outputText value="#{turmaItemPreview.disciplina.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.docente}" styleClass="turmaColC">
+                    <h:outputText value="#{turmaItemPreview.docente.nome}" />
+                </p:column>
+            </p:dataTable>
+            <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
+                <p:progressBar id="progressBarTurmas"
+                               interval="1500"
+                               ajax="true"
+                               widgetVar="pbImpTurma"
+                               value="#{turmaBean.progress}"
+                               labelTemplate="{value}%">
+                    <p:ajax event="complete" listener="#{turmaBean.handleCompleteImpTurmas}"
+                            update="paraImpButton :formHeader:systemMessages :turmasPreviewForm:tablePreviewTurmas"
+                            oncomplete="progressBarComplete()" />
+                </p:progressBar>
+                <p:commandButton id="paraImpButton"
+                                 process="@this"
+                                 widgetVar="stopImpButton"
+                                 title="#{msg.cancelar}"
+                                 icon="ui-icon-cancel"
+                                 update="paraImpButton progressBarTurmas :formHeader:systemMessages"
+                                 disabled="#{turmaBean.stopImportaTurmas}"
+                                 oncomplete="progressBarCancel('pbImpTurma')"
+                                 actionListener="#{turmaBean.cancelImpTurmas}"
+                                 styleClass="alignRight cancel"  />                
+            </h:panelGrid>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton id="confirmaImpTurmas" value="#{msg.importar}"
+                                 widgetVar="confirmImpButton"
+                                 disabled="#{!turmaBean.arquivoUploaded}"
+                                 onclick="progressBarHandler('pbImpTurma')"
+                                 action="#{turmaBean.salvaTurmas}"
+                                 process="@this"
+                                 update="paraImpButton progressBarTurmas :formHeader:systemMessages" />
+
+                <p:commandButton id="cancelaImpTurmas"
+                                 widgetVar="cancelImpButton"
+                                 value="#{msg.fechar}"
+                                 oncomplete="dlgTurmasPreviewFormVar.hide()" 
+                                 update=":turmasPreviewForm:tablePreviewTurmas" />
+            </h:panelGroup>            
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

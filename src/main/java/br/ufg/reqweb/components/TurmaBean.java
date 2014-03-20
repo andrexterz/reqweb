@@ -5,9 +5,18 @@
  */
 package br.ufg.reqweb.components;
 
+import br.ufg.reqweb.dao.DisciplinaDao;
+import br.ufg.reqweb.dao.PeriodoDao;
 import br.ufg.reqweb.dao.TurmaDao;
+import br.ufg.reqweb.dao.UsuarioDao;
+import org.apache.log4j.Logger;
+import br.ufg.reqweb.model.Semestre;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
+import br.ufg.reqweb.util.CSVParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,9 +26,11 @@ import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -35,8 +46,20 @@ public class TurmaBean {
     private static final long serialVersionUID = 1L;
     @Autowired
     Validator validator;
+
     @Autowired
     TurmaDao turmaDao;
+
+    @Autowired
+    PeriodoDao periodoDao;
+
+    @Autowired
+    DisciplinaDao disciplinaDao;
+
+    @Autowired
+    UsuarioDao usuarioDao;
+    
+    private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private Turma turma;
     private Usuario docente;
     private Turma itemSelecionado;
@@ -52,6 +75,7 @@ public class TurmaBean {
     private final LazyDataModel turmas;
 
     public TurmaBean() {
+        turmaListPreview = new HashMap();        
         turma = new Turma();
         operation = null;
         itemSelecionado = null;
@@ -134,6 +158,68 @@ public class TurmaBean {
 
     }
 
+    public void uploadTurmas(FileUploadEvent event) {
+        UploadedFile file = event.getFile();
+        List<String[]> data;
+        turmaListPreview = new HashMap();
+        try {
+            data = CSVParser.parse(file.getInputstream());
+            for (int i = 1; i < data.size(); i++) {
+                String[] row = data.get(i);
+                Long id = Long.parseLong(row[0].trim());
+                int ano = Integer.parseInt(row[1].trim());
+                String nome = row[2].trim();
+                Semestre semestre = Semestre.getSemestre(Integer.parseInt(row[3].trim()));
+                Long disciplinaId = Long.parseLong(row[4].trim());
+                Long docenteId = Long.parseLong(row[5].trim());
+                Turma t = new Turma();
+                t.setId(id);
+                t.setNome(nome);
+                t.setPeriodo(periodoDao.find(ano, semestre));
+                t.setDocente(usuarioDao.findById(docenteId));
+                t.setDisciplina(disciplinaDao.findById(disciplinaId));
+                turmaListPreview.put(id, t);
+            }
+        } catch (IOException | NumberFormatException e) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+
+    public void excluiArquivoUploaded(ActionEvent event) {
+        turmaListPreview.clear();
+    }
+
+    public void excluiTurmaPreview() {
+        turmaListPreview.remove(itemPreviewSelecionado.getId());
+        itemPreviewSelecionado = null;
+    }
+
+    public void handleCompleteImpTurmas() {
+        stopImportaTurmas = true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        context.addMessage(null, msg);
+    }
+    
+    public void setupImportTurmas(ActionEvent event) {
+        progress = 0;
+        stopImportaTurmas = true;
+    }
+    
+    public void cancelImpTurmas(ActionEvent event) {
+        setupImportTurmas(event);
+        try {
+            Thread.sleep(2000);
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
+            context.addMessage(null, msg);
+
+        } catch (NullPointerException | InterruptedException e) {
+            log.error("no thread to cancel");
+        }
+    }    
+
     public void autoCompleteSelecionaDocente(SelectEvent event) {
         try {
             docente = (Usuario) event.getObject();
@@ -210,8 +296,12 @@ public class TurmaBean {
         return stopImportaTurmas;
     }
 
-    public Map<Long, Turma> getTurmaListPreview() {
-        return turmaListPreview;
+    public List<Turma> getTurmaListPreview() {
+        return new ArrayList<>(turmaListPreview.values());
+    }
+
+    public boolean isArquivoUploaded() {
+        return turmaListPreview.size() > 0;
     }
 
     public LazyDataModel getTurmas() {

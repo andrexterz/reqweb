@@ -17,6 +17,7 @@
         <ui:include src="salvaDisciplinaForm.xhtml" />
         
         <ui:include src="turmasForm.xhtml" />
+        <ui:include src="turmasPreviewForm.xhtml" />
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
         
@@ -71,7 +72,12 @@
             <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
                 <h:panelGroup id="turmas" layout="block">
                     <h:outputLabel for="inputTurmas" value="#{msg.uploadArquivos} - #{msg.turmas}" />
-                    <p:commandLink title="#{msg.turmasPrevisualizar}">
+                    <p:commandLink id="previewImpTurmas"
+                                   title="#{msg.turmasPrevisualizar}"
+                                   disabled="#{!turmaBean.arquivoUploaded}"
+                                   actionListener="#{turmaBean.setupImportTurmas}"
+                                   update=":turmasPreviewForm:progressBarTurmas"
+                                   oncomplete="handleImportDialog('dlgTurmasPreviewFormVar')">
                         <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
                     </p:commandLink>                    
                     <p:fileUpload id="inputTurmas"
@@ -81,7 +87,9 @@
                                   fileLimit="1"
                                   multiple="false"
                                   process="@form"
-                                  update=":formHeader:systemMessages turmas" />
+                                  oncomplete="PF('dlgTurmasPreviewFormVar').show()"
+                                  fileUploadListener="#{turmaBean.uploadTurmas}"
+                                  update=":turmasPreviewForm:confirmaImpTurmas :turmasPreviewForm:tablePreviewTurmas :turmasPreviewForm:progressBarTurmas :formHeader:systemMessages turmas" />
                 </h:panelGroup>
             </h:form>                
             <hr class="separator" />

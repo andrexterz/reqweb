@@ -6,6 +6,7 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Periodo;
+import br.ufg.reqweb.model.Semestre;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,14 @@ public class PeriodoDao {
             periodo = null;
         }
         return periodo;
+    }
+    
+    @Transactional(readOnly = true)
+    public Periodo find(int ano, Semestre semestre) {
+        return (Periodo) this.sessionFactory.getCurrentSession()
+                .createQuery("FROM Periodo p WHERE p.ano = :ano AND p.semestre =:semestre")
+                .setParameter("ano", ano)
+                .setParameter("semestre", semestre).uniqueResult();
     }
     
     @Transactional(readOnly = true)

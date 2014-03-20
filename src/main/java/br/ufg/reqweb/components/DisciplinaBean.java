@@ -229,7 +229,7 @@ public class DisciplinaBean implements Serializable {
             }
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (IOException | NumberFormatException ex) {
+        } catch (IOException | NumberFormatException e) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
@@ -256,7 +256,7 @@ public class DisciplinaBean implements Serializable {
         stopImportaDisciplinas = true;
     }
 
-    public void cancelImpDiscipinas(ActionEvent event) {
+    public void cancelImpDisciplinas(ActionEvent event) {
         setupImportDisciplinas(event);
         try {
             Thread.sleep(2000);
@@ -272,7 +272,7 @@ public class DisciplinaBean implements Serializable {
     public LazyDataModel<Disciplina> getDisciplinasDataModel() {
         return disciplinasDataModel;
     }
-    
+
     public List<Disciplina> getDisciplinas() {
         if (disciplinas.isEmpty() | disciplinaDao.count() != disciplinas.size()) {
             disciplinas = disciplinaDao.findAll();

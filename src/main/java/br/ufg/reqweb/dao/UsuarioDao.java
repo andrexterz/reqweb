@@ -83,12 +83,7 @@ public class UsuarioDao {
         }
     }
 
-    /**
-     *
-     * @param id
-     * @return
-     *
-     */
+
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         Usuario usuario;
@@ -121,6 +116,20 @@ public class UsuarioDao {
                     createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil AND lower(u.nome) LIKE lower(:termo)")
                     .setParameter("tipoPerfil", tipoPerfil)
                     .setParameter("termo", "%" + termo + "%")
+                    .list();
+            return usuarios;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }        
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Usuario> find(PerfilEnum tipoPerfil) {
+        try {
+            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
+                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil")
+                    .setParameter("tipoPerfil", tipoPerfil)
                     .list();
             return usuarios;
         } catch (HibernateException e) {

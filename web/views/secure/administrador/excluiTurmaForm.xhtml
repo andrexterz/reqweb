@@ -6,7 +6,7 @@
         <p:confirmDialog id="dlgExclTurmaDialog" widgetVar="excluirTurmaDialog"
                          appendTo="@(body)" width="420" 
                          header="#{msg.excluir} #{msg.turma}"
-                         message="#{msg.excluir} #{msg.turma} #{turmaBean.itemSelecionado.nome}?"
+                         message="#{msg.excluir} #{msg.turma} #{turmaBean.itemSelecionado.nome} - #{turmaBean.itemSelecionado.disciplina.nome}?"
                          severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaExclTurma" value="#{msg.sim}"

@@ -9,6 +9,9 @@ import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.dao.PeriodoDao;
 import br.ufg.reqweb.dao.TurmaDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.model.Periodo;
 import org.apache.log4j.Logger;
 import br.ufg.reqweb.model.Semestre;
 import br.ufg.reqweb.model.Turma;
@@ -125,7 +128,30 @@ public class TurmaBean {
     }
 
     public void salvaTurmas() {
-
+        stopImportaTurmas = false;
+        tImportJob = new Thread() {
+            @Override
+            public void run() {
+                List<Turma> items = new ArrayList<>();
+                int length = turmaListPreview.size();
+                int counter = 0;
+                for (Turma t: turmaListPreview.values()) {
+                    if (!stopImportaTurmas) {
+                        counter++;
+                        progress = (int) ((counter / (float) length) * 100);
+                        Set<ConstraintViolation<Turma>> errors = validator.validate(t);
+                        if (errors.isEmpty()) {
+                            items.add(t);
+                        }
+                    } else {
+                        items.clear();
+                        break;
+                    }
+                }
+               turmaDao.adicionar(items);
+            }
+        };
+        tImportJob.start();
     }
 
     public void salvaTurma() {
@@ -163,7 +189,24 @@ public class TurmaBean {
         List<String[]> data;
         turmaListPreview = new HashMap();
         try {
+            Map<Long,Usuario> docenteMap = new HashMap<Long,Usuario>();
+            Map<Long,Periodo> periodoMap = new HashMap<Long,Periodo>();
+            Map<Long,Disciplina> disciplinaMap = new HashMap<Long,Disciplina>();
+            
+            for (Usuario u:usuarioDao.find(PerfilEnum.DOCENTE)) {
+                docenteMap.put(u.getId(), u);
+            }
+            
+            for (Periodo p: periodoDao.findAll()) {
+                periodoMap.put(p.getId(),p);
+            }
+            
+            for (Disciplina d: disciplinaDao.findAll()) {
+                disciplinaMap.put(d.getId(), d);
+            }
+            
             data = CSVParser.parse(file.getInputstream());
+            
             for (int i = 1; i < data.size(); i++) {
                 String[] row = data.get(i);
                 Long id = Long.parseLong(row[0].trim());
@@ -175,9 +218,14 @@ public class TurmaBean {
                 Turma t = new Turma();
                 t.setId(id);
                 t.setNome(nome);
-                t.setPeriodo(periodoDao.find(ano, semestre));
-                t.setDocente(usuarioDao.findById(docenteId));
-                t.setDisciplina(disciplinaDao.findById(disciplinaId));
+                for (Periodo p: periodoMap.values()) {
+                    if (p.getAno() == ano && p.getSemestre() == semestre) {
+                        t.setPeriodo(p);
+                        break;
+                    }
+                }
+                t.setDocente(docenteMap.get(docenteId));
+                t.setDisciplina(disciplinaMap.get(disciplinaId));
                 turmaListPreview.put(id, t);
             }
         } catch (IOException | NumberFormatException e) {

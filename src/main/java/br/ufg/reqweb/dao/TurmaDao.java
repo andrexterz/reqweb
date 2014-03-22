@@ -32,6 +32,13 @@ public class TurmaDao {
     }
 
     @Transactional
+    public void adicionar(List<Turma> turmas) {
+        for (Turma t: turmas) {
+            this.sessionFactory.getCurrentSession().save(t);
+        }
+    }
+
+    @Transactional
     public void atualizar(Turma turma) {
         this.sessionFactory.getCurrentSession().update(turma);
     }

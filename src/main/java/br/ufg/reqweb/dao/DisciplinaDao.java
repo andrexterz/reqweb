@@ -89,9 +89,8 @@ public class DisciplinaDao {
     public List<Disciplina> find(String termo) {
         try {
             List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Disciplina d WHERE d.nome ~* :termo")
-                    .addEntity(Disciplina.class)
-                    .setParameter("termo", termo)
+                    .createCriteria(Disciplina.class)
+                    .add(Restrictions.like("nome","%" + termo.toUpperCase() + "%"))
                     .list();
             return disciplinas;
         } catch (HibernateException | NumberFormatException e) {

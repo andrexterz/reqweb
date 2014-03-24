@@ -31,11 +31,24 @@
                                  oncomplete="PF('excluirTurmaDialog').show()"
                                  process="@this" />
                 
+                <p:commandButton value="#{msg.exportar} #{msg.paraCSV}" ajax="false">
+                    <p:fileDownload value="#{turmaBean.turmasAsCSV}" />
+                </p:commandButton>
+                
+                <p:autoComplete id="periodoFiltro" styleClass="autoComplete"
+                                converter="#{periodoConverter}" value="#{turmaBean.periodo}"
+                                minQueryLength="4" var="p"
+                                itemLabel="#{p}" itemValue="#{p}" forceSelection="true"
+                                completeMethod="#{periodoBean.findPeriodo}">
+                    <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaPeriodo}" />
+                </p:autoComplete>
+                <p:watermark for="periodoFiltro" value="#{msg.ano}/#{msg.periodo}" />
+                
                 <p:inputText id="turmaBusca"
                              styleClass="searchBox"
                              value="#{turmaBean.termoBusca}" />
 
-                <p:watermark for="turmaBusca" value="#{msg.turma}" />
+                <p:watermark for="turmaBusca" value="#{msg.disciplina}" />
 
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=turmaCommand] -->
                 <p:commandButton style="visibility: hidden;"
@@ -66,6 +79,9 @@
                 </p:column>
                 <p:column headerText="#{msg.docente}" styleClass="turmaColC">
                     <h:outputText value="#{turmaItem.docente.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.periodo}" styleClass="turmaColD">
+                    <h:outputText value="#{turmaItem.periodo}" />
                 </p:column>
             </p:dataTable>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">

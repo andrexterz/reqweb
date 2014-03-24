@@ -10,7 +10,9 @@ import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.util.CSVParser;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +28,10 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -204,6 +208,24 @@ public class DisciplinaBean implements Serializable {
         } catch (NullPointerException e) {
             curso = null;
         }
+    }
+    
+    public StreamedContent getDisciplinasAsCSV() {
+        StringBuilder csvData = new StringBuilder("id,codigo,disciplina,curso_sigla");
+        for (Disciplina d: disciplinaDao.findAll()) {
+            csvData.append("\n");
+            csvData.append(d.getId());
+            csvData.append(",");
+            csvData.append(d.getCodigo());
+            csvData.append(",");
+            csvData.append(d.getNome());
+            csvData.append(",");
+            csvData.append(d.getCurso().getSigla());
+        }
+
+        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv","reqweb_disciplinas.csv");
+        return file;
     }
 
     public void uploadDisciplinas(FileUploadEvent event) {

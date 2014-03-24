@@ -493,10 +493,14 @@ input[type=text], input[type=password], select {
     width: 10%;
 }
 .turmaColB {
-    width: 50%;
+    width: 40%;
 }
 .turmaColC {
-    width: 40%;
+    width: 30%;
+}
+
+.turmaColD {
+    width: 20%;
 }
 
 /********************************* usuarios ***********************************/
@@ -629,6 +633,7 @@ input[type=text], input[type=password], select {
 }
 
 .autoComplete input {
+    float: right;
     width: 20%!important;
     margin-left: 4px;
     padding-right: 20px!important;

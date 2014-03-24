@@ -17,7 +17,9 @@ import br.ufg.reqweb.model.Semestre;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
 import br.ufg.reqweb.util.CSVParser;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +33,10 @@ import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -61,10 +65,11 @@ public class TurmaBean {
 
     @Autowired
     UsuarioDao usuarioDao;
-    
+
     private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private Turma turma;
     private Usuario docente;
+    private Periodo periodo;
     private Turma itemSelecionado;
     private Turma itemPreviewSelecionado;
     private String termoBusca;
@@ -78,19 +83,32 @@ public class TurmaBean {
     private final LazyDataModel turmas;
 
     public TurmaBean() {
-        turmaListPreview = new HashMap();        
+        turmaListPreview = new HashMap();
         turma = new Turma();
+        docente = null;
+        periodo = null;
         operation = null;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
-        termoBusca = null;
+        termoBusca = "";
         turmas = new LazyDataModel<Turma>() {
             @Override
             public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 List<Turma> turmaList;
-                turmaList = turmaDao.find(first, pageSize);
-                setRowCount(turmaDao.count());
+                if (periodo != null) {
+                    turmaList = turmaDao.find(termoBusca, periodo);
+                    setRowCount(turmaList.size());
+                } else {
+                    if (termoBusca.equals("")) {
+                        turmaList = turmaDao.find(first, pageSize);
+                        setRowCount(turmaDao.count());
+                    } else {
+                        turmaList = turmaDao.find(termoBusca);
+                        setRowCount(turmaList.size());
+                    }
+
+                }
                 return turmaList;
             }
         };
@@ -135,7 +153,7 @@ public class TurmaBean {
                 List<Turma> items = new ArrayList<>();
                 int length = turmaListPreview.size();
                 int counter = 0;
-                for (Turma t: turmaListPreview.values()) {
+                for (Turma t : turmaListPreview.values()) {
                     if (!stopImportaTurmas) {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
@@ -148,7 +166,7 @@ public class TurmaBean {
                         break;
                     }
                 }
-               turmaDao.adicionar(items);
+                turmaDao.adicionar(items);
             }
         };
         tImportJob.start();
@@ -184,29 +202,59 @@ public class TurmaBean {
 
     }
 
+    public void autoCompleteSelecionaPeriodo(SelectEvent event) {
+        try {
+            periodo = (Periodo) event.getObject();
+        } catch (NullPointerException e) {
+            periodo = null;
+        }
+    }
+    
+    public StreamedContent getTurmasAsCSV() {
+        StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,curso_sigla");
+        for (Turma t: turmaDao.findAll()) {
+            csvData.append("\n");
+            csvData.append(t.getId());
+            csvData.append(",");
+            csvData.append(t.getPeriodo().getAno());
+            csvData.append(",");
+            csvData.append(t.getNome());
+            csvData.append(",");
+            csvData.append(t.getPeriodo().getSemestre().getValue());
+            csvData.append(",");
+            csvData.append(t.getDisciplina().getId());
+            csvData.append(",");
+            csvData.append(t.getDocente().getId());
+        }
+
+        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv","reqweb_turmas.csv");
+        return file;
+    }    
+
     public void uploadTurmas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
         turmaListPreview = new HashMap();
         try {
-            Map<Long,Usuario> docenteMap = new HashMap<Long,Usuario>();
-            Map<Long,Periodo> periodoMap = new HashMap<Long,Periodo>();
-            Map<Long,Disciplina> disciplinaMap = new HashMap<Long,Disciplina>();
-            
-            for (Usuario u:usuarioDao.find(PerfilEnum.DOCENTE)) {
+            Map<Long, Usuario> docenteMap = new HashMap();
+            Map<Long, Periodo> periodoMap = new HashMap();
+            Map<Long, Disciplina> disciplinaMap = new HashMap();
+
+            for (Usuario u : usuarioDao.find(PerfilEnum.DOCENTE)) {
                 docenteMap.put(u.getId(), u);
             }
-            
-            for (Periodo p: periodoDao.findAll()) {
-                periodoMap.put(p.getId(),p);
+
+            for (Periodo p : periodoDao.findAll()) {
+                periodoMap.put(p.getId(), p);
             }
-            
-            for (Disciplina d: disciplinaDao.findAll()) {
+
+            for (Disciplina d : disciplinaDao.findAll()) {
                 disciplinaMap.put(d.getId(), d);
             }
-            
+
             data = CSVParser.parse(file.getInputstream());
-            
+
             for (int i = 1; i < data.size(); i++) {
                 String[] row = data.get(i);
                 Long id = Long.parseLong(row[0].trim());
@@ -218,7 +266,7 @@ public class TurmaBean {
                 Turma t = new Turma();
                 t.setId(id);
                 t.setNome(nome);
-                for (Periodo p: periodoMap.values()) {
+                for (Periodo p : periodoMap.values()) {
                     if (p.getAno() == ano && p.getSemestre() == semestre) {
                         t.setPeriodo(p);
                         break;
@@ -249,12 +297,12 @@ public class TurmaBean {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
         context.addMessage(null, msg);
     }
-    
+
     public void setupImportTurmas(ActionEvent event) {
         progress = 0;
         stopImportaTurmas = true;
     }
-    
+
     public void cancelImpTurmas(ActionEvent event) {
         setupImportTurmas(event);
         try {
@@ -266,7 +314,7 @@ public class TurmaBean {
         } catch (NullPointerException | InterruptedException e) {
             log.error("no thread to cancel");
         }
-    }    
+    }
 
     public void autoCompleteSelecionaDocente(SelectEvent event) {
         try {
@@ -290,6 +338,14 @@ public class TurmaBean {
 
     public void setDocente(Usuario docente) {
         this.docente = docente;
+    }
+
+    public Periodo getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
     }
 
     public boolean isSelecionado() {

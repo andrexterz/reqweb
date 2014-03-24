@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.dao;
 
+import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Turma;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ public class TurmaDao {
 
     @Transactional
     public void adicionar(List<Turma> turmas) {
-        for (Turma t: turmas) {
+        for (Turma t : turmas) {
             this.sessionFactory.getCurrentSession().save(t);
         }
     }
@@ -64,10 +66,33 @@ public class TurmaDao {
     public List<Turma> find(String termo) {
         try {
             List<Turma> turmas = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Turma t WHERE t.nome = :termo")
-                    .addEntity(Turma.class)
-                    .setParameter("termo", termo)
+                    .createQuery("SELECT t FROM Turma t JOIN t.disciplina d where d.nome LIKE :termo")
+                    .setParameter("termo", "%" + termo.toUpperCase() + "%")
                     .list();
+            return turmas;
+        } catch (HibernateException | NumberFormatException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Turma> find(String termo, Periodo periodo) {
+        try {
+            List<Turma> turmas;
+            if (termo.isEmpty()) {
+                turmas = this.sessionFactory.getCurrentSession()
+                        .createQuery("FROM Turma t WHERE t.periodo.id = :periodoId")
+                        .setParameter("periodoId", periodo.getId())
+                        .list();
+            } else {
+                turmas = this.sessionFactory.getCurrentSession()
+                        .createCriteria(Turma.class)
+                        .createAlias("disciplina", "d")
+                        .add(Restrictions.like("d.nome", "%" + termo.toUpperCase() + "%"))
+                        .add(Restrictions.eq("periodo.id", periodo.getId()))
+                        .list();
+            }
             return turmas;
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
@@ -103,7 +128,7 @@ public class TurmaDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
     public int count() {
         try {
@@ -115,6 +140,6 @@ public class TurmaDao {
             System.out.println("query error: " + e.getMessage());
             return 0;
         }
-    }    
+    }
 
 }

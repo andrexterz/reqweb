@@ -99,6 +99,10 @@ public class PeriodoBean implements Serializable {
         }
     }
     
+    public List<Periodo> findPeriodo(String query) {
+        return periodoDao.find(query);
+    }
+    
     public List<Semestre> getSemestres() {
         List<Semestre> semestres = new ArrayList<>();
         semestres.addAll(Arrays.asList(Semestre.values()));

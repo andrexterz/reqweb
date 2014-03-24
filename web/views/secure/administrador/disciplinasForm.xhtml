@@ -32,6 +32,10 @@
                                  oncomplete="PF('excluirDisciplinaDialog').show()"
                                  process="@this" />
                 
+                <p:commandButton value="#{msg.exportar} #{msg.paraCSV}" ajax="false">
+                    <p:fileDownload value="#{disciplinaBean.disciplinasAsCSV}" />
+                </p:commandButton>                
+
                 <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
                                 converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
                                 minQueryLength="4"
@@ -40,7 +44,7 @@
                     <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
                 </p:autoComplete>
                 <p:watermark for="cursoFiltro" value="#{msg.curso}" />
-                
+
                 <p:inputText id="disciplinaBusca"
                              styleClass="searchBox"
                              value="#{disciplinaBean.termoBusca}" />

@@ -20,6 +20,8 @@
         <ui:include src="turmasPreviewForm.xhtml" />
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
+
+        <ui:include src="indicePrioridadePreviewForm.xhtml" />
         
         <h:form class="contentTables" id="arquivoForm">
             <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
@@ -94,10 +96,15 @@
                 </h:panelGroup>
             </h:form>                
             <hr class="separator" />
-            <h:form id="arquivosPeriodoForm" enctype="multipart/form-data">
+            <h:form id="arquivosIndicePrioridadeForm" enctype="multipart/form-data">
                 <h:panelGroup id="indicePrioridade" layout="block">
                         <h:outputLabel for="inputIndicePrioridade" value="#{msg.uploadArquivos} - #{msg.indicePrioridade}" />
-                        <p:commandLink title="#{msg.indicePrioridadePrevisualizar}">
+                        <p:commandLink id="previewImpIndicePrioridade"
+                                       title="#{msg.indicePrioridadePrevisualizar}"
+                                       disabled="#{!indicePrioridadeBean.arquivoUploaded}"
+                                       actionListener="#{indicePrioridadeBean.setupImportIndicePrioridade}"
+                                       update=":indicePrioridadePreviewForm:progressBarIndicePrioridade"
+                                       oncomplete="handleImportDialog('dlgIndicePrioridadePreviewFormVar')">
                             <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
                         </p:commandLink>                        
                         <p:fileUpload id="inputIndicePrioridade"
@@ -106,8 +113,10 @@
                                       cancelLabel="#{msg.cancelar}"
                                       fileLimit="1"
                                       multiple="false"
-                                      process="@this"
-                                      update=":formHeader:systemMessages arquivosPeriodoForm" />
+                                      process="@form"
+                                      oncomplete="PF('dlgIndicePrioridadePreviewFormVar').show()"
+                                      fileUploadListener="#{indicePrioridadeBean.uploadIndicePrioridade}"
+                                      update=":formHeader:systemMessages :indicePrioridadePreviewForm:confirmaImpIndicePrioridade :indicePrioridadePreviewForm:tablePreviewIndicePrioridade :indicePrioridadePreviewForm:progressBarIndicePrioridade indicePrioridade" />
                 </h:panelGroup>
             </h:form>
         </h:panelGroup>        

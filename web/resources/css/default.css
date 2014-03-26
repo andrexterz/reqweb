@@ -503,6 +503,24 @@ input[type=text], input[type=password], select {
     width: 20%;
 }
 
+/************************************ turmas **********************************/
+.indicePrioridadeColA {
+    width: 10%;
+}
+.indicePrioridadeColB {
+    width: 40%;
+}
+
+.indicePrioridadeColC {
+    width: 30%;
+}
+
+.indicePrioridadeColD {
+    text-align: right;
+    text-indent: 5%;
+    width: 20%;
+}
+
 /********************************* usuarios ***********************************/
 .usuarioColLogin {
     width: 20%;

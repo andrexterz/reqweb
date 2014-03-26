@@ -34,6 +34,13 @@ public class IndicePrioridadeDao {
     }
 
     @Transactional
+    public void adicionar(List<IndicePrioridade> indicePrioridade) {
+        for (IndicePrioridade ip: indicePrioridade) {
+            this.sessionFactory.getCurrentSession().save(ip);
+        }
+    }
+
+    @Transactional
     public void atualizar(IndicePrioridade indicePrioridade) {
         this.sessionFactory.getCurrentSession().update(indicePrioridade);
     }

@@ -16,10 +16,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -46,20 +49,25 @@ public class IndicePrioridadeBean {
 
     @Autowired
     private Validator validator;
-
+    
+    private static final Logger log = Logger.getLogger(IndicePrioridadeBean.class);
     String termoBusca;
     private Thread tImportJob;
     private int progress;
-    private volatile boolean stopImportaIndicesPrioridade;
-    private IndicePrioridade[] itemSelecionadoList;
-    private IndicePrioridade[] itemSelecionadoPreviewList;
+    private volatile boolean stopImportaIndicePrioridade;
+    private List<IndicePrioridade> itemSelecionadoList;
+    private List<IndicePrioridade> itemSelecionadoPreviewList;
     private Map<Long, IndicePrioridade> indicePrioridadeListPreview;
-    private final LazyDataModel<IndicePrioridade> indicesPrioridadeDataModel;
+    private final LazyDataModel<IndicePrioridade> indicePrioridadeDataModel;
 
     public IndicePrioridadeBean() {
         termoBusca = "";
+
+        itemSelecionadoList = new ArrayList<>();
+        itemSelecionadoPreviewList = new ArrayList<>();
+        
         indicePrioridadeListPreview = new HashMap();
-        indicesPrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
+        indicePrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
 
             @Override
             public List<IndicePrioridade> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
@@ -76,8 +84,35 @@ public class IndicePrioridadeBean {
             }
         };
     }
+    
+    public void salvaIndicePrioridade() {
+        stopImportaIndicePrioridade = false;
+        tImportJob = new Thread() {
+            @Override
+            public void run() {
+                List<IndicePrioridade> items = new ArrayList<>();
+                int length = indicePrioridadeListPreview.size();
+                int counter = 0;
+                for (IndicePrioridade ip : indicePrioridadeListPreview.values()) {
+                    if (!stopImportaIndicePrioridade) {
+                        counter++;
+                        progress = (int) ((counter / (float) length) * 100);
+                        Set<ConstraintViolation<IndicePrioridade>> errors = validator.validate(ip);
+                        if (errors.isEmpty()) {
+                            items.add(ip);
+                        }
+                    } else {
+                        items.clear();
+                        break;
+                    }
+                }
+                indicePrioridadeDao.adicionar(items);
+            }
+        };
+        tImportJob.start();
+    }    
 
-    public void uploadIndicesPrioridade(FileUploadEvent event) {
+    public void uploadIndicePrioridade(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
         indicePrioridadeListPreview = new HashMap();
@@ -115,6 +150,32 @@ public class IndicePrioridadeBean {
             indicePrioridadeListPreview.remove(ip.getId());
         }
     }
+    
+    public void handleCompleteImpIndicePrioridade() {
+        stopImportaIndicePrioridade = true;
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        context.addMessage(null, msg);
+    }
+
+    public void setupImportIndicePrioridade(ActionEvent event) {
+        progress = 0;
+        stopImportaIndicePrioridade = true;
+    }
+
+    public void cancelImpIndicePrioridade(ActionEvent event) {
+        setupImportIndicePrioridade(event);
+        try {
+            Thread.sleep(2000);
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
+            context.addMessage(null, msg);
+
+        } catch (NullPointerException | InterruptedException e) {
+            log.error("no thread to cancel");
+        }
+    }
+    
 
     public String getTermoBusca() {
         return termoBusca;
@@ -132,25 +193,29 @@ public class IndicePrioridadeBean {
         this.progress = progress;
     }
 
-    public boolean getStopImportaIndicesPrioridade() {
-        return stopImportaIndicesPrioridade;
+    public boolean getStopImportaIndicePrioridade() {
+        return stopImportaIndicePrioridade;
     }
 
-    public IndicePrioridade[] getItemSelecionadoList() {
+    public List<IndicePrioridade> getItemSelecionadoList() {
         return itemSelecionadoList;
     }
 
-    public void setItemSelecionadoList(IndicePrioridade[] itemSelecionadoList) {
+    public void setItemSelecionadoList(List<IndicePrioridade> itemSelecionadoList) {
         this.itemSelecionadoList = itemSelecionadoList;
     }
 
-    public IndicePrioridade[] getItemSelecionadoPreviewList() {
+    public List<IndicePrioridade> getItemSelecionadoPreviewList() {
         return itemSelecionadoPreviewList;
     }
 
-    public void setItemSelecionadoPreviewList(IndicePrioridade[] itemSelecionadoPreviewList) {
+    public void setItemSelecionadoPreviewList(List<IndicePrioridade> itemSelecionadoPreviewList) {
         this.itemSelecionadoPreviewList = itemSelecionadoPreviewList;
     }
+    
+    public boolean isPreviewSelecionado() {
+        return itemSelecionadoPreviewList.size() > 0;
+    }    
 
     public List<IndicePrioridade> getIndicePrioridadeListPreview() {
         return new ArrayList<>(indicePrioridadeListPreview.values());
@@ -160,8 +225,8 @@ public class IndicePrioridadeBean {
         return indicePrioridadeListPreview.size() > 0;
     }
 
-    public LazyDataModel<IndicePrioridade> getIndicesPrioridadeDataModel() {
-        return indicesPrioridadeDataModel;
+    public LazyDataModel<IndicePrioridade> getIndicePrioridadeDataModel() {
+        return indicePrioridadeDataModel;
     }
 
 }

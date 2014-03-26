@@ -17,8 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,8 +27,7 @@ import javax.validation.constraints.NotNull;
 public class Permissao implements Serializable{
     
     @Id
-    @SequenceGenerator(name = "FUNCIONALIDADE_ID", sequenceName = "funcionalidade_funcionalidade_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "FUNCIONALIDADE_ID", strategy = GenerationType.SEQUENCE)    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(unique = true)

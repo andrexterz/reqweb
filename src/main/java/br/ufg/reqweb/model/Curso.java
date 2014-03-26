@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
@@ -27,8 +26,7 @@ public class Curso implements Serializable {
 
     
     @Id
-    @SequenceGenerator(name = "CURSO_ID", sequenceName = "curso_curso_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "CURSO_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 100, nullable = false)

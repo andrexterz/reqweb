@@ -15,7 +15,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -32,8 +31,7 @@ public class Periodo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "PERIODO_AJUSTE_ID", sequenceName = "periodo_ajuste_periodo_ajuste_id", allocationSize = 1)
-    @GeneratedValue(generator = "PERIODO_AJUSTE_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

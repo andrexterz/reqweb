@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 
 /**
  *
@@ -30,8 +29,7 @@ public class Perfil implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "PERFIL_ID", sequenceName = "perfil_perfil_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "PERFIL_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     

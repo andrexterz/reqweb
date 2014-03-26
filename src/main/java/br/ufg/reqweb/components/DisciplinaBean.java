@@ -240,14 +240,16 @@ public class DisciplinaBean implements Serializable {
             }
             for (int i = 1; i < data.size(); i++) {
                 String[] row = data.get(i);
-                Long codigo = Long.parseLong(row[0].trim());
-                String nome = row[1].trim();
-                String sigla = row[2].trim().toUpperCase();
+                Long id = Long.parseLong(row[0].trim());
+                Long codigo = Long.parseLong(row[1].trim());
+                String nome = row[2].trim();
+                String sigla = row[3].trim().toUpperCase();
                 Disciplina d = new Disciplina();
+                d.setId(id);
                 d.setCodigo(codigo);
                 d.setNome(nome);
                 d.setCurso(cursoMap.get(sigla));
-                disciplinaListPreview.put(d.getCodigo(), d);
+                disciplinaListPreview.put(d.getId(), d);
             }
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -262,7 +264,7 @@ public class DisciplinaBean implements Serializable {
     }
 
     public void excluiDisciplinaPreview() {
-        disciplinaListPreview.remove(itemPreviewSelecionado.getCodigo());
+        disciplinaListPreview.remove(itemPreviewSelecionado.getId());
         itemPreviewSelecionado = null;
     }
 

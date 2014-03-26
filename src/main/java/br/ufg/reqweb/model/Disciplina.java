@@ -14,8 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -29,15 +29,14 @@ public class Disciplina implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @SequenceGenerator(name = "DISCIPLINA_ID", sequenceName = "disciplina_disciplina_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "DISCIPLINA_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @NotNull
     @Column(unique = true)
     private Long codigo;
     
-    @NotNull
+    @Size(min = 2)
     @Column
     private String nome;
     

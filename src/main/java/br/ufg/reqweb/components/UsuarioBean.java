@@ -72,7 +72,6 @@ public class UsuarioBean implements Serializable {
         termoBusca = "";
         usuariosDataModel = new LazyDataModel<Usuario>() {
             private static final long serialVersionUID = 1L;
-
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);

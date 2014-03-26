@@ -15,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -39,8 +38,7 @@ public class Usuario implements Serializable {
     }
 
     @Id
-    @SequenceGenerator(name = "USUARIO_ID", sequenceName = "usuario_usuario_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "USUARIO_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

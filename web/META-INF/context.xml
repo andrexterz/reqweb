@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/reqweb"/>
+<Context antiJARLocking="true" path="/reqweb">
+    <Manager
+        className="org.apache.catalina.session.StandardManager"
+        distributable="false"
+        pathname="" />
+</Context>

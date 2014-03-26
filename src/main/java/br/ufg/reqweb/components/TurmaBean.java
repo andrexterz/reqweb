@@ -20,6 +20,7 @@ import br.ufg.reqweb.util.CSVParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope(value = "session")
-public class TurmaBean {
+public class TurmaBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Autowired
@@ -195,10 +196,11 @@ public class TurmaBean {
     }
 
     public void selecionaItem(SelectEvent event) {
-
+        itemSelecionado = (Turma) event.getObject();
     }
 
     public void selecionaItemPreview(SelectEvent event) {
+        itemPreviewSelecionado = (Turma) event.getObject();
 
     }
 

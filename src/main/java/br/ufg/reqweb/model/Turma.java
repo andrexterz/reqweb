@@ -12,8 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -25,17 +26,18 @@ public class Turma implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "TURMA_ID", sequenceName = "turma_turma_id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "TURMA_ID", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
+    
+    @Size(min = 1)
     @Column
     private String nome;
 
+    @NotNull            
     @ManyToOne
     private Periodo periodo;
 
+    @NotNull
     @ManyToOne
     private Disciplina disciplina;
 
@@ -101,8 +103,9 @@ public class Turma implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        System.out.println("obj -> " + obj);
         if (obj != null) {
-            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE : id)) == (long) ((Turma) obj).getId());
+            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE : id)) == (long) (((Turma) obj).getId() == null ? Long.MIN_VALUE: ((Turma) obj).getId()));
         } else {
             return false;
         }

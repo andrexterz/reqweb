@@ -182,10 +182,6 @@ public class PeriodoBean implements Serializable {
         this.termoBusca = termoBusca;
     }
 
-    public String listaPeriodos() {
-        return "periodos";
-    }
-    
     public int getMinAno() {
         return Calendar.getInstance().get(Calendar.YEAR);
     }

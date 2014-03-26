@@ -14,10 +14,12 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Scope(value = "singleton")
 public class CursoDao {
 
     @Autowired
@@ -46,7 +48,9 @@ public class CursoDao {
     @Transactional(readOnly = true)
     public List<Curso> findAll() {
         try {
-            List<Curso> cursoList = this.sessionFactory.getCurrentSession().createQuery("FROM Curso c ORDER BY c.dataModificacao DESC").list();
+            List<Curso> cursoList = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Curso c ORDER BY c.dataModificacao DESC")
+                    .list();
             return cursoList;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -72,8 +76,7 @@ public class CursoDao {
         Curso curso;
         try {
             curso = (Curso) this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Curso c WHERE c.sigla = :sigla")
-                    .addEntity(Curso.class)
+                    .createQuery("FROM Curso c WHERE c.sigla = :sigla")
                     .setParameter("sigla", sigla)
                     .uniqueResult();
         } catch (HibernateException e) {
@@ -88,8 +91,7 @@ public class CursoDao {
         Curso curso;
         try {
             curso = (Curso) this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Curso c WHERE c.matriz = :matriz")
-                    .addEntity(Curso.class)
+                    .createQuery("FROM Curso c WHERE c.matriz = :matriz")
                     .setParameter("matriz", matriz)
                     .uniqueResult();
         } catch (HibernateException e) {
@@ -103,9 +105,8 @@ public class CursoDao {
     public List<Curso> find(String termo) {
         try {
             List<Curso> cursos = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM Curso c WHERE c.nome ~* :termo")
-                    .addEntity(Curso.class)
-                    .setParameter("termo", termo)
+                    createQuery("FROM Curso c WHERE c.nome LIKE :termo")
+                    .setParameter("termo", "%" + termo.toUpperCase() + "%")
                     .list();
             return cursos;
         } catch (HibernateException e) {

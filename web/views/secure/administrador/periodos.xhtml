@@ -36,7 +36,7 @@
                 <p:inputMask id="periodoBusca" mask="9999" styleClass="searchBox" value="#{periodoBean.termoBusca}" />
                 <p:watermark for="periodoBusca" value="#{msg.ano}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=periodoBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="periodoBuscaCommand"  styleClass="searchCommand alignRight" update="tablePeriodos" actionListener="#{periodoBean.listaPeriodos}" />
+                <p:commandButton style="visibility: hidden;" id="periodoBuscaCommand"  styleClass="searchCommand alignRight" update="tablePeriodos" />
                 <p:defaultCommand target="periodoBuscaCommand" />
 
             </h:panelGroup>

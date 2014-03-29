@@ -54,7 +54,7 @@
                                widgetVar="pbImpTurma"
                                value="#{turmaBean.progress}"
                                labelTemplate="{value}%">
-                    <p:ajax event="complete" listener="#{turmaBean.handleCompleteImpTurmas}"
+                    <p:ajax event="complete" listener="#{turmaBean.handleCompleteSaveTurmas}"
                             update="paraImpButton :formHeader:systemMessages :turmasPreviewForm:tablePreviewTurmas"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>

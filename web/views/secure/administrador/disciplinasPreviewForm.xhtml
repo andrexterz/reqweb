@@ -54,7 +54,7 @@
                                widgetVar="pbImpDisciplina"
                                value="#{disciplinaBean.progress}"
                                labelTemplate="{value}%">
-                    <p:ajax event="complete" listener="#{disciplinaBean.handleCompleteImpDisciplinas}"
+                    <p:ajax event="complete" listener="#{disciplinaBean.handleCompleteSaveDisciplinas}"
                             update="paraImpButton :formHeader:systemMessages :disciplinasPreviewForm:tablePreviewDisciplinas"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>

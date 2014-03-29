@@ -31,6 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -79,6 +80,7 @@ public class TurmaBean implements Serializable {
     private Thread tImportJob;
     private String operation;
     private int progress;
+    private boolean saveStatus;
     private volatile boolean stopImportaTurmas;
     private Map<Long, Turma> turmaListPreview;
     private final LazyDataModel turmas;
@@ -89,6 +91,7 @@ public class TurmaBean implements Serializable {
         docente = null;
         periodo = null;
         operation = null;
+        saveStatus = false;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         termoBusca = "";
@@ -167,7 +170,12 @@ public class TurmaBean implements Serializable {
                         break;
                     }
                 }
-                turmaDao.adicionar(items);
+                try {
+                    turmaDao.adicionar(items);
+                    saveStatus = true;
+                } catch (ConstraintViolationException e) {
+                    saveStatus = false;
+                }
             }
         };
         tImportJob.start();
@@ -176,23 +184,23 @@ public class TurmaBean implements Serializable {
     public void salvaTurma() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        turma.setDocente(docente);
-        Set<ConstraintViolation<Turma>> errors = validator.validate(turma);
-        if (errors.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            context.addCallbackParam("resultado", true);
-            if (operation.equals(ADICIONA)) {
-                turmaDao.adicionar(turma);
-                itemSelecionado = turma;
-            } else {
-                turmaDao.atualizar(turma);
+        try {
+            turma.setDocente(docente);
+            Set<ConstraintViolation<Turma>> errors = validator.validate(turma);
+            saveStatus = errors.isEmpty();
+            if (saveStatus) {
+                if (operation.equals(ADICIONA)) {
+                    turmaDao.adicionar(turma);
+                    itemSelecionado = turma;
+                } else {
+                    turmaDao.atualizar(turma);
+                }
             }
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            context.addCallbackParam("resultado", false);
+        } catch (Exception e) {
+            saveStatus = false;
         }
+        context.addCallbackParam("resultado", saveStatus);
+        handleCompleteSaveTurmas();
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -211,10 +219,10 @@ public class TurmaBean implements Serializable {
             periodo = null;
         }
     }
-    
+
     public StreamedContent getTurmasAsCSV() {
         StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,curso_sigla");
-        for (Turma t: turmaDao.findAll()) {
+        for (Turma t : turmaDao.findAll()) {
             csvData.append("\n");
             csvData.append(t.getId());
             csvData.append(",");
@@ -230,9 +238,9 @@ public class TurmaBean implements Serializable {
         }
 
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv","reqweb_turmas.csv");
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv");
         return file;
-    }    
+    }
 
     public void uploadTurmas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
@@ -293,10 +301,15 @@ public class TurmaBean implements Serializable {
         itemPreviewSelecionado = null;
     }
 
-    public void handleCompleteImpTurmas() {
+    public void handleCompleteSaveTurmas() {
         stopImportaTurmas = true;
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        FacesMessage msg;
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+        }
         context.addMessage(null, msg);
     }
 

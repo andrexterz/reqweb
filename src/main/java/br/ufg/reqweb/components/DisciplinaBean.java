@@ -25,6 +25,7 @@ import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -65,6 +66,7 @@ public class DisciplinaBean implements Serializable {
     private Thread tImportJob;
     private String operation;
     private int progress;
+    private boolean saveStatus;
     private volatile boolean stopImportaDisciplinas;
     private Disciplina disciplina;
     private Curso curso;
@@ -78,6 +80,7 @@ public class DisciplinaBean implements Serializable {
         disciplinaListPreview = new HashMap();
         termoBusca = "";
         operation = null;
+        saveStatus = false;
         tImportJob = null;
         disciplina = new Disciplina();
         curso = null;
@@ -166,7 +169,13 @@ public class DisciplinaBean implements Serializable {
                         break;
                     }
                 }
-                disciplinaDao.adicionar(items);
+                try {
+                    disciplinaDao.adicionar(items);
+                    saveStatus = true;
+                } catch (ConstraintViolationException e) {
+                    saveStatus = false;
+                }
+
             }
         };
         tImportJob.start();
@@ -175,23 +184,23 @@ public class DisciplinaBean implements Serializable {
     public void salvaDisciplina() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        disciplina.setCurso(curso);
-        Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
-        if (errors.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            context.addCallbackParam("resultado", true);
-            if (operation.equals(ADICIONA)) {
-                disciplinaDao.adicionar(disciplina);
-                itemSelecionado = disciplina;
-            } else {
-                disciplinaDao.atualizar(disciplina);
+        try {
+            disciplina.setCurso(curso);
+            Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
+            saveStatus = errors.isEmpty();
+            if (saveStatus) {
+                if (operation.equals(ADICIONA)) {
+                    disciplinaDao.adicionar(disciplina);
+                    itemSelecionado = disciplina;
+                } else {
+                    disciplinaDao.atualizar(disciplina);
+                }
             }
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            context.addCallbackParam("resultado", false);
+        } catch (ConstraintViolationException e) {
+            saveStatus = false;
         }
+        context.addCallbackParam("resultado", saveStatus);
+        handleCompleteSaveDisciplinas();
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -209,10 +218,10 @@ public class DisciplinaBean implements Serializable {
             curso = null;
         }
     }
-    
+
     public StreamedContent getDisciplinasAsCSV() {
         StringBuilder csvData = new StringBuilder("id,codigo,disciplina,curso_sigla");
-        for (Disciplina d: disciplinaDao.findAll()) {
+        for (Disciplina d : disciplinaDao.findAll()) {
             csvData.append("\n");
             csvData.append(d.getId());
             csvData.append(",");
@@ -224,7 +233,7 @@ public class DisciplinaBean implements Serializable {
         }
 
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv","reqweb_disciplinas.csv");
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_disciplinas.csv");
         return file;
     }
 
@@ -268,10 +277,15 @@ public class DisciplinaBean implements Serializable {
         itemPreviewSelecionado = null;
     }
 
-    public void handleCompleteImpDisciplinas() {
+    public void handleCompleteSaveDisciplinas() {
         stopImportaDisciplinas = true;
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        FacesMessage msg;
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+        }
         context.addMessage(null, msg);
     }
 

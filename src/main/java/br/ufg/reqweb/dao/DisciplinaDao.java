@@ -92,7 +92,7 @@ public class DisciplinaDao {
         try {
             List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
                     .createCriteria(Disciplina.class)
-                    .add(Restrictions.like("nome","%" + termo.toUpperCase() + "%"))
+                    .add(Restrictions.like("nome", "%" + termo.toUpperCase() + "%"))
                     .list();
             return disciplinas;
         } catch (HibernateException | NumberFormatException e) {
@@ -130,7 +130,7 @@ public class DisciplinaDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
     public int count() {
         try {

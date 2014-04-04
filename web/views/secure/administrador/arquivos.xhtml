@@ -22,6 +22,8 @@
         <ui:include src="excluiTurmaForm.xhtml" />
 
         <ui:include src="indicePrioridadePreviewForm.xhtml" />
+        <ui:include src="indicePrioridadeForm.xhtml" />
+        <ui:include src="excluiIndicePrioridadeForm.xhtml" />
         
         <h:form class="contentTables" id="arquivoForm">
             <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
@@ -42,6 +44,8 @@
                 <p:commandButton title="#{msg.indicePrioridade}"
                                  value="#{msg.indicePrioridade}"
                                  process="@this"
+                                 update=":indicePrioridadeForm:tableIndicePrioridade"
+                                 oncomplete="PF('dlgIndicePrioridadeFormVar').show()"
                                  icon="ui-icon-search" />                
             </h:panelGroup>
         </h:form>

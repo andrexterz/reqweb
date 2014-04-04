@@ -503,7 +503,7 @@ input[type=text], input[type=password], select {
     width: 20%;
 }
 
-/************************************ turmas **********************************/
+/************************************ indice de prioridade ********************/
 .indicePrioridadeColA {
     width: 10%;
 }
@@ -520,6 +520,22 @@ input[type=text], input[type=password], select {
     text-indent: 5%;
     width: 20%;
 }
+
+.excluiMsgBoxSelection {
+    border: 1px solid grey;
+    width: 100%;
+    height: 5em;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.excluiMsgBoxSelection ul {
+    list-style: none;
+    margin: 3px;
+    text-align: left;
+    padding: 4px;   
+}
+
 
 /********************************* usuarios ***********************************/
 .usuarioColLogin {

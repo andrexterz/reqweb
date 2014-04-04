@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgSalvaIndicePrioridadeForm" modal="true"
+              widgetVar="dlgIndicePrioridadeVar" width="360" height="140"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.indicePrioridadeNovo}" rendered="#{indicePrioridadeBean.operation == 'a'}" />
+            <h:outputText value="#{msg.indicePrioridadeEditar}" rendered="#{indicePrioridadeBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="salvaIndicePrioridadeForm">
+            <!--validacao do lado do servidor utilizando beanValidator -->
+            <!--tag anula Validation PhaseListener do JSF -->
+            <f:validateBean disabled="true">
+                <p:panelGrid id="indicePrioridadeDlgPanel" styleClass="formGrid">
+                    <p:row>
+                        <p:column styleClass="indicePrioridadeColSigla">
+                            <h:outputLabel value="#{msg.discente}: #{indicePrioridadeBean.indicePrioridade.discente.nome}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column styleClass="indicePrioridadeColSigla">
+                            <h:outputLabel for="#{indicePrioridadeBean.indicePrioridade.indicePrioridade}" value="#{msg.indicePrioridade}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:inputText value="#{indicePrioridadeBean.indicePrioridade.indicePrioridade}" id="indicePrioridade" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{indicePrioridadeBean.salvaIndicePrioridade}"
+                                     oncomplete="dialogHandler('dlgIndicePrioridadeVar', xhr, status, args)"
+                                     update="indicePrioridadeDlgPanel :formHeader:systemMessages :indicePrioridadeForm:tableIndicePrioridade :indicePrioridadeForm:indicePrioridadeToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@none"
+                                     update="indicePrioridadeDlgPanel"
+                                     onclick="PF('dlgIndicePrioridadeVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

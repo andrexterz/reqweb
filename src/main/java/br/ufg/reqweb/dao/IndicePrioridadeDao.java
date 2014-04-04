@@ -50,6 +50,19 @@ public class IndicePrioridadeDao {
         this.sessionFactory.getCurrentSession().delete(indicePrioridade);
     }
 
+    @Transactional
+    public void excluir(List<IndicePrioridade> indicePrioridade) {
+        for (IndicePrioridade ip: indicePrioridade) {
+            this.sessionFactory.getCurrentSession().delete(ip);
+        }
+    }
+    
+    @Transactional
+    public void excluir() {
+        this.sessionFactory.getCurrentSession().createQuery("DELETE FROM IndicePrioridade")
+                .executeUpdate();
+    }
+
     @Transactional(readOnly = true)
     public List<IndicePrioridade> findAll() {
         try {
@@ -61,7 +74,8 @@ public class IndicePrioridadeDao {
             return new ArrayList<>();
         }
     }
-
+    
+    @Transactional(readOnly = true)
     public List<IndicePrioridade> find(int first, int maxResult) {
         try {
             return this.sessionFactory.getCurrentSession()
@@ -94,8 +108,9 @@ public class IndicePrioridadeDao {
         try {
             return this.sessionFactory.getCurrentSession()
                     .createCriteria(IndicePrioridade.class)
-                    .add(Restrictions.like("disciplina.nome", termo.toUpperCase(), MatchMode.ANYWHERE))
-                    .add(Restrictions.or(Restrictions.like("disciplina.matricula", termo, MatchMode.ANYWHERE)))
+                    .createAlias("discente","d")
+                    .add(Restrictions.or(Restrictions.like("d.matricula", termo, MatchMode.ANYWHERE),
+                            Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
                     .list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());

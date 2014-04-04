@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="excluiIndicePrioridadeForm">
+        <p:confirmDialog id="dlgExclIndicePrioridadeDialog" widgetVar="excluirIndicePrioridadeDialog"
+                         appendTo="@(body)" width="420" 
+                         header="#{msg.limpar} #{msg.indicePrioridade}"
+                         message="#{msg.indicePrioridadeLimpar}?" severity="alert">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
+                <p:commandButton id="confirmaExclIndicePrioridade" value="#{msg.sim}"
+                                 oncomplete="PF('excluirIndicePrioridadeDialog').hide()"
+                                 action="#{indicePrioridadeBean.excluiIndicePrioridade}"
+                                 process="@this"
+                                 update=":indicePrioridadeForm:indicePrioridadeToolbar :indicePrioridadeForm:tableIndicePrioridade :formHeader:systemMessages" />
+                <p:commandButton id="cancelaExclIndicePrioridade"
+                                 value="#{msg.nao}"
+                                 onclick="PF('excluirIndicePrioridadeDialog').hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>
+

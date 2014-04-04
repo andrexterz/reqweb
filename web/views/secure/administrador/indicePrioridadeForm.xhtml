@@ -3,89 +3,65 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgDisciplinasForm" modal="true"
-              widgetVar="dlgDisciplinasFormVar" width="80%" height="390"
+    <p:dialog id="dlgIndicePrioridadeForm" modal="true"
+              widgetVar="dlgIndicePrioridadeFormVar" width="80%" height="390"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
-            <h:outputText value="#{msg.disciplinas}" />
+            <h:outputText value="#{msg.indicePrioridade}" />
         </f:facet>
-        <h:form id="disciplinasForm">
-            <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
-                <p:commandButton value="#{msg.novo}"
-                                 process="@this"
-                                 actionListener="#{disciplinaBean.novaDisciplina}"
-                                 oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update="tableDisciplinas :salvaDisciplinaForm" />
+        <h:form id="indicePrioridadeForm">
+            <h:panelGroup layout="block" id="indicePrioridadeToolbar" styleClass="formToolbar">
 
-                <p:commandButton value="#{msg.editar}"
-                                 disabled="#{!disciplinaBean.selecionado}"
-                                 process="@this"
-                                 actionListener="#{disciplinaBean.editaDisciplina}"
-                                 oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update="tableDisciplinas :salvaDisciplinaForm" />
-
-
-                <p:commandButton value="#{msg.excluir}"
+                <p:commandButton value="#{msg.limpar}"
                                  styleClass="formToolbarButtons"
-                                 update="tableDisciplinas"
-                                 disabled="#{!disciplinaBean.selecionado}"
-                                 oncomplete="PF('excluirDisciplinaDialog').show()"
+                                 update="tableIndicePrioridade"
+                                 oncomplete="PF('excluirIndicePrioridadeDialog').show()"
                                  process="@this" />
                 
                 <p:commandButton value="#{msg.exportar} #{msg.paraCSV}" ajax="false">
-                    <p:fileDownload value="#{disciplinaBean.disciplinasAsCSV}" />
+                    <p:fileDownload value="#{indicePrioridadeBean.indicePrioridadeAsCSV}" />
                 </p:commandButton>                
 
-                <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
-                                converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
-                                minQueryLength="4"
-                                var="c" itemLabel="#{c.nome}" itemValue="#{c}" forceSelection="true"
-                                completeMethod="#{cursoBean.findCurso}">
-                    <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
-                </p:autoComplete>
-                <p:watermark for="cursoFiltro" value="#{msg.curso}" />
-
-                <p:inputText id="disciplinaBusca"
+                <p:inputText id="indicePrioridadeBusca"
                              styleClass="searchBox"
-                             value="#{disciplinaBean.termoBusca}" />
+                             value="#{indicePrioridadeBean.termoBusca}" />
 
-                <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
+                <p:watermark for="indicePrioridadeBusca" value="#{msg.discente}/#{msg.usuarioMatricula}" />
 
-                <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=indicePrioridadeCommand] -->
                 <p:commandButton style="visibility: hidden;"
-                                 id="disciplinaBuscaCommand"
+                                 id="indicePrioridadeBuscaCommand"
                                  styleClass="searchCommand alignRight"
-                                 update="tableDisciplinas" />
+                                 update="tableIndicePrioridade" />
 
-                <p:defaultCommand target="disciplinaBuscaCommand" />
+                <p:defaultCommand target="indicePrioridadeBuscaCommand" />
 
             </h:panelGroup>            
-            <p:dataTable id="tableDisciplinas"
+            <p:dataTable id="tableIndicePrioridade"
                          paginator="true"
-                         value="#{disciplinaBean.disciplinasDataModel}"
-                         var="disciplinaItem"
+                         value="#{indicePrioridadeBean.indicePrioridadeDataModel}"
+                         var="indicePrioridadeItem"
                          lazy="true"
                          emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{disciplinaItem.id}"
-                         selectionMode="single"
-                         selection="#{disciplinaBean.itemSelecionado}"
+                         rowKey="#{indicePrioridadeItem.id}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar :excluiDisciplinaForm" listener="#{disciplinaBean.selecionaItem}" />
-                <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
-                    <h:outputText value="#{disciplinaItem.codigo}" />
+                <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
+                    <h:outputText value="#{indicePrioridadeItem.discente.matricula}" />
                 </p:column>
-                <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
-                    <h:outputText value="#{disciplinaItem.nome}" />
+                <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
+                    <h:outputText value="#{indicePrioridadeItem.discente.nome}" />
                 </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
-                    <h:outputText value="#{disciplinaItem.curso.nome}" />
+                <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
+                    <h:outputText value="#{indicePrioridadeItem.indicePrioridade}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
                 </p:column>
             </p:dataTable>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton value="#{msg.fechar}"
                                  process="@none"
-                                 onclick="PF('dlgDisciplinasFormVar').hide()"/>
+                                 onclick="PF('dlgIndicePrioridadeFormVar').hide()"/>
             </h:panelGroup>            
         </h:form>            
     </p:dialog>

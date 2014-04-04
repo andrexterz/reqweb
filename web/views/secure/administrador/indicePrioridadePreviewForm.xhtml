@@ -44,10 +44,12 @@
                     <h:outputText value="#{indicePrioridadeItemPreview.discente.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.curso}" styleClass="indicePrioridadeColC">
-                    <h:outputText value="#{indicePrioridadeItemPreview.discente.perfilList[0].curso.nome}" />
+                    <h:outputText value="#{indicePrioridadeItemPreview.discente.perfilList.get(0).curso.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
-                    <h:outputText value="#{indicePrioridadeItemPreview.indicePrioridade}" />
+                    <h:outputText value="#{indicePrioridadeItemPreview.indicePrioridade}">
+                        <f:convertNumber pattern="#0.00" />
+                    </h:outputText>
                 </p:column>
             </p:dataTable>
             <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">

@@ -11,7 +11,9 @@ import br.ufg.reqweb.model.IndicePrioridade;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import br.ufg.reqweb.util.CSVParser;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +26,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -49,30 +53,28 @@ public class IndicePrioridadeBean {
 
     @Autowired
     private Validator validator;
-    
+
     private static final Logger log = Logger.getLogger(IndicePrioridadeBean.class);
     String termoBusca;
     private Thread tImportJob;
     private int progress;
     private volatile boolean stopImportaIndicePrioridade;
-    private List<IndicePrioridade> itemSelecionadoList;
+    IndicePrioridade indicePrioridade;
     private List<IndicePrioridade> itemSelecionadoPreviewList;
     private Map<Long, IndicePrioridade> indicePrioridadeListPreview;
     private final LazyDataModel<IndicePrioridade> indicePrioridadeDataModel;
 
     public IndicePrioridadeBean() {
         termoBusca = "";
-
-        itemSelecionadoList = new ArrayList<>();
+        indicePrioridade = null;
         itemSelecionadoPreviewList = new ArrayList<>();
-        
         indicePrioridadeListPreview = new HashMap();
         indicePrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
-
             @Override
             public List<IndicePrioridade> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                setPageSize(pageSize);
                 List<IndicePrioridade> indicePrioridadeList;
+                System.out.println("rowIndex: " + getRowIndex());
+                setPageSize(pageSize);
                 if (termoBusca.equals("")) {
                     indicePrioridadeList = indicePrioridadeDao.find(first, pageSize);
                     setRowCount(indicePrioridadeDao.count());
@@ -82,9 +84,20 @@ public class IndicePrioridadeBean {
                 }
                 return indicePrioridadeList;
             }
+
+            @Override
+            public IndicePrioridade getRowData(String rowKey) {
+                return indicePrioridadeDao.findById(Long.parseLong(rowKey));
+            }
+
+            @Override
+            public Object getRowKey(IndicePrioridade indicePrioridade) {
+                return indicePrioridade.getId();
+            }
+
         };
     }
-    
+
     public void salvaIndicePrioridade() {
         stopImportaIndicePrioridade = false;
         tImportJob = new Thread() {
@@ -110,15 +123,21 @@ public class IndicePrioridadeBean {
             }
         };
         tImportJob.start();
-    }    
+    }
+
+    public void excluiIndicePrioridade() {
+        indicePrioridadeDao.excluir();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
     public void uploadIndicePrioridade(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;
         indicePrioridadeListPreview = new HashMap();
         try {
-            Map<Long,Usuario> discenteMap = new HashMap();
-            for (Usuario u: usuarioDao.find(PerfilEnum.DISCENTE)) {
+            Map<Long, Usuario> discenteMap = new HashMap();
+            for (Usuario u : usuarioDao.find(PerfilEnum.DISCENTE)) {
                 discenteMap.put(u.getId(), u);
             }
             data = CSVParser.parse(file.getInputstream());
@@ -134,7 +153,7 @@ public class IndicePrioridadeBean {
                 indicePrioridadeListPreview.put(ip.getId(), ip);
             }
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
-            FacesContext.getCurrentInstance().addMessage(null, msg);            
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException | NumberFormatException e) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -150,7 +169,7 @@ public class IndicePrioridadeBean {
             indicePrioridadeListPreview.remove(ip.getId());
         }
     }
-    
+
     public void handleCompleteImpIndicePrioridade() {
         stopImportaIndicePrioridade = true;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -175,7 +194,21 @@ public class IndicePrioridadeBean {
             log.error("no thread to cancel");
         }
     }
-    
+
+    public StreamedContent getIndicePrioridadeAsCSV() {
+        StringBuilder csvData = new StringBuilder("id,indice_prioridade,discente_id");
+        for (IndicePrioridade ip : indicePrioridadeDao.findAll()) {
+            csvData.append("\n");
+            csvData.append(ip.getId());
+            csvData.append(",");
+            csvData.append(ip.getIndicePrioridade());
+            csvData.append(",");
+            csvData.append(ip.getDiscente().getId());
+        }
+        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv");
+        return file;
+    }
 
     public String getTermoBusca() {
         return termoBusca;
@@ -183,6 +216,14 @@ public class IndicePrioridadeBean {
 
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
+    }
+
+    public IndicePrioridade getIndicePrioridade() {
+        return indicePrioridade;
+    }
+
+    public void setIndicePrioridade(IndicePrioridade indicePrioridade) {
+        this.indicePrioridade = indicePrioridade;
     }
 
     public int getProgress() {
@@ -197,14 +238,6 @@ public class IndicePrioridadeBean {
         return stopImportaIndicePrioridade;
     }
 
-    public List<IndicePrioridade> getItemSelecionadoList() {
-        return itemSelecionadoList;
-    }
-
-    public void setItemSelecionadoList(List<IndicePrioridade> itemSelecionadoList) {
-        this.itemSelecionadoList = itemSelecionadoList;
-    }
-
     public List<IndicePrioridade> getItemSelecionadoPreviewList() {
         return itemSelecionadoPreviewList;
     }
@@ -212,10 +245,10 @@ public class IndicePrioridadeBean {
     public void setItemSelecionadoPreviewList(List<IndicePrioridade> itemSelecionadoPreviewList) {
         this.itemSelecionadoPreviewList = itemSelecionadoPreviewList;
     }
-    
+
     public boolean isPreviewSelecionado() {
         return itemSelecionadoPreviewList.size() > 0;
-    }    
+    }
 
     public List<IndicePrioridade> getIndicePrioridadeListPreview() {
         return new ArrayList<>(indicePrioridadeListPreview.values());

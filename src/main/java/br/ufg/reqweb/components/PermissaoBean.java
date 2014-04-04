@@ -10,8 +10,6 @@ import br.ufg.reqweb.dao.PermissaoDao;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Permissao;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import javax.faces.application.FacesMessage;

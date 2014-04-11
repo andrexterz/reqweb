@@ -100,13 +100,16 @@ public class Curso implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
-            return ((obj instanceof Curso) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Curso) obj).getId());
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Curso other = (Curso) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
+        return false;
     }
-
     @Override
     public int hashCode() {
         return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();

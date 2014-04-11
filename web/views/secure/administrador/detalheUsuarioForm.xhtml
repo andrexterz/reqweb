@@ -5,7 +5,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDetalheUsuarioForm" modal="true"
-              widgetVar="dlgDetalheUsuarioVar" width="380" height="260"
+              widgetVar="dlgDetalheUsuarioVar" width="420" height="320"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}" />
@@ -47,18 +47,17 @@
                 <p:row>
                     <p:column colspan="2">
                         <c:if test="#{usuarioBean.selecionado}">
-                            <table class="perfilGrid">
-                                <tr>
-                                    <th class="perfilTitle ui-widget-header" colspan="3"><h:outputText value="#{msg.perfis}"/></th>
-                                </tr>
-                                <ui:repeat value="#{usuarioBean.itemSelecionado.perfilList}" var="p">
-                                    <tr>
-                                        <td class="perfilColA"><h:outputLabel value="#{msg.perfil}" /></td>
-                                        <td class="perfilColB"><h:outputText value="#{p.tipoPerfil.papel}" /></td>
-                                        <td class="perfilColC"><h:outputText value="#{p.curso.nome}" /></td>
-                                    </tr>                                        
-                                </ui:repeat>                                    
-                            </table>
+                            <p:dataTable value="#{usuarioBean.itemSelecionado.perfilList}"
+                                         var="p"
+                                         emptyMessage="#{msg.emptyMessage}"
+                                         styleClass="perfilGrid">
+                                <p:column styleClass="perfilColA" headerText="#{msg.perfil}">
+                                    <h:outputText value="#{p.tipoPerfil.papel}" />
+                                </p:column>
+                                <p:column styleClass="perfilColB" headerText="#{msg.curso}">
+                                    <h:outputText value="#{p.curso.nome}" />
+                                </p:column>
+                            </p:dataTable>
                         </c:if>
                     </p:column>                        
                 </p:row>

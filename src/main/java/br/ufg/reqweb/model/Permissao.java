@@ -100,11 +100,15 @@ public class Permissao implements Serializable{
     
     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
-            return ((obj instanceof Permissao) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Permissao) obj).getId());
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Permissao other = (Permissao) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
+        return false;
     }
 
     @Override

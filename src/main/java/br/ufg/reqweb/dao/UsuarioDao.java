@@ -10,10 +10,12 @@ import br.ufg.reqweb.model.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.Criteria;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -50,9 +52,27 @@ public class UsuarioDao {
 
     @Transactional
     public void atualizar(Usuario usuario) {
-        this.sessionFactory.getCurrentSession().update(usuario);
-
+        Session session = this.sessionFactory.getCurrentSession();        
+        session.update(usuario);
+        for (Perfil p : usuario.getPerfilList()) {
+            session.saveOrUpdate(p);
+        }
     }
+    
+    @Transactional
+    public void adicionaPerfil(List<Perfil> perfilList) {
+        for (Perfil p: perfilList) {
+            this.sessionFactory.getCurrentSession().saveOrUpdate(p);
+        }
+    }    
+
+    @Transactional
+    public void removePerfil(List<Perfil> perfilList) {
+        for (Perfil p: perfilList) {
+            this.sessionFactory.getCurrentSession().delete(p);
+        }
+     }    
+    
 
     @Transactional
     public void excluir(Usuario usuario) {

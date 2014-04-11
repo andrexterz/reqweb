@@ -116,13 +116,17 @@ public class Periodo implements Serializable {
         this.dataTermino = dataTermino;
     }
 
-    @Override
+     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
-            return ((obj instanceof Periodo) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Periodo) obj).getId());
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Periodo other = (Periodo) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
+        return false;
     }
     
     @Override

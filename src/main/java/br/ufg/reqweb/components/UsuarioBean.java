@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -57,8 +58,10 @@ public class UsuarioBean implements Serializable {
     private String grupo;
     private PerfilEnum perfil;
     private Usuario usuario;
+    private List<Perfil> perfilRemovido;
     private int progress;
     private volatile boolean stopImportaUsuarios;
+    private boolean saveStatus;
     private Thread tImportJob;
     private Login objLogin;
     private Usuario itemSelecionado;
@@ -67,11 +70,14 @@ public class UsuarioBean implements Serializable {
     public UsuarioBean() {
         usuarios = new ArrayList<>();
         usuario = new Usuario();
+        perfilRemovido = new ArrayList<>();
         objLogin = null;
         tImportJob = null;
         termoBusca = "";
+        saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
@@ -163,7 +169,6 @@ public class UsuarioBean implements Serializable {
                                 } else {
                                     curso = null;
                                 }
-                                p.setUsuario(usr);
                                 p.setCurso(curso);
                                 p.setTipoPerfil(pEnum);
                                 usr.adicionaPerfil(p);
@@ -228,7 +233,78 @@ public class UsuarioBean implements Serializable {
     }
 
     public void salvaUsuario() {
-        //implementar
+        FacesMessage msg;
+        RequestContext context = RequestContext.getCurrentInstance();
+        Set<ConstraintViolation<Usuario>> errors = validator.validate(usuario);
+        saveStatus = errors.isEmpty();
+        if (saveStatus) {
+            if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
+                if (!perfilRemovido.isEmpty()) {
+                    usuarioDao.removePerfil(perfilRemovido);
+                    perfilRemovido.clear();
+                }
+                usuarioDao.atualizar(usuario);
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+        context.addCallbackParam(
+                "resultado", saveStatus);
+    }
+
+    public void cancelSalvaUsuario(ActionEvent event) {
+        List<Perfil> tempPerfilList = new ArrayList<Perfil>(){
+            {
+                addAll(perfilRemovido);
+                for (Perfil p: usuario.getPerfilList()) {
+                    if (p.getId() == null) {
+                        add(p);
+                    }
+                }
+            }
+        };
+        for (Perfil p : tempPerfilList) {
+            if (p.getId() != null) {
+                usuario.adicionaPerfil(p);
+            } else {
+                usuario.removePerfil(p);
+            }
+            System.out.println("p: " + p);
+        }
+        perfilRemovido.clear();
+        System.out.println("cancelando alteração de usuário");
+    }
+
+    public void addPerfil() {
+        if (isSelecionado()) {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+            PerfilBean pb = (PerfilBean) session.getAttribute("perfilBean");
+            CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+            PerfilEnum p = pb.getItemSelecionado();
+            Curso c = cb.getItemSelecionado();
+            Perfil perfilItem = new Perfil();
+            perfilItem.setTipoPerfil(p);
+            perfilItem.setCurso(c);
+            usuario.adicionaPerfil(perfilItem);
+            System.out.println("perfil added: "
+                    + perfilItem.getId() + ": "
+                    + perfilItem.getTipoPerfil());
+        }
+    }
+
+    public void removePerfil(ActionEvent event) {
+        Perfil perfilItem = (Perfil) event.getComponent().getAttributes().get("perfil");
+        usuario.removePerfil(perfilItem);
+        if (perfilItem.getId() != null) {
+            perfilRemovido.add(perfilItem);            
+        }
+        System.out.println("perfil removed: "
+                + perfilItem.getId()
+                + ": " + perfilItem.getTipoPerfil());
     }
 
     public void selecionaItem(SelectEvent event) {
@@ -253,10 +329,6 @@ public class UsuarioBean implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public List<Perfil> getPerfis() {
-        return usuarioDao.findById(itemSelecionado.getId()).getPerfilList();
     }
 
     public PerfilEnum getPerfil() {

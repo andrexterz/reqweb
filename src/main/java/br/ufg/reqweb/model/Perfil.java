@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -21,8 +22,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class Perfil implements Serializable {
-    
-    
+
     /**
      *
      */
@@ -31,14 +31,14 @@ public class Perfil implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    
+
     @Enumerated(EnumType.STRING)
     private PerfilEnum tipoPerfil;
 
+    @NotNull
     @ManyToOne
     private Usuario usuario;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Curso curso;
 
@@ -97,24 +97,32 @@ public class Perfil implements Serializable {
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
-    
+
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
-            return ((obj instanceof Perfil) && ((long) ((getId() == null) ? Long.MIN_VALUE: getId())) == (long) ((Perfil) obj).getId());
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Perfil other = (Perfil) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
-        
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)): super.hashCode();
+        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)) : super.hashCode();
     }
 
     @Override
     public String toString() {
         return this.getClass().getName() + "@" + getId();
-    }    
+    }
 }

@@ -44,6 +44,14 @@ body {
     text-align: center;
 }
 
+.addedItem {
+    color: green;
+}
+
+.removedItem {
+    color: red;
+}
+
 .hiddenItem {
     visibility: hidden;
 }
@@ -708,8 +716,12 @@ input[type=text], input[type=password], select {
     padding-right: 0!important;
 }
 
-.perfilGrid tr:nth-child(n+1) {
+.perfilGrid tr:nth-child(odd) {
     background: #dcdcdc;
+}
+
+.perfilGrid tr:nth-child(even) {
+    background: #efefef;
 }
 
 .perfilTitle {
@@ -717,15 +729,15 @@ input[type=text], input[type=password], select {
 }
 
 .perfilColA {
-    width: 20%;
+    width: 40%;
 }
 
 .perfilColB {
-    width: 30%;
+    width: 55%;
 }
 
 .perfilColC {
-    width: 50%;
+    width: 5%;
 }
 
 /*********************************** footer ***********************************/

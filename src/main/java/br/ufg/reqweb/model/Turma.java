@@ -103,14 +103,17 @@ public class Turma implements Serializable {
         }
     }
 
-    @Override
+      @Override
     public boolean equals(Object obj) {
-        System.out.println("obj -> " + obj);
-        if (obj != null) {
-            return ((obj instanceof Turma) && ((long) ((id == null) ? Long.MIN_VALUE : id)) == (long) (((Turma) obj).getId() == null ? Long.MIN_VALUE: ((Turma) obj).getId()));
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Turma other = (Turma) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
+        return false;
     }
 
     @Override

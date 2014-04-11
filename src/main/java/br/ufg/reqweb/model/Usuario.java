@@ -148,9 +148,13 @@ public class Usuario implements Serializable {
      */
     public void setPerfil(List<Perfil> perfilList) {
         this.perfilList = perfilList;
+        for (Perfil p: this.perfilList) {
+            p.setUsuario(this);
+        }
     }
 
     public void adicionaPerfil(Perfil perfil) {
+        perfil.setUsuario(this);
         this.perfilList.add(perfil);
     }
 
@@ -158,13 +162,17 @@ public class Usuario implements Serializable {
         this.perfilList.remove(perfil);
     }
 
-    @Override
+     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
-            return ((obj instanceof Usuario) && ((long) ((id == null) ? Long.MIN_VALUE: id)) == (long) ((Usuario) obj).getId());
-        } else {
-            return false;
+        if ((obj != null) && (obj.getClass() == this.getClass())) {
+            Usuario other = (Usuario) obj;
+            if (other.getId() != null && this.getId() != null) {
+                return other.getId().longValue() == this.getId().longValue();
+            } else {
+                return other.getId() == this.getId();
+            }
         }
+        return false;
     }
 
     @Override

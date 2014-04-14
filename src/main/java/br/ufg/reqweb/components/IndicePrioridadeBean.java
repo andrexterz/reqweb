@@ -136,20 +136,20 @@ public class IndicePrioridadeBean {
         List<String[]> data;
         indicePrioridadeListPreview = new HashMap();
         try {
-            Map<Long, Usuario> discenteMap = new HashMap();
+            Map<String, Usuario> discenteMap = new HashMap();
             for (Usuario u : usuarioDao.find(PerfilEnum.DISCENTE)) {
-                discenteMap.put(u.getId(), u);
+                discenteMap.put(u.getMatricula(), u);
             }
             data = CSVParser.parse(file.getInputstream());
             for (int i = 1; i < data.size(); i++) {
                 String[] row = data.get(i);
                 Long id = Long.parseLong(row[0].trim());
                 Float indice = Float.parseFloat(row[1].trim());
-                Long discenteId = Long.parseLong(row[2].trim());
+                String discenteMatricula = row[2].trim();
                 IndicePrioridade ip = new IndicePrioridade();
                 ip.setId(id);
                 ip.setIndicePrioridade(indice);
-                ip.setDiscente(discenteMap.get(discenteId));
+                ip.setDiscente(discenteMap.get(discenteMatricula));
                 indicePrioridadeListPreview.put(ip.getId(), ip);
             }
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("arquivoEnviado")), "");
@@ -196,12 +196,14 @@ public class IndicePrioridadeBean {
     }
 
     public StreamedContent getIndicePrioridadeAsCSV() {
-        StringBuilder csvData = new StringBuilder("id,indice_prioridade,discente_id");
+        StringBuilder csvData = new StringBuilder("id,indice_prioridade,discente_matricula, discente_id");
         for (IndicePrioridade ip : indicePrioridadeDao.findAll()) {
             csvData.append("\n");
             csvData.append(ip.getId());
             csvData.append(",");
             csvData.append(ip.getIndicePrioridade());
+            csvData.append(",");
+            csvData.append(ip.getDiscente().getMatricula());
             csvData.append(",");
             csvData.append(ip.getDiscente().getId());
         }

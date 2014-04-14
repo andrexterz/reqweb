@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,8 +110,9 @@ public class IndicePrioridadeDao {
             return this.sessionFactory.getCurrentSession()
                     .createCriteria(IndicePrioridade.class)
                     .createAlias("discente","d")
-                    .add(Restrictions.or(Restrictions.like("d.matricula", termo, MatchMode.ANYWHERE),
+                    .add(Restrictions.or(Restrictions.eq("d.matricula", termo),
                             Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
+                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                     .list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());

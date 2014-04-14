@@ -16,6 +16,9 @@ import javax.validation.ValidationException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -115,11 +118,12 @@ public class UsuarioDao {
     @Transactional(readOnly = true)
     public List<Usuario> find(String termo) {
         try {
-            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
-                    createSQLQuery("SELECT * FROM Usuario u WHERE u.nome ~* :termo")
-                    .addEntity(Usuario.class).setParameter("termo", termo)
+            return this.sessionFactory.getCurrentSession()
+                    .createCriteria(Usuario.class)
+                    .add(Restrictions.or(Restrictions.eq("matricula", termo),
+                            Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase()))
+                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                     .list();
-            return usuarios;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

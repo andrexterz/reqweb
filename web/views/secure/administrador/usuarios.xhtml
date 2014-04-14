@@ -43,7 +43,7 @@
                                  />
 
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
-                <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}" />
+                <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}/#{msg.usuarioMatricula}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=usuarioBuscaCommand] -->
                 <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" />                
                 <p:defaultCommand target="usuarioBuscaCommand" />
@@ -61,6 +61,7 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm" listener="#{usuarioBean.selecionaItem}" />
+                <p:ajax event="page" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm tableUsuarios" />
                 <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
                     <h:outputText value="#{usuarioItem.login}" />
                 </p:column>

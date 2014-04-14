@@ -7,8 +7,8 @@
               widgetVar="dlgPeriodoVar" width="400" height="240"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
-                <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
-                <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
+            <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
+            <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
         </f:facet>
         <h:form id="salvaPeriodoForm">
             <p:panelGrid id="periodoDlgPanel" styleClass="formGrid">
@@ -46,6 +46,20 @@
                     </p:column>
                     <p:column>
                         <p:calendar id="dataTermino" pattern="dd/M/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataTermino}" />
+                    </p:column>                    
+                </p:row>
+                <p:row>
+                    <p:column colspan="2" styleClass="periodoAtivo">
+                        <h:panelGroup layout="block" styleClass="periodoAtivo">
+                            <h:outputLabel for="#{periodoBean.periodo.ativo}" value="#{msg.ativo}" />
+                            <p:selectBooleanButton value="#{periodoBean.periodo.ativo}"
+                                                   styleClass="alignRight"
+                                                   onLabel="#{msg.sim}"
+                                                   offLabel="#{msg.nao}"
+                                                   onIcon="ui-icon-check"
+                                                   offIcon="ui-icon-close"/>                            
+                        </h:panelGroup>
+
                     </p:column>                    
                 </p:row>
             </p:panelGrid>

@@ -257,6 +257,7 @@ public class UsuarioBean implements Serializable {
                         perfilRemovido.clear();
                     }
                     usuarioDao.atualizar(usuario);
+                    itemSelecionado = usuario;
                 }
             }
         } catch (ConstraintViolationException e) {

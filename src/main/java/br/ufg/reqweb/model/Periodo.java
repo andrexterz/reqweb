@@ -45,6 +45,9 @@ public class Periodo implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date dataTermino;
+    
+    @Column(columnDefinition = "default false")
+    private boolean ativo;
 
     /**
      * @return the id
@@ -108,6 +111,25 @@ public class Periodo implements Serializable {
     public Date getDataTermino() {
         return dataTermino;
     }
+    
+    /**
+     * 
+     * @return the ativo
+     */
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+    
+    /**
+     * 
+     * @param ativo 
+     */
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+    
 
     /**
      * @param dataTermino the dataTermino to set

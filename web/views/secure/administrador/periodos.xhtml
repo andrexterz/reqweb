@@ -70,6 +70,10 @@
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>                
+                <p:column headerText="#{msg.ativo}" styleClass="periodoColPeriodo">
+                    <p:graphicImage rendered="#{periodoItem.ativo == true}" styleClass="ui-icon ui-icon-check iconDefault"/>
+                    <p:graphicImage rendered="#{periodoItem.ativo == false}" styleClass="ui-icon ui-icon-close iconDefault"/>
+                </p:column>                
             </p:dataTable>
         </h:form>
     </ui:define>

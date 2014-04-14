@@ -31,7 +31,10 @@
                                      value="#{turmaBean.turma.periodo}"
                                      converter="#{periodoConverter}">
                         <f:selectItem itemLabel="#{msg.periodo}" />
-                        <f:selectItems value="#{periodoBean.periodos}" var="periodoItem" itemLabel="#{periodoItem.toString()}" itemValue="#{periodoItem}"/>
+                        <f:selectItems value="#{periodoBean.periodos}"
+                                       var="periodoItem"
+                                       itemLabel="#{periodoItem.toString()}"
+                                       itemValue="#{periodoItem}"/>
                     </p:selectOneMenu>
                     <p:outputLabel for="filtroDocente" value="#{msg.docente}" />
                     <p:autoComplete id="filtroDocente" value="#{turmaBean.docente}"

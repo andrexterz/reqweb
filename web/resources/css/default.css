@@ -603,11 +603,11 @@ input[type=text], input[type=password], select {
 }
 
 .formGridColA {
-    width: 50%;
+    width: 40%;
 }
 
 .formGridColB {
-    width: 50%;
+    width: 60%;
 }
 
 .formTitle {

@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,17 +23,25 @@ import javax.validation.constraints.NotNull;
  * @author andre
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"tipoPerfil","usuario_id"})})
 public class Perfil implements Serializable {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
+    
+    public static PerfilEnum[] perfilCursoMustBeNull = {
+            PerfilEnum.ADMINISTRADOR,
+            PerfilEnum.DOCENTE,
+            PerfilEnum.SECRETARIA
+        };
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private PerfilEnum tipoPerfil;
 

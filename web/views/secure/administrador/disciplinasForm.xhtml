@@ -71,7 +71,7 @@
                          selection="#{disciplinaBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar :excluiDisciplinaForm" listener="#{disciplinaBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar :excluiDisciplinaForm" />
                 <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
                     <h:outputText value="#{disciplinaItem.codigo}" />
                 </p:column>

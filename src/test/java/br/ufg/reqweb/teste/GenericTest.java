@@ -6,9 +6,12 @@
 
 package br.ufg.reqweb.teste;
 
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,10 +49,13 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        Perfil p = new Perfil();
-        Object o = new Perfil();
-        System.out.println("p -> " + p.getClass());
-        System.out.println("o -> " + o.getClass());
+        PerfilEnum[] expressions = {
+            PerfilEnum.ADMINISTRADOR,
+            PerfilEnum.DOCENTE,
+            PerfilEnum.SECRETARIA
+        };
+        Curso curso = null;
+        System.out.println("result: " + (Arrays.asList(expressions).contains(PerfilEnum.ADMINISTRADOR) && curso == null));
         
 //        Pattern pat = Pattern.compile("\\D+(?=(\\d+))");
 //        String [] names = {"si10178", "cc10023", "amanda", "msc10426","afonso", "es10311"};

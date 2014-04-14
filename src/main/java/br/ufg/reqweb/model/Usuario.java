@@ -42,18 +42,18 @@ public class Usuario implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column
     private String nome;
 
     @NotNull
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String login;
 
     @Column(unique = true)
     private String matricula;
     
     @NotNull
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
     
     @Cascade(CascadeType.ALL)

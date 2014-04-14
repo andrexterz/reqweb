@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,15 @@ public class DisciplinaDao {
 
     @Transactional
     public void adicionar(List<Disciplina> disciplinas) {
+        Session session = this.sessionFactory.getCurrentSession();
+        int counter = 0;
+        boolean codigoExists;
+        List<Long> codigoValues = session.createQuery("SELECT codigo FROM Disciplina d").list();
         for (Disciplina d : disciplinas) {
-            this.sessionFactory.getCurrentSession().save(d);
+            codigoExists = codigoValues.contains(d.getCodigo());
+            if (!codigoExists) {
+                this.sessionFactory.getCurrentSession().save(d);
+            }
         }
     }
 

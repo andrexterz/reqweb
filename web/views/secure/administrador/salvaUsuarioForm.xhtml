@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgUsuarioForm" modal="true"
-              widgetVar="dlgUsuarioVar" width="420" height="320"
+              widgetVar="dlgUsuarioVar" width="440" height="320"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioEditar}" />
@@ -23,9 +23,11 @@
                     </p:column>
                     <p:column styleClass="formGridColB">
                         <p:selectOneMenu id="perfilNovo" value="#{perfilBean.itemSelecionado}">
+                            <f:selectItem itemLabel="#{msg.perfil}" value="#{null}" />
                             <f:selectItems value="#{perfilBean.items}" var="p"
                                            itemLabel="#{p.papel}"
                                            itemValue="#{p}" />
+                            <p:ajax update="cursoPerfilNovo addPerfilButton" listener="#{usuarioBean.onCursoDisable}" />
                         </p:selectOneMenu>
                     </p:column>
                     <p:column>
@@ -33,6 +35,7 @@
                     </p:column>
                     <p:column>
                         <p:selectOneMenu id="cursoPerfilNovo"
+                                         disabled="#{usuarioBean.cursoDisabled}"
                                          converter="#{cursoConverter}"
                                          value="#{cursoBean.itemSelecionado}">
                             <f:selectItem itemLabel="#{msg.curso}" value="#{null}" />
@@ -43,8 +46,11 @@
                     </p:column>
                     <p:column />
                     <p:column>
-                        <p:commandButton styleClass="alignRight"
+                        <p:commandButton id="addPerfilButton"
+                                         styleClass="alignRight"
                                          icon="ui-icon-plus"
+                                         disabled="#{perfilBean.itemSelecionado == null}"
+                                         value="#{msg.adicionar}"
                                          title="#{msg.adicionar}"
                                          actionListener="#{usuarioBean.addPerfil}"
                                          update="perfilList" />

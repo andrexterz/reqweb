@@ -9,13 +9,13 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import org.hibernate.Criteria;
+import javax.validation.ValidationException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -29,50 +29,46 @@ public class UsuarioDao {
     private SessionFactory sessionFactory;
 
     @Transactional
-    public void adicionar(Usuario usuario) {
-        Session session = this.sessionFactory.getCurrentSession();
-        session.save(usuario);
-        for (Perfil p : usuario.getPerfilList()) {
-            session.save(p);
-        }
-
-    }
-
-    @Transactional
     public void adicionar(List<Usuario> usuarios) {
         Session session = this.sessionFactory.getCurrentSession();
+        int counter = 0;
+        boolean userExists;
+        List<String> loginNames = session.createQuery("SELECT login FROM Usuario u").list();
         for (Usuario usuario : usuarios) {
-            session.save(usuario);
-            for (Perfil p : usuario.getPerfilList()) {
-                session.save(p);
-                
+            userExists = loginNames.contains(usuario.getLogin());
+            if (!userExists) {
+                session.save(usuario);
+                for (Perfil p : usuario.getPerfilList()) {
+                    session.save(p);
+                }
+                if (++counter % 20 == 0) {
+                    session.flush();
+                    session.clear();
+                }
             }
         }
     }
 
     @Transactional
     public void atualizar(Usuario usuario) {
-        Session session = this.sessionFactory.getCurrentSession();        
+        Session session = this.sessionFactory.getCurrentSession();
         session.update(usuario);
         for (Perfil p : usuario.getPerfilList()) {
+            if (Arrays.asList(Perfil.perfilCursoMustBeNull).contains(p.getTipoPerfil()) && p.getCurso() != null) {
+                session.clear();
+                session.close();
+                throw new ValidationException("Perfil " + p.getTipoPerfil() + " requires Curso == null");
+            }
             session.saveOrUpdate(p);
         }
     }
-    
-    @Transactional
-    public void adicionaPerfil(List<Perfil> perfilList) {
-        for (Perfil p: perfilList) {
-            this.sessionFactory.getCurrentSession().saveOrUpdate(p);
-        }
-    }    
 
     @Transactional
     public void removePerfil(List<Perfil> perfilList) {
-        for (Perfil p: perfilList) {
+        for (Perfil p : perfilList) {
             this.sessionFactory.getCurrentSession().delete(p);
         }
-     }    
-    
+    }
 
     @Transactional
     public void excluir(Usuario usuario) {
@@ -105,7 +101,6 @@ public class UsuarioDao {
         }
     }
 
-
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         Usuario usuario;
@@ -130,7 +125,7 @@ public class UsuarioDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
     public List<Usuario> find(String termo, PerfilEnum tipoPerfil) {
         try {
@@ -143,9 +138,9 @@ public class UsuarioDao {
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
-        }        
+        }
     }
-    
+
     @Transactional(readOnly = true)
     public List<Usuario> find(PerfilEnum tipoPerfil) {
         try {
@@ -157,7 +152,7 @@ public class UsuarioDao {
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
-        }        
+        }
     }
 
     @Transactional(readOnly = true)

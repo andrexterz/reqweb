@@ -182,7 +182,6 @@ public class DisciplinaBean implements Serializable {
     }
 
     public void salvaDisciplina() {
-        FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         try {
             disciplina.setCurso(curso);

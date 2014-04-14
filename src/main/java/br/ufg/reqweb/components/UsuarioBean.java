@@ -9,6 +9,7 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
@@ -184,7 +186,13 @@ public class UsuarioBean implements Serializable {
                         break;
                     }
                 }
-                usuarioDao.adicionar(usrList);
+                try {
+                    usuarioDao.adicionar(usrList);
+                    saveStatus = true;
+                } catch (ConstraintViolationException e) {
+                    saveStatus = false;
+                }
+
             }
         };
         tImportJob.start();
@@ -206,7 +214,12 @@ public class UsuarioBean implements Serializable {
     public void handleCompleteImpUsuarios() {
         stopImportaUsuarios = true;
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        FacesMessage msg;
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+        }
         context.addMessage(null, msg);
     }
 
@@ -233,34 +246,32 @@ public class UsuarioBean implements Serializable {
     }
 
     public void salvaUsuario() {
-        FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        Set<ConstraintViolation<Usuario>> errors = validator.validate(usuario);
-        saveStatus = errors.isEmpty();
-        if (saveStatus) {
-            if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
-                if (!perfilRemovido.isEmpty()) {
-                    usuarioDao.removePerfil(perfilRemovido);
-                    perfilRemovido.clear();
+        try {
+            Set<ConstraintViolation<Usuario>> errors = validator.validate(usuario);
+            saveStatus = errors.isEmpty();
+            if (saveStatus) {
+                if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
+                    if (!perfilRemovido.isEmpty()) {
+                        usuarioDao.removePerfil(perfilRemovido);
+                        perfilRemovido.clear();
+                    }
+                    usuarioDao.atualizar(usuario);
                 }
-                usuarioDao.atualizar(usuario);
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-                FacesContext.getCurrentInstance().addMessage(null, msg);
             }
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (ConstraintViolationException e) {
+            saveStatus = false;
         }
 
-        context.addCallbackParam(
-                "resultado", saveStatus);
+        context.addCallbackParam("resultado", saveStatus);
+        handleCompleteImpUsuarios();
     }
 
     public void cancelSalvaUsuario(ActionEvent event) {
-        List<Perfil> tempPerfilList = new ArrayList<Perfil>(){
+        List<Perfil> tempPerfilList = new ArrayList<Perfil>() {
             {
                 addAll(perfilRemovido);
-                for (Perfil p: usuario.getPerfilList()) {
+                for (Perfil p : usuario.getPerfilList()) {
                     if (p.getId() == null) {
                         add(p);
                     }
@@ -300,11 +311,24 @@ public class UsuarioBean implements Serializable {
         Perfil perfilItem = (Perfil) event.getComponent().getAttributes().get("perfil");
         usuario.removePerfil(perfilItem);
         if (perfilItem.getId() != null) {
-            perfilRemovido.add(perfilItem);            
+            perfilRemovido.add(perfilItem);
         }
         System.out.println("perfil removed: "
                 + perfilItem.getId()
                 + ": " + perfilItem.getTipoPerfil());
+    }
+    
+    public void onCursoDisable() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+        cb.setItemSelecionado(null);
+    }
+
+    public boolean isCursoDisabled() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        PerfilBean pb = (PerfilBean) session.getAttribute("perfilBean");
+        CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+        return (cb != null && Arrays.asList(Perfil.perfilCursoMustBeNull).contains(pb.getItemSelecionado()));
     }
 
     public void selecionaItem(SelectEvent event) {

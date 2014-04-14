@@ -70,7 +70,7 @@
                          selection="#{turmaBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":turmasForm:turmasToolbar :excluiTurmaForm" listener="#{turmaBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":turmasForm:turmasToolbar :excluiTurmaForm" />
                 <p:column headerText="#{msg.turma}" styleClass="turmaColA">
                     <h:outputText value="#{turmaItem.nome}" />
                 </p:column>

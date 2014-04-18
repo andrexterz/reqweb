@@ -116,6 +116,21 @@ public class UsuarioDao {
     }
 
     @Transactional(readOnly = true)
+    public Usuario findByLogin(String login) {
+        Usuario usuario;
+        try {
+            usuario = (Usuario) this.sessionFactory.getCurrentSession()
+                    .createCriteria(Usuario.class)
+                    .add(Restrictions.eq("login", login)).uniqueResult();
+        } catch (HibernateException e) {
+            usuario = null;
+        }
+        return usuario;
+    }
+    
+    
+
+    @Transactional(readOnly = true)
     public List<Usuario> find(String termo) {
         try {
             return this.sessionFactory.getCurrentSession()

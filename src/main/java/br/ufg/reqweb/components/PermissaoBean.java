@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.PermissaoDao;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Permissao;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -26,21 +27,20 @@ import org.springframework.stereotype.Component;
  *
  * @author andre
  */
-
 @Component
 public class PermissaoBean implements Serializable {
-    
+
     public PermissaoBean() {
         permissao = new Permissao();
         permissoes = null;
-        itemSelecionado = null;        
+        itemSelecionado = null;
         operation = null;
-        termoBusca = "";        
+        termoBusca = "";
     }
-    
+
     @Autowired
     PermissaoDao permissaoDao;
-    
+
     @Autowired
     private Validator validator;
 
@@ -53,24 +53,24 @@ public class PermissaoBean implements Serializable {
     private Permissao itemSelecionado;
     private String operation;
     private String termoBusca;
-    
+
     public void novaPermissao(ActionEvent event) {
         setOperation(ADICIONA);
         permissao = new Permissao();
     }
-    
+
     public void editaPermissao(ActionEvent event) {
         if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
+
         } else {
             setOperation(EDITA);
             permissao = getItemSelecionado();
         }
     }
-    
-    public void excluiPermissao () {
+
+    public void excluiPermissao() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
@@ -80,13 +80,13 @@ public class PermissaoBean implements Serializable {
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        }                
+        }
     }
-    
+
     public void salvaPermissao() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
-        permissao.setTipoPerfil(tipoPerfis);        
+        permissao.setTipoPerfil(tipoPerfis);
         Set<ConstraintViolation<Permissao>> errors = validator.validate(permissao);
         if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
@@ -97,33 +97,38 @@ public class PermissaoBean implements Serializable {
             } else {
                 permissaoDao.atualizar(permissao);
             }
-            FacesContext.getCurrentInstance().addMessage(null, msg);            
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
             context.addCallbackParam("resultado", false);
         }
     }
-    
+
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Permissao) event.getObject();
     }
-    
+
     public void filtraPermissoesPorTipoPerfil() {
         if (tipoPerfil != null) {
             permissoes = permissaoDao.findByPerfil(tipoPerfil);
         }
     }
 
-    /***
-     * 
-     * @return  the permissoes
+    public List<String> getUrls() {
+        List<String> urls = new ArrayList<>();
+        return urls;
+    }
+
+    /**
+     * *
+     *
+     * @return the permissoes
      */
     public List<Permissao> getPermissoes() {
         return permissoes;
     }
-    
-    
+
     /**
      * @return the permissao
      */
@@ -137,24 +142,22 @@ public class PermissaoBean implements Serializable {
     public void setPermissao(Permissao permissao) {
         this.permissao = permissao;
     }
-    
+
     /**
-     * 
-     * @return  tipoPerfil
+     *
+     * @return tipoPerfil
      */
     public PerfilEnum getTipoPerfil() {
         return tipoPerfil;
     }
 
     /**
-     * 
-     * @param tipoPerfil 
+     *
+     * @param tipoPerfil
      */
     public void setTipoPerfil(PerfilEnum tipoPerfil) {
         this.tipoPerfil = tipoPerfil;
     }
-    
-    
 
     /**
      *
@@ -171,7 +174,6 @@ public class PermissaoBean implements Serializable {
     public void setTipoPerfis(List<PerfilEnum> tipoPerfis) {
         this.tipoPerfis = tipoPerfis;
     }
-    
 
     /**
      *
@@ -180,7 +182,7 @@ public class PermissaoBean implements Serializable {
     public boolean isSelecionado() {
         return itemSelecionado != null;
     }
-    
+
     /**
      * @return the itemSelecionado
      */

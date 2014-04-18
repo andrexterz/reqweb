@@ -1,4 +1,4 @@
-package br.ufg.reqweb.auth.servicelocator;
+package br.ufg.reqweb.util.servicelocator;
 
 import java.util.Hashtable;
 
@@ -53,7 +53,7 @@ public class LDAPServiceLocator {
 
         DirContext ctx = null;
 
-        // Obtem um Initial Context            
+        // Obtem um Initial Context
         ctx = new InitialDirContext(env);
 
 

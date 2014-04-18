@@ -19,6 +19,9 @@
                 <p:outputLabel for="permissaoURL"
                                value="url" />
                 <p:inputText id="permissaoURL" value="#{permissaoBean.permissao.url}" />
+                <p:selectOneMenu>
+                    <f:selectItems value="#{permissaoBean.urls}" />
+                </p:selectOneMenu>
                 <p:outputLabel for="selecionaPerfil"
                                title="pressione shift para selecionar mais de um item"
                                value="perfis permitidos " />

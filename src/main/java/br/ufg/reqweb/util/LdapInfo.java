@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufg.reqweb.auth;
+package br.ufg.reqweb.util;
 
-import br.ufg.reqweb.auth.servicelocator.LDAPParametrosConfig;
-import br.ufg.reqweb.auth.servicelocator.LDAPServiceLocator;
+import br.ufg.reqweb.util.servicelocator.LDAPParametrosConfig;
+import br.ufg.reqweb.util.servicelocator.LDAPServiceLocator;
 import br.ufg.reqweb.model.PerfilEnum;
 
 import java.io.Serializable;
@@ -29,7 +29,7 @@ import javax.naming.directory.SearchResult;
  *
  * @author andre
  */
-public class Login implements Serializable {
+public class LdapInfo implements Serializable {
 
     /**
      *
@@ -41,17 +41,17 @@ public class Login implements Serializable {
     private String uid;
     private String matricula;
     private String email;
-    private DirContext ctx;
+    static private DirContext ctx;
 
-    public static Login autenticar(String usuario, String senha, String grupo) {
-        Login objLogin = new Login();
+    public static LdapInfo autenticar(String usuario, String senha, String grupo) {
+        LdapInfo ldapInfo = new LdapInfo();
 
-        if (objLogin.doLogin(usuario, senha)) {
-            objLogin.buscaGrupo(grupo);
-            if (objLogin.getGrupo() == null && !grupo.equals("100")) {
-                objLogin = null;
+        if (ldapInfo.doLogin(usuario, senha)) {
+            ldapInfo.buscaGrupo(grupo);
+            if (ldapInfo.getGrupo() == null && !grupo.equals("100")) {
+                ldapInfo = null;
             }
-            return objLogin;
+            return ldapInfo;
         } else {
             return null;
         }
@@ -73,20 +73,21 @@ public class Login implements Serializable {
         return res;
     }
 
-    public List<Login> scanLdap() {
-        List<Login> usuarios = new ArrayList<>();
+    public  static List<LdapInfo> scanLdap() {
+        List<LdapInfo> usuarios = new ArrayList<>();
         Attributes matchAttrs = new BasicAttributes(false);
         String[] atributosRetorno = new String[]{"mail", "cn", "uid", "uidNumber", "gidNumber"};
 
         NamingEnumeration<?> resultado;
         try {
+            ctx = LDAPServiceLocator.getInstance().getContext("", "");
             resultado = ctx.search(
                     LDAPParametrosConfig.SEARCHBASE,
                     matchAttrs,
                     atributosRetorno);
 
             while (resultado.hasMore()) {
-                Login itemLogin = new Login();
+                LdapInfo itemInfo = new LdapInfo();
                 SearchResult sr = (SearchResult) resultado.next();
                 Attributes atributos = sr.getAttributes();
 
@@ -95,38 +96,38 @@ public class Login implements Serializable {
                     String nomeAtributo = attrib.getID();
 
                     if (nomeAtributo.equals("gidNumber")) {
-                        itemLogin.setGrupo((String) attrib.get());
+                        itemInfo.setGrupo((String) attrib.get());
                     }
                     if (nomeAtributo.equals("uid")) {
-                        itemLogin.setUsuario((String) attrib.get());
-                        if (itemLogin.grupo.equals("500")) {
+                        itemInfo.setUsuario((String) attrib.get());
+                        if (itemInfo.grupo.equals("500")) {
                             Pattern patt = Pattern.compile("\\d+");
-                            Matcher mat = patt.matcher(itemLogin.getUsuario());
+                            Matcher mat = patt.matcher(itemInfo.getUsuario());
                             if (mat.find()) {
-                                itemLogin.setMatricula(mat.group());
+                                itemInfo.setMatricula(mat.group());
                             }
                         } else {
-                            this.matricula = null;
+                            itemInfo.setMatricula(null);
                         }                        
                     }
                     if (nomeAtributo.equals("mail")) {
-                        itemLogin.setEmail((String) attrib.get());
+                        itemInfo.setEmail((String) attrib.get());
                     }
                     if (nomeAtributo.equals("cn")) {
-                        itemLogin.setNome((String) attrib.get());
+                        itemInfo.setNome((String) attrib.get());
                     }
                     if (nomeAtributo.equals("uidNumber")) {
-                        itemLogin.setUid((String) attrib.get());
+                        itemInfo.setUid((String) attrib.get());
                     }
 
                 }
-                if (!itemLogin.getGrupo().equals(PerfilEnum.ADMINISTRADOR.getGrupo())) {
-                    usuarios.add(itemLogin);
+                if (!itemInfo.getGrupo().equals(PerfilEnum.ADMINISTRADOR.getGrupo())) {
+                    usuarios.add(itemInfo);
                 }
 
             }
         } catch (NamingException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LdapInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
         return usuarios;
     }
@@ -180,7 +181,7 @@ public class Login implements Serializable {
                 }
             }
         } catch (NamingException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LdapInfo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

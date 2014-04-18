@@ -1,6 +1,6 @@
 package br.ufg.reqweb.components;
 
-import br.ufg.reqweb.auth.Login;
+import br.ufg.reqweb.util.LdapInfo;
 import br.ufg.reqweb.dao.CursoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Curso;
@@ -10,6 +10,7 @@ import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,11 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,23 +63,22 @@ public class UsuarioBean implements Serializable {
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
     private String login;
     private String senha;
-    private String grupo;
     private PerfilEnum perfil;
     private Usuario usuario;
+    private boolean autenticado;
     private List<Perfil> perfilRemovido;
     private int progress;
     private volatile boolean stopImportaUsuarios;
     private boolean saveStatus;
     private Thread tImportJob;
-    private Login objLogin;
     private Usuario itemSelecionado;
     private String termoBusca;
 
     public UsuarioBean() {
         usuarios = new ArrayList<>();
         usuario = new Usuario();
+        autenticado = false;
         perfilRemovido = new ArrayList<>();
-        objLogin = null;
         tImportJob = null;
         termoBusca = "";
         saveStatus = false;
@@ -99,16 +104,21 @@ public class UsuarioBean implements Serializable {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
-
-        setGrupo(perfil.getGrupo());
-
-        objLogin = Login.autenticar(login, senha, grupo);
-
-        if (objLogin != null) {
-            log.info(String.format("usuario %s efetuou login", login));
+        try {
+            Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+            for (Perfil p : usuarioDao.findByLogin(login).getPerfilList()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(p.getTipoPerfil().name()));
+            }
+            Authentication auth = new UsernamePasswordAuthenticationToken(login, senha, grantedAuthorities);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            autenticado = auth.isAuthenticated();
+        } catch (Exception e) {
+            log.error("erro de autenticação - " + e.getCause());
+        }
+        if (autenticado) {
+            log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
             return home();
         } else {
-            log.error("erro de autenticação");
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de autenticação", "");
             context.addMessage("loginError", msg);
             return null;
@@ -126,7 +136,6 @@ public class UsuarioBean implements Serializable {
     }
 
     public String authLogout() {
-        objLogin = null;
         System.out.println("usuario efetuou logout");
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
@@ -144,14 +153,14 @@ public class UsuarioBean implements Serializable {
         tImportJob = new Thread() {
             @Override
             public void run() {
-                List<Login> infoUsuarios = objLogin.scanLdap();
+                List<LdapInfo> infoUsuarios = LdapInfo.scanLdap();
                 int length = infoUsuarios.size();
                 int counter = 0;
                 Map<String, Curso> cursoMap = new HashMap();
                 for (Curso c : cursoDao.findAll()) {
                     cursoMap.put(c.getSigla(), c);
                 }
-                for (Login infoUsuario : infoUsuarios) {
+                for (LdapInfo infoUsuario : infoUsuarios) {
                     if (!stopImportaUsuarios) {
                         counter++;
                         progress = (int) ((counter / (float) length) * 100);
@@ -318,7 +327,7 @@ public class UsuarioBean implements Serializable {
                 + perfilItem.getId()
                 + ": " + perfilItem.getTipoPerfil());
     }
-    
+
     public void onCursoDisable() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
@@ -334,10 +343,6 @@ public class UsuarioBean implements Serializable {
 
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Usuario) event.getObject();
-    }
-
-    public boolean isAutenticado() {
-        return objLogin != null;
     }
 
     public String getLogin() {
@@ -364,14 +369,6 @@ public class UsuarioBean implements Serializable {
         this.perfil = perfil;
     }
 
-    public String getGrupo() {
-        return objLogin.getGrupo();
-    }
-
-    public void setGrupo(String grupo) {
-        this.grupo = grupo;
-    }
-
     public int getProgress() {
         return progress;
     }
@@ -382,18 +379,6 @@ public class UsuarioBean implements Serializable {
 
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
-    }
-
-    public String getMatricula() {
-        return objLogin.getMatricula();
-    }
-
-    public String getNome() {
-        return objLogin.getNome();
-    }
-
-    public String getEmail() {
-        return objLogin.getEmail();
     }
 
     /**
@@ -408,6 +393,10 @@ public class UsuarioBean implements Serializable {
      */
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+    
+    public boolean isAutenticado() {
+        return autenticado;
     }
 
     public List<Usuario> findUsuario(String query) {

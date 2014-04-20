@@ -6,12 +6,15 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -24,6 +27,13 @@ public class Requerimento extends BaseModel {
     
     @ManyToOne
     private Usuario discente;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(insertable = true, updatable = false)
+    private Date dataCriacao;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataModificacao;
     
     @Column
     private String observacao;
@@ -43,6 +53,34 @@ public class Requerimento extends BaseModel {
      */
     public void setDiscente(Usuario discente) {
         this.discente = discente;
+    }
+
+    /**
+     * @return the dataCriacao
+     */
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+
+    /**
+     * @param dataCriacao the dataCriacao to set
+     */
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    /**
+     * @return the dataModificacao
+     */
+    public Date getDataModificacao() {
+        return dataModificacao;
+    }
+
+    /**
+     * @param dataModificacao the dataModificacao to set
+     */
+    public void setDataModificacao(Date dataModificacao) {
+        this.dataModificacao = dataModificacao;
     }
 
     /**

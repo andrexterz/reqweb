@@ -28,7 +28,6 @@ public class CursoDao {
     @Transactional
     public void adicionar(Curso curso) {
         Date timestamp = Calendar.getInstance().getTime();
-        curso.setDataModificacao(timestamp);
         this.sessionFactory.getCurrentSession().save(curso);
 
     }
@@ -36,7 +35,6 @@ public class CursoDao {
     @Transactional
     public void atualizar(Curso curso) {
         Date timestamp = Calendar.getInstance().getTime();
-        curso.setDataModificacao(timestamp);
         this.sessionFactory.getCurrentSession().update(curso);
     }
 

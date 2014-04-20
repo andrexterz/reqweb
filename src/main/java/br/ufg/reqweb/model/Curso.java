@@ -28,9 +28,6 @@ public class Curso extends BaseModel {
     @Size(min = 2, max = 6)
     private String sigla;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataModificacao;
-
     /**
      * @return the nome
      */
@@ -57,19 +54,5 @@ public class Curso extends BaseModel {
      */
     public void setSigla(String sigla) {
         this.sigla = sigla.toUpperCase();
-    }
-
-    /**
-     * @return the dataModificacao
-     */
-    public Date getDataModificacao() {
-        return dataModificacao;
-    }
-
-    /**
-     * @param dataModificacao the dataModificacao to set
-     */
-    public void setDataModificacao(Date dataModificacao) {
-        this.dataModificacao = dataModificacao;
     }
 }

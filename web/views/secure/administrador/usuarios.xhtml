@@ -61,7 +61,6 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm" listener="#{usuarioBean.selecionaItem}" />
-                <p:ajax event="page" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm tableUsuarios" />
                 <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
                     <h:outputText value="#{usuarioItem.login}" />
                 </p:column>

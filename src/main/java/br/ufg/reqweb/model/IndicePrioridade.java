@@ -6,12 +6,8 @@
 
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -21,12 +17,8 @@ import javax.validation.constraints.NotNull;
  */
 
 @Entity
-public class IndicePrioridade implements Serializable {
+public class IndicePrioridade extends BaseModel {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotNull    
     @ManyToOne
     private Usuario discente;
@@ -34,20 +26,6 @@ public class IndicePrioridade implements Serializable {
     @NotNull
     @Column
     private float indicePrioridade;
-
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the discente
@@ -93,27 +71,4 @@ public class IndicePrioridade implements Serializable {
     public void setIndicePrioridade(float indicePrioridade) {
         this.indicePrioridade = indicePrioridade;
     }
-    
-     @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            IndicePrioridade other = (IndicePrioridade) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)) : super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + id;
-    }    
 }

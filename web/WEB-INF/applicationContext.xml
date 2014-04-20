@@ -62,12 +62,16 @@
     
     <!-- spring security configuration -->
     <!-- apenas verifica se usuario foi autenticado. ignora roles -->
+    
     <security:ldap-server id="ldapSource" url="ldap://200.137.197.214:389/dc=dionisio,dc=inf,dc=ufg,dc=br" /> 
-    <security:http auto-config="true" use-expressions="true">
-        <security:intercept-url pattern="/views/secure/**" access="isAuthenticated()" />
-    </security:http>
-    <security:authentication-manager>
+    
+    <security:authentication-manager id="authManager">
         <security:ldap-authentication-provider user-search-filter="(uid={0})" />
     </security:authentication-manager>
+
+    <security:http authentication-manager-ref="authManager" auto-config="true" use-expressions="true">
+        <security:intercept-url pattern="/views/secure/**" access="isAuthenticated()" />
+    </security:http>
+    
 </beans>
 

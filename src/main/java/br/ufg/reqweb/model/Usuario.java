@@ -4,16 +4,11 @@
  */
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
@@ -25,11 +20,8 @@ import org.hibernate.annotations.CascadeType;
  */
 
 @Entity
-public class Usuario implements Serializable {
+public class Usuario extends BaseModel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public Usuario() {
@@ -37,9 +29,16 @@ public class Usuario implements Serializable {
         this.perfilList = new ArrayList<>();
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Usuario(Long id, String nome, String login, String matricula, String email, List<Perfil> perfilList) {
+        this.id = id;
+        this.nome = nome;
+        this.login = login;
+        this.matricula = matricula;
+        this.email = email;
+        this.perfilList = perfilList;
+    }
+    
+    
 
     @NotNull
     @Column
@@ -60,20 +59,6 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<Perfil> perfilList;
 
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id the id to set
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
 
     /**
      * @return the nome
@@ -161,29 +146,4 @@ public class Usuario implements Serializable {
     public void removePerfil(Perfil perfil) {
         this.perfilList.remove(perfil);
     }
-
-     @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Usuario other = (Usuario) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.id);
-        return hash;
-    }
-    
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + id;
-    }    
 }

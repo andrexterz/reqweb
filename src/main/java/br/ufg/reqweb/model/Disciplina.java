@@ -6,12 +6,8 @@
 
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -24,13 +20,9 @@ import javax.validation.constraints.Size;
  */
 
 @Entity
-public class Disciplina implements Serializable {
+public class Disciplina extends BaseModel {
     
     private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     
     @NotNull
     @Column(unique = true)
@@ -44,20 +36,6 @@ public class Disciplina implements Serializable {
     @JoinColumn(name = "curso_id")
     private Curso curso;
     
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /**
      * @return the codigo
      */
@@ -99,27 +77,4 @@ public class Disciplina implements Serializable {
     public void setCurso(Curso curso) {
         this.curso = curso;
     }    
-    
-      @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Disciplina other = (Disciplina) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)): super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + getId();
-    }
 }

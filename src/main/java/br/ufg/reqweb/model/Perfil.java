@@ -5,14 +5,10 @@
  */
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -24,7 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"tipoPerfil","usuario_id"})})
-public class Perfil implements Serializable {
+public class Perfil extends BaseModel {
 
     /**
      *
@@ -37,10 +33,6 @@ public class Perfil implements Serializable {
             PerfilEnum.SECRETARIA
         };
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private PerfilEnum tipoPerfil;
@@ -51,20 +43,6 @@ public class Perfil implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Curso curso;
-
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the perfilTipo
@@ -108,31 +86,4 @@ public class Perfil implements Serializable {
         this.curso = curso;
     }
 
-    /**
-     *
-     * @param obj
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Perfil other = (Perfil) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)) : super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + getId();
-    }
 }

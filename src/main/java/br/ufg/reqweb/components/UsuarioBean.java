@@ -31,8 +31,10 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,7 +57,10 @@ public class UsuarioBean implements Serializable {
     private CursoDao cursoDao;
 
     @Autowired
-    Validator validator;
+    private Validator validator;
+    
+    @Autowired
+    private ProviderManager authManager;
 
     private final LazyDataModel<Usuario> usuariosDataModel;
     private List<Usuario> usuarios;
@@ -83,20 +88,29 @@ public class UsuarioBean implements Serializable {
         termoBusca = "";
         saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
-            private static final long serialVersionUID = 1L;
-
+  
+            private List<Usuario> dataSource;
+            
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
-                List<Usuario> usuarioList;
                 if (termoBusca.equals("")) {
-                    usuarioList = usuarioDao.find(first, pageSize);
+                    dataSource = usuarioDao.find(first, pageSize);
                     setRowCount(usuarioDao.count());
+                    
                 } else {
-                    usuarioList = usuarioDao.find(termoBusca);
-                    setRowCount(usuarioList.size());
+                    dataSource = usuarioDao.find(termoBusca);
+                    setRowCount(dataSource.size());                
                 }
-                return usuarioList;
+                if (dataSource.size() > pageSize) {
+                    try {
+                        return dataSource.subList(first, first + pageSize);
+                    } catch (IndexOutOfBoundsException e) {
+                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                    }
+                    
+                }
+                return dataSource;
             }
         };
     }
@@ -109,10 +123,11 @@ public class UsuarioBean implements Serializable {
             for (Perfil p : usuarioDao.findByLogin(login).getPerfilList()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(p.getTipoPerfil().name()));
             }
-            Authentication auth = new UsernamePasswordAuthenticationToken(login, senha, grantedAuthorities);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(login, senha, grantedAuthorities);
+            Authentication auth = authManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
             autenticado = auth.isAuthenticated();
-        } catch (Exception e) {
+        } catch (AuthenticationException|NullPointerException e) {
             log.error("erro de autenticação - " + e.getCause());
         }
         if (autenticado) {

@@ -4,13 +4,9 @@
  */
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
@@ -20,14 +16,9 @@ import javax.validation.constraints.Size;
  * @author andre
  */
 @Entity
-public class Curso implements Serializable {
+public class Curso extends BaseModel {
 
     private static final long serialVersionUID = 1L;
-
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(length = 100, nullable = false)
     @Size(min = 5, max = 100)
@@ -39,22 +30,6 @@ public class Curso implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataModificacao;
-
-    /**
-     *
-     * @return
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the nome
@@ -96,27 +71,5 @@ public class Curso implements Serializable {
      */
     public void setDataModificacao(Date dataModificacao) {
         this.dataModificacao = dataModificacao;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Curso other = (Curso) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-    @Override
-    public int hashCode() {
-        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + id;
     }
 }

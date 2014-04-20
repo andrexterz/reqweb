@@ -96,24 +96,35 @@ public class TurmaBean implements Serializable {
         itemPreviewSelecionado = null;
         termoBusca = "";
         turmas = new LazyDataModel<Turma>() {
+            
+            private List<Turma> dataSource;
+            
             @Override
             public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
-                List<Turma> turmaList;
+
                 if (periodo != null) {
-                    turmaList = turmaDao.find(termoBusca, periodo);
-                    setRowCount(turmaList.size());
+                    dataSource = turmaDao.find(termoBusca, periodo);
+                    setRowCount(dataSource.size());
                 } else {
                     if (termoBusca.equals("")) {
-                        turmaList = turmaDao.find(first, pageSize);
+                        dataSource = turmaDao.find(first, pageSize);
                         setRowCount(turmaDao.count());
                     } else {
-                        turmaList = turmaDao.find(termoBusca);
-                        setRowCount(turmaList.size());
+                        dataSource = turmaDao.find(termoBusca);
+                        setRowCount(dataSource.size());
                     }
 
                 }
-                return turmaList;
+                if (dataSource.size() > pageSize) {
+                    try {
+                        return dataSource.subList(first, first + pageSize);
+                    } catch (IndexOutOfBoundsException e) {
+                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                    }
+                    
+                }
+                return dataSource;
             }
         };
     }

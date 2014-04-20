@@ -23,14 +23,22 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome","disciplina_id"})})
-public class Turma implements Serializable {
+public class Turma extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Turma() {
+    }
+
+    public Turma(Long id, String nome, Periodo periodo, Usuario docente) {
+        this.id = id;
+        this.nome = nome;
+        this.periodo = periodo;
+        this.docente = docente;
+    }
     
+    
+
     @Size(min = 1)
     @Column
     private String nome;

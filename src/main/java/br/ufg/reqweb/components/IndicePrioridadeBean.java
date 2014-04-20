@@ -70,31 +70,29 @@ public class IndicePrioridadeBean {
         itemSelecionadoPreviewList = new ArrayList<>();
         indicePrioridadeListPreview = new HashMap();
         indicePrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
+            
+            private List<IndicePrioridade> dataSource;            
+            
             @Override
             public List<IndicePrioridade> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                List<IndicePrioridade> indicePrioridadeList;
-                System.out.println("rowIndex: " + getRowIndex());
                 setPageSize(pageSize);
                 if (termoBusca.equals("")) {
-                    indicePrioridadeList = indicePrioridadeDao.find(first, pageSize);
+                    dataSource = indicePrioridadeDao.find(first, pageSize);
                     setRowCount(indicePrioridadeDao.count());
                 } else {
-                    indicePrioridadeList = indicePrioridadeDao.find(termoBusca);
-                    setRowCount(indicePrioridadeList.size());
+                    dataSource = indicePrioridadeDao.find(termoBusca);
+                    setRowCount(dataSource.size());
                 }
-                return indicePrioridadeList;
+                if (dataSource.size() > pageSize) {
+                    try {
+                        return dataSource.subList(first, first + pageSize);
+                    } catch (IndexOutOfBoundsException e) {
+                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                    }
+                    
+                }                
+                return dataSource;
             }
-
-            @Override
-            public IndicePrioridade getRowData(String rowKey) {
-                return indicePrioridadeDao.findById(Long.parseLong(rowKey));
-            }
-
-            @Override
-            public Object getRowKey(IndicePrioridade indicePrioridade) {
-                return indicePrioridade.getId();
-            }
-
         };
     }
 

@@ -5,16 +5,11 @@
  */
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,16 +18,12 @@ import javax.persistence.TemporalType;
  * @author André
  */
 @Entity
-public class Periodo implements Serializable {
+public class Periodo extends BaseModel {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column
     private int ano;
@@ -49,20 +40,7 @@ public class Periodo implements Serializable {
     @Column(columnDefinition = "default false")
     private boolean ativo;
 
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+  
     /**
      * @return the ano
      */
@@ -137,33 +115,4 @@ public class Periodo implements Serializable {
     public void setDataTermino(Date dataTermino) {
         this.dataTermino = dataTermino;
     }
-
-     @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Periodo other = (Periodo) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-    
-    @Override
-    public int hashCode() {
-        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)): super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
-            return String.format("%d: %s - %s", ano, dateFormat.format(dataInicio), dateFormat.format(dataTermino));
-        } catch (NullPointerException e) {
-            return super.toString();
-        }
-    }
-
 }

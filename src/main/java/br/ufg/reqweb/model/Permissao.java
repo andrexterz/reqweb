@@ -6,7 +6,6 @@
 
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -14,9 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -24,11 +20,8 @@ import javax.validation.constraints.NotNull;
  * @author andre
  */
 @Entity
-public class Permissao implements Serializable{
+public class Permissao extends BaseModel {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     
     @Column(unique = true)
     private String nome;
@@ -40,13 +33,6 @@ public class Permissao implements Serializable{
     @Enumerated(EnumType.STRING)
     private List<PerfilEnum> tipoPerfil;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the nome
@@ -97,28 +83,5 @@ public class Permissao implements Serializable{
     public void removePerfil(PerfilEnum perfil) {
         this.tipoPerfil.remove(perfil);
     }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Permissao other = (Permissao) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return (getId() != null) ? 17 * 11 + (int) (getId() ^ (getId() >>> 32)): super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + getId();
-    }    
     
 }

@@ -88,24 +88,33 @@ public class DisciplinaBean implements Serializable {
         itemPreviewSelecionado = null;
         disciplinas = new ArrayList<>();
         disciplinasDataModel = new LazyDataModel<Disciplina>() {
-
+            
+            private List<Disciplina> dataSource;
+            
             @Override
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
-                List<Disciplina> disciplinaList;
                 if (curso != null) {
-                    disciplinaList = disciplinaDao.findByCurso(termoBusca, curso);
-                    setRowCount(disciplinaList.size());
+                    dataSource = disciplinaDao.findByCurso(termoBusca, curso);
+                    setRowCount(dataSource.size());
                 } else {
                     if (termoBusca.equals("")) {
-                        disciplinaList = disciplinaDao.find(first, pageSize);
+                        dataSource = disciplinaDao.find(first, pageSize);
                         setRowCount(disciplinaDao.count());
                     } else {
-                        disciplinaList = disciplinaDao.find(termoBusca);
-                        setRowCount(disciplinaList.size());
+                        dataSource = disciplinaDao.find(termoBusca);
+                        setRowCount(dataSource.size());
                     }
                 }
-                return disciplinaList;
+                if (dataSource.size() > pageSize) {
+                    try {
+                        return dataSource.subList(first, first + pageSize);
+                    } catch (IndexOutOfBoundsException e) {
+                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                    }
+                    
+                }                
+                return dataSource;
             }
 
         };

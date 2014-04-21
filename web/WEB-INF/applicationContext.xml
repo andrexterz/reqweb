@@ -31,7 +31,7 @@
         <property name="password" value="web" />
     </bean> 
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">        
         <property name="dataSource" ref="dataSource" />
         <property name="annotatedClasses"> 
             <list>
@@ -43,6 +43,8 @@
                 <value>br.ufg.reqweb.model.Perfil</value>
                 <value>br.ufg.reqweb.model.IndicePrioridade</value>
                 <value>br.ufg.reqweb.model.Permissao</value>
+                <value>br.ufg.reqweb.model.Requerimento</value>
+                <value>br.ufg.reqweb.model.DeclaracaoDeMatricula</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -58,6 +60,7 @@
     <bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
+
     <tx:annotation-driven transaction-manager="txManager" />
     
     <!-- spring security configuration -->
@@ -74,4 +77,3 @@
     </security:http>
     
 </beans>
-

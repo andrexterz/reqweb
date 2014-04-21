@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="/views/base.xhtml">
+        <ui:define name="menu">
+            <h:panelGrid columns="1" styleClass="menuItens">
+                <h:link id="reqLnk" outcome="requerimentos" value="#{msg.requerimentos}" style="background-image: url(#{resource['img/cursos.png']});" />
+            </h:panelGrid>
+        </ui:define>
+        <ui:define name="content">
+            <div class="homePageText">
+                <p>REQWEB</p>
+                <p>#{msg.discenteHome}</p>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>

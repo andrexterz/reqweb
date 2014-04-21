@@ -20,10 +20,10 @@ import javax.persistence.ManyToOne;
 public abstract class ItemRequerimento extends BaseModel {
     
     @ManyToOne
-    private Requerimento requerimento;
+    protected Requerimento requerimento;
     
     @Enumerated(EnumType.STRING)
-    private TipoRequerimentoEnum tipoRequerimento;
+    protected TipoRequerimentoEnum tipoRequerimento;
 
     /**
      * @return the requerimento

@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="novoRequerimentoForm">
+        <p:confirmDialog id="dlgNovoRequerimentoDialog" widgetVar="novoRequerimentoDialog"
+                         appendTo="@(body)" width="420" 
+                         header="#{msg.novo} #{msg.requerimento}"
+                         message="#{msg.emitir} #{msg.novo} #{msg.requerimento}?"
+                         severity="alert">
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
+                <p:commandButton id="confirmaNovoRequerimento" value="#{msg.sim}"
+                                 oncomplete="PF('novoRequerimentoDialog').hide()"
+                                 action="#{String.valueOf('x')}"
+                                 process="@this"
+                                 update=":formHeader:systemMessages" />
+                <p:commandButton id="cancelaNovoRequerimento"
+                                 value="#{msg.nao}"
+                                 onclick="PF('novoRequerimentoDialog').hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>

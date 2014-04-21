@@ -1,0 +1,20 @@
+<ui:composition template="discente.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.requerimentos}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                jQuery("#reqLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
+        <h:form class="contentTables" id="requerimentoForm">
+            <h:panelGroup layout="block" id="requerimentoToolbar">
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>

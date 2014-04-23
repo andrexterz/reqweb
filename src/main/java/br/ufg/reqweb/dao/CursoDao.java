@@ -8,7 +8,6 @@ import br.ufg.reqweb.model.Curso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -27,14 +26,12 @@ public class CursoDao {
 
     @Transactional
     public void adicionar(Curso curso) {
-        Date timestamp = Calendar.getInstance().getTime();
         this.sessionFactory.getCurrentSession().save(curso);
 
     }
 
     @Transactional
     public void atualizar(Curso curso) {
-        Date timestamp = Calendar.getInstance().getTime();
         this.sessionFactory.getCurrentSession().update(curso);
     }
 
@@ -47,7 +44,7 @@ public class CursoDao {
     public List<Curso> findAll() {
         try {
             List<Curso> cursoList = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Curso c ORDER BY c.dataModificacao DESC")
+                    .createQuery("FROM Curso c ORDER BY c.nome ASC")
                     .list();
             return cursoList;
         } catch (HibernateException e) {

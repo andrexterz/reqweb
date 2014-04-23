@@ -592,7 +592,7 @@ input[type=text], input[type=password], select {
 /************************************ forms ***********************************/
 .formBody {
     position: absolute;
-    top: 64px;
+    top: 38px;
     right: 8px;
     bottom: 8px;
     left: 8px;

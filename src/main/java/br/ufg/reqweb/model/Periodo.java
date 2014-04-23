@@ -115,4 +115,9 @@ public class Periodo extends BaseModel {
     public void setDataTermino(Date dataTermino) {
         this.dataTermino = dataTermino;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%d/%d",ano,semestre.getValue());
+    }
 }

@@ -49,13 +49,24 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        PerfilEnum[] expressions = {
-            PerfilEnum.ADMINISTRADOR,
-            PerfilEnum.DOCENTE,
-            PerfilEnum.SECRETARIA
-        };
-        Curso curso = null;
-        System.out.println("result: " + (Arrays.asList(expressions).contains(PerfilEnum.ADMINISTRADOR) && curso == null));
+        List<Object> objList = new ArrayList<>();
+        Disciplina d1 = new Disciplina();
+        d1.setId(1L);
+        objList.add(d1);
+        Disciplina d2 = new Disciplina();
+        d2.setId(2L);
+        objList.add(d2);
+        System.out.println("must be true.: " + (objList.get(0) == d1));
+        System.out.println("must be true.: " + (objList.get(1) == d2));
+        System.out.println("must be false: " + (objList.get(0) == d2));
+        System.out.println("must be false: " + (objList.get(1) == d1));
+        System.out.println("must be true.: " + objList.get(0).equals(d1));
+        System.out.println("must be true.: " + objList.get(1).equals(d2));
+        System.out.println("must be false: " + objList.get(0).equals(d2));
+        System.out.println("must be false: " + objList.get(1).equals(d1));
+        System.out.println("hashCode obj1: " + objList.get(0).hashCode());
+        System.out.println("hashCode obj2: " + objList.get(1).hashCode());
+        
         
 //        Pattern pat = Pattern.compile("\\D+(?=(\\d+))");
 //        String [] names = {"si10178", "cc10023", "amanda", "msc10426","afonso", "es10311"};

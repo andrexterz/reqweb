@@ -33,7 +33,7 @@
                         <f:selectItem itemLabel="#{msg.periodo}" />
                         <f:selectItems value="#{periodoBean.periodos}"
                                        var="periodoItem"
-                                       itemLabel="#{periodoItem.toString()}"
+                                       itemLabel="#{periodoItem}"
                                        itemValue="#{periodoItem}"/>
                     </p:selectOneMenu>
                     <p:outputLabel for="filtroDocente" value="#{msg.docente}" />
@@ -51,7 +51,7 @@
                                      process="@form"
                                      actionListener="#{turmaBean.salvaTurma}"
                                      oncomplete="dialogHandler('dlgTurmaVar', xhr, status, args)"
-                                     update=":salvaTurmaForm :formHeader:systemMessages :turmasForm:tableTurmas :turmasForm:turmasToolbar" />
+                                     update=":salvaTurmaForm :formHeader:systemMessages :arquivosTab:turmasForm:tableTurmas :arquivosTab:turmasForm:turmasToolbar" />
                     <p:commandButton value="#{msg.cancelar}"
                                      process="@none"
                                      update=":salvaTurmaForm"

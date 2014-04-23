@@ -3,48 +3,60 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgDisciplinasPreviewForm" modal="true"
-              widgetVar="dlgDisciplinasPreviewFormVar" width="80%" height="460"
+    <p:dialog id="dlgImportaDisciplinasForm" modal="true"
+              widgetVar="dlgImpDisciplinaVar" width="740" height="540"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.disciplinas}" />
         </f:facet>
-        <h:form id="disciplinasPreviewForm">
-            <h:panelGroup layout="block" id="disciplinasPreviewToolbar" styleClass="formToolbar">
+        <h:form id="importaDisciplinasForm" styleClass="contentTables">
+            <h:panelGroup layout="block" id="disciplinasImpToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"
                                  disabled="#{!disciplinaBean.previewSelecionado}"
                                  actionListener="#{disciplinaBean.excluiDisciplinaPreview}"
-                                 update=":disciplinasPreviewForm :disciplinasPreviewForm:confirmaImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas"
+                                 update="importaDisciplinasForm"
                                  process="@this" />
 
                 <p:commandButton value="#{msg.limpar}"
                                  styleClass="formToolbarButtons"
                                  actionListener="#{disciplinaBean.excluiArquivoUploaded}"
-                                 update=":disciplinasPreviewForm:confirmaImpDisciplinas :arquivosDisciplinasForm:previewImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas"
+                                 update="importaDisciplinasForm"
                                  process="@this" />
-                
 
-            </h:panelGroup>            
-            <p:dataTable id="tablePreviewDisciplinas"
+
+            </h:panelGroup>
+            <h:outputLabel for="inputDisciplinas" value="#{msg.uploadArquivos} - #{msg.disciplinas}" />
+            <p:fileUpload id="inputDisciplinas"
+                          label="#{msg.selecionar}"
+                          uploadLabel="#{msg.enviar}"
+                          cancelLabel="#{msg.cancelar}"
+                          fileLimit="1"
+                          multiple="false"
+                          process="@this"
+                          fileUploadListener="#{disciplinaBean.uploadDisciplinas}"
+                          oncomplete="progressBarCancel('pbImpDisciplina')"
+                          update="tableImpDisciplinas confirmaImpDisciplinas :formHeader:systemMessages" />
+            <p:separator />            
+            <p:dataTable id="tableImpDisciplinas"
                          paginator="true"
                          value="#{disciplinaBean.disciplinaListPreview}"
-                         var="disciplinaItemPreview"
+                         var="disciplinaItemImp"
                          selection="#{disciplinaBean.itemPreviewSelecionado}"
-                         rowKey="#{disciplinaItemPreview.id}"
+                         rowKey="#{disciplinaItemImp.id}"
                          selectionMode="single"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
-                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
-                <p:ajax event="rowSelect" update=":disciplinasPreviewForm:disciplinasPreviewToolbar" listener="#{disciplinaBean.selecionaItem}" />
+                         rows="10" pageLinks="5" rowStyleClass="rowImp">
+                <p:ajax event="rowSelect" update=":importaDisciplinasForm:disciplinasImpToolbar" listener="#{disciplinaBean.selecionaItem}" />
                 <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
-                    <h:outputText value="#{disciplinaItemPreview.codigo}" />
+                    <h:outputText value="#{disciplinaItemImp.codigo}" />
                 </p:column>
                 <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
-                    <h:outputText value="#{disciplinaItemPreview.nome}" />
+                    <h:outputText value="#{disciplinaItemImp.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
-                    <h:outputText value="#{disciplinaItemPreview.curso.nome}" />
+                    <h:outputText value="#{disciplinaItemImp.curso.nome}" />
                 </p:column>
             </p:dataTable>
             <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
@@ -55,7 +67,7 @@
                                value="#{disciplinaBean.progress}"
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{disciplinaBean.handleCompleteSaveDisciplinas}"
-                            update="paraImpButton :formHeader:systemMessages :disciplinasPreviewForm:tablePreviewDisciplinas"
+                            update="paraImpButton :formHeader:systemMessages :importaDisciplinasForm:tableImpDisciplinas :arquivosTab:disciplinasForm:tableDisciplinas"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
@@ -81,10 +93,12 @@
                 <p:commandButton id="cancelaImpDisciplinas"
                                  widgetVar="cancelImpButton"
                                  value="#{msg.fechar}"
-                                 oncomplete="dlgDisciplinasPreviewFormVar.hide()" 
-                                 update=":disciplinasPreviewForm:tablePreviewDisciplinas" />
+                                 oncomplete="dlgImpDisciplinaVar.hide()" 
+                                 update=":importaDisciplinasForm:tableImpDisciplinas" />
             </h:panelGroup>            
-        </h:form>            
+
+        </h:form>
+
     </p:dialog>
 </ui:composition>
 

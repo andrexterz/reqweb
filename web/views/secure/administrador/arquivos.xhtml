@@ -11,119 +11,22 @@
                 jQuery("#arquivosLnk").addClass("menuItemSelected");
             });
         </script>
-        <ui:include src="disciplinasForm.xhtml" />
-        <ui:include src="disciplinasPreviewForm.xhtml" />
-        <ui:include src="excluiDisciplinaForm.xhtml" />
         <ui:include src="salvaDisciplinaForm.xhtml" />
-        
-        <ui:include src="turmasForm.xhtml" />
-        <ui:include src="turmasPreviewForm.xhtml" />
+        <ui:include src="excluiDisciplinaForm.xhtml" />
+        <ui:include src="importaDisciplinaForm.xhtml" />
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
-
-        <ui:include src="indicePrioridadePreviewForm.xhtml" />
-        <ui:include src="indicePrioridadeForm.xhtml" />
-        <ui:include src="excluiIndicePrioridadeForm.xhtml" />
-        
-        <h:form class="contentTables" id="arquivoForm">
-            <h:panelGroup layout="block" id="arquivoToolbar" styleClass="arquivoToolbar">
-                <p:commandButton title="#{msg.disciplinas}"
-                                 value="#{msg.disciplinas}"
-                                 process="@this"
-                                 update=":disciplinasForm:tableDisciplinas"
-                                 oncomplete="PF('dlgDisciplinasFormVar').show()"
-                                 icon="ui-icon-search" />
-
-                <p:commandButton title="#{msg.turmas}"
-                                 value="#{msg.turmas}"
-                                 process="@this"
-                                 update=":turmasForm:tableTurmas"
-                                 oncomplete="PF('dlgTurmasFormVar').show()"
-                                 icon="ui-icon-search" />
-
-                <p:commandButton title="#{msg.indicePrioridade}"
-                                 value="#{msg.indicePrioridade}"
-                                 process="@this"
-                                 update=":indicePrioridadeForm:tableIndicePrioridade"
-                                 oncomplete="PF('dlgIndicePrioridadeFormVar').show()"
-                                 icon="ui-icon-search" />                
-            </h:panelGroup>
-        </h:form>
-
-        <h:panelGroup layout="block" styleClass="formBody contentTables">
-
-            <h:form id="arquivosDisciplinasForm" enctype="multipart/form-data">
-                <h:panelGroup id="disciplinas" layout="block">
-                    <h:outputLabel for="inputDisciplinas" value="#{msg.uploadArquivos} - #{msg.disciplinas}" />
-                    <p:commandLink id="previewImpDisciplinas"
-                                   title="#{msg.disciplinasPrevisualizar}"
-                                   disabled="#{!disciplinaBean.arquivoUploaded}"
-                                   actionListener="#{disciplinaBean.setupImportDisciplinas}"
-                                   update=":disciplinasPreviewForm:progressBarDisciplinas"
-                                   oncomplete="handleImportDialog('dlgDisciplinasPreviewFormVar')">
-                        <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
-                    </p:commandLink>
-                    <p:fileUpload id="inputDisciplinas"
-                                  label="#{msg.selecionar}"
-                                  uploadLabel="#{msg.enviar}"
-                                  cancelLabel="#{msg.cancelar}"
-                                  fileLimit="1"
-                                  multiple="false"
-                                  process="@form"
-                                  oncomplete="PF('dlgDisciplinasPreviewFormVar').show()"
-                                  fileUploadListener="#{disciplinaBean.uploadDisciplinas}"
-                                  update=":disciplinasPreviewForm:confirmaImpDisciplinas :disciplinasPreviewForm:tablePreviewDisciplinas :disciplinasPreviewForm:progressBarDisciplinas :formHeader:systemMessages disciplinas" />
-                </h:panelGroup>
-            </h:form>
-            <hr class="separator" />
-            <h:form id="arquivosTurmasForm" enctype="multipart/form-data">
-                <h:panelGroup id="turmas" layout="block">
-                    <h:outputLabel for="inputTurmas" value="#{msg.uploadArquivos} - #{msg.turmas}" />
-                    <p:commandLink id="previewImpTurmas"
-                                   title="#{msg.turmasPrevisualizar}"
-                                   disabled="#{!turmaBean.arquivoUploaded}"
-                                   actionListener="#{turmaBean.setupImportTurmas}"
-                                   update=":turmasPreviewForm:progressBarTurmas"
-                                   oncomplete="handleImportDialog('dlgTurmasPreviewFormVar')">
-                        <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
-                    </p:commandLink>                    
-                    <p:fileUpload id="inputTurmas"
-                                  label="#{msg.selecionar}"
-                                  uploadLabel="#{msg.enviar}"
-                                  cancelLabel="#{msg.cancelar}"
-                                  fileLimit="1"
-                                  multiple="false"
-                                  process="@form"
-                                  oncomplete="PF('dlgTurmasPreviewFormVar').show()"
-                                  fileUploadListener="#{turmaBean.uploadTurmas}"
-                                  update=":turmasPreviewForm:confirmaImpTurmas :turmasPreviewForm:tablePreviewTurmas :turmasPreviewForm:progressBarTurmas :formHeader:systemMessages turmas" />
-                </h:panelGroup>
-            </h:form>                
-            <hr class="separator" />
-            <h:form id="arquivosIndicePrioridadeForm" enctype="multipart/form-data">
-                <h:panelGroup id="indicePrioridade" layout="block">
-                        <h:outputLabel for="inputIndicePrioridade" value="#{msg.uploadArquivos} - #{msg.indicePrioridade}" />
-                        <p:commandLink id="previewImpIndicePrioridade"
-                                       title="#{msg.indicePrioridadePrevisualizar}"
-                                       disabled="#{!indicePrioridadeBean.arquivoUploaded}"
-                                       actionListener="#{indicePrioridadeBean.setupImportIndicePrioridade}"
-                                       update=":indicePrioridadePreviewForm:progressBarIndicePrioridade"
-                                       oncomplete="handleImportDialog('dlgIndicePrioridadePreviewFormVar')">
-                            <h:graphicImage value="#{resource['img/eye.png']}" styleClass="iconPreview" />
-                        </p:commandLink>                        
-                        <p:fileUpload id="inputIndicePrioridade"
-                                      label="#{msg.selecionar}"
-                                      uploadLabel="#{msg.enviar}"
-                                      cancelLabel="#{msg.cancelar}"
-                                      fileLimit="1"
-                                      multiple="false"
-                                      process="@form"
-                                      oncomplete="PF('dlgIndicePrioridadePreviewFormVar').show()"
-                                      fileUploadListener="#{indicePrioridadeBean.uploadIndicePrioridade}"
-                                      update=":formHeader:systemMessages :indicePrioridadePreviewForm:confirmaImpIndicePrioridade :indicePrioridadePreviewForm:tablePreviewIndicePrioridade :indicePrioridadePreviewForm:progressBarIndicePrioridade indicePrioridade" />
-                </h:panelGroup>
-            </h:form>
-        </h:panelGroup>        
+        <p:tabView dynamic="true" id="arquivosTab" styleClass="formBody">
+            <p:tab id="tabDisciplinas" title="#{msg.disciplinas}">
+                <ui:include src="disciplinasForm.xhtml" />
+            </p:tab>
+            <p:tab id="tabTurmas" title="#{msg.turmas}">
+                <ui:include src="turmasForm.xhtml" />
+            </p:tab>
+            <p:tab id="tabIndicePrioridade" title="#{msg.indicePrioridade}">
+                #{msg.indicePrioridade}
+            </p:tab>
+        </p:tabView>
     </ui:define>
 </ui:composition>
 

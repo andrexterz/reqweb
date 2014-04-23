@@ -1,93 +1,81 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgDisciplinasForm" modal="true"
-              widgetVar="dlgDisciplinasFormVar" width="80%" height="390"
-              resizable="false" appendTo="@(body)">
-        <f:facet name="header">
-            <h:outputText value="#{msg.disciplinas}" />
-        </f:facet>
-        <h:form id="disciplinasForm">
-            <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
-                <p:commandButton value="#{msg.novo}"
-                                 process="@this"
-                                 actionListener="#{disciplinaBean.novaDisciplina}"
-                                 oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update="tableDisciplinas :salvaDisciplinaForm" />
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="disciplinasForm" enctype="multipart/form-data">
+        <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
+            <p:commandButton value="#{msg.novo}"
+                             process="@this"
+                             actionListener="#{disciplinaBean.novaDisciplina}"
+                             oncomplete="PF('dlgDisciplinaVar').show()"
+                             update=":salvaDisciplinaForm" />
 
-                <p:commandButton value="#{msg.editar}"
-                                 disabled="#{!disciplinaBean.selecionado}"
-                                 process="@this"
-                                 actionListener="#{disciplinaBean.editaDisciplina}"
-                                 oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update="tableDisciplinas :salvaDisciplinaForm" />
+            <p:commandButton value="#{msg.editar}"
+                             disabled="#{!disciplinaBean.selecionado}"
+                             process="@this"
+                             actionListener="#{disciplinaBean.editaDisciplina}"
+                             oncomplete="PF('dlgDisciplinaVar').show()"
+                             update=":salvaDisciplinaForm" />
 
 
-                <p:commandButton value="#{msg.excluir}"
-                                 styleClass="formToolbarButtons"
-                                 update="tableDisciplinas"
-                                 disabled="#{!disciplinaBean.selecionado}"
-                                 oncomplete="PF('excluirDisciplinaDialog').show()"
-                                 process="@this" />
-                
-                <p:commandButton value="#{msg.exportar} #{msg.paraCSV}" ajax="false">
+            <p:commandButton value="#{msg.excluir}"
+                             styleClass="formToolbarButtons"
+                             update="tableDisciplinas :excluiDisciplinaForm"
+                             disabled="#{!disciplinaBean.selecionado}"
+                             oncomplete="PF('excluirDisciplinaDialog').show()"
+                             process="@this" />
+            <p:menuButton value="#{msg.importar}/#{msg.exportar}">
+                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="PF('dlgImpDisciplinaVar').show()" />
+                <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{disciplinaBean.disciplinasAsCSV}" />
-                </p:commandButton>                
+                </p:menuitem>
+            </p:menuButton>
 
-                <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
-                                converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
-                                minQueryLength="4"
-                                var="c" itemLabel="#{c.nome}" itemValue="#{c}" forceSelection="true"
-                                completeMethod="#{cursoBean.findCurso}">
-                    <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
-                </p:autoComplete>
-                <p:watermark for="cursoFiltro" value="#{msg.curso}" />
+            <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
+                            converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
+                            minQueryLength="4"
+                            var="c" itemLabel="#{c.nome}" itemValue="#{c}" forceSelection="true"
+                            completeMethod="#{cursoBean.findCurso}">
+                <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
+            </p:autoComplete>
+            <p:watermark for="cursoFiltro" value="#{msg.curso}" />
 
-                <p:inputText id="disciplinaBusca"
-                             styleClass="searchBox"
-                             value="#{disciplinaBean.termoBusca}" />
+            <p:inputText id="disciplinaBusca"
+                         styleClass="searchBox"
+                         value="#{disciplinaBean.termoBusca}" />
 
-                <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
+            <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
 
-                <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
-                <p:commandButton style="visibility: hidden;"
-                                 id="disciplinaBuscaCommand"
-                                 styleClass="searchCommand alignRight"
-                                 update="tableDisciplinas" />
+            <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
+            <p:commandButton style="visibility: hidden;"
+                             id="disciplinaBuscaCommand"
+                             styleClass="searchCommand alignRight"
+                             update="tableDisciplinas" />
 
-                <p:defaultCommand target="disciplinaBuscaCommand" />
+            <p:defaultCommand target="disciplinaBuscaCommand" />
 
-            </h:panelGroup>            
-            <p:dataTable id="tableDisciplinas"
-                         paginator="true"
-                         value="#{disciplinaBean.disciplinasDataModel}"
-                         var="disciplinaItem"
-                         lazy="true"
-                         emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{disciplinaItem.id}"
-                         selectionMode="single"
-                         selection="#{disciplinaBean.itemSelecionado}"
-                         paginatorPosition="bottom"
-                         rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar :excluiDisciplinaForm" />
-                <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
-                    <h:outputText value="#{disciplinaItem.codigo}" />
-                </p:column>
-                <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
-                    <h:outputText value="#{disciplinaItem.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
-                    <h:outputText value="#{disciplinaItem.curso.nome}" />
-                </p:column>
-            </p:dataTable>
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
-                <p:commandButton value="#{msg.fechar}"
-                                 process="@none"
-                                 onclick="PF('dlgDisciplinasFormVar').hide()"/>
-            </h:panelGroup>            
-        </h:form>            
-    </p:dialog>
+        </h:panelGroup>                     
+        <p:dataTable id="tableDisciplinas"
+                     paginator="true"
+                     value="#{disciplinaBean.disciplinasDataModel}"
+                     var="disciplinaItem"
+                     lazy="true"
+                     emptyMessage="#{msg.emptyMessage}"
+                     selectionMode="single"
+                     selection="#{disciplinaBean.itemSelecionado}"
+                     paginatorPosition="bottom"
+                     rows="10" pageLinks="5">
+            <p:ajax event="rowSelect" listener="#{disciplinaBean.selecionaItem}" update=":arquivosTab:disciplinasForm:disciplinasToolbar" />
+            <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
+                <h:outputText value="#{disciplinaItem.codigo}" />
+            </p:column>
+            <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
+                <h:outputText value="#{disciplinaItem.nome}" />
+            </p:column>
+            <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
+                <h:outputText value="#{disciplinaItem.curso.nome}" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
 </ui:composition>
 

@@ -90,6 +90,21 @@ public class DisciplinaBean implements Serializable {
         disciplinasDataModel = new LazyDataModel<Disciplina>() {
             
             private List<Disciplina> dataSource;
+
+            @Override
+            public Object getRowKey(Disciplina disciplina) {
+                return disciplina.getId().toString(); 
+            }
+
+            @Override
+            public Disciplina getRowData(String key) {
+                for (Disciplina d: dataSource) {
+                    if (d.getId().toString().equals(key)) {
+                        return d;
+                    }
+                }
+                return null;
+            }
             
             @Override
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
@@ -134,13 +149,6 @@ public class DisciplinaBean implements Serializable {
             setOperation(EDITA);
             disciplina = getItemSelecionado();
             FacesContext context = FacesContext.getCurrentInstance();
-            CursoBean cursoBean = (CursoBean) context.getELContext().getELResolver().getValue(context.getELContext(), null, "cursoBean");
-            for (Curso c : cursoBean.getCursos()) {
-                if (disciplina.getCurso().getId() == c.getId()) {
-                    curso = c;
-                    break;
-                }
-            }
         }
     }
 
@@ -193,7 +201,6 @@ public class DisciplinaBean implements Serializable {
     public void salvaDisciplina() {
         RequestContext context = RequestContext.getCurrentInstance();
         try {
-            disciplina.setCurso(curso);
             Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
             saveStatus = errors.isEmpty();
             if (saveStatus) {

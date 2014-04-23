@@ -35,14 +35,12 @@ public abstract class BaseModel implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        return (id != null ? id.intValue() : 0);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
+        if (obj != null && obj.getClass() == this.getClass()) {
             BaseModel other = (BaseModel) obj;
             if (other.getId() != null && this.getId() != null) {
                 return other.getId().longValue() == this.getId().longValue();
@@ -55,7 +53,8 @@ public abstract class BaseModel implements Serializable {
 
     @Override
     public String toString() {
-        return "br.ufg.reqweb.model.BaseModel[ id=" + id + " ]";
+        return String.format("%s[%d]",this.getClass().getName(),id);
+
     }
     
 }

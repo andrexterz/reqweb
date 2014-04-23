@@ -21,7 +21,7 @@
                     <p:inputText value="#{disciplinaBean.disciplina.nome}" id="disciplinaNome" />
                     <p:outputLabel for="cursoDisciplina" value="#{msg.curso}"  />
                     <p:selectOneMenu id="cursoDisciplina"
-                                     value="#{disciplinaBean.curso}"
+                                     value="#{disciplinaBean.disciplina.curso}"
                                      converter="#{cursoConverter}">
                         <f:selectItem itemLabel="#{msg.curso}" />
                         <f:selectItems value="#{cursoBean.cursos}" var="cursoItem" itemLabel="#{cursoItem.nome}" itemValue="#{cursoItem}"/>
@@ -33,7 +33,7 @@
                                      process="@form"
                                      actionListener="#{disciplinaBean.salvaDisciplina}"
                                      oncomplete="dialogHandler('dlgDisciplinaVar', xhr, status, args)"
-                                     update=":salvaDisciplinaForm :formHeader:systemMessages :disciplinasForm:tableDisciplinas :disciplinasForm:disciplinasToolbar" />
+                                     update=":salvaDisciplinaForm :formHeader:systemMessages :arquivosTab:disciplinasForm:tableDisciplinas :arquivosTab:disciplinasForm:disciplinasToolbar" />
                     <p:commandButton value="#{msg.cancelar}"
                                      process="@none"
                                      update=":salvaDisciplinaForm"

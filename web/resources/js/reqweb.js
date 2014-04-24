@@ -21,26 +21,21 @@ function dialogHandler(widgetVar, xhr, status, args) {
     }
 }
 
-function handleImportDialog(widget, event) {
-        PF("confirmImpButton").jq.show();
-        PF(widget).show();
+function startImpDialog(widgetDialog, widgetButton, widgetProgressBar, event){
+    PF(widgetDialog).show();
+    PF(widgetProgressBar).cancel();
+     PF(widgetButton).jq.fadeIn();
 }
 
 function progressBarHandler(widget, event) {
-    //PF("confirmImpButton").disable();
-    //PF("cancelImpButton").disable();
     PF(widget).start();
 }
 
-function progressBarComplete(event) {
-    //PF("confirmImpButton").enable();
-    //PF("cancelImpButton").enable();
-    PF("confirmImpButton").jq.hide();
+function progressBarComplete(widget, event) {
+    PF(widget).jq.fadeOut();
 }
 
 function progressBarCancel(widget, event){
-    PF("confirmImpButton").enable();
-    PF("cancelImpButton").enable();
     PF(widget).cancel();
 }
 

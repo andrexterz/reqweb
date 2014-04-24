@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgImpIndicePrioridadeForm" modal="true"
-              widgetVar="dlgImpIndicePrioridadeVar" width="740" height="540"
+              widgetVar="dlgImpIndicePrioridadeVar" width="80%" height="540"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.indicePrioridade}" />
@@ -22,6 +22,7 @@
                                  styleClass="formToolbarButtons"
                                  actionListener="#{indicePrioridadeBean.excluiArquivoUploaded}"
                                  update=":importaIndicePrioridadeForm"
+                                 disabled="#{indicePrioridadeBean.indicePrioridadeListPreview.size() == 0}"
                                  process="@this"
                                  oncomplete="PF('pbImpIndicePrioridade').cancel()" />
 
@@ -35,7 +36,7 @@
                           fileLimit="1"
                           multiple="false"
                           process="@form"
-                          oncomplete="PF('dlgIndicePrioridadeImpFormVar').show()"
+                          oncomplete="PF('dlgIndicePrioridadeImpVar').show()"
                           fileUploadListener="#{indicePrioridadeBean.uploadIndicePrioridade}"
                           update=":formHeader:systemMessages :importaIndicePrioridadeForm" />
             <p:separator/>
@@ -73,8 +74,8 @@
                                value="#{indicePrioridadeBean.progress}"
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{indicePrioridadeBean.handleCompleteImpIndicePrioridade}"
-                            update="paraImpButton :formHeader:systemMessages :arquivosTab:indicePrioridadeForm:tableIndicePrioridade"
-                            oncomplete="progressBarComplete()" />
+                            update="paraImpButton :formHeader:systemMessages :arquivosTab:indicePrioridadeForm"
+                            oncomplete="progressBarComplete('confirmImpButtonIndicePrioridade')" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
                                  process="@this"
@@ -89,7 +90,7 @@
             </h:panelGrid>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaImpIndicePrioridade" value="#{msg.importar}"
-                                 widgetVar="confirmImpButton"
+                                 widgetVar="confirmImpButtonIndicePrioridade"
                                  disabled="#{!indicePrioridadeBean.arquivoUploaded}"
                                  onclick="progressBarHandler('pbImpIndicePrioridade')"
                                  action="#{indicePrioridadeBean.salvaIndicePrioridade}"
@@ -97,7 +98,7 @@
                                  update="paraImpButton progressBarIndicePrioridade :formHeader:systemMessages" />
 
                 <p:commandButton id="cancelaImpIndicePrioridade"
-                                 widgetVar="cancelImpButton"
+                                 widgetVar="cancelImpButtonIndicePrioridade"
                                  value="#{msg.fechar}"
                                  oncomplete="dlgImpIndicePrioridadeVar.hide()" 
                                  update=":arquivosTab:indicePrioridadeForm" />

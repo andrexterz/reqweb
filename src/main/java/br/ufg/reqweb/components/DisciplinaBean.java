@@ -288,6 +288,7 @@ public class DisciplinaBean implements Serializable {
 
     public void excluiArquivoUploaded(ActionEvent event) {
         disciplinaListPreview.clear();
+        itemPreviewSelecionado = null;        
     }
 
     public void excluiDisciplinaPreview() {

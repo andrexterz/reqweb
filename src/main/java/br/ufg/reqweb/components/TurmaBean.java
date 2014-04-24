@@ -307,6 +307,7 @@ public class TurmaBean implements Serializable {
 
     public void excluiArquivoUploaded(ActionEvent event) {
         turmaListPreview.clear();
+        itemPreviewSelecionado = null;
     }
 
     public void excluiTurmaPreview() {

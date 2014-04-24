@@ -5,17 +5,15 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:form id="indicePrioridadeForm">
         <h:panelGroup layout="block" id="indicePrioridadeToolbar" styleClass="formToolbar">
-
             <p:commandButton id="indicePrioridadeClearAll"
                              value="#{msg.limpar}"
                              styleClass="formToolbarButtons"
-                             update=":arquivosTab:indicePrioridadeForm"
-                             disabled="#{indicePrioridadeBean.indicePrioridadeDataModel.rowCount eq 0}"
+                             disabled="#{indicePrioridadeBean.indicePrioridadeDataModelEmpty}"
                              oncomplete="PF('excluirIndicePrioridadeDialog').show()"
                              process="@this" />
 
             <p:menuButton value="#{msg.importar}/#{msg.exportar}">
-                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="PF('dlgImpIndicePrioridadeVar').show()" />
+                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="startImpDialog('dlgImpIndicePrioridadeVar','confirmImpButtonIndicePrioridade','pbImpIndicePrioridade')" />
                 <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{indicePrioridadeBean.indicePrioridadeAsCSV}" />
                 </p:menuitem>

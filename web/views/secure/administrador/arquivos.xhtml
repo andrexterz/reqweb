@@ -16,7 +16,10 @@
         <ui:include src="importaDisciplinaForm.xhtml" />
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
-        <p:tabView dynamic="true" id="arquivosTab" styleClass="formBody">
+        <ui:include src="importaTurmaForm.xhtml" />
+        <ui:include src="excluiIndicePrioridadeForm.xhtml" />
+        <ui:include src="importaIndicePrioridadeForm.xhtml" />
+        <p:tabView dynamic="false" id="arquivosTab" styleClass="formBody">
             <p:tab id="tabDisciplinas" title="#{msg.disciplinas}">
                 <ui:include src="disciplinasForm.xhtml" />
             </p:tab>
@@ -24,7 +27,7 @@
                 <ui:include src="turmasForm.xhtml" />
             </p:tab>
             <p:tab id="tabIndicePrioridade" title="#{msg.indicePrioridade}">
-                #{msg.indicePrioridade}
+                 <ui:include src="indicePrioridadeForm.xhtml" />
             </p:tab>
         </p:tabView>
     </ui:define>

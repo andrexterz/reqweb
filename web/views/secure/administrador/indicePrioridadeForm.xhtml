@@ -3,67 +3,60 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgIndicePrioridadeForm" modal="true"
-              widgetVar="dlgIndicePrioridadeFormVar" width="80%" height="390"
-              resizable="false" appendTo="@(body)">
-        <f:facet name="header">
-            <h:outputText value="#{msg.indicePrioridade}" />
-        </f:facet>
-        <h:form id="indicePrioridadeForm">
-            <h:panelGroup layout="block" id="indicePrioridadeToolbar" styleClass="formToolbar">
+    <h:form id="indicePrioridadeForm">
+        <h:panelGroup layout="block" id="indicePrioridadeToolbar" styleClass="formToolbar">
 
-                <p:commandButton value="#{msg.limpar}"
-                                 styleClass="formToolbarButtons"
-                                 update="tableIndicePrioridade"
-                                 oncomplete="PF('excluirIndicePrioridadeDialog').show()"
-                                 process="@this" />
-                
-                <p:commandButton value="#{msg.exportar} #{msg.paraCSV}" ajax="false">
+            <p:commandButton id="indicePrioridadeClearAll"
+                             value="#{msg.limpar}"
+                             styleClass="formToolbarButtons"
+                             update=":arquivosTab:indicePrioridadeForm"
+                             disabled="#{indicePrioridadeBean.indicePrioridadeDataModel.rowCount eq 0}"
+                             oncomplete="PF('excluirIndicePrioridadeDialog').show()"
+                             process="@this" />
+
+            <p:menuButton value="#{msg.importar}/#{msg.exportar}">
+                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="PF('dlgImpIndicePrioridadeVar').show()" />
+                <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{indicePrioridadeBean.indicePrioridadeAsCSV}" />
-                </p:commandButton>                
+                </p:menuitem>
+            </p:menuButton>
 
-                <p:inputText id="indicePrioridadeBusca"
-                             styleClass="searchBox"
-                             value="#{indicePrioridadeBean.termoBusca}" />
+            <p:inputText id="indicePrioridadeBusca"
+                         styleClass="searchBox"
+                         value="#{indicePrioridadeBean.termoBusca}" />
 
-                <p:watermark for="indicePrioridadeBusca" value="#{msg.discente}/#{msg.usuarioMatricula}" />
+            <p:watermark for="indicePrioridadeBusca" value="#{msg.discente}/#{msg.usuarioMatricula}" />
 
-                <!-- ao pressionar <return>, o formulario submete o commandButton[id=indicePrioridadeCommand] -->
-                <p:commandButton style="visibility: hidden;"
-                                 id="indicePrioridadeBuscaCommand"
-                                 styleClass="searchCommand alignRight"
-                                 update="tableIndicePrioridade" />
+            <!-- ao pressionar <return>, o formulario submete o commandButton[id=indicePrioridadeCommand] -->
+            <p:commandButton style="visibility: hidden;"
+                             id="indicePrioridadeBuscaCommand"
+                             styleClass="searchCommand alignRight"
+                             update="tableIndicePrioridade" />
 
-                <p:defaultCommand target="indicePrioridadeBuscaCommand" />
+            <p:defaultCommand target="indicePrioridadeBuscaCommand" />
 
-            </h:panelGroup>            
-            <p:dataTable id="tableIndicePrioridade"
-                         paginator="true"
-                         value="#{indicePrioridadeBean.indicePrioridadeDataModel}"
-                         var="indicePrioridadeItem"
-                         lazy="true"
-                         emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{indicePrioridadeItem.id}"
-                         paginatorPosition="bottom"
-                         rows="10" pageLinks="5">
-                <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
-                    <h:outputText value="#{indicePrioridadeItem.discente.matricula}" />
-                </p:column>
-                <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
-                    <h:outputText value="#{indicePrioridadeItem.discente.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
-                    <h:outputText value="#{indicePrioridadeItem.indicePrioridade}">
-                        <f:convertNumber pattern="#0.00" />
-                    </h:outputText>
-                </p:column>
-            </p:dataTable>
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
-                <p:commandButton value="#{msg.fechar}"
-                                 process="@none"
-                                 onclick="PF('dlgIndicePrioridadeFormVar').hide()"/>
-            </h:panelGroup>            
-        </h:form>            
-    </p:dialog>
+        </h:panelGroup>            
+        <p:dataTable id="tableIndicePrioridade"
+                     paginator="true"
+                     value="#{indicePrioridadeBean.indicePrioridadeDataModel}"
+                     var="indicePrioridadeItem"
+                     lazy="true"
+                     emptyMessage="#{msg.emptyMessage}"
+                     rowKey="#{indicePrioridadeItem.id}"
+                     paginatorPosition="bottom"
+                     rows="10" pageLinks="5">
+            <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
+                <h:outputText value="#{indicePrioridadeItem.discente.matricula}" />
+            </p:column>
+            <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
+                <h:outputText value="#{indicePrioridadeItem.discente.nome}" />
+            </p:column>
+            <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
+                <h:outputText value="#{indicePrioridadeItem.indicePrioridade}">
+                    <f:convertNumber pattern="#0.00" />
+                </h:outputText>
+            </p:column>
+        </p:dataTable>
+    </h:form>            
 </ui:composition>
 

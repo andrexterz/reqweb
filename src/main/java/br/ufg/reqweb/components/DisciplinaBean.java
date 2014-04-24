@@ -156,13 +156,16 @@ public class DisciplinaBean implements Serializable {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
+            try {
             disciplinaDao.excluir(itemSelecionado);
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            } catch (Exception e) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("violacaoRelacionamento"));
+            }             
         }
+        FacesContext.getCurrentInstance().addMessage(null, msg);        
     }
 
     public void salvaDisciplinas() {

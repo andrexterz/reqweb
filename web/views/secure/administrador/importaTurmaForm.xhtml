@@ -3,48 +3,61 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgTurmasPreviewForm" modal="true"
-              widgetVar="dlgTurmasPreviewFormVar" width="80%" height="460"
+    <p:dialog id="dlgImportaTurmasForm" modal="true"
+              widgetVar="dlgImpTurmasVar" width="740" height="540"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.turmas}" />
         </f:facet>
-        <h:form id="turmasPreviewForm">
-            <h:panelGroup layout="block" id="turmasPreviewToolbar" styleClass="formToolbar">
+        <h:form id="importaTurmasForm" styleClass="contentTables">
+            <h:panelGroup layout="block" id="turmasImpToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"
                                  disabled="#{!turmaBean.previewSelecionado}"
                                  actionListener="#{turmaBean.excluiTurmaPreview}"
-                                 update=":turmasPreviewForm :turmasPreviewForm:confirmaImpTurmas :turmasPreviewForm:tablePreviewTurmas"
+                                 update="importaTurmasForm"
                                  process="@this" />
 
                 <p:commandButton value="#{msg.limpar}"
                                  styleClass="formToolbarButtons"
                                  actionListener="#{turmaBean.excluiArquivoUploaded}"
-                                 update=":turmasPreviewForm:confirmaImpTurmas :arquivosTurmasForm:previewImpTurmas :turmasPreviewForm:tablePreviewTurmas"
-                                 process="@this" />
-                
+                                 update="importaTurmasForm"
+                                 process="@this"
+                                 oncomplete="progressBarCancel('pbImpTurma')" />
 
-            </h:panelGroup>            
-            <p:dataTable id="tablePreviewTurmas"
+
+            </h:panelGroup>
+            <h:outputLabel for="inputTurmas" value="#{msg.uploadArquivos} - #{msg.turmas}" />
+            <p:fileUpload id="inputTurmas"
+                          label="#{msg.selecionar}"
+                          uploadLabel="#{msg.enviar}"
+                          cancelLabel="#{msg.cancelar}"
+                          fileLimit="1"
+                          multiple="false"
+                          process="@this"
+                          fileUploadListener="#{turmaBean.uploadTurmas}"
+                          oncomplete="progressBarCancel('pbImpTurma')"
+                          update="tableImpTurmas confirmaImpTurmas :formHeader:systemMessages" />
+            <p:separator />            
+            <p:dataTable id="tableImpTurmas"
                          paginator="true"
                          value="#{turmaBean.turmaListPreview}"
-                         var="turmaItemPreview"
+                         var="turmaItemImp"
                          selection="#{turmaBean.itemPreviewSelecionado}"
-                         rowKey="#{turmaItemPreview.id}"
+                         rowKey="#{turmaItemImp.id}"
                          selectionMode="single"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
-                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
-                <p:ajax event="rowSelect" update=":turmasPreviewForm:turmasPreviewToolbar" listener="#{turmaBean.selecionaItem}" />
+                         rows="10" pageLinks="5" rowStyleClass="rowImp">
+                <p:ajax event="rowSelect" update=":importaTurmasForm:turmasImpToolbar" listener="#{turmaBean.selecionaItem}" />
                 <p:column headerText="#{msg.turma}" styleClass="turmaColA">
-                    <h:outputText value="#{turmaItemPreview.nome}" />
+                    <h:outputText value="#{turmaItemImp.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.disciplina}" styleClass="turmaColB">
-                    <h:outputText value="#{turmaItemPreview.disciplina.nome}" />
+                    <h:outputText value="#{turmaItemImp.disciplina.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.docente}" styleClass="turmaColC">
-                    <h:outputText value="#{turmaItemPreview.docente.nome}" />
+                    <h:outputText value="#{turmaItemImp.docente.nome}" />
                 </p:column>
             </p:dataTable>
             <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
@@ -55,7 +68,7 @@
                                value="#{turmaBean.progress}"
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{turmaBean.handleCompleteSaveTurmas}"
-                            update="paraImpButton :formHeader:systemMessages :turmasPreviewForm:tablePreviewTurmas"
+                            update="paraImpButton :formHeader:systemMessages :importaTurmasForm:tableImpTurmas :arquivosTab:turmasForm:tableTurmas"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
@@ -81,10 +94,12 @@
                 <p:commandButton id="cancelaImpTurmas"
                                  widgetVar="cancelImpButton"
                                  value="#{msg.fechar}"
-                                 oncomplete="dlgTurmasPreviewFormVar.hide()" 
-                                 update=":turmasPreviewForm:tablePreviewTurmas" />
+                                 oncomplete="dlgImpTurmasVar.hide()" 
+                                 update=":importaTurmasForm:tableImpTurmas" />
             </h:panelGroup>            
-        </h:form>            
+
+        </h:form>
+
     </p:dialog>
 </ui:composition>
 

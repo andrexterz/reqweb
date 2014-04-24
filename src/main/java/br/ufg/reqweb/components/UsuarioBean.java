@@ -7,6 +7,8 @@ import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +29,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.ProviderManager;
@@ -245,6 +249,35 @@ public class UsuarioBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
         }
         context.addMessage(null, msg);
+    }
+    
+    public StreamedContent getDocentesAsCSV() {
+        return getUsuariosAsCSV(PerfilEnum.DOCENTE);
+    }
+
+    public StreamedContent getDiscentesAsCSV() {
+        return getUsuariosAsCSV(PerfilEnum.DISCENTE);
+    }
+            
+    public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
+        StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
+        for (Usuario u: usuarioDao.find(perfilTipo)) {
+            csvData.append("\n");
+            csvData.append(u.getId());
+            csvData.append(",");
+            csvData.append(u.getNome());
+            csvData.append(",");
+            csvData.append(u.getLogin());
+            csvData.append(",");
+            csvData.append(u.getEmail());
+            csvData.append(",");
+            csvData.append(perfilTipo.getPapel());
+            csvData.append(",");
+            csvData.append(u.getMatricula());
+        }
+        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv",perfilTipo.name().toLowerCase()));
+        return file;        
     }
 
     public void editaUsuario(ActionEvent event) {

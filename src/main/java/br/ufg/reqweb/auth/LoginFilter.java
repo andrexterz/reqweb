@@ -36,8 +36,9 @@ public class LoginFilter implements Filter {
         try {
             UsuarioBean usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
             if (usuarioBean.isAutenticado()) {
-                chain.doFilter(request, response);
                 String url = httpRequest.getRequestURI();
+                System.out.println("url: " + url);
+                chain.doFilter(request, response);
             } else {
                 httpResponse.sendRedirect(path + "/index.jsp");
             }

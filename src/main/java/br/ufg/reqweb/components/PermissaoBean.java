@@ -10,10 +10,14 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Permissao;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
@@ -116,6 +120,11 @@ public class PermissaoBean implements Serializable {
     }
 
     public List<String> getUrls() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, Object> viewMap = context.getViewRoot().getViewMap();
+        for (Map.Entry<String, Object> entry:viewMap.entrySet()) {
+            System.out.println("s: o -> " + entry.getKey() + ": " + entry.getValue());
+        }
         List<String> urls = new ArrayList<>();
         return urls;
     }

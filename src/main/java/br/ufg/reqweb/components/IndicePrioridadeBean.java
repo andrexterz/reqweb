@@ -166,6 +166,7 @@ public class IndicePrioridadeBean {
         for (IndicePrioridade ip : itemSelecionadoPreviewList) {
             indicePrioridadeListPreview.remove(ip.getId());
         }
+        itemSelecionadoPreviewList.clear();
     }
 
     public void handleCompleteImpIndicePrioridade() {

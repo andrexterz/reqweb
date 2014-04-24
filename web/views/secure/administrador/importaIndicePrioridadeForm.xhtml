@@ -3,51 +3,64 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgIndicePrioridadePreviewForm" modal="true"
-              widgetVar="dlgIndicePrioridadePreviewFormVar" width="80%" height="460"
+    <p:dialog id="dlgImpIndicePrioridadeForm" modal="true"
+              widgetVar="dlgImpIndicePrioridadeVar" width="740" height="540"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.indicePrioridade}" />
         </f:facet>
-        <h:form id="indicePrioridadePreviewForm">
-            <h:panelGroup layout="block" id="indicePrioridadePreviewToolbar" styleClass="formToolbar">
+        <h:form id="importaIndicePrioridadeForm">
+            <h:panelGroup layout="block" id="indicePrioridadeImpToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"
                                  disabled="#{!indicePrioridadeBean.previewSelecionado}"
                                  actionListener="#{indicePrioridadeBean.excluiIndicePrioridadePreview}"
-                                 update=":indicePrioridadePreviewForm :indicePrioridadePreviewForm:confirmaImpIndicePrioridade :indicePrioridadePreviewForm:tablePreviewIndicePrioridade"
+                                 update=":importaIndicePrioridadeForm"
                                  process="@this" />
 
                 <p:commandButton value="#{msg.limpar}"
                                  styleClass="formToolbarButtons"
                                  actionListener="#{indicePrioridadeBean.excluiArquivoUploaded}"
-                                 update=":indicePrioridadePreviewForm:confirmaImpIndicePrioridade :arquivosIndicePrioridadeForm:previewImpIndicePrioridade :indicePrioridadePreviewForm:tablePreviewIndicePrioridade"
-                                 process="@this" />
-                
+                                 update=":importaIndicePrioridadeForm"
+                                 process="@this"
+                                 oncomplete="PF('pbImpIndicePrioridade').cancel()" />
 
-            </h:panelGroup>            
-            <p:dataTable id="tablePreviewIndicePrioridade"
+
+            </h:panelGroup>
+            <h:outputLabel for="inputIndicePrioridade" value="#{msg.uploadArquivos} - #{msg.indicePrioridade}" />            
+            <p:fileUpload id="inputIndicePrioridade"
+                          label="#{msg.selecionar}"
+                          uploadLabel="#{msg.enviar}"
+                          cancelLabel="#{msg.cancelar}"
+                          fileLimit="1"
+                          multiple="false"
+                          process="@form"
+                          oncomplete="PF('dlgIndicePrioridadeImpFormVar').show()"
+                          fileUploadListener="#{indicePrioridadeBean.uploadIndicePrioridade}"
+                          update=":formHeader:systemMessages :importaIndicePrioridadeForm" />
+            <p:separator/>
+            <p:dataTable id="tableImpIndicePrioridade"
                          paginator="true"
                          value="#{indicePrioridadeBean.indicePrioridadeListPreview}"
-                         var="indicePrioridadeItemPreview"
+                         var="indicePrioridadeItemImp"
                          selection="#{indicePrioridadeBean.itemSelecionadoPreviewList}"
-                         rowKey="#{indicePrioridadeItemPreview.id}"
+                         rowKey="#{indicePrioridadeItemImp.id}"
                          selectionMode="multiple"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5" rowStyleClass="rowPreview">
-                <p:ajax event="rowSelect" update=":indicePrioridadePreviewForm:indicePrioridadePreviewToolbar" />
+                <p:ajax event="rowSelect" update=":importaIndicePrioridadeForm:indicePrioridadeImpToolbar" />
                 <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
-                    <h:outputText value="#{indicePrioridadeItemPreview.discente.matricula}" />
+                    <h:outputText value="#{indicePrioridadeItemImp.discente.matricula}" />
                 </p:column>
                 <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
-                    <h:outputText value="#{indicePrioridadeItemPreview.discente.nome}" />
+                    <h:outputText value="#{indicePrioridadeItemImp.discente.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.curso}" styleClass="indicePrioridadeColC">
-                    <h:outputText value="#{indicePrioridadeItemPreview.discente.perfilList.get(0).curso.nome}" />
+                    <h:outputText value="#{indicePrioridadeItemImp.discente.perfilList.get(0).curso.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
-                    <h:outputText value="#{indicePrioridadeItemPreview.indicePrioridade}">
+                    <h:outputText value="#{indicePrioridadeItemImp.indicePrioridade}">
                         <f:convertNumber pattern="#0.00" />
                     </h:outputText>
                 </p:column>
@@ -56,11 +69,11 @@
                 <p:progressBar id="progressBarIndicePrioridade"
                                interval="1500"
                                ajax="true"
-                               widgetVar="pbImpDisciplina"
+                               widgetVar="pbImpIndicePrioridade"
                                value="#{indicePrioridadeBean.progress}"
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{indicePrioridadeBean.handleCompleteImpIndicePrioridade}"
-                            update="paraImpButton :formHeader:systemMessages :indicePrioridadePreviewForm:tablePreviewIndicePrioridade"
+                            update="paraImpButton :formHeader:systemMessages :arquivosTab:indicePrioridadeForm:tableIndicePrioridade"
                             oncomplete="progressBarComplete()" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
@@ -70,7 +83,7 @@
                                  icon="ui-icon-cancel"
                                  update="paraImpButton progressBarIndicePrioridade :formHeader:systemMessages"
                                  disabled="#{indicePrioridadeBean.stopImportaIndicePrioridade}"
-                                 oncomplete="progressBarCancel('pbImpDisciplina')"
+                                 oncomplete="progressBarCancel('pbImpIndicePrioridade')"
                                  actionListener="#{indicePrioridadeBean.cancelImpIndicePrioridade}"
                                  styleClass="alignRight cancel"  />                
             </h:panelGrid>
@@ -78,7 +91,7 @@
                 <p:commandButton id="confirmaImpIndicePrioridade" value="#{msg.importar}"
                                  widgetVar="confirmImpButton"
                                  disabled="#{!indicePrioridadeBean.arquivoUploaded}"
-                                 onclick="progressBarHandler('pbImpDisciplina')"
+                                 onclick="progressBarHandler('pbImpIndicePrioridade')"
                                  action="#{indicePrioridadeBean.salvaIndicePrioridade}"
                                  process="@this"
                                  update="paraImpButton progressBarIndicePrioridade :formHeader:systemMessages" />
@@ -86,8 +99,8 @@
                 <p:commandButton id="cancelaImpIndicePrioridade"
                                  widgetVar="cancelImpButton"
                                  value="#{msg.fechar}"
-                                 oncomplete="dlgIndicePrioridadePreviewFormVar.hide()" 
-                                 update=":indicePrioridadePreviewForm:tablePreviewIndicePrioridade" />
+                                 oncomplete="dlgImpIndicePrioridadeVar.hide()" 
+                                 update=":arquivosTab:indicePrioridadeForm" />
             </h:panelGroup>            
         </h:form>            
     </p:dialog>

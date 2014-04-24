@@ -5,12 +5,8 @@
  */
 package br.ufg.reqweb.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -53,14 +49,6 @@ public class Turma extends BaseModel {
 
     @ManyToOne
     private Usuario docente;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
@@ -109,28 +97,5 @@ public class Turma extends BaseModel {
         } else {
             this.docente = null;
         }
-    }
-
-      @Override
-    public boolean equals(Object obj) {
-        if ((obj != null) && (obj.getClass() == this.getClass())) {
-            Turma other = (Turma) obj;
-            if (other.getId() != null && this.getId() != null) {
-                return other.getId().longValue() == this.getId().longValue();
-            } else {
-                return other.getId() == this.getId();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return (id != null) ? 11 * 7 + (int) (id ^ (id >>> 32)) : super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "@" + id;
     }
 }

@@ -25,7 +25,7 @@
                              oncomplete="PF('excluirDisciplinaDialog').show()"
                              process="@this" />
             <p:menuButton value="#{msg.importar}/#{msg.exportar}">
-                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="PF('dlgImpDisciplinaVar').show()" />
+                <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="PF('dlgImpDisciplinasVar').show()" />
                 <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{disciplinaBean.disciplinasAsCSV}" />
                 </p:menuitem>

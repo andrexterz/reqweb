@@ -15,9 +15,9 @@
         <ui:include src="salvaPeriodoForm.xhtml" />
         <ui:include src="excluiPeriodoForm.xhtml" />
 
-        <h:form class="contentTables" id="periodoForm">
+        <h:form id="periodoForm" styleClass="formBody">
             <h:panelGroup layout="block" id="periodoToolbar"
-                          styleClass="periodoToolbar">
+                          styleClass="formToolbar">
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"

@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgImportaDisciplinasForm" modal="true"
-              widgetVar="dlgImpDisciplinaVar" width="740" height="540"
+              widgetVar="dlgImpDisciplinasVar" width="740" height="540"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.disciplinas}" />
@@ -22,7 +22,8 @@
                                  styleClass="formToolbarButtons"
                                  actionListener="#{disciplinaBean.excluiArquivoUploaded}"
                                  update="importaDisciplinasForm"
-                                 process="@this" />
+                                 process="@this"
+                                 oncomplete="PF('pbImpDisciplina').cancel()" />
 
 
             </h:panelGroup>
@@ -93,7 +94,7 @@
                 <p:commandButton id="cancelaImpDisciplinas"
                                  widgetVar="cancelImpButton"
                                  value="#{msg.fechar}"
-                                 oncomplete="dlgImpDisciplinaVar.hide()" 
+                                 oncomplete="dlgImpDisciplinasVar.hide()" 
                                  update=":importaDisciplinasForm:tableImpDisciplinas" />
             </h:panelGroup>            
 

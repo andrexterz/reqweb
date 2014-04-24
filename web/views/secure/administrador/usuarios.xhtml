@@ -16,15 +16,8 @@
         <ui:include src="salvaUsuarioForm.xhtml"  />
         <ui:include src="excluiUsuarioForm.xhtml" />
         <ui:include src="detalheUsuarioForm.xhtml" />
-        <h:form class="contentTables" id="usuarioForm">
-            <h:panelGroup layout="block" id="usuarioToolbar">
-
-                <p:commandButton value="#{msg.usuarioLDAP}"
-                                 oncomplete="handleImportDialog('importaUsuarioLDAPDialogVar')"
-                                 update=":usuarioLDAPForm:paraImpButton :usuarioLDAPForm:progressBarUsuario"
-                                 actionListener="#{usuarioBean.setupImportUsuarios}"
-                                 process="@this" />
-
+        <h:form id="usuarioForm" styleClass="formBody">
+            <h:panelGroup layout="block" id="usuarioToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
                                  update=":dlgUsuarioForm"
@@ -39,8 +32,22 @@
                 <p:commandButton value="#{msg.usuarioDetalheValue}" icon="ui-icon-search"
                                  disabled="#{usuarioBean.selecionado == false}"
                                  update=":dlgDetalheUsuarioForm"
-                                 oncomplete="PF('dlgDetalheUsuarioVar').show()"
-                                 />
+                                 oncomplete="PF('dlgDetalheUsuarioVar').show()" />
+
+                <p:menuButton value="#{msg.importar}/#{msg.exportar}">
+                    <p:menuitem value="#{msg.importar} (#{msg.usuarioLDAP})"
+                                actionListener="#{usuarioBean.setupImportUsuarios}"
+                                icon="ui-icon-arrowthickstop-1-n"
+                                oncomplete="handleImportDialog('importaUsuarioLDAPDialogVar')" />
+                    <p:menuitem value="#{msg.docentes} #{msg.paraCSV}"
+                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                        <p:fileDownload value="#{usuarioBean.docentesAsCSV}" />
+                    </p:menuitem>
+                    <p:menuitem value="#{msg.discentes} #{msg.paraCSV}"
+                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                        <p:fileDownload value="#{usuarioBean.discentesAsCSV}" />
+                    </p:menuitem>
+                </p:menuButton>
 
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
                 <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}/#{msg.usuarioMatricula}" />

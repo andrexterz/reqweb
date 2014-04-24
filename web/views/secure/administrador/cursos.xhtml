@@ -14,8 +14,8 @@
         </script>
         <ui:include src="salvaCursoForm.xhtml" />
         <ui:include src="excluiCursoForm.xhtml" />
-        <h:form class="contentTables" id="cursoForm">
-            <h:panelGroup layout="block" id="cursoToolbar">
+        <h:form id="cursoForm" styleClass="formBody">
+            <h:panelGroup layout="block" id="cursoToolbar" styleClass="formToolbar">
 
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"

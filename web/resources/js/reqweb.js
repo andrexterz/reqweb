@@ -27,14 +27,14 @@ function handleImportDialog(widget, event) {
 }
 
 function progressBarHandler(widget, event) {
-    PF("confirmImpButton").disable();
-    PF("cancelImpButton").disable();
+    //PF("confirmImpButton").disable();
+    //PF("cancelImpButton").disable();
     PF(widget).start();
 }
 
 function progressBarComplete(event) {
-    PF("confirmImpButton").enable();
-    PF("cancelImpButton").enable();
+    //PF("confirmImpButton").enable();
+    //PF("cancelImpButton").enable();
     PF("confirmImpButton").jq.hide();
 }
 

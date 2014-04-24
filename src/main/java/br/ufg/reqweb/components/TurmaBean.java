@@ -232,7 +232,7 @@ public class TurmaBean implements Serializable {
     }
 
     public StreamedContent getTurmasAsCSV() {
-        StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,curso_sigla");
+        StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,docente_id,curso_sigla");
         for (Turma t : turmaDao.findAll()) {
             csvData.append("\n");
             csvData.append(t.getId());
@@ -246,6 +246,8 @@ public class TurmaBean implements Serializable {
             csvData.append(t.getDisciplina().getId());
             csvData.append(",");
             csvData.append(t.getDocente().getId());
+            csvData.append(",");
+            csvData.append(t.getDisciplina().getCurso().getSigla());
         }
 
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());

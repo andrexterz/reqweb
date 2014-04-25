@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgRequerimentoForm" modal="true"
+              widgetVar="dlgRequerimentoVar" width="360" height="140"
+              resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.novo} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'a'}" />
+            <h:outputText value="#{msg.editar} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'e'}" />
+        </f:facet>
+        <h:form id="salvaRequerimentoForm">
+            <!--validacao do lado do servidor utilizando beanValidator -->
+            <!--tag anula Validation PhaseListener do JSF -->
+            <f:validateBean disabled="true">
+                <p:panelGrid id="requerimentoDlgPanel" styleClass="formGrid">
+                    <h:outputText value="#{requerimentoBean.tipoRequerimento.tipo}" />
+                </p:panelGrid>
+                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{requerimentoBean.salvaRequerimento}"
+                                     oncomplete="dialogHandler('dlgRequerimentoVar', xhr, status, args)"
+                                     update="requerimentoDlgPanel :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@none"
+                                     update="requerimentoDlgPanel"
+                                     onclick="PF('dlgRequerimentoVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

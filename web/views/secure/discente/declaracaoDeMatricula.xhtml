@@ -1,0 +1,62 @@
+<ui:composition template="discente.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.declaracaoDeMatricula}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                jQuery("#declaracaoDeMatriculaLnk").addClass("menuItemSelected");
+                console.log("marcando menuItemSelected como selecionado");
+            });
+        </script>
+        <ui:include src="salvaDeclaracaoDeMatriculaForm.xhtml" />
+        <h:form id="requerimentoForm" styleClass="formBody">
+            <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 actionListener="#{requerimentoBean.novoRequerimento}"
+                                 oncomplete="PF('dlgRequerimentoVar').show()"                                 
+                                 update="tableRequerimentos :salvaRequerimentoForm">
+                    <f:setPropertyActionListener
+                        target="#{requerimentoBean.tipoRequerimento}"
+                        value="DECLARACAO_DE_MATRICULA" />
+                </p:commandButton>
+
+                <p:commandButton value="#{msg.editar}"
+                                 process="@this"
+                                 disabled="#{requerimentoBean.selecionado == false}"
+                                 actionListener="#{requerimentoBean.editaRequerimento}" />
+
+                <p:commandButton value="#{msg.excluir}" disabled="#{requerimentoBean.selecionado== false}" onclick="excluirRequerimentoDialog.show()" />
+
+                <p:inputText id="requerimentoBusca" styleClass="searchBox" value="#{requerimentoBean.termoBusca}" />
+                <p:watermark for="requerimentoBusca" value="#{msg.requerimento}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
+                <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand alignRight" update="tableRequerimentos" />
+                <p:defaultCommand target="requerimentoBuscaCommand" />
+
+            </h:panelGroup>
+
+            <p:dataTable id="tableRequerimentos" var="requerimentoItem"
+                         value="#{cursoBean.filtroCursos}"
+                         emptyMessage="#{msg.emptyMessage}"
+                         rowKey="#{requerimentoItem.id}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{cursoBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":requerimentoForm:requerimentoToolbar" listener="#{requerimentoBean.selecionaItem}" />
+                <p:column headerText="#{msg.curso}" styleClass="cursoColNome">
+                    <h:outputText value="#{requerimentoItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.cursoSigla}" styleClass="cursoColSigla">
+                    <h:outputText value="#{requerimentoItem.sigla}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -85,10 +85,6 @@ public class CursoBean implements Serializable {
         }
     }
 
-    public void selecionaItem(SelectEvent event) {
-        itemSelecionado = (Curso) event.getObject();
-    }
-
     public void salvaCurso() {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
@@ -110,6 +106,10 @@ public class CursoBean implements Serializable {
         }
     }
 
+    public void selecionaItem(SelectEvent event) {
+        itemSelecionado = (Curso) event.getObject();
+    }
+    
     public List<Curso> getFiltroCursos() {
         System.out.println("termo da busca: " + termoBusca);
         if (termoBusca.equals("")) {

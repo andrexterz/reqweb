@@ -11,6 +11,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -28,6 +30,9 @@ public class Requerimento extends BaseModel {
     @ManyToOne
     private Usuario discente;
     
+    @Enumerated(EnumType.STRING)
+    protected TipoRequerimentoEnum tipoRequerimento;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(insertable = true, updatable = false)
     private Date dataCriacao;
@@ -55,6 +60,20 @@ public class Requerimento extends BaseModel {
         this.discente = discente;
     }
 
+    /**
+     * @return the tipoRequerimento
+     */
+    public TipoRequerimentoEnum getTipoRequerimento() {
+        return tipoRequerimento;
+    }
+
+    /**
+     * @param tipoRequerimento the tipoRequerimento to set
+     */
+    public void setTipoRequerimento(TipoRequerimentoEnum tipoRequerimento) {
+        this.tipoRequerimento = tipoRequerimento;
+    }
+    
     /**
      * @return the dataCriacao
      */

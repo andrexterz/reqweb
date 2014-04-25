@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
  * @author André
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome","disciplina_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"nome","disciplina_id","periodo_id"})})
 public class Turma extends BaseModel {
 
     private static final long serialVersionUID = 1L;

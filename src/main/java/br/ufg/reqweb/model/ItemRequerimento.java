@@ -22,9 +22,6 @@ public abstract class ItemRequerimento extends BaseModel {
     @ManyToOne
     protected Requerimento requerimento;
     
-    @Enumerated(EnumType.STRING)
-    protected TipoRequerimentoEnum tipoRequerimento;
-
     /**
      * @return the requerimento
      */
@@ -38,19 +35,4 @@ public abstract class ItemRequerimento extends BaseModel {
     public void setRequerimento(Requerimento requerimento) {
         this.requerimento = requerimento;
     }
-
-    /**
-     * @return the tipoRequerimento
-     */
-    public TipoRequerimentoEnum getTipoRequerimento() {
-        return tipoRequerimento;
-    }
-
-    /**
-     * @param tipoRequerimento the tipoRequerimento to set
-     */
-    public void setTipoRequerimento(TipoRequerimentoEnum tipoRequerimento) {
-        this.tipoRequerimento = tipoRequerimento;
-    }
-    
 }

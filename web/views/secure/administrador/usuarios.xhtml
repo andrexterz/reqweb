@@ -9,7 +9,6 @@
         <script>
             $(document).ready(function() {
                 jQuery("#usuariosLnk").addClass("menuItemSelected");
-                console.log("marcando menuItemSelected como selecionado");
             });
         </script>
         <ui:include src="importaUsuarioForm.xhtml"  />
@@ -38,7 +37,7 @@
                     <p:menuitem value="#{msg.importar} (#{msg.usuarioLDAP})"
                                 actionListener="#{usuarioBean.setupImportUsuarios}"
                                 icon="ui-icon-arrowthickstop-1-n"
-                                oncomplete="handleImportDialog('importaUsuarioLDAPDialogVar')" />
+                                oncomplete="startImpDialog('importaUsuarioLDAPDialogVar','confirmImpButtonUsuario','pbImpUsuario')" />
                     <p:menuitem value="#{msg.docentes} #{msg.paraCSV}"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{usuarioBean.docentesAsCSV}" />
@@ -61,13 +60,12 @@
                          value="#{usuarioBean.usuariosDataModel}"
                          lazy="true"
                          emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{usuarioItem.id}"
                          paginator="true"
                          selectionMode="single"
                          selection="#{usuarioBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm" listener="#{usuarioBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":excluiUsuarioForm:dlgExclUsuarioDialog :usuarioForm:usuarioToolbar :detalheUsuarioForm" />
                 <p:column headerText="#{msg.usuario}" styleClass="usuarioColLogin">
                     <h:outputText value="#{usuarioItem.login}" />
                 </p:column>

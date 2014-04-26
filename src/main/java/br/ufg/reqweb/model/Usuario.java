@@ -26,7 +26,7 @@ public class Usuario extends BaseModel {
 
     public Usuario() {
         //inicializar lista por causa do method adicionaPerfil
-        this.perfilList = new ArrayList<>();
+        perfilList = new ArrayList<>();
     }
 
     public Usuario(Long id, String nome, String login, String matricula, String email, List<Perfil> perfilList) {
@@ -56,7 +56,7 @@ public class Usuario extends BaseModel {
     private String email;
     
     @Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Perfil> perfilList;
 
 

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.PeriodoDao;
@@ -14,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +28,20 @@ import org.springframework.stereotype.Component;
  *
  * @author André
  */
-
 @Component
 @Scope(value = "session")
 public class PeriodoBean implements Serializable {
-    
+
     public PeriodoBean() {
         periodo = new Periodo();
-        itemSelecionado = null;        
+        itemSelecionado = null;
         operation = null;
         termoBusca = "";
+        saveStatus = false;
     }
+
+    @Autowired
+    Validator validator;
 
     @Autowired
     private PeriodoDao periodoDao;
@@ -45,27 +49,27 @@ public class PeriodoBean implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String ADICIONA = "a";
     public static final String EDITA = "e";
+    private boolean saveStatus;
     private String operation;
     private Periodo periodo;
     private Periodo itemSelecionado;
-    private String termoBusca;        
-    
+    private String termoBusca;
 
-    public void novoPeriodo(ActionEvent actionEvent) {
+    public void novoPeriodo() {
         setOperation(ADICIONA);
         periodo = new Periodo();
     }
-    
-    public void editaPeriodo(ActionEvent actionEvent) {
+
+    public void editaPeriodo() {
         if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
             setOperation(EDITA);
             periodo = getItemSelecionado();
-        }        
+        }
     }
-    
+
     public void excluiPeriodo() {
         FacesMessage msg;
         if (!isSelecionado()) {
@@ -76,39 +80,51 @@ public class PeriodoBean implements Serializable {
             itemSelecionado = null;
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        }        
-    }
-    
-    public void salvaPeriodo() {
-        FacesMessage msg;
-        RequestContext context = RequestContext.getCurrentInstance();
-        if (periodo.getAno() < getMinAno() || periodo.getSemestre() == null || periodo.getDataInicio() == null || periodo.getDataTermino() == null) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            context.addCallbackParam("resultado", false);
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            context.addCallbackParam("resultado", true);
-            if (operation.equals(ADICIONA)) {
-                periodoDao.adicionar(periodo);
-                itemSelecionado = periodo;
-            } else {
-                periodoDao.atualizar(periodo);
-            }
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
+
+    public void salvaPeriodo() {
+        RequestContext context = RequestContext.getCurrentInstance();
+        try {
+            Set<ConstraintViolation<Periodo>> errors = validator.validate(periodo);
+            saveStatus = errors.isEmpty();
+            if (saveStatus) {
+                if (operation.equals(ADICIONA)) {
+                    periodoDao.adicionar(periodo);
+                    itemSelecionado = periodo;
+                } else {
+                    periodoDao.atualizar(periodo);
+                }
+            }
+
+        } catch (Exception e) {
+            saveStatus = false;
+        }
+        context.addCallbackParam("resultado", saveStatus);
+        handleCompleteSavePeriodo();
+    }
     
+    public void handleCompleteSavePeriodo() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg;
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+        }
+        context.addMessage(null, msg);
+    }    
+
     public List<Periodo> findPeriodo(String query) {
         return periodoDao.find(query);
     }
-    
+
     public List<Semestre> getSemestres() {
         List<Semestre> semestres = new ArrayList<>();
         semestres.addAll(Arrays.asList(Semestre.values()));
         return semestres;
     }
-    
+
     public boolean isSelecionado() {
         return itemSelecionado != null;
     }
@@ -116,7 +132,7 @@ public class PeriodoBean implements Serializable {
     public Periodo getItemSelecionado() {
         return itemSelecionado;
     }
-    
+
     public void setItemSelecionado(Periodo itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
     }
@@ -124,8 +140,7 @@ public class PeriodoBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Periodo) event.getObject();
     }
-        
-    
+
     /**
      * @return the operation
      */
@@ -153,17 +168,16 @@ public class PeriodoBean implements Serializable {
     public void setPeriodo(Periodo periodo) {
         this.periodo = periodo;
     }
-    
+
     public List<Periodo> getFiltroPeriodos() {
         boolean found = termoBusca.matches("\\d{4}");
         if (!found) {
             return periodoDao.findAll();
-        }
-        else {
+        } else {
             return periodoDao.find(termoBusca);
-        }        
+        }
     }
-    
+
     public List<Periodo> getPeriodos() {
         return periodoDao.findAll();
     }
@@ -181,10 +195,4 @@ public class PeriodoBean implements Serializable {
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
     }
-
-    public int getMinAno() {
-        return Calendar.getInstance().get(Calendar.YEAR);
-    }
-
-    
 }

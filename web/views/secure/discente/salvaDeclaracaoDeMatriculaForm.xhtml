@@ -4,18 +4,42 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgRequerimentoForm" modal="true"
-              widgetVar="dlgRequerimentoVar" width="360" height="140"
+              widgetVar="dlgRequerimentoVar" width="360" height="280"
               resizable="false" appendTo="@(body)">
         <f:facet name="header">
-            <h:outputText value="#{msg.novo} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'a'}" />
+            <h:outputText value="#{msg.novo} #{msg.requerimento}: #{msg.declaracaoDeMatricula}" rendered="#{requerimentoBean.operation == 'a'}" />
             <h:outputText value="#{msg.editar} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'e'}" />
         </f:facet>
-        <h:form id="salvaRequerimentoForm">
+        <h:form id="salvaRequerimentoForm" styleClass="formGrid">
             <!--validacao do lado do servidor utilizando beanValidator -->
             <!--tag anula Validation PhaseListener do JSF -->
             <f:validateBean disabled="true">
-                <p:panelGrid id="requerimentoDlgPanel" styleClass="formGrid">
-                    <h:outputText value="#{requerimentoBean.tipoRequerimento.tipo}" />
+                <p:panelGrid id="requerimentoDlgPanel" columns="1" styleClass="formGrid">
+                    <p:column>
+                        <h:outputLabel value="#{msg.copias}" />
+                    </p:column>
+                    <p:column>
+                        <p:spinner value="#{declaracaoDeMatricula.numeroCopias}"
+                                   maxlength="2"
+                                   min="1" max="2" styleClass="defaultInput" />
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{msg.status}" />
+                    </p:column>
+                    <p:column>
+                        <p:selectOneButton value="#{declaracaoDeMatricula.status}">
+                            <f:selectItem itemLabel="#{msg.aberto}" itemValue="ABERTO" />
+                            <f:selectItem itemLabel="#{msg.deferido}" itemValue="DEFERIDO" />
+                            <f:selectItem itemLabel="#{msg.indeferido}" itemValue="INDEFERIDO" />
+                        </p:selectOneButton>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel value="#{msg.observacao}" />
+                    </p:column>
+                    <p:column>
+                        <p:inputTextarea rows="5" cols="32" autoResize="false"
+                                         value="#{requerimentoBean.requerimento.observacao}" />
+                    </p:column>
                 </p:panelGrid>
                 <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                     <p:commandButton value="#{msg.salvar}"

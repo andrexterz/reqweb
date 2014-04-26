@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.hibernate.exception.ConstraintViolationException;
@@ -98,6 +97,21 @@ public class TurmaBean implements Serializable {
         turmas = new LazyDataModel<Turma>() {
             
             private List<Turma> dataSource;
+
+            @Override
+            public Object getRowKey(Turma turma) {
+                return turma.getId().toString(); 
+            }
+
+            @Override
+            public Turma getRowData(String key) {
+                for (Turma t: dataSource) {
+                    if (t.getId().toString().equals(key)) {
+                        return t;
+                    }
+                }
+                return null;
+            }
             
             @Override
             public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
@@ -129,13 +143,13 @@ public class TurmaBean implements Serializable {
         };
     }
 
-    public void novaTurma(ActionEvent event) {
+    public void novaTurma() {
         setOperation(ADICIONA);
         turma = new Turma();
         setDocente(null);
     }
 
-    public void editaTurma(ActionEvent event) {
+    public void editaTurma() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -305,7 +319,7 @@ public class TurmaBean implements Serializable {
         }
     }
 
-    public void excluiArquivoUploaded(ActionEvent event) {
+    public void excluiArquivoUploaded() {
         turmaListPreview.clear();
         itemPreviewSelecionado = null;
     }
@@ -327,13 +341,13 @@ public class TurmaBean implements Serializable {
         context.addMessage(null, msg);
     }
 
-    public void setupImportTurmas(ActionEvent event) {
+    public void setupImportTurmas() {
         progress = 0;
         stopImportaTurmas = true;
     }
 
-    public void cancelImpTurmas(ActionEvent event) {
-        setupImportTurmas(event);
+    public void cancelImpTurmas() {
+        setupImportTurmas();
         try {
             Thread.sleep(2000);
             FacesContext context = FacesContext.getCurrentInstance();

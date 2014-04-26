@@ -79,7 +79,7 @@ label {
     font-weight: bold;
 }
 
-input[type=submit] {
+input[type="submit"] {
     font-weight: bold;
     color: #fff;
     background: #7fcdee;
@@ -88,10 +88,9 @@ input[type=submit] {
     height: 2em;
 }
 
-input[type=text], input[type=password], select {
+input[type="text"], input[type="password"], select {
     border: 1px solid #999;
     color: #333;
-    width: 100%;
 }
 
 /*********************************** header ***********************************/
@@ -357,15 +356,23 @@ input[type=text], input[type=password], select {
 
 }
 
+#loginForm table{
+    width: 80%;
+}
 #loginForm table:nth-child(n+3) {
     margin-left: 1em;
 }
 
-#loginForm input, select {
-    width: 16em;
+#loginForm input[type="text"], input[type="password"], select {
+    width: 100%!important;
 }
 
-#loginForm input[type=submit] {
+/*
+#loginForm input, select {
+    width: 16em;
+}*/
+
+#loginForm input[type="submit"] {
     float: right;
     width: 12em;
     margin-right: 0.4em;
@@ -435,7 +442,7 @@ input[type=text], input[type=password], select {
     margin-bottom: 4px;
 }
 
-.cursoToobar input[type=submit] {
+.cursoToobar input[type="submit"] {
     width: 108px;
     margin-left: 4px;
     margin-right: 4px;
@@ -625,6 +632,14 @@ input[type=text], input[type=password], select {
 
 .formGridColB {
     width: 50%;
+}
+
+.formGrid input[type="text"], input[type="password"], select, textArea {
+    width: 100%;
+}
+
+.defaultInput input[type="text"] {
+    width: auto;
 }
 
 .formTitle {

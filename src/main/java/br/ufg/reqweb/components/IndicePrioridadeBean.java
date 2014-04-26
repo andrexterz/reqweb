@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
@@ -161,7 +160,7 @@ public class IndicePrioridadeBean {
         }
     }
 
-    public void excluiArquivoUploaded(ActionEvent event) {
+    public void excluiArquivoUploaded() {
         indicePrioridadeListPreview.clear();
         itemSelecionadoPreviewList.clear();
     }
@@ -180,13 +179,13 @@ public class IndicePrioridadeBean {
         context.addMessage(null, msg);
     }
 
-    public void setupImportIndicePrioridade(ActionEvent event) {
+    public void setupImportIndicePrioridade() {
         progress = 0;
         stopImportaIndicePrioridade = true;
     }
 
-    public void cancelImpIndicePrioridade(ActionEvent event) {
-        setupImportIndicePrioridade(event);
+    public void cancelImpIndicePrioridade() {
+        setupImportIndicePrioridade();
         try {
             Thread.sleep(2000);
             FacesContext context = FacesContext.getCurrentInstance();

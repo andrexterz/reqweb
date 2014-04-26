@@ -10,6 +10,7 @@ import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.util.LdapInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,33 +50,10 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        List<Object> objList = new ArrayList<>();
-        Disciplina d1 = new Disciplina();
-        d1.setId(1L);
-        objList.add(d1);
-        Disciplina d2 = new Disciplina();
-        d2.setId(2L);
-        objList.add(d2);
-        System.out.println("must be true.: " + (objList.get(0) == d1));
-        System.out.println("must be true.: " + (objList.get(1) == d2));
-        System.out.println("must be false: " + (objList.get(0) == d2));
-        System.out.println("must be false: " + (objList.get(1) == d1));
-        System.out.println("must be true.: " + objList.get(0).equals(d1));
-        System.out.println("must be true.: " + objList.get(1).equals(d2));
-        System.out.println("must be false: " + objList.get(0).equals(d2));
-        System.out.println("must be false: " + objList.get(1).equals(d1));
-        System.out.println("hashCode obj1: " + objList.get(0).hashCode());
-        System.out.println("hashCode obj2: " + objList.get(1).hashCode());
-        
-        
-//        Pattern pat = Pattern.compile("\\D+(?=(\\d+))");
-//        String [] names = {"si10178", "cc10023", "amanda", "msc10426","afonso", "es10311"};
-//        for (String s:names) {
-//            Matcher m = pat.matcher(s);
-//            if (m.find()) {
-//                String sigla = m.group();
-//                System.out.println("match: " + sigla.toUpperCase());
-//            }
+//        List<LdapInfo> lst = LdapInfo.scanLdap();
+//        for (LdapInfo l: lst) {
+//            System.out.println(String.format("%s: %s",l.getUsuario(),l.getEmail()));
 //        }
+
     }
 }

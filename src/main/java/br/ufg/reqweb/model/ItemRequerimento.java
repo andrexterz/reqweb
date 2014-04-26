@@ -6,9 +6,12 @@
 
 package br.ufg.reqweb.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
 /**
@@ -17,10 +20,15 @@ import javax.persistence.ManyToOne;
  */
 
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class ItemRequerimento extends BaseModel {
     
     @ManyToOne
     protected Requerimento requerimento;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "character varying(16) default 'ABERTO'")
+    protected ItemRequerimentoStatusEnum status;
     
     /**
      * @return the requerimento
@@ -34,5 +42,19 @@ public abstract class ItemRequerimento extends BaseModel {
      */
     public void setRequerimento(Requerimento requerimento) {
         this.requerimento = requerimento;
+    }
+
+    /**
+     * @return the status
+     */
+    public ItemRequerimentoStatusEnum getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(ItemRequerimentoStatusEnum status) {
+        this.status = status;
     }
 }

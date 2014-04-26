@@ -49,7 +49,7 @@
                          selectionMode="single"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
-                         rows="10" pageLinks="5" rowStyleClass="rowImp">
+                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
                 <p:ajax event="rowSelect" update=":importaDisciplinasForm:disciplinasImpToolbar" listener="#{disciplinaBean.selecionaItem}" />
                 <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
                     <h:outputText value="#{disciplinaItemImp.codigo}" />

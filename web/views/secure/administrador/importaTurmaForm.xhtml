@@ -49,7 +49,7 @@
                          selectionMode="single"
                          emptyMessage="#{msg.emptyMessage}"
                          paginatorPosition="bottom"
-                         rows="10" pageLinks="5" rowStyleClass="rowImp">
+                         rows="10" pageLinks="5" rowStyleClass="rowPreview">
                 <p:ajax event="rowSelect" update=":importaTurmasForm:turmasImpToolbar" listener="#{turmaBean.selecionaItem}" />
                 <p:column headerText="#{msg.turma}" styleClass="turmaColA">
                     <h:outputText value="#{turmaItemImp.nome}" />

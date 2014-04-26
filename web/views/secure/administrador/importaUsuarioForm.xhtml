@@ -19,7 +19,7 @@
                                labelTemplate="{value}%">
                     <p:ajax event="complete" listener="#{usuarioBean.handleCompleteImpUsuarios}"
                             update="paraImpButton :formHeader:systemMessages :usuarioForm:tableUsuarios"
-                            oncomplete="progressBarComplete()" />
+                            oncomplete="progressBarComplete('confirmImpButtonUsuario')" />
                 </p:progressBar>
                 <p:commandButton id="paraImpButton"
                                  process="@this"
@@ -34,14 +34,14 @@
             </h:panelGrid>
             <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaImpUsuario" value="#{msg.importar}"
-                                 widgetVar="confirmImpButton"
+                                 widgetVar="confirmImpButtonUsuario"
                                  onclick="progressBarHandler('pbImpUsuario')"
                                  action="#{usuarioBean.importaUsuarios}"
                                  process="@this"
                                  update="paraImpButton :usuarioLDAPForm:progressBarUsuario :formHeader:systemMessages" />
 
                 <p:commandButton id="cancelaImpUsuario"
-                                 widgetVar="cancelImpButton"
+                                 widgetVar="cancelImpButtonUsuario"
                                  value="#{msg.fechar}"
                                  oncomplete="importaUsuarioLDAPDialogVar.hide()" 
                                  actionListener="#{usuarioBean.listaUsuarios()}"

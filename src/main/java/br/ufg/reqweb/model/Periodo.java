@@ -5,25 +5,39 @@
  */
 package br.ufg.reqweb.model;
 
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
+import javax.validation.ValidationException;
 
 /**
  *
  * @author André
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"ano","semestre"})})
 public class Periodo extends BaseModel {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
+
+    public Periodo() {
+        ativo = false;
+    }
+
+    public Periodo(int ano, Semestre semestre, Date dataInicio, Date dataTermino, boolean ativo) {
+        this.ano = ano;
+        this.semestre = semestre;
+        this.dataInicio = dataInicio;
+        this.dataTermino = dataTermino;
+        this.ativo = ativo;
+    }
 
     @Column
     private int ano;
@@ -37,7 +51,7 @@ public class Periodo extends BaseModel {
     @Temporal(TemporalType.DATE)
     private Date dataTermino;
     
-    @Column(columnDefinition = "default false")
+    @Column(columnDefinition = "boolean default false")
     private boolean ativo;
 
   
@@ -52,6 +66,10 @@ public class Periodo extends BaseModel {
      * @param ano the ano to set
      */
     public void setAno(int ano) {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        if (ano < currentYear) {
+            throw new ValidationException(String.format("Year %d must be greater or equals %d", ano, currentYear));
+        }
         this.ano = ano;
     }
 

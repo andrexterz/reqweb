@@ -10,16 +10,11 @@ import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Permissao;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
-import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
@@ -58,12 +53,12 @@ public class PermissaoBean implements Serializable {
     private String operation;
     private String termoBusca;
 
-    public void novaPermissao(ActionEvent event) {
+    public void novaPermissao() {
         setOperation(ADICIONA);
         permissao = new Permissao();
     }
 
-    public void editaPermissao(ActionEvent event) {
+    public void editaPermissao() {
         if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);

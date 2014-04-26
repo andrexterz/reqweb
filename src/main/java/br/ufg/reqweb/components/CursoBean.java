@@ -55,14 +55,14 @@ public class CursoBean implements Serializable {
         cursos = new ArrayList<>();
     }    
     
-    public void novoCurso(ActionEvent event) {
+    public void novoCurso() {
         setOperation(ADICIONA);
         curso = new Curso();
         Logger log = Logger.getLogger(CursoBean.class);
         log.info("objeto curso criado: " + curso.toString());
     }
 
-    public void editaCurso(ActionEvent event) {
+    public void editaCurso() {
         if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);

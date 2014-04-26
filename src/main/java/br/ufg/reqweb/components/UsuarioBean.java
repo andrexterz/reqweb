@@ -62,7 +62,7 @@ public class UsuarioBean implements Serializable {
 
     @Autowired
     private Validator validator;
-    
+
     @Autowired
     private ProviderManager authManager;
 
@@ -92,27 +92,42 @@ public class UsuarioBean implements Serializable {
         termoBusca = "";
         saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
-  
+
             private List<Usuario> dataSource;
-            
+
+            @Override
+            public Object getRowKey(Usuario usuario) {
+                return usuario.getId().toString();
+            }
+
+            @Override
+            public Usuario getRowData(String key) {
+                for (Usuario u : dataSource) {
+                    if (u.getId().toString().equals(key)) {
+                        return u;
+                    }
+                }
+                return null;
+            }
+
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 if (termoBusca.equals("")) {
                     dataSource = usuarioDao.find(first, pageSize);
                     setRowCount(usuarioDao.count());
-                    
+
                 } else {
                     dataSource = usuarioDao.find(termoBusca);
-                    setRowCount(dataSource.size());                
+                    setRowCount(dataSource.size());
                 }
                 if (dataSource.size() > pageSize) {
                     try {
                         return dataSource.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                        return dataSource.subList(first, first + (dataSource.size() % pageSize));
                     }
-                    
+
                 }
                 return dataSource;
             }
@@ -131,14 +146,14 @@ public class UsuarioBean implements Serializable {
             Authentication auth = authManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
             autenticado = auth.isAuthenticated();
-        } catch (AuthenticationException|NullPointerException e) {
-            log.error("erro de autenticação - " + e.getCause());
+        } catch (AuthenticationException | NullPointerException e) {
+            log.error("erro de autenticação -> " + e.getCause());
         }
         if (autenticado) {
             log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
             return home();
         } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de autenticação", "");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
             context.addMessage("loginError", msg);
             return null;
         }
@@ -161,7 +176,7 @@ public class UsuarioBean implements Serializable {
         return "/views/login?faces-redirect=true";
     }
 
-    public void setupImportUsuarios(ActionEvent event) {
+    public void setupImportUsuarios() {
         progress = 0;
         stopImportaUsuarios = true;
     }
@@ -204,10 +219,10 @@ public class UsuarioBean implements Serializable {
                                 usr.adicionaPerfil(p);
                                 break;
                             }
-                            Set<ConstraintViolation<Usuario>> errors = validator.validate(usr);
-                            if (errors.isEmpty()) {
-                                usrList.add(usr);
-                            }
+                        }
+                        Set<ConstraintViolation<Usuario>> errors = validator.validate(usr);
+                        if (errors.isEmpty()) {
+                            usrList.add(usr);
                         }
                     } else {
                         usrList.clear();
@@ -220,14 +235,13 @@ public class UsuarioBean implements Serializable {
                 } catch (ConstraintViolationException e) {
                     saveStatus = false;
                 }
-
             }
         };
         tImportJob.start();
     }
 
-    public void cancelImpUsuarios(ActionEvent event) {
-        setupImportUsuarios(event);
+    public void cancelImpUsuarios() {
+        setupImportUsuarios();
         try {
             Thread.sleep(2000);
             FacesContext context = FacesContext.getCurrentInstance();
@@ -250,7 +264,7 @@ public class UsuarioBean implements Serializable {
         }
         context.addMessage(null, msg);
     }
-    
+
     public StreamedContent getDocentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DOCENTE);
     }
@@ -258,10 +272,10 @@ public class UsuarioBean implements Serializable {
     public StreamedContent getDiscentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DISCENTE);
     }
-            
+
     public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
         StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
-        for (Usuario u: usuarioDao.find(perfilTipo)) {
+        for (Usuario u : usuarioDao.find(perfilTipo)) {
             csvData.append("\n");
             csvData.append(u.getId());
             csvData.append(",");
@@ -276,11 +290,11 @@ public class UsuarioBean implements Serializable {
             csvData.append(u.getMatricula());
         }
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv",perfilTipo.name().toLowerCase()));
-        return file;        
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()));
+        return file;
     }
 
-    public void editaUsuario(ActionEvent event) {
+    public void editaUsuario() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -310,7 +324,6 @@ public class UsuarioBean implements Serializable {
             if (saveStatus) {
                 if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
                     if (!perfilRemovido.isEmpty()) {
-                        usuarioDao.removePerfil(perfilRemovido);
                         perfilRemovido.clear();
                     }
                     usuarioDao.atualizar(usuario);
@@ -325,7 +338,7 @@ public class UsuarioBean implements Serializable {
         handleCompleteImpUsuarios();
     }
 
-    public void cancelSalvaUsuario(ActionEvent event) {
+    public void cancelSalvaUsuario() {
         List<Perfil> tempPerfilList = new ArrayList<Perfil>() {
             {
                 addAll(perfilRemovido);
@@ -350,9 +363,9 @@ public class UsuarioBean implements Serializable {
 
     public void addPerfil() {
         if (isSelecionado()) {
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-            PerfilBean pb = (PerfilBean) session.getAttribute("perfilBean");
-            CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");
+            CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
             PerfilEnum p = pb.getItemSelecionado();
             Curso c = cb.getItemSelecionado();
             Perfil perfilItem = new Perfil();
@@ -377,15 +390,15 @@ public class UsuarioBean implements Serializable {
     }
 
     public void onCursoDisable() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         cb.setItemSelecionado(null);
     }
 
     public boolean isCursoDisabled() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        PerfilBean pb = (PerfilBean) session.getAttribute("perfilBean");
-        CursoBean cb = (CursoBean) session.getAttribute("cursoBean");
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");
+        CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         return (cb != null && Arrays.asList(Perfil.perfilCursoMustBeNull).contains(pb.getItemSelecionado()));
     }
 
@@ -442,7 +455,7 @@ public class UsuarioBean implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
+
     public boolean isAutenticado() {
         return autenticado;
     }

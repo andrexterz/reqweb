@@ -17,7 +17,7 @@
             <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 actionListener="#{requerimentoBean.novoRequerimento}"
+                                 action="#{requerimentoBean.novoRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :salvaRequerimentoForm">
                     <f:setPropertyActionListener
@@ -41,20 +41,16 @@
             </h:panelGroup>
 
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
-                         value="#{cursoBean.filtroCursos}"
+                         value="#{requerimentoBean.requerimentosDataModel}"
                          emptyMessage="#{msg.emptyMessage}"
-                         rowKey="#{requerimentoItem.id}"
                          paginator="true"
                          selectionMode="single"
-                         selection="#{cursoBean.itemSelecionado}"
+                         selection="#{requerimentoBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":requerimentoForm:requerimentoToolbar" listener="#{requerimentoBean.selecionaItem}" />
-                <p:column headerText="#{msg.curso}" styleClass="cursoColNome">
-                    <h:outputText value="#{requerimentoItem.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.cursoSigla}" styleClass="cursoColSigla">
-                    <h:outputText value="#{requerimentoItem.sigla}" />
+                <p:column headerText="#{msg.requerimento}">
+                    <h:outputText value="#{requerimentoItem.tipoRequerimento.tipo}" />
                 </p:column>
             </p:dataTable>
         </h:form>

@@ -16,8 +16,7 @@ public enum TipoRequerimentoEnum {
     SEGUNDA_CHAMADA_DE_PROVA("segundaChamadaDeProva"),    
     EMENTA_DE_DISCIPLINA("ementaDeDisciplina"),
     DOCUMENTO_DE_ESTAGIO("documentoDeEstagio"),
-    INCLUSAO_DE_DISCIPLINA("inclusaoDeDisciplina"),
-    EXCLUSAO_DE_DISCIPLINA("exclusaoDeDisciplina");
+    AJUSTE_DE_MATRICULA("ajusteDeMatricula");
     private TipoRequerimentoEnum(String tipo) {
         this.tipo = tipo;
     }

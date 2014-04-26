@@ -6,17 +6,20 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  *
@@ -26,12 +29,21 @@ import javax.persistence.TemporalType;
 public class Requerimento extends BaseModel {
     
     private static final long serialVersionUID = 1L;
+
+    public Requerimento() {
+        status = RequerimentoStatusEnum.ABERTO;
+        itemRequerimentoList = new ArrayList<>();
+    }
+    
+    
     
     @ManyToOne
+    @JoinColumn(name = "usuario_id")
     private Usuario discente;
     
     @Enumerated(EnumType.STRING)
-    protected TipoRequerimentoEnum tipoRequerimento;
+    @Column(columnDefinition = "character varying(32)")
+    private TipoRequerimentoEnum tipoRequerimento;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(insertable = true, updatable = false)
@@ -43,8 +55,13 @@ public class Requerimento extends BaseModel {
     @Column
     private String observacao;
     
-    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
-    private List<ItemRequerimento> requerimentos;
+    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "requerimento", orphanRemoval = true)
+    private List<ItemRequerimento> itemRequerimentoList;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "character(16) default 'ABERTO'")
+    private RequerimentoStatusEnum status;    
 
     /**
      * @return the discente
@@ -117,18 +134,42 @@ public class Requerimento extends BaseModel {
     }
 
     /**
-     * @return the requerimentos
+     * @return the itemRequerimentoList
      */
-    public List<ItemRequerimento> getRequerimentos() {
-        return requerimentos;
+    public List<ItemRequerimento> getItemRequerimentoList() {
+        return itemRequerimentoList;
     }
 
     /**
-     * @param requerimentos the requerimentos to set
+     * @param itemRequerimentoList the itemRequerimentoList to set
      */
-    public void setRequerimentos(List<ItemRequerimento> requerimentos) {
-        this.requerimentos = requerimentos;
+    public void setItemRequerimentoList(List<ItemRequerimento> itemRequerimentoList) {
+        this.itemRequerimentoList = itemRequerimentoList;
+        for (ItemRequerimento ir: itemRequerimentoList) {
+            ir.setRequerimento(this);
+        }
     }
     
+    public void addItemRequerimento(ItemRequerimento itemRequerimento) {
+        itemRequerimentoList.add(itemRequerimento);
+        itemRequerimento.setRequerimento(this);
+    }
     
+    public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
+    itemRequerimentoList.remove(itemRequerimento);
+    }
+
+    /**
+     * @return the status
+     */
+    public RequerimentoStatusEnum getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(RequerimentoStatusEnum status) {
+        this.status = status;
+    }
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
@@ -136,12 +135,12 @@ public class DisciplinaBean implements Serializable {
 
     }
 
-    public void novaDisciplina(ActionEvent event) {
+    public void novaDisciplina() {
         setOperation(ADICIONA);
         disciplina = new Disciplina();
     }
 
-    public void editaDisciplina(ActionEvent event) {
+    public void editaDisciplina() {
         if (!isSelecionado()) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -286,7 +285,7 @@ public class DisciplinaBean implements Serializable {
         }
     }
 
-    public void excluiArquivoUploaded(ActionEvent event) {
+    public void excluiArquivoUploaded() {
         disciplinaListPreview.clear();
         itemPreviewSelecionado = null;        
     }
@@ -308,13 +307,13 @@ public class DisciplinaBean implements Serializable {
         context.addMessage(null, msg);
     }
 
-    public void setupImportDisciplinas(ActionEvent event) {
+    public void setupImportDisciplinas() {
         progress = 0;
         stopImportaDisciplinas = true;
     }
 
-    public void cancelImpDisciplinas(ActionEvent event) {
-        setupImportDisciplinas(event);
+    public void cancelImpDisciplinas() {
+        setupImportDisciplinas();
         try {
             Thread.sleep(2000);
             FacesContext context = FacesContext.getCurrentInstance();

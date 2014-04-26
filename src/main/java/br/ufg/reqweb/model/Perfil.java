@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,6 +36,7 @@ public class Perfil extends BaseModel {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "character varying(32)")
     private PerfilEnum tipoPerfil;
 
     @NotNull

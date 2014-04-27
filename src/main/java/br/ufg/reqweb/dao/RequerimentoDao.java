@@ -5,16 +5,23 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.BaseModel;
 import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
+import org.hibernate.FetchMode;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -34,21 +41,15 @@ public class RequerimentoDao {
     @Transactional
     public void adicionar(Requerimento requerimento) {
         Session session = this.sessionFactory.getCurrentSession();
-        requerimento.setDataCriacao(new Date());
+        requerimento.setDataCriacao(Calendar.getInstance().getTime());
         session.save(requerimento);
-        for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
-            session.save(item);
-        }
     }
 
     @Transactional
     public void atualizar(Requerimento requerimento) {
         Session session = this.sessionFactory.getCurrentSession();
-        requerimento.setDataModificacao(new Date());
+        requerimento.setDataModificacao(Calendar.getInstance().getTime());
         session.update(requerimento);
-        for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
-            session.saveOrUpdate(item);
-        }
     }
 
     @Transactional
@@ -58,25 +59,62 @@ public class RequerimentoDao {
 
     @Transactional(readOnly = true)
     public Requerimento findById(Long id) {
-        Requerimento requerimento;
         try {
-            requerimento = (Requerimento) this.sessionFactory.getCurrentSession().get(Requerimento.class, id);
+            Requerimento requerimento = (Requerimento) this.sessionFactory.getCurrentSession().get(Requerimento.class,id);
+            Set<ItemRequerimento> items = requerimento.getItemRequerimentoSet();
+            Hibernate.initialize(items);
+            return requerimento;
         } catch (HibernateException e) {
-            requerimento = null;
+            System.out.println("query error: " + e.getCause());
         }
-        return requerimento;
-    }
-
-    public List<Requerimento> find(String termo) {
         return null;
     }
 
-    public List<Requerimento> find(String termo, TipoRequerimentoEnum tipoRequerimento) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<Requerimento> findByNomeDiscente(String nome) {
+        System.out.println("find by nome");
+        try {
+            List<Requerimento> requerimentos;
+            requerimentos = this.sessionFactory.getCurrentSession()
+                    .createCriteria(Requerimento.class)
+                    .add(Restrictions.like("requerimento.discente.nome", nome, MatchMode.ANYWHERE))
+                    .list();
+
+            return requerimentos;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getCause());
+            return new ArrayList<>();
+        }
     }
-    
+
+    @Transactional(readOnly = true)
+    public List<Requerimento> find(TipoRequerimentoEnum tipoRequerimento) {
+        try {
+            return this.sessionFactory.getCurrentSession()
+                    .createCriteria(Requerimento.class)
+                    .add(Restrictions.eq("tipoRequerimento", tipoRequerimento))
+                    .list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getCause());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<Requerimento> find(int first, int pageSize) {
-        return null;
+        try {
+            List<Requerimento> requerimentos;
+            requerimentos = this.sessionFactory.getCurrentSession()
+                    .createQuery("FROM Requerimento r")
+                    .setFirstResult(first)
+                    .setMaxResults(pageSize)
+                    .list();
+            return requerimentos;
+
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getCause());
+            return new ArrayList<>();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -89,6 +127,7 @@ public class RequerimentoDao {
         }
     }
 
+    @Transactional(readOnly = true)
     public int count() {
         try {
             int result = ((Long) this.sessionFactory.getCurrentSession()

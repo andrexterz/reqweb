@@ -32,7 +32,7 @@
                                   style="width: 300px;">
                     <f:selectItems value="#{perfilBean.items}"
                                    var="tipoPerfil"
-                                   itemLabel="#{tipoPerfil.papel}"
+                                   itemLabel="#{tipoPerfil.papelLocale}"
                                    itemValue="#{tipoPerfil}" />
 
                 </p:selectManyMenu>
@@ -56,7 +56,7 @@
                 <p:column headerText="perfil">
                     <ul>
                         <ui:repeat value="#{rowPermissao.tipoPerfil}" var="tp">
-                            <li>#{tp.papel}</li>
+                            <li>#{tp.papelLocale}</li>
                         </ui:repeat>
                     </ul>                        
                 </p:column>

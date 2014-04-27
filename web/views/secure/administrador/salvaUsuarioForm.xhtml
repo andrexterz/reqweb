@@ -25,7 +25,7 @@
                         <p:selectOneMenu id="perfilNovo" value="#{perfilBean.itemSelecionado}">
                             <f:selectItem itemLabel="#{msg.perfil}" value="#{null}" />
                             <f:selectItems value="#{perfilBean.items}" var="p"
-                                           itemLabel="#{p.papel}"
+                                           itemLabel="#{p.papelLocale}"
                                            itemValue="#{p}" />
                             <p:ajax update="cursoPerfilNovo addPerfilButton" listener="#{usuarioBean.onCursoDisable}" />
                         </p:selectOneMenu>
@@ -63,7 +63,7 @@
                              value="#{usuarioBean.usuario.perfilList}"
                              var="perfil">
                     <p:column headerText="#{msg.perfil}" styleClass="perfilColA">
-                        <h:outputText value="#{perfil.tipoPerfil.papel}" />
+                        <h:outputText value="#{perfil.tipoPerfil.papelLocale}" />
                     </p:column>
                     <p:column headerText="#{msg.curso}" styleClass="perfilColB">
                         <h:outputText value="#{perfil.curso.nome}" />

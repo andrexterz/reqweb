@@ -31,8 +31,6 @@ public class DeclaracaoDeMatricula extends ItemRequerimento {
                 
     }
     
-    
-    
     @Min(value = 1)
     @Max(value = 2)
     @Column(columnDefinition = "integer default 1")

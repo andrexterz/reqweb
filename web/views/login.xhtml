@@ -28,7 +28,7 @@
                         <h:selectOneMenu id="perfil" value="#{usuarioBean.perfil}">
                             <f:selectItems value="#{perfilBean.items}"
                                            var="p" itemValue="#{p}"
-                                           itemLabel="#{p.papel}" />
+                                           itemLabel="#{p.papelLocale}" />
                         </h:selectOneMenu>
                         <h:commandButton action="#{usuarioBean.authLogin}" value="#{msg.botaoLogin}" />
                     </h:panelGrid>

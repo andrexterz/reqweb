@@ -9,10 +9,10 @@
         <script>
             $(document).ready(function() {
                 jQuery("#declaracaoDeMatriculaLnk").addClass("menuItemSelected");
-                console.log("marcando menuItemSelected como selecionado");
             });
         </script>
         <ui:include src="salvaDeclaracaoDeMatriculaForm.xhtml" />
+        <ui:include src="excluiRequerimentoForm.xhtml" />
         <h:form id="requerimentoForm" styleClass="formBody">
             <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
@@ -28,7 +28,9 @@
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
                                  disabled="#{requerimentoBean.selecionado == false}"
-                                 actionListener="#{requerimentoBean.editaRequerimento}" />
+                                 actionListener="#{requerimentoBean.editaRequerimento}"
+                                 oncomplete="PF('dlgRequerimentoVar').show()"                                 
+                                 update="tableRequerimentos :salvaRequerimentoForm" />
 
                 <p:commandButton value="#{msg.excluir}" disabled="#{requerimentoBean.selecionado== false}" onclick="excluirRequerimentoDialog.show()" />
 
@@ -39,9 +41,9 @@
                 <p:defaultCommand target="requerimentoBuscaCommand" />
 
             </h:panelGroup>
-
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
                          value="#{requerimentoBean.requerimentosDataModel}"
+                         lazy="true"
                          emptyMessage="#{msg.emptyMessage}"
                          paginator="true"
                          selectionMode="single"
@@ -49,8 +51,24 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":requerimentoForm:requerimentoToolbar" listener="#{requerimentoBean.selecionaItem}" />
-                <p:column headerText="#{msg.requerimento}">
-                    <h:outputText value="#{requerimentoItem.tipoRequerimento.tipo}" />
+                <p:column headerText="#{msg.requerimento}" styleClass="requerimentoColA">
+                    <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
+                </p:column>
+                <p:column headerText="#{msg.status}" styleClass="requerimentoColB">
+                    <h:outputText value="#{requerimentoItem.status.statusLocale}" />
+                </p:column>
+                <p:column headerText="#{msg.dataCriacao}" styleClass="requerimentoColC">
+                    <h:outputText value="#{requerimentoItem.dataCriacao}">
+                        <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.dataModificacao}" styleClass="requerimentoColD">
+                    <h:outputText value="#{requerimentoItem.dataModificacao}">
+                        <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.atendente}" styleClass="requerimentoColE">
+                    <h:outputText value="#{requerimentoItem.dataCriacao}"/>
                 </p:column>
             </p:dataTable>
         </h:form>

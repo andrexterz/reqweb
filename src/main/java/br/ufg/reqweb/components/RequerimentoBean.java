@@ -10,7 +10,6 @@ import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
-import br.ufg.reqweb.model.Usuario;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -88,14 +87,14 @@ public class RequerimentoBean implements Serializable {
                 setPageSize(pageSize);
 
                 if (tipoRequerimento != null) {
-                    dataSource = requerimentoDao.find(termoBusca, tipoRequerimento);
+                    dataSource = requerimentoDao.find(tipoRequerimento);
                     setRowCount(dataSource.size());
                 } else {
                     if (termoBusca.equals("")) {
                         dataSource = requerimentoDao.find(first, pageSize);
                         setRowCount(requerimentoDao.count());
                     } else {
-                        dataSource = requerimentoDao.find(termoBusca);
+                        dataSource = requerimentoDao.findByNomeDiscente(termoBusca);
                         setRowCount(dataSource.size());
                     }
 
@@ -123,7 +122,7 @@ public class RequerimentoBean implements Serializable {
         System.out.println("tipo de Requerimento: " + tipoRequerimento.getTipo());
         if (tipoRequerimento.equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
             DeclaracaoDeMatricula itemRequerimento = new DeclaracaoDeMatricula();
-            sessionMap.put("declaracaoDeMatricula", itemRequerimento);
+            sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + DeclaracaoDeMatricula.class);
         }
     }
@@ -133,8 +132,13 @@ public class RequerimentoBean implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
             setOperation(EDITA);
-            requerimento = getItemSelecionado();
+            requerimento = requerimentoDao.findById(getItemSelecionado().getId());
+            System.out.println("size: " + requerimento.getItemRequerimentoSet().size());
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
+                sessionMap.put("itemRequerimento",requerimento.getItemRequerimentoSet().iterator().next());
+            }
         }
     }
 
@@ -157,10 +161,11 @@ public class RequerimentoBean implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         
         String loginUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("req: " + requerimento);
         requerimento.setDiscente(usuarioDAo.findByLogin(loginUser));
         
-        if (tipoRequerimento.equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
-            DeclaracaoDeMatricula item = (DeclaracaoDeMatricula) sessionMap.get("declaracaoDeMatricula");
+        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
+            DeclaracaoDeMatricula item = (DeclaracaoDeMatricula) sessionMap.get("itemRequerimento");
             requerimento.addItemRequerimento(item);
         }
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
@@ -174,6 +179,7 @@ public class RequerimentoBean implements Serializable {
                 requerimentoDao.atualizar(requerimento);
             }
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            sessionMap.remove("itemRequerimento");
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             FacesContext.getCurrentInstance().addMessage(null, msg);

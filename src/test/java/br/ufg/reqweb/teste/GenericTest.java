@@ -6,22 +6,15 @@
 
 package br.ufg.reqweb.teste;
 
-import br.ufg.reqweb.model.Curso;
-import br.ufg.reqweb.model.Disciplina;
-import br.ufg.reqweb.model.Perfil;
-import br.ufg.reqweb.model.PerfilEnum;
-import br.ufg.reqweb.util.LdapInfo;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import br.ufg.reqweb.model.DeclaracaoDeMatricula;
+import br.ufg.reqweb.model.ItemRequerimento;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -50,10 +43,12 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-//        List<LdapInfo> lst = LdapInfo.scanLdap();
-//        for (LdapInfo l: lst) {
-//            System.out.println(String.format("%s: %s",l.getUsuario(),l.getEmail()));
-//        }
-
+        Set<ItemRequerimento> items = new HashSet<>();
+        for (long i=0;i<10;i++) {
+            ItemRequerimento item = new DeclaracaoDeMatricula();
+            item.setId(i);
+            items.add(item);
+            System.out.println("lenght " + items.size());
+        }
     }
 }

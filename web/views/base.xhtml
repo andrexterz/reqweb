@@ -9,7 +9,7 @@
     <f:view locale="#{localeBean.locale}">
         <h:head>
             <title><ui:insert name="title">
-                    <h:outputText value="Home - #{usuarioBean.perfil.papel}" rendered="#{usuarioBean.autenticado}" />
+                    <h:outputText value="Home - #{usuarioBean.perfil.papelLocale}" rendered="#{usuarioBean.autenticado}" />
                     <h:outputText value="Home" rendered="#{!usuarioBean.autenticado}" />
                 </ui:insert>
             </title>
@@ -46,7 +46,7 @@
                                 </p:column>
                                 <p:column>
                                     <h:outputText
-                                        value="#{usuarioBean.login} - #{usuarioBean.perfil.papel}"
+                                        value="#{usuarioBean.login} - #{usuarioBean.perfil.papelLocale}"
                                         rendered="#{usuarioBean.autenticado}" />
                                 </p:column>
                                 <p:column>

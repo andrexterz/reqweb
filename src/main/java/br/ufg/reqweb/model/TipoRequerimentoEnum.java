@@ -6,6 +6,8 @@
 
 package br.ufg.reqweb.model;
 
+import br.ufg.reqweb.components.LocaleBean;
+
 /**
  *
  * @author andre
@@ -26,5 +28,9 @@ public enum TipoRequerimentoEnum {
     public String getTipo() {
         return this.tipo;
     }
+    
+    public String getTipoLocale() {
+        return LocaleBean.getMessageBundle().getString(tipo);
+    }    
     
 }

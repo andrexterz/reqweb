@@ -596,6 +596,29 @@ input[type="text"], input[type="password"], select {
 .progressbarColB {
     width: 8%;
 }
+/************************************ requerimentos ***************************/
+.requerimentoColA {
+    width: 25%;   
+}
+
+.requerimentoColB {
+    width: 15%;
+}
+
+.requerimentoColC {
+    width: 15%;
+    text-align: right;
+}
+
+.requerimentoColD {
+    width: 15%;
+    text-align: right;
+}
+
+.requerimentoColE {
+    width: 30%;
+    text-align: right;
+}
 /************************************ forms ***********************************/
 .formBody {
     position: absolute;

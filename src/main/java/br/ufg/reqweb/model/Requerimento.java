@@ -6,9 +6,9 @@
 
 package br.ufg.reqweb.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+
 /**
  *
  * @author andre
@@ -32,7 +33,7 @@ public class Requerimento extends BaseModel {
 
     public Requerimento() {
         status = RequerimentoStatusEnum.ABERTO;
-        itemRequerimentoList = new ArrayList<>();
+        itemRequerimentoSet = new HashSet<>();
     }
     
     
@@ -56,8 +57,8 @@ public class Requerimento extends BaseModel {
     private String observacao;
     
     @Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "requerimento", orphanRemoval = true)
-    private List<ItemRequerimento> itemRequerimentoList;
+    @OneToMany(mappedBy = "requerimento", orphanRemoval = true )
+    private Set<ItemRequerimento> itemRequerimentoSet;
     
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character(16) default 'ABERTO'")
@@ -134,29 +135,29 @@ public class Requerimento extends BaseModel {
     }
 
     /**
-     * @return the itemRequerimentoList
+     * @return the itemRequerimentoSet
      */
-    public List<ItemRequerimento> getItemRequerimentoList() {
-        return itemRequerimentoList;
+    public Set<ItemRequerimento> getItemRequerimentoSet() {
+        return itemRequerimentoSet;
     }
 
     /**
-     * @param itemRequerimentoList the itemRequerimentoList to set
+     * @param itemRequerimentoSet the itemRequerimentoSet to set
      */
-    public void setItemRequerimentoList(List<ItemRequerimento> itemRequerimentoList) {
-        this.itemRequerimentoList = itemRequerimentoList;
-        for (ItemRequerimento ir: itemRequerimentoList) {
+    public void setItemRequerimentoSet(Set<ItemRequerimento> itemRequerimentoSet) {
+        this.itemRequerimentoSet = itemRequerimentoSet;
+        for (ItemRequerimento ir: itemRequerimentoSet) {
             ir.setRequerimento(this);
         }
     }
     
     public void addItemRequerimento(ItemRequerimento itemRequerimento) {
-        itemRequerimentoList.add(itemRequerimento);
+        itemRequerimentoSet.add(itemRequerimento);
         itemRequerimento.setRequerimento(this);
     }
     
     public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
-    itemRequerimentoList.remove(itemRequerimento);
+    itemRequerimentoSet.remove(itemRequerimento);
     }
 
     /**

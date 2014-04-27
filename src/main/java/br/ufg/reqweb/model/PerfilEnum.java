@@ -4,6 +4,7 @@
  */
 package br.ufg.reqweb.model;
 
+import br.ufg.reqweb.components.LocaleBean;
 import java.io.Serializable;
 
 /**
@@ -12,12 +13,12 @@ import java.io.Serializable;
  */
 public enum PerfilEnum implements Serializable {
 
-        ADMINISTRADOR           ("100", "Administrador"),
-        DOCENTE                 ("101", "Docente"),
-        COORDENADOR_DE_CURSO    ("101", "Coordenador de Curso"),
-        COORDENADOR_DE_ESTAGIO  ("101", "Coordenador de Estágio"),
-        SECRETARIA              ("201", "Secretaria"),
-        DISCENTE                ("500", "Discente");
+        ADMINISTRADOR           ("100", "administrador"),
+        DOCENTE                 ("101", "docente"),
+        COORDENADOR_DE_CURSO    ("101", "coordenadorDeCurso"),
+        COORDENADOR_DE_ESTAGIO  ("101", "coordenadorDeEstagio"),
+        SECRETARIA              ("201", "secretaria"),
+        DISCENTE                ("500", "discente");
 
         private PerfilEnum(String grupo, String papel) {
             this.grupo = grupo;
@@ -37,6 +38,10 @@ public enum PerfilEnum implements Serializable {
 
         public String getPapel() {
             return papel;
+        }
+        
+        public String getPapelLocale() {
+            return LocaleBean.getMessageBundle().getString(papel);
         }
 
       	public static PerfilEnum getPerfil(int id) {

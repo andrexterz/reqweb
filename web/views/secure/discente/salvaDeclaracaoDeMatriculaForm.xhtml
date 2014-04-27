@@ -19,7 +19,7 @@
                         <h:outputLabel value="#{msg.copias}" />
                     </p:column>
                     <p:column>
-                        <p:spinner value="#{declaracaoDeMatricula.numeroCopias}"
+                        <p:spinner id="numeroCopias" value="#{itemRequerimento.numeroCopias}"
                                    maxlength="2"
                                    min="1" max="2" styleClass="defaultInput" />
                     </p:column>
@@ -27,11 +27,14 @@
                         <h:outputLabel value="#{msg.status}" />
                     </p:column>
                     <p:column>
-                        <p:selectOneButton value="#{declaracaoDeMatricula.status}">
-                            <f:selectItem itemLabel="#{msg.aberto}" itemValue="ABERTO" />
-                            <f:selectItem itemLabel="#{msg.deferido}" itemValue="DEFERIDO" />
-                            <f:selectItem itemLabel="#{msg.indeferido}" itemValue="INDEFERIDO" />
-                        </p:selectOneButton>
+                        <p:selectOneButton value="#{itemRequerimento.status}">
+                            <f:selectItem itemLabel="#{msg.aberto}"
+                                          itemValue="ABERTO" />
+                            <f:selectItem itemLabel="#{msg.deferido}"
+                                          itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+                            <f:selectItem itemLabel="#{msg.indeferido}"
+                                          itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+                        </p:selectOneButton>                            
                     </p:column>
                     <p:column>
                         <h:outputLabel value="#{msg.observacao}" />

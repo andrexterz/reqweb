@@ -62,14 +62,12 @@ public class IndicePrioridadeBean {
     private List<IndicePrioridade> itemSelecionadoPreviewList;
     private Map<Long, IndicePrioridade> indicePrioridadeListPreview;
     private final LazyDataModel<IndicePrioridade> indicePrioridadeDataModel;
-    private boolean indicePrioridadeDataModelEmpty;    
 
     public IndicePrioridadeBean() {
         termoBusca = "";
         indicePrioridade = null;
         itemSelecionadoPreviewList = new ArrayList<>();
         indicePrioridadeListPreview = new HashMap();
-        indicePrioridadeDataModelEmpty = true;
         indicePrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
             
             private List<IndicePrioridade> dataSource;            
@@ -84,7 +82,6 @@ public class IndicePrioridadeBean {
                     dataSource = indicePrioridadeDao.find(termoBusca);
                     setRowCount(dataSource.size());
                 }
-                indicePrioridadeDataModelEmpty = dataSource.isEmpty();
                 if (dataSource.size() > pageSize) {
                     try {
                         return dataSource.subList(first, first + pageSize);
@@ -128,7 +125,6 @@ public class IndicePrioridadeBean {
         indicePrioridadeDao.excluir();
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
         FacesContext.getCurrentInstance().addMessage(null, msg);
-        indicePrioridadeDataModelEmpty = true;
     }
 
     public void uploadIndicePrioridade(FileUploadEvent event) {
@@ -267,6 +263,6 @@ public class IndicePrioridadeBean {
     }
 
     public boolean isIndicePrioridadeDataModelEmpty() {
-        return indicePrioridadeDataModelEmpty;
+        return indicePrioridadeDao.count() == 0;
     }
 }

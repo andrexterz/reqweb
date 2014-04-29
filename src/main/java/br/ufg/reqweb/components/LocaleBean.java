@@ -49,6 +49,10 @@ public class LocaleBean implements Serializable {
             return locale;
         }
     }
+    
+    public String getLocaleName() {
+        return getMessageBundle().getString("language");
+    }
 
     /**
      * @param locale the locale to set

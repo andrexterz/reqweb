@@ -34,12 +34,45 @@
 
                 <p:commandButton value="#{msg.excluir}" disabled="#{requerimentoBean.selecionado== false}" onclick="excluirRequerimentoDialog.show()" />
 
-                <p:inputText id="requerimentoBusca" styleClass="searchBox" value="#{requerimentoBean.termoBusca}" />
-                <p:watermark for="requerimentoBusca" value="#{msg.requerimento}" />
-                <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand alignRight" update="tableRequerimentos" />
-                <p:defaultCommand target="requerimentoBuscaCommand" />
-
+                <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                    <h:outputLabel for="searchType" value="#{msg.buscar}" />
+                    <p:selectOneButton styleClass="searchBoxMenu"
+                                       id="searchType"
+                                       value="#{requerimentoBean.tipoBusca}">
+                        <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"
+                                       var="tipoBuscaItem"
+                                       itemLabel="#{tipoBuscaItem.key}"
+                                       itemValue="#{tipoBuscaItem.value}"/>
+                        <p:ajax update="searchPanel" />
+                    </p:selectOneButton>
+                    <p:autoComplete id="requerimentoTipoRequerimento"
+                                    completeMethod="#{requerimentoBean.findTipoRequerimento}"
+                                    value="#{requerimentoBean.tipoRequerimento}"
+                                    minQueryLength="3"
+                                    forceSelection="true"
+                                    styleClass="searchBoxAutocomplete"
+                                    converter="#{tipoRequerimentoEnumConverter}"
+                                    var="tipoReqItem"
+                                    itemLabel="#{tipoReqItem.tipoLocale}"
+                                    itemValue="#{tipoReqItem}"
+                                    rendered="#{requerimentoBean.tipoBusca == 'TIPO_REQUERIMENTO'}">
+                        <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaTipoBuscaRequerimento}" />
+                    </p:autoComplete>
+                    <p:watermark for="requerimentoTipoRequerimento" value="#{msg.requerimento}" />
+                    <p:inputMask id="requerimentoIntervalo"
+                                 mask="99/99/9999 - 99/99/9999"
+                                 styleClass="searchBox"
+                                 rendered="#{requerimentoBean.tipoBusca == 'DATA_INTERVALO'}" />
+                    <p:watermark for="requerimentoIntervalo" value="#{msg.periodo}" />
+                    <p:inputText id="requerimentoBusca"
+                                 styleClass="searchBox"
+                                 rendered="#{requerimentoBean.tipoBusca == 'TERMO_BUSCA'}"
+                                 value="#{requerimentoBean.termoBusca}" />
+                    <p:watermark for="requerimentoBusca" value="#{msg.discente}" />
+                    <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
+                    <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand alignRight" update="tableRequerimentos" />
+                    <p:defaultCommand target="requerimentoBuscaCommand" />
+                </h:panelGroup>
             </h:panelGroup>
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
                          value="#{requerimentoBean.requerimentosDataModel}"
@@ -67,7 +100,7 @@
                         <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="#{msg.atendente}" styleClass="requerimentoColE">
+                <p:column headerText="#{msg.atendimento}" styleClass="requerimentoColE">
                     <h:outputText value="#{requerimentoItem.dataCriacao}"/>
                 </p:column>
             </p:dataTable>

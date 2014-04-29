@@ -51,7 +51,8 @@
                                      oncomplete="dialogHandler('dlgRequerimentoVar', xhr, status, args)"
                                      update="requerimentoDlgPanel :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar" />
                     <p:commandButton value="#{msg.cancelar}"
-                                     process="@none"
+                                     process="@this"
+                                     actionListener="#{requerimentoBean.cancelRequerimento}"
                                      update="requerimentoDlgPanel"
                                      onclick="PF('dlgRequerimentoVar').hide()"/>
                 </h:panelGroup>

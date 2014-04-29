@@ -138,6 +138,9 @@ input[type="text"], input[type="password"], select {
 .widgetLocale label {
     color: #aaa;
     font-weight: normal;
+    font-size: 90%;
+    border: 1px solid #555;
+    margin-right: 22px;
 }
 
 .widgetLocale select  {
@@ -738,9 +741,32 @@ input[type="text"], input[type="password"], select {
     background-repeat: no-repeat!important;
     background-position: 99% 50%!important;    
 }
+.searchBoxWrapper {
+    float: right;
+    padding: 4px;
+}
+
+.searchBoxMenu {
+    font-size: 80%!important;
+    margin-left: 8px;
+}
+
+.searchBoxAutocomplete {
+    width: 25%!important;
+    float: right;
+}
+
+.searchBoxAutocomplete input {
+    padding-right: 20px!important;
+    width: 100%!important;
+    float: right;
+    background-image: url("#{resource['img/search.png']}")!important;    
+    background-repeat: no-repeat!important;
+    background-position: 99% 50%!important;
+}
 
 .searchBox {
-    width: 20%!important;
+    width: 25%!important;
     float: right;
     background-image: url("#{resource['img/search.png']}")!important;
     padding-right: 20px!important;

@@ -44,6 +44,7 @@
                 <value>br.ufg.reqweb.model.IndicePrioridade</value>
                 <value>br.ufg.reqweb.model.Permissao</value>
                 <value>br.ufg.reqweb.model.Requerimento</value>
+                <value>br.ufg.reqweb.model.Atendimento</value>
                 <value>br.ufg.reqweb.model.DeclaracaoDeMatricula</value>
             </list>
         </property>

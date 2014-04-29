@@ -23,6 +23,8 @@ import javax.persistence.ManyToOne;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class ItemRequerimento extends BaseModel {
     
+    private static final long serialVersionUID = 1L;
+    
     @ManyToOne
     protected Requerimento requerimento;
     

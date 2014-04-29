@@ -34,8 +34,8 @@ import org.springframework.context.annotation.Scope;
 public class CursoBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String ADICIONA = "a";
-    public static final String EDITA = "e";
+    private static final String ADICIONA = "a";
+    private static final String EDITA = "e";
     @Autowired
     private Validator validator;
     @Autowired

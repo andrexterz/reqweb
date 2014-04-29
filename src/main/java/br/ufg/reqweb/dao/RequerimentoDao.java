@@ -11,15 +11,13 @@ import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
-import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +59,7 @@ public class RequerimentoDao {
     public Requerimento findById(Long id) {
         try {
             Requerimento requerimento = (Requerimento) this.sessionFactory.getCurrentSession().get(Requerimento.class,id);
-            Set<ItemRequerimento> items = requerimento.getItemRequerimentoSet();
+            Set<ItemRequerimento> items = requerimento.getItemRequerimentoList();
             Hibernate.initialize(items);
             return requerimento;
         } catch (HibernateException e) {
@@ -69,20 +67,28 @@ public class RequerimentoDao {
         }
         return null;
     }
+    
+    /**
+     * find by discente nome
+     * @param termo
+     * @return 
+     */
 
     @Transactional(readOnly = true)
-    public List<Requerimento> findByNomeDiscente(String nome) {
-        System.out.println("find by nome");
+    public List<Requerimento> find(String termo) {
         try {
             List<Requerimento> requerimentos;
             requerimentos = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
-                    .add(Restrictions.like("requerimento.discente.nome", nome, MatchMode.ANYWHERE))
+                    .createAlias("discente","d")
+                    .add(Restrictions.or(Restrictions.eq("d.matricula", termo),
+                            Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
+                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                     .list();
 
             return requerimentos;
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -93,6 +99,25 @@ public class RequerimentoDao {
             return this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
                     .add(Restrictions.eq("tipoRequerimento", tipoRequerimento))
+                    .list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getCause());
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * find by dataCriacao interval
+     * @param dateA
+     * @param dateB
+     * @return 
+     */
+    @Transactional(readOnly = true)
+    public List<Requerimento> find(Date dateA, Date dateB) {
+        try {
+            return this.sessionFactory.getCurrentSession()
+                    .createCriteria(Requerimento.class)
+                    .add(Restrictions.between("dataCriacao", dateA, dateB))
                     .list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getCause());
@@ -122,7 +147,7 @@ public class RequerimentoDao {
         try {
             return this.sessionFactory.getCurrentSession().createQuery("FROM Requerimento r").list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
+            System.out.println("query error: " + e.getCause());
             return new ArrayList<>();
         }
     }

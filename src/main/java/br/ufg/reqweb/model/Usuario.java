@@ -5,11 +5,13 @@
 package br.ufg.reqweb.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -18,7 +20,6 @@ import org.hibernate.annotations.CascadeType;
  *
  * @author andre
  */
-
 @Entity
 public class Usuario extends BaseModel {
 
@@ -37,8 +38,6 @@ public class Usuario extends BaseModel {
         this.email = email;
         this.perfilList = perfilList;
     }
-    
-    
 
     @NotNull
     @Column
@@ -50,15 +49,14 @@ public class Usuario extends BaseModel {
 
     @Column(unique = true)
     private String matricula;
-    
+
     @NotNull
     @Column(unique = true)
     private String email;
-    
+
     @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Perfil> perfilList;
-
 
     /**
      * @return the nome
@@ -87,25 +85,22 @@ public class Usuario extends BaseModel {
     public void setLogin(String login) {
         this.login = login;
     }
-    
+
     /**
-     * 
+     *
      * @return the matricula
      */
-
     public String getMatricula() {
         return matricula;
     }
-    
-    /**
-     * 
-     * @param matricula 
-     */
 
+    /**
+     *
+     * @param matricula
+     */
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
-    
 
     /**
      * @return the email
@@ -133,17 +128,25 @@ public class Usuario extends BaseModel {
      */
     public void setPerfil(List<Perfil> perfilList) {
         this.perfilList = perfilList;
-        for (Perfil p: this.perfilList) {
+        for (Perfil p : this.perfilList) {
+            validatePerfil(p);
             p.setUsuario(this);
         }
     }
 
     public void adicionaPerfil(Perfil perfil) {
+        validatePerfil(perfil);
         perfil.setUsuario(this);
         this.perfilList.add(perfil);
     }
 
     public void removePerfil(Perfil perfil) {
         this.perfilList.remove(perfil);
+    }
+
+    private void validatePerfil(Perfil perfil) {
+        if (Arrays.asList(Perfil.perfilCursoMustBeNull).contains(perfil.getTipoPerfil()) && perfil.getCurso() != null) {
+            throw new ValidationException("Perfil " + perfil.getTipoPerfil() + " requires Curso == null");
+        }
     }
 }

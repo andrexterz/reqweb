@@ -43,8 +43,8 @@ public class PermissaoBean implements Serializable {
     @Autowired
     private Validator validator;
 
-    public static final String ADICIONA = "a";
-    public static final String EDITA = "e";
+    private static final String ADICIONA = "a";
+    private static final String EDITA = "e";
     private Permissao permissao;
     private List<Permissao> permissoes;
     private PerfilEnum tipoPerfil;

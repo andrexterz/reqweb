@@ -60,8 +60,8 @@ public class DisciplinaBean implements Serializable {
 
     private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private String termoBusca;
-    public static final String ADICIONA = "a";
-    public static final String EDITA = "e";
+    private static final String ADICIONA = "a";
+    private static final String EDITA = "e";
     private Thread tImportJob;
     private String operation;
     private int progress;

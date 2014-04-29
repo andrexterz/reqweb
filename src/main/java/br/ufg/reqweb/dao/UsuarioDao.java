@@ -57,11 +57,6 @@ public class UsuarioDao {
         Session session = this.sessionFactory.getCurrentSession();
         session.update(usuario);
         for (Perfil p : usuario.getPerfilList()) {
-            if (Arrays.asList(Perfil.perfilCursoMustBeNull).contains(p.getTipoPerfil()) && p.getCurso() != null) {
-                session.clear();
-                session.close();
-                throw new ValidationException("Perfil " + p.getTipoPerfil() + " requires Curso == null");
-            }
             session.saveOrUpdate(p);
         }
     }

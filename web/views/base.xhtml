@@ -27,9 +27,13 @@
                             <span>ReqWeb</span>
                         </div>
                         <h:form id="formLocale" styleClass="widgetLocale">
-                            <h:selectOneMenu valueChangeListener="#{localeBean.changeLocale}" onchange="this.form.submit()" value="#{localeBean.locale}">
+                            <h:selectOneMenu rendered="#{!usuarioBean.autenticado}"
+                                             valueChangeListener="#{localeBean.changeLocale}"
+                                             onchange="this.form.submit()"
+                                             value="#{localeBean.locale}">
                                 <f:selectItems value="#{localeBean.localeList}" />
                             </h:selectOneMenu>
+                            <h:outputLabel class="languageDisplay" value="#{localeBean.localeName}" rendered="#{usuarioBean.autenticado}" />
                         </h:form>
                     </p:column>
                     <p:column>

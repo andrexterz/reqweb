@@ -43,12 +43,18 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        Set<ItemRequerimento> items = new HashSet<>();
-        for (long i=0;i<10;i++) {
-            ItemRequerimento item = new DeclaracaoDeMatricula();
-            item.setId(i);
-            items.add(item);
-            System.out.println("lenght " + items.size());
+        boolean T, R, D;
+        T = false;
+        R = true;
+        D = false;
+        if (T == true && R == false && D == false) {
+            System.out.println("search by termoBusca");
+        } else if (T == false && R == true && D == false) {
+            System.out.println("search by Requerimento");
+        } else if (T == false && R == false && D == true) {
+            System.out.println("search by Data");
+        } else {
+            System.out.println("search all");
         }
     }
 }

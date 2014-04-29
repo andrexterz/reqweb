@@ -6,8 +6,10 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,14 +35,17 @@ public class Requerimento extends BaseModel {
 
     public Requerimento() {
         status = RequerimentoStatusEnum.ABERTO;
-        itemRequerimentoSet = new HashSet<>();
+        itemRequerimentoList = new HashSet();
     }
     
     
     
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", updatable = false)
     private Usuario discente;
+    
+    @OneToMany(mappedBy = "requerimento", orphanRemoval = true)
+    private List<Atendimento> atendimentoList;
     
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character varying(32)")
@@ -58,7 +63,7 @@ public class Requerimento extends BaseModel {
     
     @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "requerimento", orphanRemoval = true )
-    private Set<ItemRequerimento> itemRequerimentoSet;
+    private Set<ItemRequerimento> itemRequerimentoList;
     
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character(16) default 'ABERTO'")
@@ -76,6 +81,20 @@ public class Requerimento extends BaseModel {
      */
     public void setDiscente(Usuario discente) {
         this.discente = discente;
+    }
+
+    /**
+     * @return the atendimentoList
+     */
+    public List<Atendimento> getAtendimentoList() {
+        return atendimentoList;
+    }
+
+    /**
+     * @param atendimentoList the atendimentoList to set
+     */
+    public void setAtendimentoList(List<Atendimento> atendimentoList) {
+        this.atendimentoList = atendimentoList;
     }
 
     /**
@@ -135,29 +154,29 @@ public class Requerimento extends BaseModel {
     }
 
     /**
-     * @return the itemRequerimentoSet
+     * @return the itemRequerimentoList
      */
-    public Set<ItemRequerimento> getItemRequerimentoSet() {
-        return itemRequerimentoSet;
+    public Set<ItemRequerimento> getItemRequerimentoList() {
+        return itemRequerimentoList;
     }
 
     /**
-     * @param itemRequerimentoSet the itemRequerimentoSet to set
+     * @param itemRequerimentoList the itemRequerimentoList to set
      */
-    public void setItemRequerimentoSet(Set<ItemRequerimento> itemRequerimentoSet) {
-        this.itemRequerimentoSet = itemRequerimentoSet;
-        for (ItemRequerimento ir: itemRequerimentoSet) {
+    public void setItemRequerimentoList(Set<ItemRequerimento> itemRequerimentoList) {
+        this.itemRequerimentoList = itemRequerimentoList;
+        for (ItemRequerimento ir: itemRequerimentoList) {
             ir.setRequerimento(this);
         }
     }
     
     public void addItemRequerimento(ItemRequerimento itemRequerimento) {
-        itemRequerimentoSet.add(itemRequerimento);
+        itemRequerimentoList.add(itemRequerimento);
         itemRequerimento.setRequerimento(this);
     }
     
     public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
-    itemRequerimentoSet.remove(itemRequerimento);
+    itemRequerimentoList.remove(itemRequerimento);
     }
 
     /**

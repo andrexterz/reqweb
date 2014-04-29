@@ -47,8 +47,8 @@ public class PeriodoBean implements Serializable {
     private PeriodoDao periodoDao;
 
     private static final long serialVersionUID = 1L;
-    public static final String ADICIONA = "a";
-    public static final String EDITA = "e";
+    private static final String ADICIONA = "a";
+    private static final String EDITA = "e";
     private boolean saveStatus;
     private String operation;
     private Periodo periodo;

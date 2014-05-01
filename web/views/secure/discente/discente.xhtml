@@ -2,13 +2,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
-            <h:panelGrid columns="1" styleClass="menuItens">
-                <h:link id="declaracaoDeMatriculaLnk" outcome="declaracaoDeMatricula" value="#{msg.declaracaoDeMatricula}" style="background-image: url(#{resource['img/declaracao.png']});" />
-            </h:panelGrid>
+            <h:form id="discenteMenuLinks">
+                <h:panelGrid columns="1" styleClass="menuItens">
+                    <c:forEach items="#{requerimentoBean.tipoRequerimentoList}" var="tipoRequerimentoItem">
+                        <h:commandLink id="#{tipoRequerimentoItem.tipo}Lnk"
+                                       action="requerimentos?faces-redirect=true"
+                                       value="#{tipoRequerimentoItem.tipoLocale}"
+                                       styleClass="#{tipoRequerimentoItem.tipo}">
+                            <f:setPropertyActionListener
+                                target="#{requerimentoBean.tipoRequerimento}"
+                                value="#{tipoRequerimentoItem}" />
+                        </h:commandLink>
+                    </c:forEach>
+                </h:panelGrid>
+            </h:form>
         </ui:define>
         <ui:define name="content">
             <div class="homePageText">

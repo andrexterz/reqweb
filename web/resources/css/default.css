@@ -264,6 +264,7 @@ input[type="text"], input[type="password"], select {
 }
 
 .menuItens a {
+    font-size: 80%!important;
     width: 100%;
     height: 32px;
     color: #fff;
@@ -286,6 +287,26 @@ input[type="text"], input[type="password"], select {
     color: #a5d0ff!important;
     text-decoration: none;
     background-position: 0 -32px!important;
+}
+
+.declaracaoDeMatricula {
+    background-image: url("#{resource['img/declaracaoDeMatricula.png']}");
+}
+
+.extratoAcademico {
+    background-image: url("#{resource['img/extratoAcademico.png']}");
+}
+
+.segundaChamadaDeProva {
+    background-image: url("#{resource['img/segundaChamadaDeProva.png']}");
+}
+
+.ementaDeDisciplina {
+    background-image: url("#{resource['img/ementaDeDisciplina.png']}");
+}
+
+.ementaDeDisciplina {
+    background-image: url("#{resource['img/ementaDeDisciplina.png']}");
 }
 
 /*********************************** content **********************************/

@@ -51,11 +51,11 @@ public class Requerimento extends BaseModel {
     @Column(columnDefinition = "character varying(32)")
     private TipoRequerimentoEnum tipoRequerimento;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(insertable = true, updatable = false)
     private Date dataCriacao;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dataModificacao;
     
     @Column

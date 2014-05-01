@@ -4,11 +4,13 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:define name="componentTitle">#{msg.declaracaoDeMatricula}</ui:define>
+    <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento.tipoLocale}</ui:define>
     <ui:define name="content">
         <script>
             $(document).ready(function() {
-                jQuery("#declaracaoDeMatriculaLnk").addClass("menuItemSelected");
+                var widgetId = ["#discenteMenuLinks\\:", "#{requerimentoBean.tipoRequerimento.tipo}", "Lnk"].join("");
+                $(widgetId).addClass("menuItemSelected");
+                console.log(widgetId);
             });
         </script>
         <ui:include src="salvaDeclaracaoDeMatriculaForm.xhtml" />
@@ -20,9 +22,6 @@
                                  action="#{requerimentoBean.novoRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :salvaRequerimentoForm">
-                    <f:setPropertyActionListener
-                        target="#{requerimentoBean.tipoRequerimento}"
-                        value="DECLARACAO_DE_MATRICULA" />
                 </p:commandButton>
 
                 <p:commandButton value="#{msg.editar}"
@@ -43,11 +42,11 @@
                                        var="tipoBuscaItem"
                                        itemLabel="#{tipoBuscaItem.key}"
                                        itemValue="#{tipoBuscaItem.value}"/>
-                        <p:ajax update="searchPanel" />
+                        <p:ajax update="searchPanel tableRequerimentos" />
                     </p:selectOneButton>
                     <p:autoComplete id="requerimentoTipoRequerimento"
                                     completeMethod="#{requerimentoBean.findTipoRequerimento}"
-                                    value="#{requerimentoBean.tipoRequerimento}"
+                                    value="#{requerimentoBean.tipoRequerimentoBusca}"
                                     minQueryLength="3"
                                     forceSelection="true"
                                     styleClass="searchBoxAutocomplete"
@@ -59,18 +58,20 @@
                         <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaTipoBuscaRequerimento}" />
                     </p:autoComplete>
                     <p:watermark for="requerimentoTipoRequerimento" value="#{msg.requerimento}" />
-                    <p:inputMask id="requerimentoIntervalo"
+                    <p:inputMask id="requerimentoBuscaPeriodo"
+                                 value="#{requerimentoBean.termoBuscaPeriodo}"
                                  mask="99/99/9999 - 99/99/9999"
                                  styleClass="searchBox"
-                                 rendered="#{requerimentoBean.tipoBusca == 'DATA_INTERVALO'}" />
-                    <p:watermark for="requerimentoIntervalo" value="#{msg.periodo}" />
-                    <p:inputText id="requerimentoBusca"
+                                 rendered="#{requerimentoBean.tipoBusca == 'DATA_PERIODO'}" />
+                    <p:watermark for="requerimentoBuscaPeriodo" value="#{msg.periodo}" />
+                    <p:inputText id="requerimentoBuscaDiscente"
                                  styleClass="searchBox"
-                                 rendered="#{requerimentoBean.tipoBusca == 'TERMO_BUSCA'}"
-                                 value="#{requerimentoBean.termoBusca}" />
-                    <p:watermark for="requerimentoBusca" value="#{msg.discente}" />
+                                 disabled="#{usuarioBean.perfil == 'DISCENTE'}"
+                                 rendered="#{requerimentoBean.tipoBusca == 'DISCENTE'}"
+                                 value="#{requerimentoBean.termoBuscaDiscente}" />
+                    <p:watermark for="requerimentoBuscaDiscente" value="#{msg.discente}" />
                     <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
-                    <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand alignRight" update="tableRequerimentos" />
+                    <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand alignRight" update="tableRequerimentos :formHeader:systemMessages" />
                     <p:defaultCommand target="requerimentoBuscaCommand" />
                 </h:panelGroup>
             </h:panelGroup>

@@ -8,15 +8,21 @@ package br.ufg.reqweb.components;
 import br.ufg.reqweb.dao.RequerimentoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
+import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
@@ -27,7 +33,6 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,7 +44,7 @@ import org.springframework.stereotype.Component;
 public class RequerimentoBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static final String ADICIONA = "a";
     private static final String EDITA = "e";
 
@@ -47,7 +52,7 @@ public class RequerimentoBean implements Serializable {
     private Validator validator;
 
     @Autowired
-    private UsuarioDao usuarioDAo;
+    private UsuarioDao usuarioDao;
 
     @Autowired
     private RequerimentoDao requerimentoDao;
@@ -56,38 +61,43 @@ public class RequerimentoBean implements Serializable {
     private Requerimento itemSelecionado;
     private TipoRequerimentoEnum tipoRequerimento;
     private String operation;//a: adiciona | e: edita
-    private String termoBusca;
+    private TipoRequerimentoEnum tipoRequerimentoBusca;
+    private String termoBuscaDiscente;
+    private String termoBuscaPeriodo;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
-    
+
     public enum TipoBusca {
-        DATA_INTERVALO("dataCriacao"),
+
+        DATA_PERIODO("dataCriacao"),
         TIPO_REQUERIMENTO("requerimento"),
-        TERMO_BUSCA("discente");
-        
+        DISCENTE("discente");
+
         TipoBusca(String tipo) {
             this.tipo = tipo;
         }
-        
+
         private final String tipo;
-        
+
         public String getTipo() {
             return tipo;
         }
-        
+
         public String getTipoLocale() {
             return LocaleBean.getMessageBundle().getString(tipo);
         }
     };
-    
+
     private TipoBusca tipoBusca;
-    
+
     public RequerimentoBean() {
         requerimento = new Requerimento();
         itemSelecionado = null;
         tipoRequerimento = null;
         operation = null;
-        termoBusca = "";
-        tipoBusca = TipoBusca.TERMO_BUSCA;
+        tipoRequerimentoBusca = null;
+        termoBuscaDiscente = "";
+        termoBuscaPeriodo = "";
+        tipoBusca = TipoBusca.DISCENTE;
 
         requerimentosDataModel = new LazyDataModel<Requerimento>() {
             private List<Requerimento> dataSource;
@@ -109,19 +119,55 @@ public class RequerimentoBean implements Serializable {
 
             @Override
             public List<Requerimento> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+                System.out.println("tipo de busca: " + getTipoBusca());
                 setPageSize(pageSize);
+                if (getTipoBusca().equals(TipoBusca.TIPO_REQUERIMENTO) && getTipoRequerimentoBusca() != null) {
+                    if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+                        dataSource = requerimentoDao.find(getNomeUsuario(), tipoRequerimentoBusca);
+                    } else {
+                        dataSource = requerimentoDao.find(tipoRequerimentoBusca);
+                    }
+                    setRowCount(dataSource.size());
+                } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && !getTermoBuscaDiscente().isEmpty()) {
+                    if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+                        dataSource = requerimentoDao.find(getNomeUsuario());
+                    } else {
+                        dataSource = requerimentoDao.find(termoBuscaDiscente);
+                    }
+                    setRowCount(dataSource.size());
+                } else if (getTipoBusca().equals(TipoBusca.DATA_PERIODO) && !getTermoBuscaPeriodo().isEmpty()) {
+                    Pattern pattDateA = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}");
+                    Matcher matcherA = pattDateA.matcher(termoBuscaPeriodo);
 
-                if (tipoRequerimento != null && termoBusca.isEmpty()) {
-                    dataSource = requerimentoDao.find(tipoRequerimento);
-                    setRowCount(dataSource.size());
-                }
-                if (tipoRequerimento == null && termoBusca.isEmpty()) {
-                    dataSource = requerimentoDao.find(first, pageSize);
-                    setRowCount(requerimentoDao.count());
-                }
-                if (tipoRequerimento !=null && !termoBusca.isEmpty()) {
-                    dataSource = requerimentoDao.find(termoBusca);
-                    setRowCount(dataSource.size());
+                    Pattern pattDateB = Pattern.compile("\\d{2}/\\d{2}/\\d{4}$");
+                    Matcher matcherB = pattDateB.matcher(getTermoBuscaPeriodo());
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    if (matcherA.find() && matcherB.find()) {
+                        try {
+                            Date dateA = formatter.parse(matcherA.group());
+                            Date dateB = formatter.parse(matcherB.group());
+                            if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+                            dataSource = requerimentoDao.find(getNomeUsuario(),dateA, dateB);
+                            } else {
+                                dataSource = requerimentoDao.find(dateA, dateB);
+                            }
+                            setRowCount(dataSource.size());
+                        } catch (ParseException e) {
+                            System.out.println("error formatter " + e.getLocalizedMessage());
+                            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    LocaleBean.getMessageBundle().getString("dataInvalida"), null);
+                            FacesContext.getCurrentInstance().addMessage(null, msg);
+                        }
+                    }
+                } else {
+                    if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+                        dataSource = requerimentoDao.find(getNomeUsuario(), first, pageSize);
+                        setRowCount(requerimentoDao.count(getNomeUsuario()));
+                    } else {
+                        dataSource = requerimentoDao.find(first, pageSize);
+                        setRowCount(requerimentoDao.count());
+                    }
                 }
                 if (dataSource.size() > pageSize) {
                     try {
@@ -165,7 +211,7 @@ public class RequerimentoBean implements Serializable {
             }
         }
     }
-    
+
     /**
      * cancels actions from <code>novoRequerimento</code>
      */
@@ -194,10 +240,9 @@ public class RequerimentoBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-
-        String loginUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        String loginUser = getNomeUsuario();
         System.out.println("req: " + requerimento);
-        requerimento.setDiscente(usuarioDAo.findByLogin(loginUser));
+        requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
 
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
             DeclaracaoDeMatricula item = (DeclaracaoDeMatricula) sessionMap.get("itemRequerimento");
@@ -226,23 +271,33 @@ public class RequerimentoBean implements Serializable {
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Requerimento) event.getObject();
     }
-    
+
     public List<TipoRequerimentoEnum> findTipoRequerimento(String query) {
         List<TipoRequerimentoEnum> items = new ArrayList<>();
-        for (TipoRequerimentoEnum t: TipoRequerimentoEnum.values()) {
-           if (t.getTipoLocale().toLowerCase().contains(query.toLowerCase())) {
-               items.add(t);
-           }
+        for (TipoRequerimentoEnum t : TipoRequerimentoEnum.values()) {
+            if (t.getTipoLocale().toLowerCase().contains(query.toLowerCase())) {
+                items.add(t);
+            }
         }
         return items;
     }
-    
+
     public void autoCompleteSelecionaTipoBuscaRequerimento(SelectEvent event) {
         try {
             tipoRequerimento = (TipoRequerimentoEnum) event.getObject();
         } catch (NullPointerException e) {
             tipoRequerimento = null;
         }
+    }
+
+    private String getNomeUsuario() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        return ((UsuarioBean) sessionMap.get("usuarioBean")).getLogin();
+    }
+
+    private PerfilEnum getPerfilUsuario() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        return ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
     }
 
     /**
@@ -290,7 +345,7 @@ public class RequerimentoBean implements Serializable {
      * @param tipoRequerimento the tipoRequerimento to set
      */
     public void setTipoRequerimento(TipoRequerimentoEnum tipoRequerimento) {
-        System.out.println("metodo setTipoRequerimento invocado");
+        System.out.println("form for type: " + tipoRequerimento);
         this.tipoRequerimento = tipoRequerimento;
     }
 
@@ -317,26 +372,54 @@ public class RequerimentoBean implements Serializable {
     }
 
     /**
-     * @return the termoBusca
+     * @return the tipoRequerimentoBusca
      */
-    public String getTermoBusca() {
-        return termoBusca;
+    public TipoRequerimentoEnum getTipoRequerimentoBusca() {
+        return tipoRequerimentoBusca;
     }
 
     /**
-     * @param termoBusca the termoBusca to set
+     * @param tipoRequerimentoBusca the tipoRequerimentoBusca to set
      */
-    public void setTermoBusca(String termoBusca) {
-        this.termoBusca = termoBusca;
+    public void setTipoRequerimentoBusca(TipoRequerimentoEnum tipoRequerimentoBusca) {
+        this.tipoRequerimentoBusca = tipoRequerimentoBusca;
+    }
+
+    /**
+     * @return the termoBuscaDiscente
+     */
+    public String getTermoBuscaDiscente() {
+        return termoBuscaDiscente;
+    }
+
+    /**
+     * @param termoBuscaDiscente the termoBuscaDiscente to set
+     */
+    public void setTermoBuscaDiscente(String termoBuscaDiscente) {
+        this.termoBuscaDiscente = termoBuscaDiscente;
+    }
+
+    /**
+     * @return the termoBuscaPeriodo
+     */
+    public String getTermoBuscaPeriodo() {
+        return termoBuscaPeriodo;
+    }
+
+    /**
+     * @param termoBuscaPeriodo the termoBuscaPeriodo to set
+     */
+    public void setTermoBuscaPeriodo(String termoBuscaPeriodo) {
+        this.termoBuscaPeriodo = termoBuscaPeriodo;
     }
 
     public LazyDataModel<Requerimento> getRequerimentosDataModel() {
         return requerimentosDataModel;
     }
-    
-    public Map<String,TipoBusca> getTipoBuscaEnum () {
-        Map<String,TipoBusca> items = new HashMap();
-        for (TipoBusca t: TipoBusca.values()) {
+
+    public Map<String, TipoBusca> getTipoBuscaEnum() {
+        Map<String, TipoBusca> items = new HashMap();
+        for (TipoBusca t : TipoBusca.values()) {
             items.put(t.getTipoLocale(), t);
         }
         return items;
@@ -353,9 +436,6 @@ public class RequerimentoBean implements Serializable {
      * @param tipoBusca the tipoBusca to set
      */
     public void setTipoBusca(TipoBusca tipoBusca) {
-        if (tipoBusca != TipoBusca.TIPO_REQUERIMENTO) {
-            tipoRequerimento = null;
-        }
         this.tipoBusca = tipoBusca;
     }
 }

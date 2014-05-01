@@ -10,7 +10,7 @@
     </h:head>
     <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
         <h:form id="formTest2">
-            <p:dataTable id="t1" value="#{requerimentoDao.find('DECLARACAO_DE_MATRICULA')}" var="r">
+            <p:dataTable id="t1" value="#{requerimentoDao.find('amanda','DECLARACAO_DE_MATRICULA')}" var="r">
                 <p:column headerText="id">
                     <h:outputText value="#{r.id}" />
                 </p:column>

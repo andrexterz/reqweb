@@ -17,14 +17,14 @@ function dialogHandler(widgetVar, xhr, status, args) {
         PF(widgetVar).hide();
     }
     else {
-        PF(widgetVar).jq.effect("highlight",{},800);
+        PF(widgetVar).jq.effect("highlight", {}, 800);
     }
 }
 
-function startImpDialog(widgetDialog, widgetButton, widgetProgressBar, event){
+function startImpDialog(widgetDialog, widgetButton, widgetProgressBar, event) {
     PF(widgetDialog).show();
     PF(widgetProgressBar).cancel();
-     PF(widgetButton).jq.fadeIn();
+    PF(widgetButton).jq.fadeIn();
 }
 
 function progressBarHandler(widget, event) {
@@ -35,8 +35,6 @@ function progressBarComplete(widget, event) {
     PF(widget).jq.fadeOut();
 }
 
-function progressBarCancel(widget, event){
+function progressBarCancel(widget, event) {
     PF(widget).cancel();
 }
-
-

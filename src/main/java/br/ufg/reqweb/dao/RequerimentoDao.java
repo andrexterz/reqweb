@@ -13,12 +13,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -59,11 +61,11 @@ public class RequerimentoDao {
     public Requerimento findById(Long id) {
         try {
             Requerimento requerimento = (Requerimento) this.sessionFactory.getCurrentSession().get(Requerimento.class, id);
-            Set<ItemRequerimento> items = requerimento.getItemRequerimentoList();
-            Hibernate.initialize(items);
+            Set<ItemRequerimento> requerimentoItems = requerimento.getItemRequerimentoList();
+            Hibernate.initialize(requerimentoItems);
             return requerimento;
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
         }
         return null;
     }
@@ -72,21 +74,30 @@ public class RequerimentoDao {
      * find by discente nome
      *
      * @param termo
+     * @param sortField
+     * @param sortOrder
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(String termo) {
+    public List<Requerimento> find(String termo, String sortField, String sortOrder) {
         try {
             List<Requerimento> requerimentos;
-            requerimentos = this.sessionFactory.getCurrentSession()
+            Criteria criteria = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
                     .createAlias("discente", "d")
                     .add(Restrictions.or(Restrictions.eq("d.matricula", termo),
                                     Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
-                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
-                    .list();
+                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 
-            return requerimentos;
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
@@ -96,17 +107,27 @@ public class RequerimentoDao {
     /**
      *
      * @param tipoRequerimento
+     * @param sortField
+     * @param sortOrder
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(TipoRequerimentoEnum tipoRequerimento) {
+    public List<Requerimento> find(TipoRequerimentoEnum tipoRequerimento, String sortField, String sortOrder) {
         try {
-            return this.sessionFactory.getCurrentSession()
+            Criteria criteria = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
-                    .add(Restrictions.eq("tipoRequerimento", tipoRequerimento))
-                    .list();
+                    .add(Restrictions.eq("tipoRequerimento", tipoRequerimento));
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -115,19 +136,29 @@ public class RequerimentoDao {
      *
      * @param login
      * @param tipoRequerimento
+     * @param sortField
+     * @param sortOrder
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(String login, TipoRequerimentoEnum tipoRequerimento) {
+    public List<Requerimento> find(String login, TipoRequerimentoEnum tipoRequerimento, String sortField, String sortOrder) {
         try {
-            return this.sessionFactory.getCurrentSession()
+            Criteria criteria = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
                     .createAlias("discente", "d")
                     .add(Restrictions.eq("d.login", login).ignoreCase())
-                    .add(Restrictions.eq("tipoRequerimento", tipoRequerimento))
-                    .list();
+                    .add(Restrictions.eq("tipoRequerimento", tipoRequerimento));
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -137,103 +168,139 @@ public class RequerimentoDao {
      *
      * @param dateA
      * @param dateB
+     * @param sortField
+     * @param sortOrder
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(Date dateA, Date dateB) {
+    public List<Requerimento> find(Date dateA, Date dateB, String sortField, String sortOrder) {
         try {
-            return this.sessionFactory.getCurrentSession()
+            Criteria criteria = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
-                    .add(Restrictions.and(Restrictions.between("dataCriacao", dateA, dateB)))
-                    .list();
+                    .add(Restrictions.and(Restrictions.between("dataCriacao", dateA, dateB)));
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
-    
+
     /**
-     * 
+     *
      * @param login
      * @param dateA
      * @param dateB
-     * @return 
+     * @param sortField
+     * @param sortOrder
+     * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(String login, Date dateA, Date dateB) {
+    public List<Requerimento> find(String login, Date dateA, Date dateB, String sortField, String sortOrder) {
         try {
-            return this.sessionFactory.getCurrentSession()
+            Criteria criteria = this.sessionFactory.getCurrentSession()
                     .createCriteria(Requerimento.class)
                     .createAlias("discente", "d")
                     .add(Restrictions.eq("d.login", login).ignoreCase())
-                    .add(Restrictions.and(Restrictions.between("dataCriacao", dateA, dateB)))
-                    .list();
+                    .add(Restrictions.and(Restrictions.between("dataCriacao", dateA, dateB)));
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
+
     /**
-     * 
+     *
      * @param first
      * @param pageSize
-     * @return 
+     * @param sortField
+     * @param sortOrder
+     * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(int first, int pageSize) {
+    public List<Requerimento> find(int first, int pageSize, String sortField, String sortOrder) {
         try {
-            List<Requerimento> requerimentos;
-            requerimentos = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Requerimento r")
+            Criteria criteria = this.sessionFactory.getCurrentSession()
+                    .createCriteria(Requerimento.class)
                     .setFirstResult(first)
-                    .setMaxResults(pageSize)
-                    .list();
-            return requerimentos;
-
+                    .setMaxResults(pageSize);
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
-    
+
     /**
-     * 
+     *
      * @param login
      * @param first
      * @param pageSize
-     * @return 
+     * @param sortField
+     * @param sortOrder
+     * @return
      */
     @Transactional(readOnly = true)
-    public List<Requerimento> find(String login, int first, int pageSize) {
+    public List<Requerimento> find(String login, int first, int pageSize, String sortField, String sortOrder) {
         try {
-            List<Requerimento> requerimentos;
-            requerimentos = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Requerimento r WHERE r.discente.login = :login")
-                    .setParameter("login", login)
+            Criteria criteria = this.sessionFactory.getCurrentSession()
+                    .createCriteria(Requerimento.class)
+                    .createAlias("discente", "d")
+                    .add(Restrictions.eq("d.login", login).ignoreCase())
                     .setFirstResult(first)
-                    .setMaxResults(pageSize)
-                    .list();
-            return requerimentos;
-
+                    .setMaxResults(pageSize);
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            return criteria.list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
-    }    
+    }
 
     @Transactional(readOnly = true)
     public List<Requerimento> findAll() {
         try {
             return this.sessionFactory.getCurrentSession().createQuery("FROM Requerimento r").list();
         } catch (HibernateException e) {
-            System.out.println("query error: " + e.getCause());
+            System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @Transactional(readOnly = true)
     public int count() {
@@ -247,11 +314,11 @@ public class RequerimentoDao {
             return 0;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param login
-     * @return 
+     * @return
      */
     @Transactional(readOnly = true)
     public int count(String login) {

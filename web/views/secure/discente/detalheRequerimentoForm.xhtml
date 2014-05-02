@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="detalheRequerimentoForm">
+        <p:confirmDialog id="dlgDetalheRequerimentoDialog" widgetVar="detalheRequerimentoDialog"
+                         appendTo="@(body)" width="380" 
+                         header="#{msg.atendimento}: #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}"
+                         message="#{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}" severity="info">
+            <h:panelGroup layout="block" styleClass="infoDialogBox">
+                <h:panelGrid columns="2" styleClass="formGrid">
+                    <h:column>
+                        <h:outputText value="#{msg.status}" />
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{requerimentoBean.itemSelecionado.status}" />
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{msg.dataCriacao}" />
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{requerimentoBean.itemSelecionado.dataCriacao}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{msg.dataModificacao}" />
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="#{requerimentoBean.itemSelecionado.dataModificacao}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </h:column>
+                </h:panelGrid>
+                <p:dataTable value="#{requerimentoBean.itemSelecionado.atendimentoList}"
+                             emptyMessage="#{msg.emptyMessage}"
+                             var="atendimentoItem">
+                    <p:column headerText="#{msg.atendente}">
+                        <h:outputText value="#{atendimentoItem.atendente.nome}" />
+                    </p:column>
+                    <p:column headerText="#{msg.dataModificacao}">
+                        <h:outputText value="#{atendimentoItem.dataAtendimento}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
+                <p:commandButton id="cancelaDetalheRequerimento"
+                                 value="#{msg.fechar}"
+                                 onclick="PF('detalheRequerimentoDialog').hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </p:confirmDialog>
+    </h:form>        
+</ui:composition>
+

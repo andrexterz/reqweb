@@ -121,21 +121,33 @@ public class RequerimentoBean implements Serializable {
             @Override
             public List<Requerimento> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 System.out.println(String.format("sortField: %s, sortOrder: %s", sortField, sortOrder));
+                String order;
+                switch (sortOrder.name()) {
+                    case "ASCENDING":
+                        order = "asc";
+                        break;
+                    case "DESCENDING":
+                        order = "desc";
+                        break;
+                    default:
+                        order = null;
+                        break;
+                }
                 setPageSize(pageSize);
                 if (getTipoBusca().equals(TipoBusca.TIPO_REQUERIMENTO) && getTipoRequerimentoBusca() != null) {
                     System.out.println("tipo de busca: " + getTipoBusca());
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario(), tipoRequerimentoBusca);
+                        data = requerimentoDao.find(getNomeUsuario(), tipoRequerimentoBusca, sortField, order);
                     } else {
-                        data = requerimentoDao.find(tipoRequerimentoBusca);
+                        data = requerimentoDao.find(tipoRequerimentoBusca, sortField, order);
                     }
                     setRowCount(data.size());
                 } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && !getTermoBuscaDiscente().isEmpty()) {
                     System.out.println("tipo de busca: " + getTipoBusca());
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario());
+                        data = requerimentoDao.find(getNomeUsuario(), sortField, order);
                     } else {
-                        data = requerimentoDao.find(termoBuscaDiscente);
+                        data = requerimentoDao.find(termoBuscaDiscente, sortField, order);
                     }
                     setRowCount(data.size());
                 } else if (getTipoBusca().equals(TipoBusca.DATA_PERIODO) && !getTermoBuscaPeriodo().isEmpty()) {
@@ -152,9 +164,9 @@ public class RequerimentoBean implements Serializable {
                             Date dateA = formatter.parse(matcherA.group());
                             Date dateB = formatter.parse(matcherB.group());
                             if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                                data = requerimentoDao.find(getNomeUsuario(), dateA, dateB);
+                                data = requerimentoDao.find(getNomeUsuario(), dateA, dateB, sortField, order);
                             } else {
-                                data = requerimentoDao.find(dateA, dateB);
+                                data = requerimentoDao.find(dateA, dateB, sortField, order);
                             }
                             setRowCount(data.size());
                             System.out.println("tipo de busca: " + getTipoBusca());
@@ -167,11 +179,11 @@ public class RequerimentoBean implements Serializable {
                     }
                 } else {
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario(), first, pageSize);
+                        data = requerimentoDao.find(getNomeUsuario(), first, pageSize, sortField, order);
                         setRowCount(requerimentoDao.count(getNomeUsuario()));
                         System.out.println("tipo de busca: ALL, but filtering DISCENTE");
                     } else {
-                        data = requerimentoDao.find(first, pageSize);
+                        data = requerimentoDao.find(first, pageSize, sortField, order);
                         setRowCount(requerimentoDao.count());
                         System.out.println("tipo de busca: ALL");
                     }

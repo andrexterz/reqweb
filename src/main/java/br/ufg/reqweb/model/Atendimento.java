@@ -9,6 +9,7 @@ package br.ufg.reqweb.model;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -27,7 +28,7 @@ public class Atendimento extends BaseModel {
     @ManyToOne
     private Requerimento requerimento;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", updatable = false)
     private Usuario atendente;
     

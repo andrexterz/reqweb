@@ -15,6 +15,7 @@
         </script>
         <ui:include src="salvaRequerimentoForm.xhtml" />
         <ui:include src="excluiRequerimentoForm.xhtml" />
+        <ui:include src="detalheRequerimentoForm.xhtml" />
         <h:form id="requerimentoForm" styleClass="formBody">
             <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
@@ -33,6 +34,11 @@
                                  disabled="#{requerimentoBean.selecionado== false}"
                                  oncomplete="excluirRequerimentoDialog.show()"
                                  update=":excluiRequerimentoForm" />
+
+                <p:commandButton value="#{msg.atendimento}"
+                                 disabled="#{requerimentoBean.selecionado== false}"
+                                 oncomplete="detalheRequerimentoDialog.show()"
+                                 update=":detalheRequerimentoForm" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />
@@ -90,21 +96,18 @@
                 <p:column headerText="#{msg.requerimento}" styleClass="requerimentoColA">
                     <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
                 </p:column>
-                <p:column headerText="#{msg.status}" styleClass="requerimentoColB">
+                <p:column headerText="#{msg.status}" sortBy="status" styleClass="requerimentoColB">
                     <h:outputText value="#{requerimentoItem.status.statusLocale}" />
                 </p:column>
                 <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="requerimentoColC">
                     <h:outputText value="#{requerimentoItem.dataCriacao}">
-                        <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
+                        <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>
                 <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="requerimentoColD">
                     <h:outputText value="#{requerimentoItem.dataModificacao}">
-                        <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
+                        <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>
-                </p:column>
-                <p:column headerText="#{msg.atendimento}" styleClass="requerimentoColE">
-                    <h:outputText value="#{requerimentoItem.dataCriacao}"/>
                 </p:column>
             </p:dataTable>
         </h:form>

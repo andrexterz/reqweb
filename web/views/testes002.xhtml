@@ -10,9 +10,18 @@
     </h:head>
     <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
         <h:form id="formTest2">
-            <p:dataTable id="t1" value="#{requerimentoDao.find('amanda','DECLARACAO_DE_MATRICULA')}" var="r">
+            <p:dataTable id="t1"
+                         paginator="true"
+                         rows="10"
+                         selectionMode="single"
+                         rowKey="#{r.id}"
+                         selection="#{requerimentoBean.itemSelecionado}"
+                         value="#{requerimentoDao.findAll()}" var="r">
                 <p:column headerText="id">
                     <h:outputText value="#{r.id}" />
+                </p:column>
+                <p:column headerText="data" sortBy="dataCriacao">
+                    <h:outputText value="#{r.dataCriacao}" />
                 </p:column>
                 <p:column headerText="t">
                     <h:outputText value="#{r.tipoRequerimento}" />

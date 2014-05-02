@@ -20,10 +20,10 @@
 
             <p:commandButton value="#{msg.excluir}"
                              styleClass="formToolbarButtons"
-                             update="tableTurmas"
                              disabled="#{!turmaBean.selecionado}"
                              oncomplete="PF('excluirTurmaDialog').show()"
-                             process="@this" />
+                             process="@this"
+                             update=":excluiTurmaForm" />
 
             <p:menuButton value="#{msg.importar}/#{msg.exportar}">
                 <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="startImpDialog('dlgImpTurmasVar','confirmImpButtonTurma','pbImpTurma')" />
@@ -67,7 +67,7 @@
                      selection="#{turmaBean.itemSelecionado}"
                      paginatorPosition="bottom"
                      rows="10" pageLinks="5">
-            <p:ajax event="rowSelect" update=":arquivosTab:turmasForm:turmasToolbar :excluiTurmaForm" />
+            <p:ajax event="rowSelect" update=":arquivosTab:turmasForm:turmasToolbar" listener="#{turmaBean.selecionaItem}" />
             <p:column headerText="#{msg.turma}" styleClass="turmaColA">
                 <h:outputText value="#{turmaItem.nome}" />
             </p:column>

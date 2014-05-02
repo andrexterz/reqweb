@@ -30,7 +30,10 @@
                                  disabled="#{cursoBean.selecionado == false}"
                                  actionListener="#{cursoBean.editaCurso}" />
 
-                <p:commandButton value="#{msg.excluir}" disabled="#{cursoBean.selecionado== false}" onclick="excluirCursoDialog.show()" />
+                <p:commandButton value="#{msg.excluir}"
+                                 disabled="#{cursoBean.selecionado== false}"
+                                 oncomplete="excluirCursoDialog.show()"
+                                 update=":excluiCursoForm"/>
 
                 <p:inputText id="cursoBusca" styleClass="searchBox" value="#{cursoBean.termoBusca}" />
                 <p:watermark for="cursoBusca" value="#{msg.curso}" />
@@ -49,7 +52,7 @@
                          selection="#{cursoBean.itemSelecionado}"
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
-                <p:ajax event="rowSelect" update=":excluiCursoForm:dlgExclCursoDialog :cursoForm:cursoToolbar" listener="#{cursoBean.selecionaItem}" />
+                <p:ajax event="rowSelect" update=":cursoForm:cursoToolbar" listener="#{cursoBean.selecionaItem}" />
                 <p:column headerText="#{msg.curso}" styleClass="cursoColNome">
                     <h:outputText value="#{cursoItem.nome}" />
                 </p:column>

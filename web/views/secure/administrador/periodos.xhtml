@@ -31,7 +31,10 @@
                                  disabled="#{periodoBean.selecionado == false}"
                                  actionListener="#{periodoBean.editaPeriodo}" />
 
-                <p:commandButton value="#{msg.excluir}" disabled="#{periodoBean.selecionado== false}" onclick="excluirPeriodoDialog.show()" />
+                <p:commandButton value="#{msg.excluir}"
+                                 disabled="#{periodoBean.selecionado== false}"
+                                 oncomplete="excluirPeriodoDialog.show()"
+                                 update=":excluiPeriodoForm"/>
                 <p:inputMask id="periodoBusca" mask="9999" styleClass="searchBox" value="#{periodoBean.termoBusca}" />
                 <p:watermark for="periodoBusca" value="#{msg.ano}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=periodoBuscaCommand] -->
@@ -51,7 +54,7 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect"
-                        update=":excluiPeriodoForm:dlgExclPeriodoDialog :periodoForm:periodoToolbar"
+                        update=":periodoForm:periodoToolbar"
                         listener="#{periodoBean.selecionaItem}" />
                 <p:column headerText="#{msg.ano}" styleClass="periodoColAno">
                     <h:outputText value="#{periodoItem.ano}" />

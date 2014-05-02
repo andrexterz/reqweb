@@ -88,7 +88,7 @@ public class DisciplinaBean implements Serializable {
         disciplinas = new ArrayList<>();
         disciplinasDataModel = new LazyDataModel<Disciplina>() {
             
-            private List<Disciplina> dataSource;
+            private List<Disciplina> data;
 
             @Override
             public Object getRowKey(Disciplina disciplina) {
@@ -97,7 +97,7 @@ public class DisciplinaBean implements Serializable {
 
             @Override
             public Disciplina getRowData(String key) {
-                for (Disciplina d: dataSource) {
+                for (Disciplina d: data) {
                     if (d.getId().toString().equals(key)) {
                         return d;
                     }
@@ -109,26 +109,26 @@ public class DisciplinaBean implements Serializable {
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 if (curso != null) {
-                    dataSource = disciplinaDao.findByCurso(termoBusca, curso);
-                    setRowCount(dataSource.size());
+                    data = disciplinaDao.findByCurso(termoBusca, curso);
+                    setRowCount(data.size());
                 } else {
                     if (termoBusca.equals("")) {
-                        dataSource = disciplinaDao.find(first, pageSize);
+                        data = disciplinaDao.find(first, pageSize);
                         setRowCount(disciplinaDao.count());
                     } else {
-                        dataSource = disciplinaDao.find(termoBusca);
-                        setRowCount(dataSource.size());
+                        data = disciplinaDao.find(termoBusca);
+                        setRowCount(data.size());
                     }
                 }
-                if (dataSource.size() > pageSize) {
+                if (data.size() > pageSize) {
                     try {
-                        return dataSource.subList(first, first + pageSize);
+                        return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                         return data.subList(first, first + (data.size() % pageSize));
                     }
                     
                 }                
-                return dataSource;
+                return data;
             }
 
         };

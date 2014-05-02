@@ -13,7 +13,7 @@
                 console.log(widgetId);
             });
         </script>
-        <ui:include src="salvaDeclaracaoDeMatriculaForm.xhtml" />
+        <ui:include src="salvaRequerimentoForm.xhtml" />
         <ui:include src="excluiRequerimentoForm.xhtml" />
         <h:form id="requerimentoForm" styleClass="formBody">
             <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
@@ -21,9 +21,7 @@
                                  process="@this"
                                  action="#{requerimentoBean.novoRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
-                                 update="tableRequerimentos :salvaRequerimentoForm">
-                </p:commandButton>
-
+                                 update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
                                  disabled="#{requerimentoBean.selecionado == false}"
@@ -31,12 +29,16 @@
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :salvaRequerimentoForm" />
 
-                <p:commandButton value="#{msg.excluir}" disabled="#{requerimentoBean.selecionado== false}" onclick="excluirRequerimentoDialog.show()" />
+                <p:commandButton value="#{msg.excluir}"
+                                 disabled="#{requerimentoBean.selecionado== false}"
+                                 oncomplete="excluirRequerimentoDialog.show()"
+                                 update=":excluiRequerimentoForm" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />
                     <p:selectOneButton styleClass="searchBoxMenu"
                                        id="searchType"
+                                       disabled="#{requerimentoBean.tipoRequerimento != null}"
                                        value="#{requerimentoBean.tipoBusca}">
                         <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"
                                        var="tipoBuscaItem"
@@ -47,7 +49,7 @@
                     <p:autoComplete id="requerimentoTipoRequerimento"
                                     completeMethod="#{requerimentoBean.findTipoRequerimento}"
                                     value="#{requerimentoBean.tipoRequerimentoBusca}"
-                                    minQueryLength="3"
+                                    minQueryLength="4"
                                     forceSelection="true"
                                     styleClass="searchBoxAutocomplete"
                                     converter="#{tipoRequerimentoEnumConverter}"
@@ -91,12 +93,12 @@
                 <p:column headerText="#{msg.status}" styleClass="requerimentoColB">
                     <h:outputText value="#{requerimentoItem.status.statusLocale}" />
                 </p:column>
-                <p:column headerText="#{msg.dataCriacao}" styleClass="requerimentoColC">
+                <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="requerimentoColC">
                     <h:outputText value="#{requerimentoItem.dataCriacao}">
                         <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="#{msg.dataModificacao}" styleClass="requerimentoColD">
+                <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="requerimentoColD">
                     <h:outputText value="#{requerimentoItem.dataModificacao}">
                         <f:convertDateTime timeZone="America/Sao_Paulo" locale="#{localeBean.locale}" />
                     </h:outputText>

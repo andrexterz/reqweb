@@ -305,8 +305,16 @@ input[type="text"], input[type="password"], select {
     background-image: url("#{resource['img/ementaDeDisciplina.png']}");
 }
 
-.ementaDeDisciplina {
-    background-image: url("#{resource['img/ementaDeDisciplina.png']}");
+.documentoDeEstagio {
+    background-image: url("#{resource['img/documentoDeEstagio.png']}");
+}
+
+.ajusteDeMatricula {
+    background-image: url("#{resource['img/ajusteDeMatricula.png']}");
+}
+
+.requerimentos {
+    background-image: url("#{resource['img/requerimentos.png']}");
 }
 
 /*********************************** content **********************************/

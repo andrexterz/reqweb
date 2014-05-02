@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
@@ -20,6 +20,11 @@
                                 value="#{tipoRequerimentoItem}" />
                         </h:commandLink>
                     </c:forEach>
+                    <h:link id="requerimentosLnk"
+                            outcome="requerimentos"
+                            value="#{msg.requerimentos}"
+                            styleClass="requerimentos">
+                    </h:link>
                 </h:panelGrid>
             </h:form>
         </ui:define>

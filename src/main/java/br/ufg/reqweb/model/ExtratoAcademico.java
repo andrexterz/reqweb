@@ -8,7 +8,6 @@ package br.ufg.reqweb.model;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
@@ -16,7 +15,6 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "declaracaodematricula")
 @DiscriminatorValue(value = "EA")
 public class ExtratoAcademico extends ItemRequerimento {
 

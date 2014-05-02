@@ -70,26 +70,26 @@ public class IndicePrioridadeBean {
         indicePrioridadeListPreview = new HashMap();
         indicePrioridadeDataModel = new LazyDataModel<IndicePrioridade>() {
             
-            private List<IndicePrioridade> dataSource;            
+            private List<IndicePrioridade> data;            
             
             @Override
             public List<IndicePrioridade> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 if (termoBusca.equals("")) {
-                    dataSource = indicePrioridadeDao.find(first, pageSize);
+                    data = indicePrioridadeDao.find(first, pageSize);
                     setRowCount(indicePrioridadeDao.count());
                 } else {
-                    dataSource = indicePrioridadeDao.find(termoBusca);
-                    setRowCount(dataSource.size());
+                    data = indicePrioridadeDao.find(termoBusca);
+                    setRowCount(data.size());
                 }
-                if (dataSource.size() > pageSize) {
+                if (data.size() > pageSize) {
                     try {
-                        return dataSource.subList(first, first + pageSize);
+                        return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                         return data.subList(first, first + (data.size() % pageSize));
                     }
                 }                
-                return dataSource;
+                return data;
             }
         };
     }

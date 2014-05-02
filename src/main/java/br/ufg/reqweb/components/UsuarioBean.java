@@ -93,7 +93,7 @@ public class UsuarioBean implements Serializable {
         saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
 
-            private List<Usuario> dataSource;
+            private List<Usuario> data;
 
             @Override
             public Object getRowKey(Usuario usuario) {
@@ -102,7 +102,7 @@ public class UsuarioBean implements Serializable {
 
             @Override
             public Usuario getRowData(String key) {
-                for (Usuario u : dataSource) {
+                for (Usuario u : data) {
                     if (u.getId().toString().equals(key)) {
                         return u;
                     }
@@ -114,22 +114,22 @@ public class UsuarioBean implements Serializable {
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 if (termoBusca.equals("")) {
-                    dataSource = usuarioDao.find(first, pageSize);
+                    data = usuarioDao.find(first, pageSize);
                     setRowCount(usuarioDao.count());
 
                 } else {
-                    dataSource = usuarioDao.find(termoBusca);
-                    setRowCount(dataSource.size());
+                    data = usuarioDao.find(termoBusca);
+                    setRowCount(data.size());
                 }
-                if (dataSource.size() > pageSize) {
+                if (data.size() > pageSize) {
                     try {
-                        return dataSource.subList(first, first + pageSize);
+                        return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                        return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                        return data.subList(first, first + (data.size() % pageSize));
                     }
 
                 }
-                return dataSource;
+                return data;
             }
         };
     }

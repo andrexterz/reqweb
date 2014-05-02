@@ -19,7 +19,6 @@ import javax.validation.constraints.Min;
  */
 
 @Entity
-@Table(name = "declaracaodematricula")
 @DiscriminatorValue(value = "DM")
 public class DeclaracaoDeMatricula extends ItemRequerimento {
 

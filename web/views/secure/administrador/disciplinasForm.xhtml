@@ -20,7 +20,7 @@
 
             <p:commandButton value="#{msg.excluir}"
                              styleClass="formToolbarButtons"
-                             update="tableDisciplinas :excluiDisciplinaForm"
+                             update=":excluiDisciplinaForm"
                              disabled="#{!disciplinaBean.selecionado}"
                              oncomplete="PF('excluirDisciplinaDialog').show()"
                              process="@this" />
@@ -65,7 +65,7 @@
                      selection="#{disciplinaBean.itemSelecionado}"
                      paginatorPosition="bottom"
                      rows="10" pageLinks="5">
-            <p:ajax event="rowSelect" listener="#{disciplinaBean.selecionaItem}" update=":arquivosTab:disciplinasForm:disciplinasToolbar" />
+            <p:ajax event="rowSelect" update=":arquivosTab:disciplinasForm:disciplinasToolbar" listener="#{disciplinaBean.selecionaItem}" />
             <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
                 <h:outputText value="#{disciplinaItem.codigo}" />
             </p:column>

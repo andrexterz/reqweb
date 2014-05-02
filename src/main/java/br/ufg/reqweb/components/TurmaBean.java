@@ -96,7 +96,7 @@ public class TurmaBean implements Serializable {
         termoBusca = "";
         turmas = new LazyDataModel<Turma>() {
             
-            private List<Turma> dataSource;
+            private List<Turma> data;
 
             @Override
             public Object getRowKey(Turma turma) {
@@ -105,7 +105,7 @@ public class TurmaBean implements Serializable {
 
             @Override
             public Turma getRowData(String key) {
-                for (Turma t: dataSource) {
+                for (Turma t: data) {
                     if (t.getId().toString().equals(key)) {
                         return t;
                     }
@@ -118,27 +118,27 @@ public class TurmaBean implements Serializable {
                 setPageSize(pageSize);
 
                 if (periodo != null) {
-                    dataSource = turmaDao.find(termoBusca, periodo);
-                    setRowCount(dataSource.size());
+                    data = turmaDao.find(termoBusca, periodo);
+                    setRowCount(data.size());
                 } else {
                     if (termoBusca.equals("")) {
-                        dataSource = turmaDao.find(first, pageSize);
+                        data = turmaDao.find(first, pageSize);
                         setRowCount(turmaDao.count());
                     } else {
-                        dataSource = turmaDao.find(termoBusca);
-                        setRowCount(dataSource.size());
+                        data = turmaDao.find(termoBusca);
+                        setRowCount(data.size());
                     }
 
                 }
-                if (dataSource.size() > pageSize) {
+                if (data.size() > pageSize) {
                     try {
-                        return dataSource.subList(first, first + pageSize);
+                        return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                         return dataSource.subList(first, first + (dataSource.size() % pageSize));
+                         return data.subList(first, first + (data.size() % pageSize));
                     }
                     
                 }
-                return dataSource;
+                return data;
             }
         };
     }

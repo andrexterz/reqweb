@@ -6,13 +6,13 @@
         <p:confirmDialog id="dlgExclRequerimentoDialog" widgetVar="excluirRequerimentoDialog"
                          appendTo="@(body)" width="360" 
                          header="#{msg.excluir} #{msg.requerimento}"
-                         message="#{msg.excluir} #{msg.requerimento} #{requerimentoBean.itemSelecionado.tipoRequerimento}?" severity="alert">
+                         message="#{msg.excluir} #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}?" severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaExclRequerimento" value="#{msg.sim}"
                                  oncomplete="PF('excluirRequerimentoDialog').hide()"
                                  action="#{requerimentoBean.excluiRequerimento}"
                                  process="@this"
-                                 update=":requerimentoForm:requerimentoToolbar :requerimentoForm:tableRequerimentos :formHeader:systemMessages" />
+                                 update=":requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar :formHeader:systemMessages" />
                 <p:commandButton id="cancelaExclRequerimento"
                                  value="#{msg.nao}"
                                  onclick="PF('excluirRequerimentoDialog').hide()" 

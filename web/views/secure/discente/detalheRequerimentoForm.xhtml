@@ -3,11 +3,12 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:form id="detalheRequerimentoForm">
-        <p:confirmDialog id="dlgDetalheRequerimentoDialog" widgetVar="detalheRequerimentoDialog"
-                         appendTo="@(body)" width="380" 
-                         header="#{msg.atendimento}: #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}"
-                         message="#{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}" severity="info">
+    <p:dialog id="dlgDetalheRequerimentoDialog" widgetVar="detalheRequerimentoDialog"
+              appendTo="@(body)" width="480" height="360" resizable="false" modal="true">
+        <f:facet name="header">
+            <h:outputText value="#{msg.atendimento}: #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}" />
+        </f:facet>
+        <h:form id="detalheRequerimentoForm">            
             <h:panelGroup layout="block" styleClass="infoDialogBox">
                 <h:panelGrid columns="2" styleClass="formGrid">
                     <h:column>
@@ -33,26 +34,49 @@
                         </h:outputText>
                     </h:column>
                 </h:panelGrid>
-                <p:dataTable value="#{requerimentoBean.itemSelecionado.atendimentoList}"
-                             emptyMessage="#{msg.emptyMessage}"
-                             var="atendimentoItem">
-                    <p:column headerText="#{msg.atendente}">
-                        <h:outputText value="#{atendimentoItem.atendente.nome}" />
-                    </p:column>
-                    <p:column headerText="#{msg.dataModificacao}">
-                        <h:outputText value="#{atendimentoItem.dataAtendimento}">
-                            <f:convertDateTime locale="#{localeBean.locale}" />
-                        </h:outputText>
-                    </p:column>
-                </p:dataTable>
+                <p:dataGrid value="#{requerimentoBean.atendimentos}"
+                            var="atendimentoItem"
+                            emptyMessage="#{msg.emptyMessage}"
+                            paginator="true"
+                            rows="1"
+                            columns="1"
+                            paginatorPosition="top">
+                    <f:facet name="header">
+                        <h:outputText value="#{msg.atendimento}" />
+                    </f:facet>
+                    <p:panel styleClass="table100">
+                        <p:panelGrid styleClass="formGrid rowStriped">
+                            <p:row>
+                                <p:column headerText="#{msg.atendente}" styleClass="col75 colLeft">
+                                    <h:outputLabel value="#{msg.atendente}: " />
+                                    <h:outputText value="#{atendimentoItem.atendente.nome}" />
+                                </p:column>
+                                <p:column headerText="#{msg.data}" styleClass="col25 colRight">
+                                    <h:outputLabel value="#{msg.data}: " />
+                                    <h:outputText value="#{atendimentoItem.dataAtendimento}">
+                                        <f:convertDateTime locale="#{localeBean.locale}" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <h:inputTextarea value="#{atendimentoItem.observacao}"
+                                                     rows="8"
+                                                     readonly="true"
+                                                     styleClass="observacao" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </p:dataGrid> 
             </h:panelGroup>
-            <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="cancelaDetalheRequerimento"
                                  value="#{msg.fechar}"
                                  onclick="PF('detalheRequerimentoDialog').hide()" 
                                  type="button" /> 
             </h:panelGroup>
-        </p:confirmDialog>
-    </h:form>        
+        </h:form>                    
+    </p:dialog>
 </ui:composition>
 

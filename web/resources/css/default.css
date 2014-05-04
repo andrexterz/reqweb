@@ -93,6 +93,113 @@ input[type="text"], input[type="password"], select {
     color: #333;
 }
 
+/*********************************** generic tables ***************************/
+.table100 {
+    width: 100%;
+    border-collapse:collapse;
+    border:none;
+    padding: 0;
+}
+
+.rowStriped {
+}
+
+.rowStriped tr:nth-child(2n+1) {
+    background: #dfdfdf;
+}
+
+.rowStriped tr:nth-child(2n+2) {
+    background: #f5f5f5;
+}
+
+.colLeft {
+    text-align: left;
+}
+
+.colRight {
+    text-align: right;
+}
+
+.colCenter {
+    text-align: center;
+}
+
+.col5 {
+    width: 5%;
+}
+
+.col10 {
+    width: 10%
+}
+
+.col15 {
+    width: 15%;
+}
+
+.col20 {
+    width: 20%;
+}
+
+.col25 {
+    width: 25%;
+}
+
+.col30 {
+    width: 30%;
+}
+
+.col35 {
+    width: 35%;
+}
+
+.col40 {
+    width: 40%;
+}
+
+.col45 {
+    width: 45%;
+}
+
+.col50 {
+    width: 50%;
+}
+
+.col55 {
+    width: 55%;
+}
+
+.col60 {
+    width: 60%;
+}
+
+.col65 {
+    width: 65%;
+}
+
+.col70 {
+    width: 70%;
+}
+
+.col75 {
+    width: 75%;
+}
+
+.col80 {
+    width: 80%;
+}
+
+.col85 {
+    width: 85%;
+}
+
+.col90 {
+    width: 90%;
+}
+
+.col95 {
+    width: 95%;
+}
+
 /*********************************** header ***********************************/
 #header {
     position: absolute;
@@ -650,6 +757,15 @@ input[type="text"], input[type="password"], select {
 .requerimentoColE {
     width: 30%;
     text-align: right;
+}
+
+.observacao {
+    list-style: none;
+    color: firebrick;
+    font-weight: normal;
+    font-size: 1.3em!important;
+    text-align: left;
+    resize: none;
 }
 /************************************ forms ***********************************/
 .formBody {

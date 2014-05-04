@@ -4,7 +4,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento.tipoLocale}</ui:define>
+    <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipoLocale: msg.requerimentos}</ui:define>
     <ui:define name="content">
         <script>
             $(document).ready(function() {
@@ -20,6 +20,7 @@
             <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
+                                 disabled="#{requerimentoBean.tipoRequerimento == null}"
                                  action="#{requerimentoBean.novoRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
@@ -38,7 +39,8 @@
                 <p:commandButton value="#{msg.atendimento}"
                                  disabled="#{requerimentoBean.selecionado== false}"
                                  oncomplete="detalheRequerimentoDialog.show()"
-                                 update=":detalheRequerimentoForm" />
+                                 actionListener="#{requerimentoBean.findAtendimentos}"
+                                 update=":dlgDetalheRequerimentoDialog" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />

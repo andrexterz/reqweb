@@ -46,6 +46,14 @@ public class Atendimento extends BaseModel {
     }
     
     /**
+     * 
+     * @param requerimento 
+     */
+    public void setRequerimento(Requerimento requerimento) {
+        this.requerimento = requerimento;
+    }
+    
+    /**
      * @return the atendente
      */
     public Usuario getAtendente() {

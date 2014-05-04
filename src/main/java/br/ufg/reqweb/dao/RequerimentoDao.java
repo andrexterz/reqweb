@@ -5,14 +5,15 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.ItemRequerimento;
+import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -61,8 +62,7 @@ public class RequerimentoDao {
     public Requerimento findById(Long id) {
         try {
             Requerimento requerimento = (Requerimento) this.sessionFactory.getCurrentSession().get(Requerimento.class, id);
-            Set<ItemRequerimento> requerimentoItems = requerimento.getItemRequerimentoList();
-            Hibernate.initialize(requerimentoItems);
+            Hibernate.initialize(requerimento.getItemRequerimentoList());
             return requerimento;
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -289,9 +289,65 @@ public class RequerimentoDao {
     }
 
     @Transactional(readOnly = true)
+    public List<Requerimento> find(int first, int pageSize, String sortField, String sortOrder, Map<String, Object> filters) {
+        if (filters == null) filters = new HashMap();
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Requerimento.class);
+            for (String field : filters.keySet()) {
+                /**
+                 * login eq / tipoRequerimento eq / termo like / dataCriacao between
+                 */
+                if (field.equals("login")) {
+                    criteria.createAlias("discente", "d");
+                    criteria.add(Restrictions.eq("d.login", filters.get(field)));
+                }
+                if (field.equals("tipoRequerimento")) {
+                    criteria.add(Restrictions.eq(field, filters.get(field)));
+                }
+                if (field.equals("termo")) {
+                    criteria.createAlias("discente", "d");
+                    criteria.add(Restrictions.or(Restrictions.eq("d.matricula", filters.get("termo")),
+                            Restrictions.like("d.nome",filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()))
+                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                }
+                if (field.equals("dataCriacao")) {
+                    Date[] arrayDate = (Date[]) filters.get("dataCriacao");
+                    criteria.add(Restrictions.and(Restrictions.between("dataCriacao", arrayDate[0], arrayDate[1])));
+                }
+            }
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            criteria.setFirstResult(first);
+            criteria.setMaxResults(pageSize);
+            return criteria.list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public List<Requerimento> findAll() {
         try {
             return this.sessionFactory.getCurrentSession().createQuery("FROM Requerimento r").list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Atendimento> findAtendimento(Requerimento requerimento) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Atendimento.class);
+            criteria.add(Restrictions.eq("requerimento", requerimento));
+            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

@@ -20,11 +20,15 @@
                                 value="#{tipoRequerimentoItem}" />
                         </h:commandLink>
                     </c:forEach>
-                    <h:link id="requerimentosLnk"
-                            outcome="requerimentos"
-                            value="#{msg.requerimentos}"
-                            styleClass="requerimentos">
-                    </h:link>
+                    <h:commandLink id="requerimentosLnk"
+                                   action="requerimentos?faces-redirect=true"
+                                   value="#{msg.requerimentos}"
+                                   styleClass="requerimentos">
+                        <f:setPropertyActionListener
+                            target="#{requerimentoBean.tipoRequerimento}"
+                            value="#{null}" />
+
+                    </h:commandLink>
                 </h:panelGrid>
             </h:form>
         </ui:define>

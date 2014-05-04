@@ -3,35 +3,33 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:panelGrid id="requerimentoDlgPanel" columns="1" styleClass="formGrid">
-        <p:column>
-            <h:outputLabel value="#{msg.copias}" />
-        </p:column>
-        <p:column>
-            <p:spinner id="numeroCopias" value="#{itemRequerimento.numeroCopias}"
-                       maxlength="2"
-                       min="1" max="2" styleClass="defaultInput" />
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{msg.status}" />
-        </p:column>
-        <p:column>
-            <p:selectOneButton value="#{itemRequerimento.status}">
-                <f:selectItem itemLabel="#{msg.aberto}"
-                              itemValue="ABERTO" />
-                <f:selectItem itemLabel="#{msg.deferido}"
-                              itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-                <f:selectItem itemLabel="#{msg.indeferido}"
-                              itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-            </p:selectOneButton>                            
-        </p:column>
-        <p:column>
-            <h:outputLabel value="#{msg.observacao}" />
-        </p:column>
-        <p:column>
-            <p:inputTextarea rows="5" cols="32" autoResize="false"
-                             value="#{requerimentoBean.requerimento.observacao}" />
-        </p:column>
-    </p:panelGrid>
+    <p:column>
+        <h:outputLabel value="#{msg.copias}" />
+    </p:column>
+    <p:column>
+        <p:spinner id="numeroCopias" value="#{itemRequerimento.numeroCopias}"
+                   maxlength="2"
+                   min="1" max="2" styleClass="defaultInput" />
+    </p:column>
+    <p:column>
+        <h:outputLabel value="#{msg.status}" />
+    </p:column>
+    <p:column>
+        <p:selectOneButton value="#{itemRequerimento.status}">
+            <f:selectItem itemLabel="#{msg.aberto}"
+                          itemValue="ABERTO" />
+            <f:selectItem itemLabel="#{msg.deferido}"
+                          itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+            <f:selectItem itemLabel="#{msg.indeferido}"
+                          itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+        </p:selectOneButton>                            
+    </p:column>
+    <p:column>
+        <h:outputLabel value="#{msg.observacao}" />
+    </p:column>
+    <p:column>
+        <p:inputTextarea rows="5" cols="32" autoResize="false"
+                         value="#{requerimentoBean.requerimento.observacao}" />
+    </p:column>
 </ui:composition>
 

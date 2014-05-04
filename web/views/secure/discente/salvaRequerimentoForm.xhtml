@@ -15,14 +15,14 @@
             <!--validacao do lado do servidor utilizando beanValidator -->
             <!--tag anula Validation PhaseListener do JSF -->
             <f:validateBean disabled="true">
-                <c:choose>
-                    <c:when  test="#{requerimentoBean.operation == 'e'}">
-                        <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
-                    </c:when>
-                    <c:otherwise>
+                <p:panelGrid id="requerimentoDlgPanel" columns="1" styleClass="formGrid">
+                    <c:if test="#{requerimentoBean.tipoRequerimento != null and requerimentoBean.operation == 'a'}">
                         <ui:include src="#{requerimentoBean.tipoRequerimento.tipo}Item.xhtml" />
-                    </c:otherwise>
-                </c:choose>
+                    </c:if>
+                    <c:if  test="#{requerimentoBean.operation == 'e'}">
+                        <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
+                    </c:if>
+                </p:panelGrid>
                 <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                     <p:commandButton value="#{msg.salvar}"
                                      process="@form"

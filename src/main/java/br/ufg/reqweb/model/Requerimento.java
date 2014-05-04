@@ -95,6 +95,9 @@ public class Requerimento extends BaseModel {
      */
     public void setAtendimentoList(List<Atendimento> atendimentoList) {
         this.atendimentoList = atendimentoList;
+        for (Atendimento atendimento: atendimentoList) {
+            atendimento.setRequerimento(this);
+        }
     }
 
     /**

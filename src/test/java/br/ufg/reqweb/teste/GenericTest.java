@@ -43,18 +43,8 @@ public class GenericTest {
 
     @Test
     public void testExpressions() {
-        boolean T, R, D;
-        T = false;
-        R = true;
-        D = false;
-        if (T == true && R == false && D == false) {
-            System.out.println("search by termoBusca");
-        } else if (T == false && R == true && D == false) {
-            System.out.println("search by Requerimento");
-        } else if (T == false && R == false && D == true) {
-            System.out.println("search by Data");
-        } else {
-            System.out.println("search all");
-        }
+        String y = "";
+        System.out.println(y.isEmpty());
+        
     }
 }

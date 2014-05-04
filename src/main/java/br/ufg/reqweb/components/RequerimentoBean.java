@@ -7,6 +7,7 @@ package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.RequerimentoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
 import br.ufg.reqweb.model.ExtratoAcademico;
 import br.ufg.reqweb.model.PerfilEnum;
@@ -65,6 +66,7 @@ public class RequerimentoBean implements Serializable {
     private TipoRequerimentoEnum tipoRequerimentoBusca;
     private String termoBuscaDiscente;
     private String termoBuscaPeriodo;
+    private List<Atendimento> atendimentos;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
 
     public enum TipoBusca {
@@ -99,6 +101,7 @@ public class RequerimentoBean implements Serializable {
         termoBuscaDiscente = "";
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.DATA_PERIODO;
+        atendimentos = new ArrayList<>();
 
         requerimentosDataModel = new LazyDataModel<Requerimento>() {
             private List<Requerimento> data;
@@ -117,10 +120,9 @@ public class RequerimentoBean implements Serializable {
                 }
                 return null;
             }
-            
+
             @Override
             public List<Requerimento> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                System.out.println(String.format("sortField: %s, sortOrder: %s", sortField, sortOrder));
                 String order;
                 switch (sortOrder.name()) {
                     case "ASCENDING":
@@ -134,10 +136,47 @@ public class RequerimentoBean implements Serializable {
                         break;
                 }
                 setPageSize(pageSize);
+
+                //testando novo filtro
+                Map<String, Object> filtros = new HashMap();
+                if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+                    filtros.put("login", getLoginUsuario());
+                }
+                if (getTipoRequerimento() != null) {
+                    filtros.put("tipoRequerimento", getTipoRequerimento());
+                }
+                if (getTipoBusca().equals(TipoBusca.TIPO_REQUERIMENTO) && getTipoRequerimentoBusca() != null) {
+                    filtros.put("tipoRequerimento", getTipoRequerimentoBusca());
+                } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && (getTermoBuscaDiscente() != null && !getTermoBuscaDiscente().isEmpty())) {
+                    filtros.put("termo", getTermoBuscaDiscente());
+                } else if (getTipoBusca().equals(TipoBusca.DATA_PERIODO) && (getTermoBuscaPeriodo() != null && !getTermoBuscaPeriodo().isEmpty())) {
+                    Pattern pattDateA = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}");
+                    Matcher matcherA = pattDateA.matcher(termoBuscaPeriodo);
+
+                    Pattern pattDateB = Pattern.compile("\\d{2}/\\d{2}/\\d{4}$");
+                    Matcher matcherB = pattDateB.matcher(getTermoBuscaPeriodo());
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    if (matcherA.find() && matcherB.find()) {
+                        try {
+                            Date dateA = formatter.parse(matcherA.group());
+                            Date dateB = formatter.parse(matcherB.group());
+                            filtros.put("dataCriacao", new Date[]{dateA, dateB});
+                        } catch (ParseException e) {
+                            System.out.println("error formatter " + e.getLocalizedMessage());
+                            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    LocaleBean.getMessageBundle().getString("dataInvalida"), null);
+                            FacesContext.getCurrentInstance().addMessage(null, msg);
+                        }
+                    }
+                }
+                data = requerimentoDao.find(first, pageSize, sortField, order, filtros);
+                setRowCount(requerimentoDao.count());
+                /*
                 if (getTipoBusca().equals(TipoBusca.TIPO_REQUERIMENTO) && getTipoRequerimentoBusca() != null) {
                     System.out.println("tipo de busca: " + getTipoBusca());
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario(), tipoRequerimentoBusca, sortField, order);
+                        data = requerimentoDao.find(getLoginUsuario(), tipoRequerimentoBusca, sortField, order);
                     } else {
                         data = requerimentoDao.find(tipoRequerimentoBusca, sortField, order);
                     }
@@ -145,7 +184,7 @@ public class RequerimentoBean implements Serializable {
                 } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && !getTermoBuscaDiscente().isEmpty()) {
                     System.out.println("tipo de busca: " + getTipoBusca());
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario(), sortField, order);
+                        data = requerimentoDao.find(getLoginUsuario(), sortField, order);
                     } else {
                         data = requerimentoDao.find(termoBuscaDiscente, sortField, order);
                     }
@@ -164,7 +203,7 @@ public class RequerimentoBean implements Serializable {
                             Date dateA = formatter.parse(matcherA.group());
                             Date dateB = formatter.parse(matcherB.group());
                             if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                                data = requerimentoDao.find(getNomeUsuario(), dateA, dateB, sortField, order);
+                                data = requerimentoDao.find(getLoginUsuario(), dateA, dateB, sortField, order);
                             } else {
                                 data = requerimentoDao.find(dateA, dateB, sortField, order);
                             }
@@ -179,8 +218,8 @@ public class RequerimentoBean implements Serializable {
                     }
                 } else {
                     if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                        data = requerimentoDao.find(getNomeUsuario(), first, pageSize, sortField, order);
-                        setRowCount(requerimentoDao.count(getNomeUsuario()));
+                        data = requerimentoDao.find(getLoginUsuario(), first, pageSize, sortField, order);
+                        setRowCount(requerimentoDao.count(getLoginUsuario()));
                         System.out.println("tipo de busca: ALL, but filtering DISCENTE");
                     } else {
                         data = requerimentoDao.find(first, pageSize, sortField, order);
@@ -188,6 +227,7 @@ public class RequerimentoBean implements Serializable {
                         System.out.println("tipo de busca: ALL");
                     }
                 }
+                */
                 if (data.size() > pageSize) {
                     try {
                         return data.subList(first, first + pageSize);
@@ -266,7 +306,7 @@ public class RequerimentoBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        String loginUser = getNomeUsuario();
+        String loginUser = getLoginUsuario();
         System.out.println("req: " + requerimento);
         requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
 
@@ -279,7 +319,7 @@ public class RequerimentoBean implements Serializable {
             ExtratoAcademico item = (ExtratoAcademico) sessionMap.get("itemRequerimento");
             requerimento.addItemRequerimento(item);
         }
-        
+
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
         if (errors.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
@@ -321,7 +361,16 @@ public class RequerimentoBean implements Serializable {
         }
     }
 
-    public String getNomeUsuario() {
+    public void findAtendimentos() {
+        if (isSelecionado()) {
+            atendimentos = requerimentoDao.findAtendimento(itemSelecionado);
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemSelecionar"), null);
+            FacesContext.getCurrentInstance().addMessage(null,msg);
+        }
+    }
+
+    public String getLoginUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getLogin();
     }
@@ -449,12 +498,15 @@ public class RequerimentoBean implements Serializable {
         return termoBuscaPeriodo;
     }
 
-
-/**
- * @param termoBuscaPeriodo the termoBuscaPeriodo to set
- */
-public void setTermoBuscaPeriodo(String termoBuscaPeriodo) {
+    /**
+     * @param termoBuscaPeriodo the termoBuscaPeriodo to set
+     */
+    public void setTermoBuscaPeriodo(String termoBuscaPeriodo) {
         this.termoBuscaPeriodo = termoBuscaPeriodo;
+    }
+
+    public List<Atendimento> getAtendimentos() {
+        return atendimentos;
     }
 
     public LazyDataModel<Requerimento> getRequerimentosDataModel() {

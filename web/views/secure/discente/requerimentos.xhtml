@@ -8,7 +8,7 @@
     <ui:define name="content">
         <script>
             $(document).ready(function() {
-                var widgetId = ["#discenteMenuLinks\\:", "#{requerimentoBean.tipoRequerimento.tipo}", "Lnk"].join("");
+                var widgetId = ["#discenteMenuLinks\\:", "#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipo: 'requerimentos'}", "Lnk"].join("");
                 $(widgetId).addClass("menuItemSelected");
                 console.log(widgetId);
             });
@@ -46,7 +46,6 @@
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />
                     <p:selectOneButton styleClass="searchBoxMenu"
                                        id="searchType"
-                                       disabled="#{requerimentoBean.tipoRequerimento != null}"
                                        value="#{requerimentoBean.tipoBusca}">
                         <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"
                                        var="tipoBuscaItem"
@@ -57,6 +56,7 @@
                     <p:autoComplete id="requerimentoTipoRequerimento"
                                     completeMethod="#{requerimentoBean.findTipoRequerimento}"
                                     value="#{requerimentoBean.tipoRequerimentoBusca}"
+                                    disabled="#{requerimentoBean.tipoRequerimento != null}"
                                     minQueryLength="4"
                                     forceSelection="true"
                                     styleClass="searchBoxAutocomplete"

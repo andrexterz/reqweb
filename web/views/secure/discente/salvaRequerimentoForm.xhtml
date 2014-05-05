@@ -7,6 +7,7 @@
     <p:dialog id="dlgRequerimentoForm" modal="true"
               widgetVar="dlgRequerimentoVar" width="360" height="280"
               resizable="false" appendTo="@(body)">
+        <p:ajax event="close" listener="#{requerimentoBean.cancelRequerimento}"/>
         <f:facet name="header">
             <h:outputText value="#{msg.novo} #{msg.requerimento}: #{requerimentoBean.tipoRequerimento.tipoLocale}" rendered="#{requerimentoBean.operation == 'a'}" />
             <h:outputText value="#{msg.editar} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'e'}" />

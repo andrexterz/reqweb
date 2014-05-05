@@ -9,7 +9,7 @@
     <p:column>
         <p:selectOneButton value="#{itemRequerimento.status}">
             <f:selectItem itemLabel="#{msg.aberto}"
-                          itemValue="ABERTO" />
+                          itemValue="ABERTO" itemDisabled="#{itemRequerimento.status != 'ABERTO'}" />
             <f:selectItem itemLabel="#{msg.deferido}"
                           itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
             <f:selectItem itemLabel="#{msg.indeferido}"

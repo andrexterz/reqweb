@@ -69,7 +69,6 @@ public class TurmaBean implements Serializable {
 
     private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private Turma turma;
-    private Usuario docente;
     private Periodo periodo;
     private Turma itemSelecionado;
     private Turma itemPreviewSelecionado;
@@ -82,19 +81,18 @@ public class TurmaBean implements Serializable {
     private boolean saveStatus;
     private volatile boolean stopImportaTurmas;
     private Map<Long, Turma> turmaListPreview;
-    private final LazyDataModel turmas;
+    private final LazyDataModel turmasDataModel;
 
     public TurmaBean() {
         turmaListPreview = new HashMap();
         turma = new Turma();
-        docente = null;
         periodo = null;
         operation = null;
         saveStatus = false;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         termoBusca = "";
-        turmas = new LazyDataModel<Turma>() {
+        turmasDataModel = new LazyDataModel<Turma>() {
             
             private List<Turma> data;
 
@@ -146,7 +144,6 @@ public class TurmaBean implements Serializable {
     public void novaTurma() {
         setOperation(ADICIONA);
         turma = new Turma();
-        setDocente(null);
     }
 
     public void editaTurma() {
@@ -156,7 +153,6 @@ public class TurmaBean implements Serializable {
         } else {
             setOperation(EDITA);
             turma = getItemSelecionado();
-            setDocente(turma.getDocente());
             FacesContext context = FacesContext.getCurrentInstance();
         }
     }
@@ -210,7 +206,6 @@ public class TurmaBean implements Serializable {
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         try {
-            turma.setDocente(docente);
             Set<ConstraintViolation<Turma>> errors = validator.validate(turma);
             saveStatus = errors.isEmpty();
             if (saveStatus) {
@@ -235,14 +230,6 @@ public class TurmaBean implements Serializable {
     public void selecionaItemPreview(SelectEvent event) {
         itemPreviewSelecionado = (Turma) event.getObject();
 
-    }
-
-    public void autoCompleteSelecionaPeriodo(SelectEvent event) {
-        try {
-            periodo = (Periodo) event.getObject();
-        } catch (NullPointerException e) {
-            periodo = null;
-        }
     }
 
     public StreamedContent getTurmasAsCSV() {
@@ -359,12 +346,32 @@ public class TurmaBean implements Serializable {
         }
     }
 
+    public void autoCompleteSelecionaDisciplina(SelectEvent event) {
+        try {
+            turma.setDisciplina((Disciplina) event.getObject());
+        } catch (NullPointerException e) {
+            turma.setDisciplina(null);
+        }
+    }
+
     public void autoCompleteSelecionaDocente(SelectEvent event) {
         try {
-            docente = (Usuario) event.getObject();
+            turma.setDocente((Usuario) event.getObject());
         } catch (NullPointerException e) {
-            docente = null;
+            turma.setDocente(null);
         }
+    }
+    
+    public void autoCompleteSelecionaPeriodo(SelectEvent event) {
+        try {
+            periodo = (Periodo) event.getObject();
+        } catch (NullPointerException e) {
+            periodo = null;
+        }
+    }
+    
+    public List<Turma> findTurma(String query) {
+        return turmaDao.find(query);
     }
 
     public Turma getTurma() {
@@ -373,14 +380,6 @@ public class TurmaBean implements Serializable {
 
     public void setTurma(Turma turma) {
         this.turma = turma;
-    }
-
-    public Usuario getDocente() {
-        return docente;
-    }
-
-    public void setDocente(Usuario docente) {
-        this.docente = docente;
     }
 
     public Periodo getPeriodo() {
@@ -451,7 +450,7 @@ public class TurmaBean implements Serializable {
         return turmaListPreview.size() > 0;
     }
 
-    public LazyDataModel getTurmas() {
-        return turmas;
+    public LazyDataModel getTurmasDataModel() {
+        return turmasDataModel;
     }
 }

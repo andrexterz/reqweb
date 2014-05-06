@@ -98,4 +98,9 @@ public class Turma extends BaseModel {
             this.docente = null;
         }
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s: %s", getDisciplina().getNome(), getNome());
+    }
 }

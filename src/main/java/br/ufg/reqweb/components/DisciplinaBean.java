@@ -227,6 +227,16 @@ public class DisciplinaBean implements Serializable {
     public void selecionaItemPreview(SelectEvent event) {
         itemPreviewSelecionado = (Disciplina) event.getObject();
     }
+    
+    /**
+     * 
+     * @param query
+     * @return the List<Disciplina>
+     * method for autocomplete widget
+     */
+    public List<Disciplina> findDisciplina(String query) {
+        return disciplinaDao.find(query);
+    }
 
     public void autoCompleteSelecionaCurso(SelectEvent event) {
         try {

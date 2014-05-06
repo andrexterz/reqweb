@@ -14,6 +14,7 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -84,7 +85,7 @@ public class DisciplinaDao {
             } else {
                 disciplinas = this.sessionFactory.getCurrentSession()
                         .createCriteria(Disciplina.class)
-                        .add(Restrictions.like("nome", "%" + termo.toUpperCase() + "%"))
+                        .add(Restrictions.like("nome",termo, MatchMode.ANYWHERE).ignoreCase())
                         .add(Restrictions.eq("curso.id", curso.getId()))
                         .list();
             }
@@ -100,7 +101,7 @@ public class DisciplinaDao {
         try {
             List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
                     .createCriteria(Disciplina.class)
-                    .add(Restrictions.like("nome", "%" + termo.toUpperCase() + "%"))
+                    .add(Restrictions.like("nome",termo, MatchMode.ANYWHERE).ignoreCase())
                     .list();
             return disciplinas;
         } catch (HibernateException | NumberFormatException e) {

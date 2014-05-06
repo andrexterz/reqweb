@@ -8,7 +8,7 @@
         <f:facet name="header">
             <h:outputText value="#{msg.atendimento}: #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}" />
         </f:facet>
-        <h:form id="detalheRequerimentoForm">            
+        <h:form id="detalheeRequerimentoForm">            
             <h:panelGroup layout="block" styleClass="infoDialogBox">
                 <h:panelGrid columns="2" styleClass="formGrid">
                     <h:column>
@@ -37,11 +37,11 @@
                 <p:accordionPanel>
                     <p:tab title="#{msg.requerimentos}">
                         <p:dataTable value="#{requerimentoBean.itemRequerimentoSelecionadoList}" var="itemRequerimento">
-                            <p:column headerText="#{msg.requerimento}">
-                                #{itemRequerimento.requerimento.tipoRequerimento.tipoLocale}
+                            <p:column headerText="#{msg.requerimento}" styleClass="colCenter">
+                                <h:outputText value="#{itemRequerimento.requerimento.tipoRequerimento.tipoLocale}" />
                             </p:column>
-                            <p:column headerText="#{msg.status}">
-                                #{itemRequerimento.status.status}
+                            <p:column headerText="#{msg.status}" styleClass="colCenter">
+                                <h:outputText value="#{itemRequerimento.status.status}" />
                             </p:column>
                         </p:dataTable>
                     </p:tab>

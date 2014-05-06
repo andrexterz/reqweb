@@ -18,14 +18,14 @@
                     <p:outputLabel for="turmaNome" value="#{msg.turma}"  />
                     <p:inputText value="#{turmaBean.turma.nome}" id="turmaNome" />
                     <p:outputLabel for="disciplinaTurma" value="#{msg.disciplina}"  />
-                    <p:selectOneMenu id="disciplinaTurma"
+                    <p:autoComplete id="disciplinaTurma"
                                      value="#{turmaBean.turma.disciplina}"
-                                     converter="#{disciplinaConverter}">
-                        <f:selectItem itemLabel="#{msg.disciplina}" />
-                        <f:selectItems value="#{disciplinaBean.disciplinas}"
-                                       var="disciplinaItem"
-                                       itemLabel="#{disciplinaItem.nome}" itemValue="#{disciplinaItem}"/>
-                    </p:selectOneMenu>
+                                     converter="#{disciplinaConverter}"
+                                     minQueryLength="3" maxResults="10" var="d"
+                                     itemLabel="#{d.nome}" itemValue="#{d}"
+                                     forceSelection="true" completeMethod="#{disciplinaBean.findDisciplina}">
+                    <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaDisciplina}" />
+                    </p:autoComplete>
                     <p:outputLabel for="periodoTurma" value="#{msg.periodo}" />
                     <p:selectOneMenu id="periodoTurma"
                                      value="#{turmaBean.turma.periodo}"
@@ -37,7 +37,7 @@
                                        itemValue="#{periodoItem}"/>
                     </p:selectOneMenu>
                     <p:outputLabel for="filtroDocente" value="#{msg.docente}" />
-                    <p:autoComplete id="filtroDocente" value="#{turmaBean.docente}"
+                    <p:autoComplete id="filtroDocente" value="#{turmaBean.turma.docente}"
                                     converter="#{usuarioConverter}"
                                     minQueryLength="3" maxResults="10" var="u"
                                     itemLabel="#{u.nome}" itemValue="#{u}"

@@ -27,6 +27,8 @@ public class DeclaracaoDeMatricula extends ItemRequerimento {
         numeroCopias = 1;
         //status
         status = ItemRequerimentoStatusEnum.ABERTO;
+        //tipo item
+        tipoItemRequerimento = TipoItemRequerimentoEnum.DECLARACAO_DE_MATRICULA;
                 
     }
     

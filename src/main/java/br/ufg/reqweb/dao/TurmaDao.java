@@ -69,8 +69,11 @@ public class TurmaDao {
     public List<Turma> find(String termo) {
         try {
             List<Turma> turmas = this.sessionFactory.getCurrentSession()
-                    .createQuery("SELECT t FROM Turma t JOIN t.disciplina d where d.nome LIKE :termo")
-                    .setParameter("termo", "%" + termo.toUpperCase() + "%")
+                    .createCriteria(Turma.class)
+                    .createAlias("disciplina", "d")
+                    .add(Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase())
+                    //.createQuery("SELECT t FROM Turma t JOIN t.disciplina d where d.nome LIKE :termo")
+                    //.setParameter("termo", "%" + termo.toUpperCase() + "%")
                     .list();
             return turmas;
         } catch (HibernateException | NumberFormatException e) {

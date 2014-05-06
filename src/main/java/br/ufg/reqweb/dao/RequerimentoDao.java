@@ -6,6 +6,7 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Atendimento;
+import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
@@ -289,7 +290,7 @@ public class RequerimentoDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Requerimento> find(int first, int pageSize, String sortField, String sortOrder, Map<String, Object> filters) {
+    public List<Requerimento> find(String sortField, String sortOrder, Map<String, Object> filters) {
         if (filters == null) filters = new HashMap();
         try {
             Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Requerimento.class);
@@ -323,8 +324,6 @@ public class RequerimentoDao {
                     criteria.addOrder(Property.forName(sortField).desc());
                 }
             }
-            criteria.setFirstResult(first);
-            criteria.setMaxResults(pageSize);
             return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -342,6 +341,18 @@ public class RequerimentoDao {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<ItemRequerimento> findItemRequerimentoList(Requerimento requerimento) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(ItemRequerimento.class);
+            criteria.add(Restrictions.eq("requerimento", requerimento));
+            return criteria.list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }        
+    }
+    
     @Transactional(readOnly = true)
     public List<Atendimento> findAtendimento(Requerimento requerimento) {
         try {

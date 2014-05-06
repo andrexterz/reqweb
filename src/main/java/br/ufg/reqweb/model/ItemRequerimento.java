@@ -13,6 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -25,12 +27,20 @@ public abstract class ItemRequerimento extends BaseModel {
     
     private static final long serialVersionUID = 1L;
     
+    @Valid
     @ManyToOne
     protected Requerimento requerimento;
     
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character varying(16) default 'ABERTO'")
     protected ItemRequerimentoStatusEnum status;
+    
+    
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "character varying(32)")
+    protected TipoItemRequerimentoEnum tipoItemRequerimento;
+    
     
     /**
      * @return the requerimento
@@ -59,4 +69,22 @@ public abstract class ItemRequerimento extends BaseModel {
     public void setStatus(ItemRequerimentoStatusEnum status) {
         this.status = status;
     }
+    /**
+     * 
+     * @return the tipoItemRequerimento
+     */
+
+    public TipoItemRequerimentoEnum getTipoItemRequerimento() {
+        return tipoItemRequerimento;
+    }
+    
+    /**
+     * 
+     * @param tipoItemRequerimento 
+     */
+
+    public void setTipoItemRequerimento(TipoItemRequerimentoEnum tipoItemRequerimento) {
+        this.tipoItemRequerimento = tipoItemRequerimento;
+    }
+    
 }

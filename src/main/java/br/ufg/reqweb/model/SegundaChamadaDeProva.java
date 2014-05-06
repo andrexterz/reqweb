@@ -10,6 +10,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -25,6 +26,7 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
         tipoItemRequerimento = TipoItemRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA;
     }
     
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Turma turma;
 

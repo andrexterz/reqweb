@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -61,6 +62,7 @@ public class Requerimento extends BaseModel {
     @Column
     private String observacao;
     
+    @Valid
     @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "requerimento", orphanRemoval = true )
     private Set<ItemRequerimento> itemRequerimentoList;

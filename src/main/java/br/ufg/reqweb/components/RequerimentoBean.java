@@ -16,7 +16,12 @@ import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,8 +39,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -356,6 +363,24 @@ public class RequerimentoBean implements Serializable {
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemSelecionar"), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+    }
+    
+    public void loadArquivos() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/uploads/"));
+        List<StreamedContent> fileList = new ArrayList<>();
+        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
+            for (Path pathFile: dirStream) {
+                //args: InputStream, mime type
+                FileInputStream inputStream = new FileInputStream(pathFile.toFile());
+                String mimeType = Files.probeContentType(pathFile);
+                System.out.println(String.format("file: %s --- inputStream: %s -> %s", pathFile.getFileName(), inputStream, mimeType));
+                fileList.add(new DefaultStreamedContent(inputStream, mimeType, pathFile.getFileName().toString()));
+                sessionMap.put("arquivos",fileList);
+            }
+        } catch(Exception e) {
+            System.out.println("error: " + e.getMessage());
         }
     }
 

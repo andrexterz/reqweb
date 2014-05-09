@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.dao;
 
+import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.Requerimento;
@@ -363,6 +364,18 @@ public class RequerimentoDao {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Arquivo> findArquivos(ItemRequerimento itemRequerimento) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Arquivo.class);
+            criteria.add(Restrictions.eq("itemRequerimento", itemRequerimento));
+            return criteria.list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }        
     }
 
     /**

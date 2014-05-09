@@ -4,8 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgUsuarioForm" modal="true"
-              widgetVar="dlgUsuarioVar" width="440" height="320"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgUsuarioVar" width="440" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioEditar}" />
         </f:facet>
@@ -47,7 +46,7 @@
                     <p:column />
                     <p:column>
                         <p:commandButton id="addPerfilButton"
-                                         styleClass="alignRight"
+                                         styleClass="floatRight"
                                          icon="ui-icon-plus"
                                          disabled="#{perfilBean.itemSelecionado == null}"
                                          value="#{msg.adicionar}"

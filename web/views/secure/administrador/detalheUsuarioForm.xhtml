@@ -5,8 +5,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgDetalheUsuarioForm" modal="true"
-              widgetVar="dlgDetalheUsuarioVar" width="420" height="320"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgDetalheUsuarioVar" width="480" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}: #{usuarioBean.itemSelecionado.id}" />
         </f:facet>
@@ -30,7 +29,7 @@
                 </p:row>
                 <p:row>
                     <p:column>
-                        <h:outputText value="#{msg.usuarioNome}" />
+                        <h:outputText value="#{msg.nome}" />
                     </p:column>
                     <p:column>
                         <h:outputText value="#{usuarioBean.itemSelecionado.nome}" />

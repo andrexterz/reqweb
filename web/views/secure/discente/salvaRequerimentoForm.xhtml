@@ -5,7 +5,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgRequerimentoForm" modal="true"
-              widgetVar="dlgRequerimentoVar" width="380" height="280"
+              widgetVar="dlgRequerimentoVar" width="auto"
               resizable="false" appendTo="@(body)">
         <p:ajax event="close" listener="#{requerimentoBean.cancelRequerimento}"/>
         <f:facet name="header">

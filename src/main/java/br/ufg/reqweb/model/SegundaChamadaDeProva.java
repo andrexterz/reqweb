@@ -6,10 +6,12 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,6 +31,10 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private Turma turma;
+    
+    @OneToMany(mappedBy = "itemRequerimento", orphanRemoval = true)
+    private List<Arquivo> arquivos;
+    
 
     /**
      * @return the turma
@@ -43,4 +49,24 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     public void setTurma(Turma turma) {
         this.turma = turma;
     }
+    
+    public List<Arquivo> getArquivos () {
+        return arquivos;
+    }
+
+    public void setArquivos(List<Arquivo> arquivos) {
+        this.arquivos = arquivos;
+    }
+    
+    public void addArquivo(Arquivo arquivo) {
+        arquivos.add(arquivo);
+        arquivo.setItemRequerimento(this);
+    }
+    
+    public void removeArquivo(Arquivo arquivo) {
+        arquivos.remove(arquivo);
+    }
+    
+    
+    
 }

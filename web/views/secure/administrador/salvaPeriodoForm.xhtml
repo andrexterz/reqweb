@@ -4,8 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgPeriodoForm" modal="true"
-              widgetVar="dlgPeriodoVar" width="400" height="240"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgPeriodoVar" width="400" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
             <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
@@ -53,7 +52,7 @@
                         <h:panelGroup layout="block" styleClass="periodoAtivo">
                             <h:outputLabel for="#{periodoBean.periodo.ativo}" value="#{msg.ativo}" />
                             <p:selectBooleanButton value="#{periodoBean.periodo.ativo}"
-                                                   styleClass="alignRight"
+                                                   styleClass="floatRight"
                                                    onLabel="#{msg.sim}"
                                                    offLabel="#{msg.nao}"
                                                    onIcon="ui-icon-check"

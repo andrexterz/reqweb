@@ -2,21 +2,51 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>teste</title>
-        <link type="text/css" rel="stylesheet"
-              href="#{resource['css/default.css']}" />        
-    </h:head>
-    <h:body style="margin-left: 10%; margin-right: 10%; margin-top: 20px;">
-        <h:form id="teste002">
-            <h:panelGroup layout="block" styleClass="infoDialogBox">
-            <p:commandButton value="load images" update="images" actionListener="#{requerimentoBean.loadArquivos}" />                
-                <p:dataList id="images" value="#{arquivos}" var="arq" varStatus="counter">
-                    <p:graphicImage value="#{arq}" />
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+    <ui:composition template="/views/base.xhtml">
+        <ui:define name="content">
+            <h:form id="teste002">
+                <p:commandButton value="load" update="arquivos" actionListener="#{requerimentoBean.findArquivos}" />
+                <p:dataList id="arquivos" value="#{requerimentoBean.arquivos}" var="arq">
+                    <p:commandLink value="#{arq.nomeArquivo}" ajax="false">
+                        <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                        <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                    </p:commandLink>
                 </p:dataList>
-            </h:panelGroup>
-        </h:form>                    
-    </h:body>
+                <p:dataTable id="tableRequerimentos" var="requerimentoItem"
+                             value="#{requerimentoBean.requerimentosDataModel}"
+                             lazy="true"
+                             emptyMessage="#{msg.emptyMessage}"
+                             paginator="true"
+                             selectionMode="single"
+                             selection="#{requerimentoBean.itemSelecionado}"
+                             paginatorPosition="bottom"
+                             rows="10" pageLinks="5">
+                    <p:ajax event="rowSelect" listener="#{requerimentoBean.selecionaItem}" />
+                    <p:column headerText="#{msg.requerimento}" styleClass="requerimentoColA">
+                        <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
+                    </p:column>
+                    <p:column headerText="#{msg.status}" sortBy="status" styleClass="requerimentoColB">
+                        <h:outputText value="#{requerimentoItem.status.statusLocale}" />
+                    </p:column>
+                    <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="requerimentoColC">
+                        <h:outputText value="#{requerimentoItem.dataCriacao}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="requerimentoColD">
+                        <h:outputText value="#{requerimentoItem.dataModificacao}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>                
+            </h:form>                    
+        </ui:define>
+    </ui:composition>
+
 </html>
 

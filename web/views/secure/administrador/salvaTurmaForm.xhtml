@@ -4,8 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgTurmaForm" modal="true"
-              widgetVar="dlgTurmaVar" width="360" height="300"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgTurmaVar" width="360" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.turmaNovo}" rendered="#{turmaBean.operation == 'a'}" />
             <h:outputText value="#{msg.turmaEditar}" rendered="#{turmaBean.operation == 'e'}" />

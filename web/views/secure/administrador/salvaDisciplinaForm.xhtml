@@ -4,8 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgDisciplinaForm" modal="true"
-              widgetVar="dlgDisciplinaVar" width="360" height="340"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgDisciplinaVar" width="360" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.disciplinaNovo}" rendered="#{disciplinaBean.operation == 'a'}" />
             <h:outputText value="#{msg.disciplinaEditar}" rendered="#{disciplinaBean.operation == 'e'}" />

@@ -43,8 +43,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  *
@@ -134,7 +132,6 @@ public class UsuarioBean implements Serializable {
         };
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {

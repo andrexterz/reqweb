@@ -6,6 +6,7 @@
 
 package br.ufg.reqweb.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -17,30 +18,32 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class Arquivo extends BaseModel {
+
+    public Arquivo() {
+    }
+
+    public Arquivo(String nomeArquivo, String caminhoArquivo, String mimetype, SegundaChamadaDeProva itemRequerimento) {
+        this.nomeArquivo = nomeArquivo;
+        this.caminhoArquivo = caminhoArquivo;
+        this.mimetype = mimetype;
+        this.itemRequerimento = itemRequerimento;
+    }
     
     @NotNull
-    private String mimetype;
-    
-    @NotNull
+    @Column
     private String nomeArquivo;
     
     @NotNull
+    @Column
+    private String caminhoArquivo;
+
+    @NotNull
+    @Column
+    private String mimetype;
+    
+    @NotNull
     @ManyToOne
-    private Usuario proprietario;
-
-    /**
-     * @return the mimetype
-     */
-    public String getMimetype() {
-        return mimetype;
-    }
-
-    /**
-     * @param mimetype the mimetype to set
-     */
-    public void setMimetype(String mimetype) {
-        this.mimetype = mimetype;
-    }
+    private SegundaChamadaDeProva itemRequerimento;
 
     /**
      * @return the nomeArquivo
@@ -57,17 +60,44 @@ public class Arquivo extends BaseModel {
     }
 
     /**
-     * @return the proprietario
+     * @return the caminhoArquivo
      */
-    public Usuario getProprietario() {
-        return proprietario;
+    public String getCaminhoArquivo() {
+        return caminhoArquivo;
     }
 
     /**
-     * @param proprietario the proprietario to set
+     * @param caminhoArquivo the caminhoArquivo to set
      */
-    public void setProprietario(Usuario proprietario) {
-        this.proprietario = proprietario;
+    public void setCaminhoArquivo(String caminhoArquivo) {
+        this.caminhoArquivo = caminhoArquivo;
     }
-    
+
+    /**
+     * @return the mimetype
+     */
+    public String getMimetype() {
+        return mimetype;
+    }
+
+    /**
+     * @param mimetype the mimetype to set
+     */
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
+
+    /**
+     * @return the itemRequerimento
+     */
+    public SegundaChamadaDeProva getItemRequerimento() {
+        return itemRequerimento;
+    }
+
+    /**
+     * @param itemRequerimento the itemRequerimento to set
+     */
+    public void setItemRequerimento(SegundaChamadaDeProva itemRequerimento) {
+        this.itemRequerimento = itemRequerimento;
+    }
 }

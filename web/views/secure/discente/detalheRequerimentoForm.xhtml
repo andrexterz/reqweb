@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgDetalheRequerimentoDialog" widgetVar="detalheRequerimentoDialog"
-              appendTo="@(body)" width="520" height="400" resizable="false" modal="true">
+              appendTo="@(body)" width="520" resizable="false" modal="true">
         <f:facet name="header">
             <h:outputText value="#{msg.atendimento}: #{requerimentoBean.itemSelecionado.tipoRequerimento.tipoLocale}: #{requerimentoBean.itemSelecionado.id}" />
         </f:facet>

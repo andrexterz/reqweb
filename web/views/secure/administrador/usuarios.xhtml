@@ -50,9 +50,9 @@
                 </p:menuButton>
 
                 <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />
-                <p:watermark for="usuarioBusca" value="#{msg.usuarioNome}/#{msg.usuarioMatricula}" />
+                <p:watermark for="usuarioBusca" value="#{msg.nome}/#{msg.usuarioMatricula}" />
                 <!-- ao pressionar <return>, o formulario submete o commandButton[id=usuarioBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand alignRight" update="tableUsuarios" />                
+                <p:commandButton style="visibility: hidden;" id="usuarioBuscaCommand"  styleClass="searchCommand floatRight" update="tableUsuarios" />                
                 <p:defaultCommand target="usuarioBuscaCommand" />
 
             </h:panelGroup>
@@ -73,7 +73,7 @@
                 <p:column headerText="#{msg.usuarioMatricula}" styleClass="usuarioColMatricula">
                     <h:outputText value="#{usuarioItem.matricula}" />
                 </p:column>                
-                <p:column headerText="#{msg.usuarioNome}" styleClass="usuarioColNome">
+                <p:column headerText="#{msg.nome}" styleClass="usuarioColNome">
                     <h:outputText value="#{usuarioItem.nome}" />
                 </p:column>
             </p:dataTable>

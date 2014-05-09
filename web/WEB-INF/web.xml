@@ -5,6 +5,10 @@
         <param-value>Development</param-value>
     </context-param>
     <context-param>
+        <param-name>userUploadDir</param-name>
+        <param-value>/uploads</param-value>
+    </context-param>    
+    <context-param>
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
@@ -38,7 +42,6 @@
         <servlet-name>SpringDispatcherServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    
     <filter>
         <filter-name>LoginFilter</filter-name>
         <filter-class>br.ufg.reqweb.auth.LoginFilter</filter-class>
@@ -47,7 +50,6 @@
         <filter-name>LoginFilter</filter-name>
         <url-pattern>/views/secure/*</url-pattern>
     </filter-mapping>
-
     <filter>
         <filter-name>PrimeFacesFileUploadFilter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
@@ -56,7 +58,6 @@
         <filter-name>PrimeFacesFileUploadFilter</filter-name>
         <servlet-name>FacesServlet</servlet-name>
     </filter-mapping>
-
     <servlet>
         <servlet-name>FacesServlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -66,7 +67,6 @@
         <servlet-name>FacesServlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

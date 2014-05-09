@@ -4,8 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgImpIndicePrioridadeForm" modal="true"
-              widgetVar="dlgImpIndicePrioridadeVar" width="80%" height="540"
-              resizable="false" appendTo="@(body)">
+              widgetVar="dlgImpIndicePrioridadeVar" width="80%" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.importar} #{msg.indicePrioridade}" />
         </f:facet>
@@ -86,7 +85,7 @@
                                  disabled="#{indicePrioridadeBean.stopImportaIndicePrioridade}"
                                  oncomplete="progressBarCancel('pbImpIndicePrioridade')"
                                  actionListener="#{indicePrioridadeBean.cancelImpIndicePrioridade}"
-                                 styleClass="alignRight cancel"  />                
+                                 styleClass="floatRight cancel"  />                
             </h:panelGrid>
             <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
                 <p:commandButton id="confirmaImpIndicePrioridade" value="#{msg.importar}"

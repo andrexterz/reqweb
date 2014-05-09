@@ -7,6 +7,7 @@ package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.RequerimentoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
 import br.ufg.reqweb.model.ExtratoAcademico;
@@ -17,8 +18,8 @@ import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +39,9 @@ import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -77,6 +80,9 @@ public class RequerimentoBean implements Serializable {
     private String termoBuscaDiscente;
     private String termoBuscaPeriodo;
     private List<Atendimento> atendimentos;
+    private List<Arquivo> arquivos;
+    private Arquivo arquivo;
+    private boolean arquivoEnviado;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
 
     public enum TipoBusca {
@@ -112,6 +118,9 @@ public class RequerimentoBean implements Serializable {
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.DATA_PERIODO;
         atendimentos = new ArrayList<>();
+        arquivos = new ArrayList<>();
+        arquivo = null;
+        arquivoEnviado = false;
 
         requerimentosDataModel = new LazyDataModel<Requerimento>() {
             private List<Requerimento> data;
@@ -243,7 +252,9 @@ public class RequerimentoBean implements Serializable {
                 sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
             }
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
-                sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
+                ItemRequerimento itemRequerimento = requerimento.getItemRequerimentoList().iterator().next();
+                sessionMap.put("itemRequerimento", itemRequerimento);
+                findArquivos(itemRequerimento);
             }
         }
     }
@@ -255,7 +266,6 @@ public class RequerimentoBean implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove("itemRequerimento");
         System.out.println("cancelando add/update requerimento... ");
-        System.out.println(getTipoRequerimento() + ":" + sessionMap.get("itemRequerimento"));
     }
 
     public void excluiRequerimento() {
@@ -288,7 +298,7 @@ public class RequerimentoBean implements Serializable {
             ExtratoAcademico item = (ExtratoAcademico) sessionMap.get("itemRequerimento");
             requerimento.addItemRequerimento(item);
         }
-        
+
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
             SegundaChamadaDeProva item = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
             requerimento.addItemRequerimento(item);
@@ -365,23 +375,43 @@ public class RequerimentoBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-    
-    public void loadArquivos() {
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/uploads/"));
-        List<StreamedContent> fileList = new ArrayList<>();
-        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
-            for (Path pathFile: dirStream) {
-                //args: InputStream, mime type
-                FileInputStream inputStream = new FileInputStream(pathFile.toFile());
-                String mimeType = Files.probeContentType(pathFile);
-                System.out.println(String.format("file: %s --- inputStream: %s -> %s", pathFile.getFileName(), inputStream, mimeType));
-                fileList.add(new DefaultStreamedContent(inputStream, mimeType, pathFile.getFileName().toString()));
-                sessionMap.put("arquivos",fileList);
-            }
-        } catch(Exception e) {
-            System.out.println("error: " + e.getMessage());
+
+    public void novoArquivo(TabChangeEvent event) {
+        System.out.println("tab changed: " + event.getTab().getId());
+        if (event.getTab().getId().equals("arquivoTab2")) {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            Arquivo arquivoItem = new Arquivo();
+            sessionMap.put("arquivoItem", arquivoItem);
+            System.out.println("novo arquivo --> " + arquivoItem);
+            arquivoEnviado = false;
+        } else {
+            cancelArquivo();
         }
+    }
+    
+    public void cancelArquivo() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Arquivo arquivoItem = new Arquivo();
+        sessionMap.put("arquivoItem", arquivoItem);
+        arquivoEnviado = false;        
+        System.out.println("cancelando add arquivo... ");
+    }
+
+    public void addArquivo() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
+        Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
+        System.out.println("upload dir is -> " + path.resolve(getLoginUsuario()).toString());
+        arquivoEnviado = false;
+    }
+
+    public void uploadArquivo(FileUploadEvent event) {
+        arquivoEnviado = true;
+        //file operations
+    }
+
+    public void findArquivos(ItemRequerimento itemRequerimento) {
+        arquivos = requerimentoDao.findArquivos(itemRequerimento);
     }
 
     public String getLoginUsuario() {
@@ -521,6 +551,36 @@ public class RequerimentoBean implements Serializable {
 
     public List<Atendimento> getAtendimentos() {
         return atendimentos;
+    }
+
+    public List<Arquivo> getArquivos() {
+        return arquivos;
+    }
+
+    public Arquivo getArquivo() {
+        return arquivo;
+    }
+
+    public void setArquivo(Arquivo arquivo) {
+        this.arquivo = arquivo;
+    }
+
+    public boolean isArquivoEnviado() {
+        return arquivoEnviado;
+    }
+
+    public StreamedContent getArquivoContent() {
+        Path filePath = Paths.get(arquivo.getCaminhoArquivo());
+        DefaultStreamedContent content = new DefaultStreamedContent();
+        try {
+            FileInputStream inputStream = new FileInputStream(filePath.toFile());
+            content.setName(arquivo.getNomeArquivo());
+            content.setStream(inputStream);
+            content.setContentType(Files.probeContentType(filePath));
+        } catch (IOException e) {
+            System.out.println("error: " + e.getMessage());
+        }
+        return content;
     }
 
     public LazyDataModel<Requerimento> getRequerimentosDataModel() {

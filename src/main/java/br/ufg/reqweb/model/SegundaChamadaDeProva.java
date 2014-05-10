@@ -6,13 +6,17 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 /**
  *
@@ -32,6 +36,10 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     @ManyToOne(fetch = FetchType.EAGER)
     private Turma turma;
     
+    @Past
+    @Temporal(TemporalType.DATE)
+    private Date dataProva;
+    
     @OneToMany(mappedBy = "itemRequerimento", orphanRemoval = true)
     private List<Arquivo> arquivos;
     
@@ -48,6 +56,20 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
      */
     public void setTurma(Turma turma) {
         this.turma = turma;
+    }
+
+    /**
+     * @return the dataProva
+     */
+    public Date getDataProva() {
+        return dataProva;
+    }
+
+    /**
+     * @param dataProva the dataProva to set
+     */
+    public void setDataProva(Date dataProva) {
+        this.dataProva = dataProva;
     }
     
     public List<Arquivo> getArquivos () {

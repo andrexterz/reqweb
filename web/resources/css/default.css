@@ -776,6 +776,17 @@ input[type="text"], input[type="password"], select {
     resize: none;
 }
 
+.aviso {
+    width: 520px;
+    word-wrap: break-word;
+    color: #ff0000;
+    font-size: 100%!important;
+}
+
+.aviso ul li {
+    padding-bottom: 8pt;
+}
+
 .arquivoBox {
     width: 520px;
     height: 226px;

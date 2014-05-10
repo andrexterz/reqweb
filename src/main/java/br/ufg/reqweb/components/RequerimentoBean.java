@@ -17,21 +17,32 @@ import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -46,6 +57,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -376,38 +388,52 @@ public class RequerimentoBean implements Serializable {
         }
     }
 
-    public void novoArquivo(TabChangeEvent event) {
+    public void novoArquivoTabEvent(TabChangeEvent event) {
         System.out.println("tab changed: " + event.getTab().getId());
         if (event.getTab().getId().equals("arquivoTab2")) {
-            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-            Arquivo arquivoItem = new Arquivo();
-            sessionMap.put("arquivoItem", arquivoItem);
-            System.out.println("novo arquivo --> " + arquivoItem);
-            arquivoEnviado = false;
-        } else {
-            cancelArquivo();
+            novoArquivo();
         }
     }
-    
-    public void cancelArquivo() {
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        Arquivo arquivoItem = new Arquivo();
-        sessionMap.put("arquivoItem", arquivoItem);
-        arquivoEnviado = false;        
-        System.out.println("cancelando add arquivo... ");
-    }
 
-    public void addArquivo() {
+    public void novoArquivo() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
-        Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
-        System.out.println("upload dir is -> " + path.resolve(getLoginUsuario()).toString());
+        Arquivo itemArquivo = new Arquivo();
+        sessionMap.put("itemArquivo", itemArquivo);
+        System.out.println("novo arquivo --> " + itemArquivo);
         arquivoEnviado = false;
     }
 
     public void uploadArquivo(FileUploadEvent event) {
-        arquivoEnviado = true;
-        //file operations
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Arquivo itemArquivo = (Arquivo) sessionMap.get("itemArquivo");
+        SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");        
+
+        String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
+        Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
+        UploadedFile file = event.getFile();
+
+        itemRequerimento.addArquivo(arquivo);
+        
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());        
+        if (itemArquivo.getNomeArquivo().isEmpty()) {
+            itemArquivo.setNomeArquivo(String.format("%1$s%2$F-%2$H%2$M%2$S", file.getFileName(), calendar.getTime()));        
+        } else {
+            itemArquivo.setNomeArquivo(String.format("%1$s%2$F-%2$H%2$M%2$S", itemArquivo.getNomeArquivo(), calendar.getTime()));        
+        }
+        itemArquivo.setMimetype(file.getContentType());
+        itemArquivo.setCaminhoArquivo(String.format("%s/%s/%s", uploadDir, getLoginUsuario(), itemArquivo.getNomeArquivo()));
+        
+        path.resolve(getLoginUsuario()).resolve(itemArquivo.getNomeArquivo());
+        System.out.println("upload dir is -> " + path.toString());
+        try {
+            BufferedWriter newFile = Files.newBufferedWriter(path, Charset.forName("UTF-8"), StandardOpenOption.CREATE);
+            BufferedReader uploadedFile = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
+            newFile.write(uploadedFile.read());
+            arquivoEnviado = true;
+        } catch (IOException ex) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
     public void findArquivos(ItemRequerimento itemRequerimento) {

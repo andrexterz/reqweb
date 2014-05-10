@@ -3,33 +3,46 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:column>
-        <h:outputLabel value="#{msg.copias}" />
-    </p:column>
-    <p:column>
-        <p:spinner id="numeroCopias" value="#{itemRequerimento.numeroCopias}"
-                   maxlength="2"
-                   min="1" max="2" styleClass="defaultInput" />
-    </p:column>
-    <p:column>
-        <h:outputLabel value="#{msg.status}" />
-    </p:column>
-    <p:column>
-        <p:selectOneButton value="#{itemRequerimento.status}">
-            <f:selectItem itemLabel="#{msg.aberto}"
-                          itemValue="ABERTO" />
-            <f:selectItem itemLabel="#{msg.deferido}"
-                          itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-            <f:selectItem itemLabel="#{msg.indeferido}"
-                          itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-        </p:selectOneButton>                            
-    </p:column>
-    <p:column>
-        <h:outputLabel value="#{msg.observacao}" />
-    </p:column>
-    <p:column>
-        <p:inputTextarea rows="5" cols="32" autoResize="false"
-                         value="#{requerimentoBean.requerimento.observacao}" />
-    </p:column>
+
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.copias}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:spinner id="numeroCopias" value="#{itemRequerimento.numeroCopias}"
+                       maxlength="2"
+                       min="1" max="2" styleClass="defaultInput" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.status}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:selectOneButton value="#{itemRequerimento.status}">
+                <f:selectItem itemLabel="#{msg.aberto}"
+                              itemValue="ABERTO" />
+                <f:selectItem itemLabel="#{msg.deferido}"
+                              itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+                <f:selectItem itemLabel="#{msg.indeferido}"
+                              itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+            </p:selectOneButton>                            
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.observacao}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:inputTextarea rows="5" cols="32" autoResize="false"
+                             value="#{requerimentoBean.requerimento.observacao}" />
+        </p:column>
+    </p:row>
 </ui:composition>
 

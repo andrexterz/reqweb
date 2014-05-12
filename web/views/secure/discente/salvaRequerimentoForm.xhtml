@@ -10,7 +10,7 @@
         <p:ajax event="close" listener="#{requerimentoBean.cancelRequerimento}"/>
         <f:facet name="header">
             <h:outputText value="#{msg.novo} #{msg.requerimento}: #{requerimentoBean.tipoRequerimento.tipoLocale}" rendered="#{requerimentoBean.operation == 'a'}" />
-            <h:outputText value="#{msg.editar} #{msg.requerimento}" rendered="#{requerimentoBean.operation == 'e'}" />
+            <h:outputText value="#{msg.editar} #{msg.requerimento}: #{requerimentoBean.requerimento.tipoRequerimento.tipoLocale}" rendered="#{requerimentoBean.operation == 'e'}" />
         </f:facet>
         <h:form id="salvaRequerimentoForm" styleClass="formGrid">
             <!--validacao do lado do servidor utilizando beanValidator -->
@@ -24,7 +24,7 @@
                         <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
                     </c:if>
                 </p:panelGrid>
-                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <h:panelGroup id="formControls" layout="block" rendered="#{requerimentoBean.showControls}" styleClass="alignCenter formFooterButtons">
                     <p:commandButton value="#{msg.salvar}"
                                      process="@form"
                                      actionListener="#{requerimentoBean.salvaRequerimento}"

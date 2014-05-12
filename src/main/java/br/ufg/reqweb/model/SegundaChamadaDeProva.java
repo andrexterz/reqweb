@@ -6,6 +6,7 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
@@ -30,6 +32,14 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     public SegundaChamadaDeProva() {
         status = ItemRequerimentoStatusEnum.ABERTO;
         tipoItemRequerimento = TipoItemRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA;
+        arquivos = new ArrayList<>();
+    }
+
+    public SegundaChamadaDeProva(Turma turma, Date dataProva, List<Arquivo> arquivos) {
+        status = ItemRequerimentoStatusEnum.ABERTO;
+        this.turma = turma;
+        this.dataProva = dataProva;
+        this.arquivos = arquivos;
     }
     
     @NotNull
@@ -37,9 +47,11 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     private Turma turma;
     
     @Past
+    @NotNull
     @Temporal(TemporalType.DATE)
     private Date dataProva;
     
+    @Valid
     @OneToMany(mappedBy = "itemRequerimento", orphanRemoval = true)
     private List<Arquivo> arquivos;
     

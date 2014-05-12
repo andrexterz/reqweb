@@ -5,140 +5,216 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:row>
         <p:column>
-            <p:breadCrumb>
-                <p:menuitem value="#{msg.aviso}" title="#{msg.aviso}" url="#" />
-                <p:menuitem disabled="false" value="#{msg.segundaChamadaDeProva}" url="#" />
-                <p:menuitem disabled="true" value="#{msg.arquivos}" url="#" />
+            <p:breadCrumb styleClass="segundaChamadaDeProvaSteps">
+                <p:menuitem disabled="#{requerimentoBean.step != 'STEP1'}" value="#{msg.aviso}" title="#{msg.aviso}" url="#" />
+                <p:menuitem disabled="#{requerimentoBean.step != 'STEP2'}" value="#{msg.segundaChamadaDeProva}" url="#" />
+                <p:menuitem disabled="#{requerimentoBean.step != 'STEP3'}" value="#{msg.arquivos}" url="#" />
             </p:breadCrumb>
         </p:column>
     </p:row>
-    <p:row id="step1" rendered="true">
+    <p:row id="step1" rendered="#{requerimentoBean.step == 'STEP1'}">
         <p:column>
-            <h:panelGrid columns="1">
+            <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox aviso">
                 <h:outputLabel value="#{msg.aviso}" />
-                <h:panelGroup layout="block" styleClass="aviso">
-                    <ul>
-                        <li><h:outputText value="#{msg.mensagemResolucao}" /></li>
-                        <li><h:outputText value="#{msg.mensagemAtestado}" /></li>
-                    </ul>
-                </h:panelGroup>
-            </h:panelGrid>
+                <ul>
+                    <li><h:outputText value="#{msg.mensagemResolucao}" /></li>
+                    <li><h:outputText value="#{msg.mensagemAtestado}" /></li>
+                </ul>
+            </h:panelGroup>
+            <h:panelGroup layout="block" styleClass="formFooterButtons alignRight">
+                <p:selectOneButton value="#{requerimentoBean.confirmaRequerimento}">
+                    <p:ajax update="bntStep1" />
+                    <f:selectItem itemLabel="#{msg.discorda}" itemValue="false" />
+                    <f:selectItem itemLabel="#{msg.concorda}" itemValue="true" />                        
+                </p:selectOneButton>
+                <p:commandButton id="bntStep1"
+                                 disabled="#{!requerimentoBean.confirmaRequerimento}"
+                                 title="#{msg.proximo}"
+                                 icon="ui-icon-arrow-1-e"
+                                 update=":salvaRequerimentoForm"
+                                 actionListener="#{requerimentoBean.nextStep}" />
+            </h:panelGroup>
         </p:column>
     </p:row>
 
-    <p:row id="step2" rendered="false">
+    <p:row id="step2" rendered="#{requerimentoBean.step == 'STEP2'}">
         <p:column>
-            <h:panelGrid styleClass="formGrid">
-                <p:column>
-                    <h:outputLabel value="#{msg.status}" />
-                </p:column>
-                <p:column>
-                    <p:selectOneButton value="#{itemRequerimento.status}">
-                        <f:selectItem itemLabel="#{msg.aberto}"
-                                      itemValue="ABERTO" itemDisabled="#{itemRequerimento.status != 'ABERTO'}" />
-                        <f:selectItem itemLabel="#{msg.deferido}"
-                                      itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-                        <f:selectItem itemLabel="#{msg.indeferido}"
-                                      itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
-                    </p:selectOneButton>                            
-                </p:column>
-                <p:column>
-                    <h:outputLabel value="#{msg.turma}" />
-                </p:column>
-                <p:column headerText="#{msg.turma}">
-                    <p:autoComplete id="turmaRequerimento" value="#{itemRequerimento.turma}"
-                                    converter="#{turmaConverter}"
-                                    minQueryLength="3" maxResults="10" var="t"
-                                    itemLabel="#{t}" itemValue="#{t}"
-                                    forceSelection="true" completeMethod="#{turmaBean.findTurma}">
-                        <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaTurma}" />
-                    </p:autoComplete>
-                    <p:watermark for="turmaRequerimento" value="#{msg.turma}" />
-                </p:column>
-                <p:column>
-                    <h:outputLabel value="#{msg.docente}" />
-                </p:column>
-            </h:panelGrid>
-        </p:column>
-    </p:row>
-    <p:row>
-    </p:row>
-    <p:row>
-    </p:row>
-    <p:row>
-    </p:row>
-    <p:row>
-        <p:column>
-            <h:outputText id="docenteTurma" value="#{itemRequerimento.turma.docente.nome}" />
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column>
-            <p:tabView styleClass="arquivoBox" dynamic="true">
-                <p:ajax event="tabChange" update="novoArquivo" listener="#{requerimentoBean.novoArquivoTabEvent}" />
-                <p:tab id="arquivoTab1" title="#{msg.arquivos}">
-                    <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
-                                type="ordered"
-                                value="#{requerimentoBean.arquivos}" var="arq">
-                        <p:commandLink value="#{arq.nomeArquivo}" ajax="false">
-                            <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                            <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                        </p:commandLink>
-                    </p:dataList>
-                </p:tab>
-                <p:tab id="arquivoTab2" title="#{msg.novo} #{msg.arquivo}">
-                    <p:panelGrid id="novoArquivo" styleClass="formGrid">
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel value="#{msg.nome}" />
-                            </p:column>
-                            <p:column>
-                                <p:inputText id="arquivoNome" value="#{itemArquivo.nomeArquivo}" />
-                                <p:watermark for="arquivoNome" value="#{msg.nome}" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column colspan="2">
-                                <p:fileUpload id="arquivoContent"
-                                              label="#{msg.selecionar}"
-                                              uploadLabel="#{msg.enviar}"
-                                              cancelLabel="#{msg.cancelar}"
-                                              disabled="#{requerimentoBean.arquivoEnviado}"
-                                              allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
-                                              fileLimit="1"
-                                              multiple="false"
-                                              process="@this"
-                                              sizeLimit="1048576"
-                                              fileUploadListener="#{requerimentoBean.uploadArquivo}"
-                                              update="arquivoButtons arquivoContent :formHeader:systemMessages" />
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column colspan="2">
-                                <h:panelGroup id="arquivoButtons" layout="block" styleClass="formFooterButtons alignRight">
-                                    <p:commandButton id="addArquivo" value="#{msg.adicionar}"
-                                                     process="@this"
-                                                     actionListener="#{requerimentoBean.novoArquivo}"
-                                                     disabled="#{!requerimentoBean.arquivoEnviado}"
-                                                     update="novoArquivo :formHeader:systemMessages" />
-                                </h:panelGroup>
-                            </p:column>
+            <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox">
+                <p:panelGrid styleClass="formGrid">
+                    <p:row>
+                        <p:column styleClass="col65">
+                            <h:outputLabel value="#{msg.status}" />
+                        </p:column>
+                        <p:column styleClass="col35">
+                            <h:outputLabel value="#{msg.dataProva}: " />
+                            <h:outputText id="dataProvaText" value="#{itemRequerimento.dataProva}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:selectOneButton value="#{itemRequerimento.status}">
+                                <f:selectItem itemLabel="#{msg.aberto}"
+                                              itemValue="ABERTO" itemDisabled="#{itemRequerimento.status != 'ABERTO'}" />
+                                <f:selectItem itemLabel="#{msg.deferido}"
+                                              itemValue="DEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+                                <f:selectItem itemLabel="#{msg.indeferido}"
+                                              itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
+                            </p:selectOneButton>
+                        </p:column>
 
-                        </p:row>
-                    </p:panelGrid>
-                </p:tab>
-            </p:tabView>
+                        <p:column rowspan="4">
+                            <p:calendar id="dataProva"
+                                        mode="inline"
+                                        maxdate="#{requerimentoBean.maxDate}"
+                                        styleClass="calendarWidget"
+                                        value="#{itemRequerimento.dataProva}">
+                                <p:ajax update="dataProvaText" event="dateSelect" />
+                            </p:calendar>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="#{msg.turma}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column headerText="#{msg.turma}">
+                            <p:autoComplete id="turmaRequerimento" value="#{itemRequerimento.turma}"
+                                            converter="#{turmaConverter}"
+                                            minQueryLength="3" maxResults="10" var="t"
+                                            itemLabel="#{t}" itemValue="#{t}"
+                                            forceSelection="true" completeMethod="#{turmaBean.findTurma}">
+                                <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaTurma}" />
+                            </p:autoComplete>
+                            <p:watermark for="turmaRequerimento" value="#{msg.turma}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel value="#{msg.docente}: " />
+                            <h:outputText id="docenteTurma" value="#{itemRequerimento.turma.docente.nome}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="2">
+                            <h:outputLabel value="#{msg.observacao}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="2">
+                            <p:inputTextarea rows="5" cols="32" autoResize="false" 
+                                             value="#{requerimentoBean.requerimento.observacao}" />
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:panelGroup>                
+            <h:panelGroup layout="block" styleClass="formFooterButtons alignRight">
+                <p:commandButton id="bntValidar"
+                                 value="#{msg.validar}"
+                                 process="@form"
+                                 update=":salvaRequerimentoForm :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar"
+                                 actionListener="#{requerimentoBean.validaRequerimento}" />
+
+                <p:commandButton id="bntStep2back"
+                                 title="#{msg.anterior}"
+                                 icon="ui-icon-arrow-1-w"
+                                 update=":salvaRequerimentoForm"
+                                 actionListener="#{requerimentoBean.previousStep}" />
+
+                <p:commandButton id="bntStep2"
+                                 title="#{msg.proximo}"
+                                 disabled="#{!requerimentoBean.requerimentoValido}"
+                                 icon="ui-icon-arrow-1-e"
+                                 update=":salvaRequerimentoForm"
+                                 actionListener="#{requerimentoBean.nextStep}" />
+            </h:panelGroup>                
         </p:column>
     </p:row>
-    <p:row>
+    <p:row id="step3" rendered="#{requerimentoBean.step == 'STEP3'}">
         <p:column>
-            <h:outputLabel value="#{msg.observacao}" />
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column>
-            <p:inputTextarea rows="5" cols="32" autoResize="false" 
-                             value="#{requerimentoBean.requerimento.observacao}" />
+            <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox">
+                <p:panelGrid styleClass="formGrid">
+                    <p:row>
+                        <p:column>
+                            <p:tabView id="arquivoTab" dynamic="true">
+                                <p:ajax event="tabChange" update="arquivoTab" listener="#{requerimentoBean.novoArquivoTabEvent}" />
+                                <p:tab id="arquivoTab1" title="#{msg.arquivos}">
+                                    <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
+                                                type="ordered"
+                                                value="#{requerimentoBean.arquivos}" var="arq">
+                                        <p:commandLink value="#{arq.nomeArquivo}" ajax="false">
+                                            <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                                            <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                                        </p:commandLink>
+                                    </p:dataList>
+                                </p:tab>
+                                <p:tab id="arquivoTab2" title="#{msg.novo} #{msg.arquivo}">
+                                    <p:panelGrid id="novoArquivo" styleClass="formGrid">
+                                        <p:row>
+                                            <p:column>
+                                                <h:outputLabel value="#{msg.nome}" />
+                                            </p:column>
+                                            <p:column>
+                                                <p:inputText id="arquivoNome" value="#{requerimentoBean.arquivo.nomeArquivo}" />
+                                                <p:watermark for="arquivoNome" value="#{msg.nome}" />
+                                            </p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column colspan="2">
+                                                <p:fileUpload id="arquivoContent"
+                                                              label="#{msg.selecionar}"
+                                                              uploadLabel="#{msg.enviar}"
+                                                              cancelLabel="#{msg.cancelar}"
+                                                              disabled="#{requerimentoBean.arquivoEnviado}"
+                                                              allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                              fileLimit="1"
+                                                              multiple="false"
+                                                              process="@this"
+                                                              sizeLimit="1048576"
+                                                              fileUploadListener="#{requerimentoBean.uploadArquivo}"
+                                                              update="arquivoButtons arquivoContent :formHeader:systemMessages" />
+                                            </p:column>
+                                        </p:row>
+                                        <p:row>
+                                            <p:column colspan="2">
+                                                <h:panelGroup id="arquivoButtons" layout="block" styleClass="formFooterButtons alignRight">
+                                                    <p:commandButton id="addArquivo" value="#{msg.adicionar}"
+                                                                     process="@this"
+                                                                     actionListener="#{requerimentoBean.novoArquivo}"
+                                                                     disabled="#{!requerimentoBean.arquivoEnviado}"
+                                                                     update="novoArquivo :formHeader:systemMessages" />
+                                                </h:panelGroup>
+                                            </p:column>
+                                        </p:row>
+                                    </p:panelGrid>
+                                </p:tab>
+                            </p:tabView>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </h:panelGroup>
+            <h:panelGroup layout="block" styleClass="formFooterButtons alignRight">
+                
+                <p:commandButton id="bntSalvar"
+                                 value="#{msg.salvar}"
+                                 process="@form"
+                                 update=":salvaRequerimentoForm :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar"
+                                 actionListener="#{requerimentoBean.salvaRequerimento}" />
+                
+                <p:commandButton id="bntFechar"
+                                 value="#{msg.fechar}"
+                                 actionListener="#{requerimentoBean.cancelRequerimento}"
+                                 update=":salvaRequerimentoForm"
+                                 onclick="PF('dlgRequerimentoVar').hide()"/>
+                
+                <p:commandButton id="bntStep3"
+                                 title="#{msg.anterior}"
+                                 icon="ui-icon-arrow-1-w"
+                                 actionListener="#{requerimentoBean.previousStep}"
+                                 update=":salvaRequerimentoForm" />
+            </h:panelGroup>
         </p:column>
     </p:row>
 </ui:composition>

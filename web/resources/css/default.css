@@ -611,7 +611,11 @@ input[type="text"], input[type="password"], select {
 }
 
 .calendarWidget {
-    width: auto;
+    width: auto!important;
+}
+
+.calendarWidget td {
+    padding: initial!important;    
 }
 
 .periodoAtivo {
@@ -767,6 +771,14 @@ input[type="text"], input[type="password"], select {
     text-align: right;
 }
 
+.segundaChamadaDeProvaSteps {
+    height: 16px;
+}
+
+.segundaChamadaDeProvaSteps a {
+    text-decoration: none;
+}
+
 .observacao {
     list-style: none;
     color: firebrick;
@@ -776,21 +788,37 @@ input[type="text"], input[type="password"], select {
     resize: none;
 }
 
+.segundaChamadaDeProvaBox {
+    width: 590px;
+    height: 320px;
+    border: 1px solid #ccc;    
+}
+
+
 .aviso {
-    width: 520px;
     word-wrap: break-word;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
     color: #ff0000;
     font-size: 100%!important;
 }
 
-.aviso ul li {
-    padding-bottom: 8pt;
+.aviso * {
+    margin: 12pt;
 }
 
-.arquivoBox {
-    width: 520px;
-    height: 226px;
+.aviso label {
+    line-height: 32pt;
+    font-size: 2em;
+    margin-left: 32pt;
 }
+
+.aviso ul li {
+    margin-bottom: 8pt;
+    margin-left: -12pt;
+}
+
 /************************************ forms ***********************************/
 .formBody {
     position: absolute;

@@ -29,7 +29,7 @@
                                  disabled="#{requerimentoBean.selecionado == false}"
                                  actionListener="#{requerimentoBean.editaRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
-                                 update="tableRequerimentos :salvaRequerimentoForm" />
+                                 update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
 
                 <p:commandButton value="#{msg.excluir}"
                                  disabled="#{requerimentoBean.selecionado== false}"

@@ -43,7 +43,7 @@ public class Requerimento extends BaseModel {
     @JoinColumn(name = "usuario_id", updatable = false)
     private Usuario discente;
     
-    @OneToMany(mappedBy = "requerimento", orphanRemoval = true)
+    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
     private List<Atendimento> atendimentoList;
     
     @Enumerated(EnumType.STRING)

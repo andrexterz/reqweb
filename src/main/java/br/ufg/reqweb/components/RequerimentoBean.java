@@ -93,7 +93,7 @@ public class RequerimentoBean implements Serializable {
 
     public enum TipoBusca {
 
-        DATA_PERIODO("dataCriacao"),
+        PERIODO("dataCriacao"),
         TIPO_REQUERIMENTO("requerimento"),
         DISCENTE("discente");
 
@@ -139,7 +139,7 @@ public class RequerimentoBean implements Serializable {
         tipoRequerimentoBusca = null;
         termoBuscaDiscente = "";
         termoBuscaPeriodo = "";
-        tipoBusca = TipoBusca.DATA_PERIODO;
+        tipoBusca = TipoBusca.PERIODO;
         atendimentos = new ArrayList<>();
         arquivos = new ArrayList<>();
         arquivo = null;
@@ -194,7 +194,7 @@ public class RequerimentoBean implements Serializable {
                     filtros.put("tipoRequerimento", getTipoRequerimentoBusca());
                 } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && (getTermoBuscaDiscente() != null && !getTermoBuscaDiscente().isEmpty())) {
                     filtros.put("termo", getTermoBuscaDiscente());
-                } else if (getTipoBusca().equals(TipoBusca.DATA_PERIODO) && (getTermoBuscaPeriodo() != null && !getTermoBuscaPeriodo().isEmpty())) {
+                } else if (getTipoBusca().equals(TipoBusca.PERIODO) && (getTermoBuscaPeriodo() != null && !getTermoBuscaPeriodo().isEmpty())) {
                     Pattern pattDateA = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}");
                     Matcher matcherA = pattDateA.matcher(termoBuscaPeriodo);
 

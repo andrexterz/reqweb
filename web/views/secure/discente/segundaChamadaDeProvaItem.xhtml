@@ -39,7 +39,7 @@
     <p:row id="step2" rendered="#{requerimentoBean.step == 'STEP2'}">
         <p:column>
             <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox">
-                <p:tabView id="requerimentoTab" activeIndex="0" widgetVar="reqTabWidget">
+                <p:tabView id="requerimentoTab" activeIndex="0" styleClass="requerimentoTab">
                     <p:tab id="arquivoTab1" title="#{msg.requerimento}">
                         <p:panelGrid styleClass="formGrid">
                             <p:row>
@@ -112,14 +112,6 @@
                         </p:panelGrid>                        
                     </p:tab>
                     <p:tab id="arquivoTab2" title="#{msg.arquivos}">
-                        <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
-                                    type="ordered"
-                                    value="#{itemRequerimento.arquivos}" var="arq">
-                            <p:commandLink value="#{arq.nomeArquivo}" ajax="false">
-                                <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                                <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                            </p:commandLink>
-                        </p:dataList>
                         <p:fileUpload id="arquivoContent"
                                       label="#{msg.selecionar}"
                                       uploadLabel="#{msg.enviar}"
@@ -131,7 +123,16 @@
                                       sizeLimit="1048576"
                                       fileUploadListener="#{requerimentoBean.uploadArquivo}"
                                       update="arquivos arquivoContent :formHeader:systemMessages" />
-
+                        
+                        <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
+                                    type="ordered" styleClass="arquivoList"
+                                    value="#{itemRequerimento.arquivos}" var="arq">
+                            <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" ajax="false">
+                                <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                                <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                            </p:commandLink>
+                            <p:commandButton title="#{msg.excluir}" icon="ui-icon-trash" styleClass="floatRight" />
+                        </p:dataList>
                     </p:tab>
                 </p:tabView>
             </h:panelGroup>

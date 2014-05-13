@@ -3,14 +3,14 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipoLocale: msg.requerimentos}</ui:define>
     <ui:define name="content">
         <script>
             $(document).ready(function() {
                 var widgetId = ["#discenteMenuLinks\\:", "#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipo: 'requerimentos'}", "Lnk"].join("");
                 $(widgetId).addClass("menuItemSelected");
-                console.log(widgetId);
             });
         </script>
         <ui:include src="salvaRequerimentoForm.xhtml" />
@@ -47,10 +47,14 @@
                     <p:selectOneButton styleClass="searchBoxMenu"
                                        id="searchType"
                                        value="#{requerimentoBean.tipoBusca}">
-                        <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"
-                                       var="tipoBuscaItem"
-                                       itemLabel="#{tipoBuscaItem.key}"
-                                       itemValue="#{tipoBuscaItem.value}"/>
+                        <!-- no rendering when enum eq discente
+                        <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"var="tipoBuscaItem"itemLabel="#{tipoBuscaItem.key}"itemValue="#{tipoBuscaItem.value}"/>
+                        -->
+                        <c:forEach items="#{requerimentoBean.tipoBuscaEnum.entrySet()}" var="tipoBuscaItem">
+                            <c:if test="#{tipoBuscaItem.value ne 'DISCENTE'}">
+                                <f:selectItem itemLabel="#{tipoBuscaItem.key}" itemValue="#{tipoBuscaItem.value}"/>
+                            </c:if>
+                        </c:forEach>
                         <p:ajax update="searchPanel tableRequerimentos" />
                     </p:selectOneButton>
                     <p:autoComplete id="requerimentoTipoRequerimento"
@@ -72,14 +76,8 @@
                                  value="#{requerimentoBean.termoBuscaPeriodo}"
                                  mask="99/99/9999 - 99/99/9999"
                                  styleClass="searchBox"
-                                 rendered="#{requerimentoBean.tipoBusca == 'DATA_PERIODO'}" />
+                                 rendered="#{requerimentoBean.tipoBusca == 'PERIODO'}" />
                     <p:watermark for="requerimentoBuscaPeriodo" value="#{msg.periodo}" />
-                    <p:inputText id="requerimentoBuscaDiscente"
-                                 styleClass="searchBox"
-                                 disabled="#{usuarioBean.perfil == 'DISCENTE'}"
-                                 rendered="#{requerimentoBean.tipoBusca == 'DISCENTE'}"
-                                 value="#{requerimentoBean.termoBuscaDiscente}" />
-                    <p:watermark for="requerimentoBuscaDiscente" value="#{msg.discente}" />
                     <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
                     <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand floatRight" update="tableRequerimentos :formHeader:systemMessages" />
                     <p:defaultCommand target="requerimentoBuscaCommand" />

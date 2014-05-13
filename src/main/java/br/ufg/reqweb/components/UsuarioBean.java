@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -229,7 +228,7 @@ public class UsuarioBean implements Serializable {
                 try {
                     usuarioDao.adicionar(usrList);
                     saveStatus = true;
-                } catch (ConstraintViolationException e) {
+                } catch (Exception e) {
                     saveStatus = false;
                 }
             }
@@ -332,7 +331,7 @@ public class UsuarioBean implements Serializable {
                     itemSelecionado = usuario;
                 }
             }
-        } catch (ConstraintViolationException e) {
+        } catch (Exception e) {
             saveStatus = false;
         }
 

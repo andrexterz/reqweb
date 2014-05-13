@@ -24,7 +24,6 @@ import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.apache.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -191,7 +190,7 @@ public class DisciplinaBean implements Serializable {
                 try {
                     disciplinaDao.adicionar(items);
                     saveStatus = true;
-                } catch (ConstraintViolationException e) {
+                } catch (Exception e) {
                     saveStatus = false;
                 }
 
@@ -213,7 +212,7 @@ public class DisciplinaBean implements Serializable {
                     disciplinaDao.atualizar(disciplina);
                 }
             }
-        } catch (ConstraintViolationException e) {
+        } catch (Exception e) {
             saveStatus = false;
         }
         context.addCallbackParam("resultado", saveStatus);

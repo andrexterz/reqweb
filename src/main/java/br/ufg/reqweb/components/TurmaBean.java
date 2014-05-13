@@ -30,7 +30,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -194,7 +193,7 @@ public class TurmaBean implements Serializable {
                 try {
                     turmaDao.adicionar(items);
                     saveStatus = true;
-                } catch (ConstraintViolationException e) {
+                } catch (Exception e) {
                     saveStatus = false;
                 }
             }

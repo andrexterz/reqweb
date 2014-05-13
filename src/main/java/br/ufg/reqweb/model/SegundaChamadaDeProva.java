@@ -9,6 +9,7 @@ package br.ufg.reqweb.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +20,8 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
@@ -52,7 +55,8 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     private Date dataProva;
     
     @Valid
-    @OneToMany(mappedBy = "itemRequerimento", orphanRemoval = true)
+    @OneToMany(mappedBy = "itemRequerimento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Arquivo> arquivos;
     
 

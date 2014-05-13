@@ -6,11 +6,11 @@
 
 package br.ufg.reqweb.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 
 /**
@@ -63,8 +61,7 @@ public class Requerimento extends BaseModel {
     private String observacao;
     
     @Valid
-    @Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "requerimento", orphanRemoval = true )
+    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
     private Set<ItemRequerimento> itemRequerimentoList;
     
     @Enumerated(EnumType.STRING)

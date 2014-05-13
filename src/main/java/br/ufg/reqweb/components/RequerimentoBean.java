@@ -17,17 +17,13 @@ import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +44,6 @@ import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -121,8 +116,7 @@ public class RequerimentoBean implements Serializable {
 
         STEP0(0),//generic form
         STEP1(1),//warning screen
-        STEP2(2),//segundaChamadaDeProva form
-        STEP3(3);//other step like attached files
+        STEP2(2);//segundaChamadaDeProva form
 
         private FormControl(int value) {
             this.value = value;
@@ -277,7 +271,7 @@ public class RequerimentoBean implements Serializable {
         } else {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
             setOperation(EDITA);
-            setStep(FormControl.STEP1);
+            setStep(FormControl.STEP0);
             setRequerimentoValido(true);
             requerimento = requerimentoDao.findById(getItemSelecionado().getId());
             System.out.println("items in requerimento: " + requerimento.getItemRequerimentoList().size());
@@ -288,10 +282,9 @@ public class RequerimentoBean implements Serializable {
                 sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
             }
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
-                setStep(FormControl.STEP1);
+                setStep(FormControl.STEP2);
                 ItemRequerimento itemRequerimento = requerimento.getItemRequerimentoList().iterator().next();
                 sessionMap.put("itemRequerimento", itemRequerimento);
-                findArquivos(itemRequerimento);
             }
         }
     }
@@ -371,7 +364,7 @@ public class RequerimentoBean implements Serializable {
                 Pattern pattErrorValue = Pattern.compile("(?<=\\.)\\w+");
                 Matcher matcherValue = pattErrorValue.matcher(invalidValue);
                 String errorMsg = error.getMessage();
-                if (matcherValue.find()){
+                if (matcherValue.find()) {
                     formattedMsg.append(String.format("- %s: %s. ", LocaleBean.getMessageBundle().getString(matcherValue.group()), errorMsg));
                 }
             }
@@ -429,60 +422,45 @@ public class RequerimentoBean implements Serializable {
         }
     }
 
-    public void novoArquivoTabEvent(TabChangeEvent event) {
-        System.out.println("tab changed: " + event.getTab().getId());
-        if (event.getTab().getId().equals("arquivoTab2")) {
-            novoArquivo();
-        }
-    }
-
-    public void novoArquivo() {
-        arquivo = new Arquivo();
-        System.out.println("novo arquivo --> " + arquivo);
-        arquivoEnviado = false;
-    }
-
     public void uploadArquivo(FileUploadEvent event) {
         try {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
             String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
             Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
             UploadedFile file = event.getFile();
-            Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            if (arquivo.getNomeArquivo() == null || arquivo.getNomeArquivo().isEmpty()) {
-                arquivo.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS", getLoginUsuario(), calendar.getTime()));
-            } else {
-                arquivo.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS", arquivo.getNomeArquivo(), calendar.getTime()));
+            Arquivo arq = new Arquivo();
+            System.out.println("novo arquivo --> " + arq);
+            arq.setMimetype(file.getContentType());
+            Pattern pattExt = Pattern.compile("(?<=\\.)\\w+$");
+            Matcher matcherExt = pattExt.matcher(file.getFileName());
+            String fileExt = "";
+            if (matcherExt.find()) {
+                fileExt = matcherExt.group();
             }
-            arquivo.setMimetype(file.getContentType());
-            arquivo.setCaminhoArquivo(String.format("%s/%s/%s", uploadDir, getLoginUsuario(), arquivo.getNomeArquivo()));
+            
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            arq.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS.%3$s", getLoginUsuario(), calendar.getTime(),fileExt));            
+            arq.setCaminhoArquivo(String.format("%s/%s", getLoginUsuario(), arq.getNomeArquivo()));
 
             path = path.resolve(getLoginUsuario());
             //create new directory if it does not exist.
             if (!Files.exists(path)) {
                 Files.createDirectory(path);
             }
-            Path filePath = path.resolve(arquivo.getNomeArquivo());
+            Path filePath = path.resolve(arq.getNomeArquivo());
             System.out.println("upload to -> " + filePath.toString());
-            try (BufferedWriter newFile = Files.newBufferedWriter(filePath, Charset.forName("UTF-8"), StandardOpenOption.CREATE)) {
-                BufferedReader uploadedFile = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
-                arquivoEnviado = true;
-                System.out.println("items in req: " + requerimento.getItemRequerimentoList().size());
-                SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
-                arquivo.setItemRequerimento(itemRequerimento);
-                itemRequerimento.addArquivo(arquivo);
-                newFile.write(uploadedFile.read());
-                newFile.flush();
-            }
+            arquivoEnviado = true;
+            SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
+            arq.setItemRequerimento(itemRequerimento);
+            itemRequerimento.addArquivo(arq);
+            Files.copy(file.getInputstream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("arquivoEnviado"));
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (IOException e) {
             System.out.println("error: " + e.getLocalizedMessage());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-    }
-
-    public void findArquivos(ItemRequerimento itemRequerimento) {
-        arquivos = requerimentoDao.findArquivos(itemRequerimento);
     }
 
     public String getLoginUsuario() {
@@ -641,7 +619,9 @@ public class RequerimentoBean implements Serializable {
     }
 
     public StreamedContent getArquivoContent() {
-        Path filePath = Paths.get(arquivo.getCaminhoArquivo());
+        String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
+        Path filePath = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
+        filePath = filePath.resolve(arquivo.getCaminhoArquivo());
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             FileInputStream inputStream = new FileInputStream(filePath.toFile());
@@ -669,7 +649,7 @@ public class RequerimentoBean implements Serializable {
     public boolean isRequerimentoValido() {
         return requerimentoValido;
     }
-    
+
     public void setRequerimentoValido(boolean requerimentoValido) {
         this.requerimentoValido = requerimentoValido;
     }
@@ -690,20 +670,14 @@ public class RequerimentoBean implements Serializable {
             case 1:
                 setStep(FormControl.STEP2);
                 break;
-            case 2:
-                setStep(FormControl.STEP3);
-                break;
             default:
-                setStep(FormControl.STEP3);
+                setStep(FormControl.STEP2);
                 break;
         }
     }
 
     public void previousStep() {
         switch (step.getValue()) {
-            case 3:
-                setStep(FormControl.STEP2);
-                break;
             case 2:
                 setStep(FormControl.STEP1);
                 break;

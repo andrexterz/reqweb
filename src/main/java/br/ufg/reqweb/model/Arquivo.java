@@ -8,6 +8,7 @@ package br.ufg.reqweb.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -22,9 +23,9 @@ public class Arquivo extends BaseModel {
     public Arquivo() {
     }
 
-    public Arquivo(String nomeArquivo, String caminhoArquivo, String mimetype, SegundaChamadaDeProva itemRequerimento) {
+    public Arquivo(String nomeArquivo, byte[] conteudo, String mimetype, SegundaChamadaDeProva itemRequerimento) {
         this.nomeArquivo = nomeArquivo;
-        this.caminhoArquivo = caminhoArquivo;
+        this.conteudo = conteudo;
         this.mimetype = mimetype;
         this.itemRequerimento = itemRequerimento;
     }
@@ -34,8 +35,8 @@ public class Arquivo extends BaseModel {
     private String nomeArquivo;
     
     @NotNull
-    @Column
-    private String caminhoArquivo;
+    @Lob
+    private byte[] conteudo;
 
     @NotNull
     @Column
@@ -60,17 +61,17 @@ public class Arquivo extends BaseModel {
     }
 
     /**
-     * @return the caminhoArquivo
+     * @return the conteudo
      */
-    public String getCaminhoArquivo() {
-        return caminhoArquivo;
+    public byte[] getConteudo() {
+        return conteudo;
     }
 
     /**
-     * @param caminhoArquivo the caminhoArquivo to set
+     * @param conteudo the conteudo to set
      */
-    public void setCaminhoArquivo(String caminhoArquivo) {
-        this.caminhoArquivo = caminhoArquivo;
+    public void setConteudo(byte[] conteudo) {
+        this.conteudo = conteudo;
     }
 
     /**

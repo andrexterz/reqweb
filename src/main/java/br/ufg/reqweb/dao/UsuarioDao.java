@@ -62,13 +62,6 @@ public class UsuarioDao {
     }
 
     @Transactional
-    public void removePerfil(List<Perfil> perfilList) {
-        for (Perfil p : perfilList) {
-            this.sessionFactory.getCurrentSession().delete(p);
-        }
-    }
-
-    @Transactional
     public void excluir(Usuario usuario) {
         this.sessionFactory.getCurrentSession().delete(usuario);
     }

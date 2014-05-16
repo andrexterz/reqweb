@@ -112,27 +112,34 @@
                         </p:panelGrid>                        
                     </p:tab>
                     <p:tab id="arquivoTab2" title="#{msg.arquivos}">
-                        <p:fileUpload id="arquivoContent"
-                                      label="#{msg.selecionar}"
-                                      uploadLabel="#{msg.enviar}"
-                                      cancelLabel="#{msg.cancelar}"
-                                      allowTypes="/(\.|\/)(pdf|doc?x|odt|gif|jpe?g|png)$/"
-                                      fileLimit="1"
-                                      multiple="false"
-                                      process="@this"
-                                      sizeLimit="1048576"
-                                      fileUploadListener="#{requerimentoBean.uploadArquivo}"
-                                      update="arquivos arquivoContent :formHeader:systemMessages" />
-                        
-                        <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
-                                    type="ordered" styleClass="arquivoList"
-                                    value="#{itemRequerimento.arquivos}" var="arq">
-                            <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" ajax="false">
-                                <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                                <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                            </p:commandLink>
-                            <p:commandButton title="#{msg.excluir}" icon="ui-icon-trash" styleClass="floatRight" />
-                        </p:dataList>
+                        <h:panelGrid columns="1" styleClass="formGrid">
+                            <h:outputLabel for="arquivoContent" value="#{msg.enviar} #{msg.arquivo}" />
+                            <p:fileUpload id="arquivoContent"
+                                          label="#{msg.selecionar}"
+                                          uploadLabel="#{msg.enviar}"
+                                          cancelLabel="#{msg.cancelar}"
+                                          allowTypes="/(\.|\/)(pdf|doc?x|odt|gif|jpe?g|png)$/"
+                                          fileLimit="1"
+                                          multiple="false"
+                                          process="@this"
+                                          sizeLimit="1048576"
+                                          fileUploadListener="#{requerimentoBean.uploadArquivo}"
+                                          update="arquivos arquivoContent :formHeader:systemMessages" />
+                            <h:outputLabel for="arquivos" value="#{msg.arquivos}" />
+                            <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
+                                        type="ordered" styleClass="arquivoList"
+                                        value="#{itemRequerimento.arquivos}" var="arq">
+                                <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" ajax="false">
+                                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                                </p:commandLink>
+                                <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}"
+                                                 update="arquivos :formHeader:systemMessages"
+                                                 icon="ui-icon-trash" styleClass="floatRight"
+                                                 process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}">
+                                </p:commandButton>
+                            </p:dataList>
+                        </h:panelGrid>
                     </p:tab>
                 </p:tabView>
             </h:panelGroup>
@@ -146,9 +153,8 @@
                                  actionListener="#{requerimentoBean.salvaRequerimento}" />
 
                 <p:commandButton id="bntFechar"
-                                 value="#{msg.fechar}"
+                                 value="#{msg.cancelar}"
                                  process="@this"
-                                 actionListener="#{requerimentoBean.cancelRequerimento}"
                                  update=":salvaRequerimentoForm requerimentoTab"
                                  oncomplete="PF('dlgRequerimentoVar').hide()"/>
 

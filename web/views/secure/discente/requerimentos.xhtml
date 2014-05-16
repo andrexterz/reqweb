@@ -33,7 +33,7 @@
 
                 <p:commandButton value="#{msg.excluir}"
                                  disabled="#{requerimentoBean.selecionado== false}"
-                                 oncomplete="excluirRequerimentoDialog.show()"
+                                 oncomplete="PF('excluirRequerimentoDialog').show()"
                                  update=":excluiRequerimentoForm" />
 
                 <p:commandButton value="#{msg.atendimento}"

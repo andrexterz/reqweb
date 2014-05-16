@@ -17,13 +17,9 @@ import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,9 +81,8 @@ public class RequerimentoBean implements Serializable {
     private List<Atendimento> atendimentos;
     private List<Arquivo> arquivos;
     private Arquivo arquivo;
-    private boolean arquivoEnviado;
     private boolean confirmaRequerimento;
-    private boolean requerimentoValido;
+    private boolean saveStatus;
     private FormControl step;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
 
@@ -143,9 +138,8 @@ public class RequerimentoBean implements Serializable {
         atendimentos = new ArrayList<>();
         arquivos = new ArrayList<>();
         arquivo = null;
-        arquivoEnviado = false;
         confirmaRequerimento = false;
-        requerimentoValido = false;
+        saveStatus = false;
         step = FormControl.STEP0;
 
         requerimentosDataModel = new LazyDataModel<Requerimento>() {
@@ -241,7 +235,7 @@ public class RequerimentoBean implements Serializable {
     public void novoRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         setOperation(ADICIONA);
-        setRequerimentoValido(false);
+        setSaveStatus(false);
         requerimento = new Requerimento();
         requerimento.setTipoRequerimento(tipoRequerimento);
         System.out.println("objeto requerimento criado: " + requerimento.getClass());
@@ -250,17 +244,20 @@ public class RequerimentoBean implements Serializable {
             DeclaracaoDeMatricula itemRequerimento = new DeclaracaoDeMatricula();
             sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+            requerimento.addItemRequerimento(itemRequerimento);
         }
         if (tipoRequerimento.equals(TipoRequerimentoEnum.EXTRATO_ACADEMICO)) {
             ExtratoAcademico itemRequerimento = new ExtratoAcademico();
             sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+            requerimento.addItemRequerimento(itemRequerimento);
         }
         if (tipoRequerimento.equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
             setStep(FormControl.STEP1);
             SegundaChamadaDeProva itemRequerimento = new SegundaChamadaDeProva();
             sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+            requerimento.addItemRequerimento(itemRequerimento);
         }
     }
 
@@ -272,7 +269,7 @@ public class RequerimentoBean implements Serializable {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
             setOperation(EDITA);
             setStep(FormControl.STEP0);
-            setRequerimentoValido(true);
+            setSaveStatus(false);
             requerimento = requerimentoDao.findById(getItemSelecionado().getId());
             System.out.println("items in requerimento: " + requerimento.getItemRequerimentoList().size());
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
@@ -292,10 +289,10 @@ public class RequerimentoBean implements Serializable {
     /**
      * cancels actions from <code>novoRequerimento</code>
      */
-    public void cancelRequerimento() {
+    public void cleanupRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove("itemRequerimento");
-        System.out.println("cancelando add/update requerimento... ");
+        System.out.println("cleaning up requerimento... ");
         setStep(FormControl.STEP0);
         setConfirmaRequerimento(false);
     }
@@ -303,7 +300,7 @@ public class RequerimentoBean implements Serializable {
     public void salvaRequerimento() {
         RequestContext context = RequestContext.getCurrentInstance();
         validaRequerimento();
-        if (isRequerimentoValido()) {
+        if (saveStatus) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
             context.addCallbackParam("resultado", true);
             if (operation.equals(ADICIONA)) {
@@ -312,8 +309,10 @@ public class RequerimentoBean implements Serializable {
             } else {
                 requerimentoDao.atualizar(requerimento);
             }
+            setSaveStatus(true);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } else {
+            setSaveStatus(false);
             context.addCallbackParam("resultado", false);
         }
     }
@@ -339,24 +338,9 @@ public class RequerimentoBean implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         String loginUser = getLoginUsuario();
         requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
-
-        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
-            DeclaracaoDeMatricula item = (DeclaracaoDeMatricula) sessionMap.get("itemRequerimento");
-            requerimento.addItemRequerimento(item);
-        }
-
-        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EXTRATO_ACADEMICO)) {
-            ExtratoAcademico item = (ExtratoAcademico) sessionMap.get("itemRequerimento");
-            requerimento.addItemRequerimento(item);
-        }
-
-        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
-            SegundaChamadaDeProva item = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
-            requerimento.addItemRequerimento(item);
-        }
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
-        setRequerimentoValido(errors.isEmpty());
-        if (!isRequerimentoValido()) {
+        setSaveStatus(errors.isEmpty());
+        if (!isSaveStatus()) {
             FacesMessage msg;
             StringBuilder formattedMsg = new StringBuilder(LocaleBean.getMessageBundle().getString("dadosInvalidos"));
             for (ConstraintViolation<Requerimento> error : errors) {
@@ -425,8 +409,6 @@ public class RequerimentoBean implements Serializable {
     public void uploadArquivo(FileUploadEvent event) {
         try {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-            String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
-            Path path = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
             UploadedFile file = event.getFile();
             Arquivo arq = new Arquivo();
             System.out.println("novo arquivo --> " + arq);
@@ -437,30 +419,27 @@ public class RequerimentoBean implements Serializable {
             if (matcherExt.find()) {
                 fileExt = matcherExt.group();
             }
-            
-            Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            arq.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS.%3$s", getLoginUsuario(), calendar.getTime(),fileExt));            
-            arq.setCaminhoArquivo(String.format("%s/%s", getLoginUsuario(), arq.getNomeArquivo()));
 
-            path = path.resolve(getLoginUsuario());
-            //create new directory if it does not exist.
-            if (!Files.exists(path)) {
-                Files.createDirectory(path);
-            }
-            Path filePath = path.resolve(arq.getNomeArquivo());
-            System.out.println("upload to -> " + filePath.toString());
-            arquivoEnviado = true;
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            arq.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS.%3$s", getLoginUsuario(), calendar.getTime(), fileExt));
+            arq.setConteudo(file.getContents());
             SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
-            arq.setItemRequerimento(itemRequerimento);
             itemRequerimento.addArquivo(arq);
-            Files.copy(file.getInputstream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("arquivoEnviado"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
-        } catch (IOException e) {
-            System.out.println("error: " + e.getLocalizedMessage());
+        } catch (Exception e) {
+            System.out.println("upload error: " + e.getCause());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
+    }
+
+    public void removeArquivo(Arquivo arquivo) {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
+        itemRequerimento.removeArquivo(arquivo);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("arquivoExcluido"), null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public String getLoginUsuario() {
@@ -614,22 +593,15 @@ public class RequerimentoBean implements Serializable {
         this.arquivo = arquivo;
     }
 
-    public boolean isArquivoEnviado() {
-        return arquivoEnviado;
-    }
-
     public StreamedContent getArquivoContent() {
-        String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("userUploadDir");
-        Path filePath = Paths.get(FacesContext.getCurrentInstance().getExternalContext().getRealPath(uploadDir));
-        filePath = filePath.resolve(arquivo.getCaminhoArquivo());
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
-            FileInputStream inputStream = new FileInputStream(filePath.toFile());
+            InputStream inputStream = new ByteArrayInputStream(arquivo.getConteudo());
             content.setName(arquivo.getNomeArquivo());
             content.setStream(inputStream);
-            content.setContentType(Files.probeContentType(filePath));
-        } catch (IOException e) {
-            System.out.println("error: " + e.getMessage());
+            content.setContentType(arquivo.getMimetype());
+        } catch (Exception e) {
+            System.out.println("getContent error: " + e.getMessage());
         }
         return content;
     }
@@ -646,12 +618,12 @@ public class RequerimentoBean implements Serializable {
         this.confirmaRequerimento = confirmaRequerimento;
     }
 
-    public boolean isRequerimentoValido() {
-        return requerimentoValido;
+    public boolean isSaveStatus() {
+        return saveStatus;
     }
 
-    public void setRequerimentoValido(boolean requerimentoValido) {
-        this.requerimentoValido = requerimentoValido;
+    public void setSaveStatus(boolean saveStatus) {
+        this.saveStatus = saveStatus;
     }
 
     public FormControl getStep() {

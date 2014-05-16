@@ -7,7 +7,7 @@
     <p:dialog id="dlgRequerimentoForm" modal="true"
               widgetVar="dlgRequerimentoVar" width="auto"
               resizable="false" appendTo="@(body)">
-        <p:ajax event="close" listener="#{requerimentoBean.cancelRequerimento}"/>
+        <p:ajax event="close" listener="#{requerimentoBean.cleanupRequerimento}"/>
         <f:facet name="header">
             <h:outputText value="#{msg.novo} #{msg.requerimento}: #{requerimentoBean.tipoRequerimento.tipoLocale}" rendered="#{requerimentoBean.operation == 'a'}" />
             <h:outputText value="#{msg.editar} #{msg.requerimento}: #{requerimentoBean.requerimento.tipoRequerimento.tipoLocale}" rendered="#{requerimentoBean.operation == 'e'}" />
@@ -32,7 +32,6 @@
                                      update="requerimentoDlgPanel :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar" />
                     <p:commandButton value="#{msg.cancelar}"
                                      process="@this"
-                                     actionListener="#{requerimentoBean.cancelRequerimento}"
                                      update="requerimentoDlgPanel"
                                      oncomplete="PF('dlgRequerimentoVar').hide()"/>
                 </h:panelGroup>

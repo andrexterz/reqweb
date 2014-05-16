@@ -55,7 +55,7 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     private Date dataProva;
     
     @Valid
-    @OneToMany(mappedBy = "itemRequerimento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemRequerimento",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     private List<Arquivo> arquivos;
     

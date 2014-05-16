@@ -16,6 +16,15 @@
     width: 100%!important;
 }
 
+/*------------------- overrides primefaces confirmDialog ---------------------*/
+.confirmDialogReqweb {
+
+}
+
+.confirmDialogReqweb > div:nth-child(2n) {
+    padding-left: 0!important;
+    padding-right: 0!important;
+}
 /*************************** reqweb generic ***********************************/
 
 html {
@@ -85,6 +94,9 @@ body {
 label {
     color: #2e3192;
     font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.4em;
 }
 
 input[type="submit"] {
@@ -828,7 +840,6 @@ input[type="text"], input[type="password"], select {
 }
 
 .arquivoList {
-    margin: 1em 0 auto 0;
     width: 100%;
     height: 100%;
 }
@@ -887,7 +898,7 @@ input[type="text"], input[type="password"], select {
 
 .formGrid {
     width: 100%;
-    font-size: 95%!important;
+    font-size: 100%!important;
 }
 
 .formGrid tr {

@@ -10,6 +10,8 @@ import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
+import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.EmentaDeDisciplina;
 import br.ufg.reqweb.model.ExtratoAcademico;
 import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.PerfilEnum;
@@ -259,6 +261,11 @@ public class RequerimentoBean implements Serializable {
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
             requerimento.addItemRequerimento(itemRequerimento);
         }
+        if (tipoRequerimento.equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
+            EmentaDeDisciplina itemRequerimento = new EmentaDeDisciplina();
+            sessionMap.put("itemRequerimento", itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+        }
     }
 
     public void editaRequerimento() {
@@ -283,6 +290,9 @@ public class RequerimentoBean implements Serializable {
                 ItemRequerimento itemRequerimento = requerimento.getItemRequerimentoList().iterator().next();
                 sessionMap.put("itemRequerimento", itemRequerimento);
             }
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
+                sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
+            }
         }
     }
 
@@ -292,6 +302,7 @@ public class RequerimentoBean implements Serializable {
     public void cleanupRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove("itemRequerimento");
+        requerimento.getItemRequerimentoList().clear();
         System.out.println("cleaning up requerimento... ");
         setStep(FormControl.STEP0);
         setConfirmaRequerimento(false);
@@ -335,7 +346,6 @@ public class RequerimentoBean implements Serializable {
     }
 
     public void validaRequerimento() {
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         String loginUser = getLoginUsuario();
         requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
@@ -357,6 +367,38 @@ public class RequerimentoBean implements Serializable {
         }
     }
 
+    public void adicionaItemRequerimento() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        requerimento.addItemRequerimento((EmentaDeDisciplina) sessionMap.get("itemRequerimento"));
+        sessionMap.remove("itemRequerimento");
+        sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
+    }
+
+    public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
+        requerimento.removeItemRequerimento(itemRequerimento);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemRemovido"), null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void autoCompleteSelecionaObjectItem(SelectEvent event) {
+        try {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            if (tipoRequerimento.equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
+                SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
+                Turma turma = (Turma) event.getObject();
+                itemRequerimento.setTurma(turma);
+            }
+            if (tipoRequerimento.equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
+                EmentaDeDisciplina itemRequerimento = (EmentaDeDisciplina) sessionMap.get("itemRequerimento");
+                Disciplina disciplina = (Disciplina) event.getObject();
+                itemRequerimento.setDisciplina(disciplina);
+            }
+
+        } catch (NullPointerException e) {
+            itemSelecionado = null;
+        }
+    }
+
     public List<TipoRequerimentoEnum> findTipoRequerimento(String query) {
         List<TipoRequerimentoEnum> items = new ArrayList<>();
         for (TipoRequerimentoEnum t : TipoRequerimentoEnum.values()) {
@@ -372,18 +414,6 @@ public class RequerimentoBean implements Serializable {
             tipoRequerimentoBusca = (TipoRequerimentoEnum) event.getObject();
         } catch (NullPointerException e) {
             tipoRequerimentoBusca = null;
-        }
-    }
-
-    public void autoCompleteSelecionaTurma(SelectEvent event) {
-        try {
-            RequestContext context = RequestContext.getCurrentInstance();
-            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-            SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
-            Turma turma = (Turma) event.getObject();
-            itemRequerimento.setTurma(turma);
-        } catch (NullPointerException e) {
-            tipoRequerimento = null;
         }
     }
 

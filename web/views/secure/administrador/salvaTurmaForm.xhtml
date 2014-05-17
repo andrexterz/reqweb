@@ -25,6 +25,7 @@
                                      forceSelection="true" completeMethod="#{disciplinaBean.findDisciplina}">
                     <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaDisciplina}" />
                     </p:autoComplete>
+                    <p:watermark value="#{msg.disciplina}" for="disciplinaTurma" />
                     <p:outputLabel for="periodoTurma" value="#{msg.periodo}" />
                     <p:selectOneMenu id="periodoTurma"
                                      value="#{turmaBean.turma.periodo}"

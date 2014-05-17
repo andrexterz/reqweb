@@ -10,12 +10,14 @@
                          severity="alert">
             <h:panelGroup layout="block" styleClass="alignCenter confirmDialogButtons">
                 <p:commandButton id="confirmaExclRequerimento" value="#{msg.sim}"
+                                 styleClass="ui-confirmdialog-yes"
                                  oncomplete="PF('excluirRequerimentoDialog').hide()"
                                  action="#{requerimentoBean.excluiRequerimento}"
                                  process="@this"
                                  update=":requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar :formHeader:systemMessages" />
                 <p:commandButton id="cancelaExclRequerimento"
                                  value="#{msg.nao}"
+                                 styleClass="ui-confirmdialog-no"
                                  onclick="PF('excluirRequerimentoDialog').hide()" 
                                  type="button" /> 
             </h:panelGroup>

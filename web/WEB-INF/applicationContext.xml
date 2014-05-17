@@ -48,6 +48,7 @@
                 <value>br.ufg.reqweb.model.ExtratoAcademico</value>
                 <value>br.ufg.reqweb.model.SegundaChamadaDeProva</value>
                 <value>br.ufg.reqweb.model.Arquivo</value>
+                <value>br.ufg.reqweb.model.EmentaDeDisciplina</value>
             </list>
         </property>
         <property name="hibernateProperties">

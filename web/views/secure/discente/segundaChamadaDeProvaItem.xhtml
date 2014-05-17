@@ -87,7 +87,7 @@
                                                     minQueryLength="3" maxResults="10" var="t"
                                                     itemLabel="#{t}" itemValue="#{t}"
                                                     forceSelection="true" completeMethod="#{turmaBean.findTurma}">
-                                        <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaTurma}" />
+                                        <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
                                     </p:autoComplete>
                                     <p:watermark for="turmaRequerimento" value="#{msg.turma}" />
                                 </p:column>
@@ -127,7 +127,7 @@
                                           update="arquivos arquivoContent :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />
                             <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
-                                        type="ordered" styleClass="arquivoList"
+                                        type="ordered" styleClass="dataList" 
                                         value="#{itemRequerimento.arquivos}" var="arq">
                                 <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" ajax="false">
                                     <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
@@ -136,8 +136,7 @@
                                 <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}"
                                                  update="arquivos :formHeader:systemMessages"
                                                  icon="ui-icon-trash" styleClass="floatRight"
-                                                 process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}">
-                                </p:commandButton>
+                                                 process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}" />
                             </p:dataList>
                         </h:panelGrid>
                     </p:tab>

@@ -16,15 +16,6 @@
     width: 100%!important;
 }
 
-/*------------------- overrides primefaces confirmDialog ---------------------*/
-.confirmDialogReqweb {
-
-}
-
-.confirmDialogReqweb > div:nth-child(2n) {
-    padding-left: 0!important;
-    padding-right: 0!important;
-}
 /*************************** reqweb generic ***********************************/
 
 html {
@@ -791,15 +782,6 @@ input[type="text"], input[type="password"], select {
     text-decoration: none;
 }
 
-.observacao {
-    list-style: none;
-    color: firebrick;
-    font-weight: normal;
-    font-size: 1.3em!important;
-    text-align: left;
-    resize: none;
-}
-
 .segundaChamadaDeProvaBox {
     width: 590px;
     height: 320px;
@@ -839,22 +821,29 @@ input[type="text"], input[type="password"], select {
     border: none;
 }
 
-.arquivoList {
+.dataList {
     width: 100%;
     height: 100%;
 }
 
-.arquivoList ol {
+.dataList ul {
+    list-style-type: none;
+}
+
+.dataList ol,.dataList ul {
     margin: 2%;
+    min-width: 216px;
+    min-height: 72px;
+    padding-left: 1em;
 }
 
 
-.arquivoList ol li {
+.dataList ol li,.dataList ul li {
     margin-top: 1em;
     width: 100%;
 }
 
-.arquivoList ol li a:first-child {
+.dataList ol li a:first-child {
     width: 90%;
     display: inline-block;
     text-decoration: none;
@@ -865,7 +854,7 @@ input[type="text"], input[type="password"], select {
     border-radius: 4px;    
 }
 
-.arquivoList ol li a:hover {
+.dataList ol li a:hover {
     color: #05a0ff!important;
     background: rgb(252,252,252);
     background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(227,227,227,1) 100%);
@@ -873,11 +862,17 @@ input[type="text"], input[type="password"], select {
     background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(227,227,227,1) 100%);
     background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(227,227,227,1) 100%);
     background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(227,227,227,1) 100%);
-    //background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(227,227,227,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#e3e3e3',GradientType=0 );
-
 }
 
+.observacao {
+    list-style: none;
+    color: firebrick;
+    font-weight: normal;
+    font-size: 1.3em!important;
+    text-align: left;
+    resize: none;
+}
 
 /************************************ forms ***********************************/
 .formBody {
@@ -968,7 +963,7 @@ input[type="text"], input[type="password"], select {
     margin-right: 8px;
 }
 
-.confirmDialogButtons button:last-child {
+.confirmDialogButtons button:nth-child(n+2) {
     color: #ff0000!important;
     margin-left: 8px;
 }
@@ -1052,8 +1047,7 @@ input[type="text"], input[type="password"], select {
 
 }
 
-/*********************************** perfil ***********************************/
-.perfilGrid {
+.tableGrid {
     width: 100%;
     border: 1px solid #a8a8a8;
     border-collapse: collapse;
@@ -1061,16 +1055,16 @@ input[type="text"], input[type="password"], select {
     margin-top: 8px;
 }
 
-.perfilGrid td, th {
+.tableGrid td, th {
     padding-left: 0!important;
     padding-right: 0!important;
 }
 
-.perfilGrid tr:nth-child(odd) {
+.tableGrid tr:nth-child(odd) {
     background: #dcdcdc;
 }
 
-.perfilGrid tr:nth-child(even) {
+.tableGrid tr:nth-child(even) {
     background: #efefef;
 }
 

@@ -40,6 +40,7 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
 
     public SegundaChamadaDeProva(Turma turma, Date dataProva, List<Arquivo> arquivos) {
         status = ItemRequerimentoStatusEnum.ABERTO;
+        tipoItemRequerimento = TipoItemRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA;
         this.turma = turma;
         this.dataProva = dataProva;
         this.arquivos = arquivos;

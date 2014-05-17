@@ -245,7 +245,7 @@ public class TurmaBean implements Serializable {
             csvData.append(",");
             csvData.append(t.getDisciplina().getId());
             csvData.append(",");
-            csvData.append(t.getDocente().getId());
+            csvData.append(t.getDocente() == null ? "": t.getDocente().getId());
             csvData.append(",");
             csvData.append(t.getDisciplina().getCurso().getSigla());
         }
@@ -285,7 +285,7 @@ public class TurmaBean implements Serializable {
                 String nome = row[2].trim();
                 Semestre semestre = Semestre.getSemestre(Integer.parseInt(row[3].trim()));
                 Long disciplinaId = Long.parseLong(row[4].trim());
-                Long docenteId = Long.parseLong(row[5].trim());
+                Long docenteId = row[5].trim().isEmpty() ? null: Long.parseLong(row[5].trim());
                 Turma t = new Turma();
                 t.setId(id);
                 t.setNome(nome);
@@ -300,7 +300,7 @@ public class TurmaBean implements Serializable {
                 turmaListPreview.put(id, t);
             }
         } catch (IOException | NumberFormatException e) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), "");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, String.format("%1$s %2$s.", event.getFile().getFileName(), LocaleBean.getMessageBundle().getString("dadosInvalidos")), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }

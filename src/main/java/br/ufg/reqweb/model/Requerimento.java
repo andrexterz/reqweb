@@ -6,10 +6,9 @@
 
 package br.ufg.reqweb.model;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -34,10 +34,8 @@ public class Requerimento extends BaseModel {
 
     public Requerimento() {
         status = RequerimentoStatusEnum.ABERTO;
-        itemRequerimentoList = new HashSet();
+        itemRequerimentoList = new ArrayList<>();
     }
-    
-    
     
     @ManyToOne
     @JoinColumn(name = "usuario_id", updatable = false)
@@ -61,8 +59,9 @@ public class Requerimento extends BaseModel {
     private String observacao;
     
     @Valid
+    @Size(min = 1)
     @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
-    private Set<ItemRequerimento> itemRequerimentoList;
+    private List<ItemRequerimento> itemRequerimentoList;
     
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character(16) default 'ABERTO'")
@@ -158,14 +157,14 @@ public class Requerimento extends BaseModel {
     /**
      * @return the itemRequerimentoList
      */
-    public Set<ItemRequerimento> getItemRequerimentoList() {
+    public List<ItemRequerimento> getItemRequerimentoList() {
         return itemRequerimentoList;
     }
 
     /**
      * @param itemRequerimentoList the itemRequerimentoList to set
      */
-    public void setItemRequerimentoList(Set<ItemRequerimento> itemRequerimentoList) {
+    public void setItemRequerimentoList(List<ItemRequerimento> itemRequerimentoList) {
         this.itemRequerimentoList = itemRequerimentoList;
         for (ItemRequerimento ir: itemRequerimentoList) {
             ir.setRequerimento(this);

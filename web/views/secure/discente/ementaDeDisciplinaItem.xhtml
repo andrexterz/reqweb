@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:row>
+        <p:column colspan="2">
+            <h:outputLabel value="#{msg.observacao}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column colspan="2">
+            <p:inputTextarea rows="5" cols="32" autoResize="false"
+                             value="#{requerimentoBean.requerimento.observacao}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column styleClass="col85">
+            <p:outputLabel for="disciplinaEmenta" value="#{msg.disciplina}"  />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column styleClass="col15"> 
+            <p:autoComplete id="disciplinaEmenta"
+                            value="#{itemRequerimento.disciplina}"
+                            converter="#{disciplinaConverter}"
+                            minQueryLength="3" maxResults="10" var="d"
+                            itemLabel="#{d.nome}" itemValue="#{d}"
+                            forceSelection="true" completeMethod="#{disciplinaBean.findDisciplina}">
+                <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
+            </p:autoComplete>
+            <p:watermark value="#{msg.disciplina}" for="disciplinaEmenta" />
+        </p:column>
+        <p:column styleClass="floatRight">
+            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" update="ementas disciplinaEmenta"
+                             process="@this" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
+
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column colspan="2">
+            <p:dataList id="ementas" paginator="true" rows="3" styleClass="dataList" 
+                        value="#{requerimentoBean.requerimento.itemRequerimentoList}"
+                        var="req" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
+                <f:facet name="header">
+                    <h:outputText value="#{msg.ementaDeDisciplina}" />
+                </f:facet>
+                <h:outputText value="#{req.disciplina.nome}" />
+                <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" update="ementas :formHeader:systemMessages"
+                                 icon="ui-icon-trash" styleClass="floatRight" process="@this" />
+            </p:dataList>
+        </p:column>
+    </p:row>
+</ui:composition>
+

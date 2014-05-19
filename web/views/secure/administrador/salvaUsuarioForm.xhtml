@@ -4,56 +4,41 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgUsuarioForm" modal="true"
-              widgetVar="dlgUsuarioVar" width="440" resizable="false" appendTo="@(body)">
+              widgetVar="dlgUsuarioVar" width="420" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioEditar}" />
         </f:facet>
         <h:form id="salvaUsuarioForm">
             <f:validateBean disabled="true">
-                <p:panelGrid columns="2" styleClass="formGrid">
-                    <p:column>
-                        <h:outputLabel value="#{msg.usuario}" />
-                    </p:column>
-                    <p:column>
-                        <h:outputText value="#{usuarioBean.usuario.nome}" />
-                    </p:column>
-                    <p:column styleClass="formGridColA">
-                        <h:outputLabel for="perfilNovo" value="#{msg.perfil}" />
-                    </p:column>
-                    <p:column styleClass="formGridColB">
-                        <p:selectOneMenu id="perfilNovo" value="#{perfilBean.itemSelecionado}">
-                            <f:selectItem itemLabel="#{msg.perfil}" value="#{null}" />
-                            <f:selectItems value="#{perfilBean.items}" var="p"
-                                           itemLabel="#{p.papelLocale}"
-                                           itemValue="#{p}" />
-                            <p:ajax update="cursoPerfilNovo addPerfilButton" listener="#{usuarioBean.onCursoDisable}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column>
-                        <h:outputLabel for="cursoPerfilNovo" value="#{msg.curso}" />
-                    </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="cursoPerfilNovo"
-                                         disabled="#{usuarioBean.cursoDisabled}"
-                                         converter="#{cursoConverter}"
-                                         value="#{cursoBean.itemSelecionado}">
-                            <f:selectItem itemLabel="#{msg.curso}" value="#{null}" />
-                            <f:selectItems value="#{cursoBean.cursos}" var="c"
-                                           itemLabel="#{c.nome}"
-                                           itemValue="#{c}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column />
-                    <p:column>
-                        <p:commandButton id="addPerfilButton"
-                                         styleClass="floatRight"
-                                         icon="ui-icon-plus"
-                                         disabled="#{perfilBean.itemSelecionado == null}"
-                                         value="#{msg.adicionar}"
-                                         title="#{msg.adicionar}"
-                                         actionListener="#{usuarioBean.addPerfil}"
-                                         update="perfilList" />
-                    </p:column>
+                <p:panelGrid id="usuarioDlgPanel" columns="1" styleClass="formGrid">
+                    <h:outputLabel value="#{msg.usuario}" />
+                    <h:outputText value="#{usuarioBean.usuario.nome}" />
+                    <h:outputLabel for="perfilNovo" value="#{msg.perfil}" />
+                    <p:selectOneMenu id="perfilNovo" value="#{perfilBean.itemSelecionado}">
+                        <f:selectItem itemLabel="#{msg.perfil}" value="#{null}" />
+                        <f:selectItems value="#{perfilBean.items}" var="p"
+                                       itemLabel="#{p.papelLocale}"
+                                       itemValue="#{p}" />
+                        <p:ajax update="cursoPerfilNovo addPerfilButton" listener="#{usuarioBean.onCursoDisable}" />
+                    </p:selectOneMenu>
+                    <h:outputLabel for="cursoPerfilNovo" value="#{msg.curso}" />
+                    <p:selectOneMenu id="cursoPerfilNovo"
+                                     disabled="#{usuarioBean.cursoDisabled}"
+                                     converter="#{cursoConverter}"
+                                     value="#{cursoBean.itemSelecionado}">
+                        <f:selectItem itemLabel="#{msg.curso}" value="#{null}" />
+                        <f:selectItems value="#{cursoBean.cursos}" var="c"
+                                       itemLabel="#{c.nome}"
+                                       itemValue="#{c}" />
+                    </p:selectOneMenu>
+                    <p:commandButton id="addPerfilButton"
+                                     styleClass="floatRight"
+                                     icon="ui-icon-plus"
+                                     disabled="#{perfilBean.itemSelecionado == null}"
+                                     value="#{msg.adicionar}"
+                                     title="#{msg.adicionar}"
+                                     actionListener="#{usuarioBean.addPerfil}"
+                                     update="perfilList" />
                 </p:panelGrid>
                 <p:dataTable id="perfilList" styleClass="tableGrid"
                              paginator="true" rows="3"
@@ -61,10 +46,10 @@
                              emptyMessage="#{msg.emptyMessage}"
                              value="#{usuarioBean.usuario.perfilList}"
                              var="perfil">
-                    <p:column headerText="#{msg.perfil}" styleClass="perfilColA">
+                    <p:column headerText="#{msg.perfil}" styleClass="col45">
                         <h:outputText value="#{perfil.tipoPerfil.papelLocale}" />
                     </p:column>
-                    <p:column headerText="#{msg.curso}" styleClass="perfilColB">
+                    <p:column headerText="#{msg.curso}" styleClass="col55">
                         <h:outputText value="#{perfil.curso.nome}" />
                     </p:column>
                     <p:column headerText="x">

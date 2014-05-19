@@ -93,18 +93,18 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":requerimentoForm:requerimentoToolbar" listener="#{requerimentoBean.selecionaItem}" />
-                <p:column headerText="#{msg.requerimento}" styleClass="requerimentoColA">
+                <p:column headerText="#{msg.requerimento}" styleClass="col50">
                     <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
                 </p:column>
-                <p:column headerText="#{msg.status}" sortBy="status" styleClass="requerimentoColB">
+                <p:column headerText="#{msg.status}" sortBy="status" styleClass="col20">
                     <h:outputText value="#{requerimentoItem.status.statusLocale}" />
                 </p:column>
-                <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="requerimentoColC">
+                <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="col15 alignRight">
                     <h:outputText value="#{requerimentoItem.dataCriacao}">
                         <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="requerimentoColD">
+                <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="col15 alignRight">
                     <h:outputText value="#{requerimentoItem.dataModificacao}">
                         <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>

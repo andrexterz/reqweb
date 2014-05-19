@@ -43,13 +43,13 @@
                      rowKey="#{indicePrioridadeItem.id}"
                      paginatorPosition="bottom"
                      rows="10" pageLinks="5">
-            <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
+            <p:column headerText="#{msg.usuarioMatricula}" styleClass="col10 alignCenter">
                 <h:outputText value="#{indicePrioridadeItem.discente.matricula}" />
             </p:column>
-            <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
+            <p:column headerText="#{msg.discente}" styleClass="col70">
                 <h:outputText value="#{indicePrioridadeItem.discente.nome}" />
             </p:column>
-            <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
+            <p:column headerText="#{msg.indicePrioridade}" styleClass="col20 alignRight">
                 <h:outputText value="#{indicePrioridadeItem.indicePrioridade}">
                     <f:convertNumber pattern="#0.00" />
                 </h:outputText>

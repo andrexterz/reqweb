@@ -66,13 +66,13 @@
                      paginatorPosition="bottom"
                      rows="10" pageLinks="5">
             <p:ajax event="rowSelect" update=":arquivosTab:disciplinasForm:disciplinasToolbar" listener="#{disciplinaBean.selecionaItem}" />
-            <p:column headerText="#{msg.codigo}" styleClass="disciplinaColA">
+            <p:column headerText="#{msg.codigo}" styleClass="col5">
                 <h:outputText value="#{disciplinaItem.codigo}" />
             </p:column>
-            <p:column headerText="#{msg.disciplina}" styleClass="disciplinaColB">
+            <p:column headerText="#{msg.disciplina}" styleClass="col50">
                 <h:outputText value="#{disciplinaItem.nome}" />
             </p:column>
-            <p:column headerText="#{msg.curso}" styleClass="disciplinaColC">
+            <p:column headerText="#{msg.curso}" styleClass="col45">
                 <h:outputText value="#{disciplinaItem.curso.nome}" />
             </p:column>
         </p:dataTable>

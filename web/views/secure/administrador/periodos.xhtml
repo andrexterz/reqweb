@@ -56,25 +56,25 @@
                 <p:ajax event="rowSelect"
                         update=":periodoForm:periodoToolbar"
                         listener="#{periodoBean.selecionaItem}" />
-                <p:column headerText="#{msg.ano}" styleClass="periodoColAno">
+                <p:column headerText="#{msg.ano}" styleClass="col10 alignCenter">
                     <h:outputText value="#{periodoItem.ano}" />
                 </p:column>
-                <p:column headerText="#{msg.semestre}" styleClass="periodoColSemestre">
+                <p:column headerText="#{msg.semestre}" styleClass="col25 alignCenter">
                     <h:outputText value="#{msg.semestre} #{periodoItem.semestre.value}" />
                 </p:column>    
-                <p:column headerText="#{msg.dataInicio}" styleClass="periodoColPeriodo">
+                <p:column headerText="#{msg.dataInicio}" styleClass="col30 alignCenter">
                     <h:outputText value="#{periodoItem.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="#{msg.dataTermino}" styleClass="periodoColPeriodo">
+                <p:column headerText="#{msg.dataTermino}" styleClass="col30 alignCenter">
                     <h:outputText value="#{periodoItem.dataTermino}">
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
                 </p:column>                
-                <p:column headerText="#{msg.ativo}" styleClass="periodoColPeriodo">
-                    <p:graphicImage rendered="#{periodoItem.ativo == true}" styleClass="ui-icon ui-icon-check iconDefault"/>
-                    <p:graphicImage rendered="#{periodoItem.ativo == false}" styleClass="ui-icon ui-icon-close iconDefault"/>
+                <p:column headerText="#{msg.ativo}" styleClass="col5">
+                    <p:graphicImage rendered="#{periodoItem.ativo == true}" styleClass="ui-icon ui-icon-check iconDefault floatRight"/>
+                    <p:graphicImage rendered="#{periodoItem.ativo == false}" styleClass="ui-icon ui-icon-close iconDefault floatRight"/>
                 </p:column>                
             </p:dataTable>
         </h:form>

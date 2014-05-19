@@ -50,22 +50,22 @@
                          paginatorPosition="bottom"
                          rows="10" pageLinks="5" rowStyleClass="rowPreview">
                 <p:ajax event="rowSelect" update=":importaIndicePrioridadeForm:indicePrioridadeImpToolbar" />
-                <p:column headerText="#{msg.usuarioMatricula}" styleClass="indicePrioridadeColA">
+                <p:column headerText="#{msg.usuarioMatricula}" styleClass="col10">
                     <h:outputText value="#{indicePrioridadeItemImp.discente.matricula}" />
                 </p:column>
-                <p:column headerText="#{msg.discente}" styleClass="indicePrioridadeColB">
+                <p:column headerText="#{msg.discente}" styleClass="col40">
                     <h:outputText value="#{indicePrioridadeItemImp.discente.nome}" />
                 </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="indicePrioridadeColC">
+                <p:column headerText="#{msg.curso}" styleClass="col30">
                     <h:outputText value="#{indicePrioridadeItemImp.discente.perfilList.get(0).curso.nome}" />
                 </p:column>
-                <p:column headerText="#{msg.indicePrioridade}" styleClass="indicePrioridadeColD">
+                <p:column headerText="#{msg.indicePrioridade}" styleClass="col20 alignRight">
                     <h:outputText value="#{indicePrioridadeItemImp.indicePrioridade}">
                         <f:convertNumber pattern="#0.00" />
                     </h:outputText>
                 </p:column>
             </p:dataTable>
-            <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="progressbarColA, progressbarColB">
+            <h:panelGrid styleClass="progressbar confirmDialogButtons " columns="2" columnClasses="col95, col5">
                 <p:progressBar id="progressBarIndicePrioridade"
                                interval="1500"
                                ajax="true"

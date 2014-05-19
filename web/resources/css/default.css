@@ -3,6 +3,8 @@
     Author     : André
 */
 
+.default {
+}
 /*************************** primefaces theme *********************************/
 .ui-widget {
     font-size: 90%!important;
@@ -578,14 +580,6 @@ input[type="text"], input[type="password"], select {
 
 
 /********************************** cursos ************************************/
-.cursoColNome {
-    width: 80%;
-}
-
-.cursoColSigla {
-    width: 20%;
-}
-
 .cursoToobar {
     width: 100%;
     height: 32px;
@@ -598,21 +592,6 @@ input[type="text"], input[type="password"], select {
     margin-right: 4px;
 } 
 /************************************* periodo ********************************/
-.periodoColAno {
-    width: 10%;
-    text-align: center;
-}
-
-.periodoColSemestre {
-    width: 30%;
-    text-align: center;
-}
-
-.periodoColPeriodo {
-    width: 30%;
-    text-align: center;
-}
-
 .calendarWidget {
     width: auto!important;
 }
@@ -661,52 +640,7 @@ input[type="text"], input[type="password"], select {
 .disciplinaCodigo {
     width: 20%!important;
 }
-
-.disciplinaColA {
-    width: 5%;
-}
-
-.disciplinaColB {
-    width: 50%;
-}
-
-.disciplinaColC {
-    width: 45%;
-}
-
-/************************************ turmas **********************************/
-.turmaColA {
-    width: 10%;
-}
-.turmaColB {
-    width: 40%;
-}
-.turmaColC {
-    width: 30%;
-}
-
-.turmaColD {
-    width: 20%;
-}
-
 /************************************ indice de prioridade ********************/
-.indicePrioridadeColA {
-    width: 10%;
-}
-.indicePrioridadeColB {
-    width: 40%;
-}
-
-.indicePrioridadeColC {
-    width: 30%;
-}
-
-.indicePrioridadeColD {
-    text-align: right;
-    text-indent: 5%;
-    width: 20%;
-}
-
 .excluiMsgBoxSelection {
     border: 1px solid grey;
     width: 100%;
@@ -739,41 +673,7 @@ input[type="text"], input[type="password"], select {
     text-align: left;
 }
 
-.progressbar {
-    width: 100%;
-}
-
-.progressbarColA {
-    width: 92%;
-}
-
-.progressbarColB {
-    width: 8%;
-}
 /************************************ requerimentos ***************************/
-.requerimentoColA {
-    width: 25%;   
-}
-
-.requerimentoColB {
-    width: 15%;
-}
-
-.requerimentoColC {
-    width: 15%;
-    text-align: right;
-}
-
-.requerimentoColD {
-    width: 15%;
-    text-align: right;
-}
-
-.requerimentoColE {
-    width: 30%;
-    text-align: right;
-}
-
 .segundaChamadaDeProvaSteps {
     height: 16px;
 }
@@ -821,6 +721,10 @@ input[type="text"], input[type="password"], select {
     border: none;
 }
 
+.requerimentoTab .ui-tabs-panel {
+    padding: 0!important;
+}
+
 .dataList {
     width: 100%;
     height: 100%;
@@ -831,10 +735,10 @@ input[type="text"], input[type="password"], select {
 }
 
 .dataList ol,.dataList ul {
-    margin: 2%;
+    margin: 4px;
     min-width: 216px;
     min-height: 72px;
-    padding-left: 1em;
+    padding-left: 20px;
 }
 
 
@@ -843,7 +747,7 @@ input[type="text"], input[type="password"], select {
     width: 100%;
 }
 
-.dataList ol li a:first-child {
+.dataList ol li a:first-child,.dataList ul li a:first-child {
     width: 90%;
     display: inline-block;
     text-decoration: none;
@@ -905,15 +809,7 @@ input[type="text"], input[type="password"], select {
     background: none!important;
 }
 
-.formGridColA {
-    width: 50%;
-}
-
-.formGridColB {
-    width: 50%;
-}
-
-.formGrid input[type="text"], input[type="password"], select, textArea {
+.formGrid input[type="text"],.formGrid input[type="password"],.formGrid select,.formGrid textArea {
     width: 97%;
 }
 
@@ -1049,7 +945,7 @@ input[type="text"], input[type="password"], select {
 
 .tableGrid {
     width: 100%;
-    border: 1px solid #a8a8a8;
+    //border: 1px solid #a8a8a8;
     border-collapse: collapse;
     text-align: left;
     margin-top: 8px;
@@ -1072,16 +968,8 @@ input[type="text"], input[type="password"], select {
     text-align: center;
 }
 
-.perfilColA {
-    width: 40%;
-}
-
-.perfilColB {
-    width: 55%;
-}
-
-.perfilColC {
-    width: 5%;
+.progressbar {
+    width: 100%;
 }
 
 /*********************************** footer ***********************************/

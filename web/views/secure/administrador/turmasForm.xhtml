@@ -68,16 +68,16 @@
                      paginatorPosition="bottom"
                      rows="10" pageLinks="5">
             <p:ajax event="rowSelect" update=":arquivosTab:turmasForm:turmasToolbar" listener="#{turmaBean.selecionaItem}" />
-            <p:column headerText="#{msg.turma}" styleClass="turmaColA">
+            <p:column headerText="#{msg.turma}" styleClass="col5 alignCenter">
                 <h:outputText value="#{turmaItem.nome}" />
             </p:column>
-            <p:column headerText="#{msg.disciplina}" styleClass="turmaColB">
+            <p:column headerText="#{msg.disciplina}" styleClass="col45">
                 <h:outputText value="#{turmaItem.disciplina.nome}" />
             </p:column>
-            <p:column headerText="#{msg.docente}" styleClass="turmaColC">
+            <p:column headerText="#{msg.docente}" styleClass="col40">
                 <h:outputText value="#{turmaItem.docente.nome}" />
             </p:column>
-            <p:column headerText="#{msg.periodo}" styleClass="turmaColD">
+            <p:column headerText="#{msg.periodo}" styleClass="col10 alignRight">
                 <h:outputText value="#{turmaItem.periodo}" />
             </p:column>
         </p:dataTable>

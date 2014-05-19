@@ -19,7 +19,7 @@
             <h:panelGroup layout="block" id="usuarioToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 update=":dlgUsuarioForm"
+                                 update=":salvaUsuarioForm"
                                  oncomplete="PF('dlgUsuarioVar').show()"
                                  disabled="#{usuarioBean.selecionado == false}"
                                  actionListener="#{usuarioBean.editaUsuario}" />

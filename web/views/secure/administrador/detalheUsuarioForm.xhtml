@@ -10,12 +10,12 @@
             <h:outputText value="#{msg.usuarioDetalhe}: #{usuarioBean.itemSelecionado.id}" />
         </f:facet>
         <h:form id="detalheUsuarioForm">
-            <p:panelGrid styleClass="formGrid" columnClasses="formGridColA, formGridColB">
+            <p:panelGrid styleClass="formGrid">
                 <p:row>
-                    <p:column>
+                    <p:column styleClass="col30">
                         <h:outputText value="#{msg.usuario}" />
                     </p:column>
-                    <p:column>
+                    <p:column styleClass="col70">
                         <h:outputText value="#{usuarioBean.itemSelecionado.login}" />
                     </p:column>
                 </p:row>
@@ -50,10 +50,10 @@
                                          var="p"
                                          emptyMessage="#{msg.emptyMessage}"
                                          styleClass="tableGrid">
-                                <p:column styleClass="perfilColA" headerText="#{msg.perfil}">
+                                <p:column styleClass="col45" headerText="#{msg.perfil}">
                                     <h:outputText value="#{p.tipoPerfil.papelLocale}" />
                                 </p:column>
-                                <p:column styleClass="perfilColB" headerText="#{msg.curso}">
+                                <p:column styleClass="col55" headerText="#{msg.curso}">
                                     <h:outputText value="#{p.curso.nome}" />
                                 </p:column>
                             </p:dataTable>

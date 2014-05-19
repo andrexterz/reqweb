@@ -15,12 +15,12 @@
         </p:column>
     </p:row>
     <p:row>
-        <p:column styleClass="col85">
+        <p:column>
             <p:outputLabel for="disciplinaEmenta" value="#{msg.disciplina}"  />
         </p:column>
     </p:row>
     <p:row>
-        <p:column styleClass="col15"> 
+        <p:column> 
             <p:autoComplete id="disciplinaEmenta"
                             value="#{itemRequerimento.disciplina}"
                             converter="#{disciplinaConverter}"
@@ -39,16 +39,23 @@
     </p:row>
     <p:row>
         <p:column colspan="2">
-            <p:dataList id="ementas" paginator="true" rows="3" styleClass="dataList" 
-                        value="#{requerimentoBean.requerimento.itemRequerimentoList}"
-                        var="req" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
-                <f:facet name="header">
-                    <h:outputText value="#{msg.ementaDeDisciplina}" />
-                </f:facet>
-                <h:outputText value="#{req.disciplina.nome}" />
-                <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" update="ementas :formHeader:systemMessages"
-                                 icon="ui-icon-trash" styleClass="floatRight" process="@this" />
-            </p:dataList>
+            <p:dataTable id="ementas" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="formGrid"
+                         value="#{requerimentoBean.requerimento.itemRequerimentoList}"
+                         var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
+                <p:column styleClass="col5 alignCenter" headerText="#">
+                    <h:outputText value="#{itemNum+1}" />
+                </p:column>
+                <p:column styleClass="col80" headerText="#{msg.disciplina}">
+                    <h:outputText value="#{reqItem.disciplina.nome}" />
+                </p:column>
+                <p:column styleClass="col10" headerText="#{msg.curso}">
+                    <h:outputText title="#{reqItem.disciplina.curso.nome}" value="#{reqItem.disciplina.curso.sigla}" />
+                </p:column>
+                <p:column styleClass="col5" headerText="x">
+                    <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" update="ementas :formHeader:systemMessages"
+                                     icon="ui-icon-trash" styleClass="floatRight" process="@this" />
+                </p:column>
+            </p:dataTable>
         </p:column>
     </p:row>
 </ui:composition>

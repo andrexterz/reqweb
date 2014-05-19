@@ -86,50 +86,50 @@ public class DisciplinaBean implements Serializable {
         itemPreviewSelecionado = null;
         disciplinas = new ArrayList<>();
         disciplinasDataModel = new LazyDataModel<Disciplina>() {
-            
+
             private List<Disciplina> data;
 
             @Override
             public Object getRowKey(Disciplina disciplina) {
-                return disciplina.getId().toString(); 
+                return disciplina.getId().toString();
             }
 
             @Override
             public Disciplina getRowData(String key) {
-                for (Disciplina d: data) {
+                for (Disciplina d : data) {
                     if (d.getId().toString().equals(key)) {
                         return d;
                     }
                 }
                 return null;
             }
-            
-            @Override
-            public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                setPageSize(pageSize);
-                if (curso != null) {
-                    data = disciplinaDao.findByCurso(termoBusca, curso);
-                    setRowCount(data.size());
-                } else {
-                    if (termoBusca.equals("")) {
-                        data = disciplinaDao.find(first, pageSize);
-                        setRowCount(disciplinaDao.count());
-                    } else {
-                        data = disciplinaDao.find(termoBusca);
-                        setRowCount(data.size());
-                    }
-                }
-                if (data.size() > pageSize) {
-                    try {
-                        return data.subList(first, first + pageSize);
-                    } catch (IndexOutOfBoundsException e) {
-                         return data.subList(first, first + (data.size() % pageSize));
-                    }
-                    
-                }                
-                return data;
-            }
 
+
+             @Override
+            public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+             setPageSize(pageSize);
+             if (curso != null) {
+             data = disciplinaDao.findByCurso(termoBusca, curso);
+             setRowCount(data.size());
+             } else {
+             if (termoBusca.equals("")) {
+             data = disciplinaDao.find(first, pageSize);
+             setRowCount(disciplinaDao.count());
+             } else {
+             data = disciplinaDao.find(termoBusca);
+             setRowCount(data.size());
+             }
+             }
+             if (data.size() > pageSize) {
+             try {
+             return data.subList(first, first + pageSize);
+             } catch (IndexOutOfBoundsException e) {
+             return data.subList(first, first + (data.size() % pageSize));
+             }
+                    
+             }                
+             return data;
+             }
         };
 
     }
@@ -156,14 +156,14 @@ public class DisciplinaBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
         } else {
             try {
-            disciplinaDao.excluir(itemSelecionado);
-            itemSelecionado = null;
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
+                disciplinaDao.excluir(itemSelecionado);
+                itemSelecionado = null;
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosExcluidos"));
             } catch (Exception e) {
                 msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("violacaoRelacionamento"));
-            }             
+            }
         }
-        FacesContext.getCurrentInstance().addMessage(null, msg);        
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void salvaDisciplinas() {
@@ -226,9 +226,9 @@ public class DisciplinaBean implements Serializable {
     public void selecionaItemPreview(SelectEvent event) {
         itemPreviewSelecionado = (Disciplina) event.getObject();
     }
-    
+
     /**
-     * 
+     *
      * @param query
      * @return the List<Disciplina>
      * method for autocomplete widget
@@ -296,7 +296,7 @@ public class DisciplinaBean implements Serializable {
 
     public void excluiArquivoUploaded() {
         disciplinaListPreview.clear();
-        itemPreviewSelecionado = null;        
+        itemPreviewSelecionado = null;
     }
 
     public void excluiDisciplinaPreview() {

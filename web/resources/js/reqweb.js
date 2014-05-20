@@ -38,3 +38,12 @@ function progressBarComplete(widget, event) {
 function progressBarCancel(widget, event) {
     PF(widget).cancel();
 }
+
+/*
+ * remove todos domingos do widget calendar
+ * atributo de beforShowDay
+ */
+function disableSundays(date) {
+    var day = date.getDay();
+    return eval("[(day !== 0),'']");
+}

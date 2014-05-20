@@ -192,9 +192,9 @@ public class TurmaBean implements Serializable {
                 }
                 try {
                     turmaDao.adicionar(items);
-                    saveStatus = true;
+                    setSaveStatus(true);
                 } catch (Exception e) {
-                    saveStatus = false;
+                    setSaveStatus(false);
                 }
             }
         };
@@ -216,7 +216,7 @@ public class TurmaBean implements Serializable {
                 }
             }
         } catch (Exception e) {
-            saveStatus = false;
+            setSaveStatus(false);
         }
         context.addCallbackParam("resultado", saveStatus);
         handleCompleteSaveTurmas();
@@ -436,6 +436,15 @@ public class TurmaBean implements Serializable {
     public void setProgress(int progress) {
         this.progress = progress;
     }
+
+    public boolean isSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(boolean saveStatus) {
+        this.saveStatus = saveStatus;
+    }
+    
 
     public boolean getStopImportaTurmas() {
         return stopImportaTurmas;

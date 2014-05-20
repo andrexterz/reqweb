@@ -689,6 +689,11 @@ input[type="text"], input[type="password"], select {
     padding: 2px;
 }
 
+.ementaDeDisciplinaBox {
+    width: 590px;
+    height: auto;
+}
+
 
 .aviso {
     word-wrap: break-word;

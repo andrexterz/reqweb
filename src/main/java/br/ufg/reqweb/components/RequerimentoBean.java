@@ -81,7 +81,6 @@ public class RequerimentoBean implements Serializable {
     private String termoBuscaDiscente;
     private String termoBuscaPeriodo;
     private List<Atendimento> atendimentos;
-    private List<Arquivo> arquivos;
     private Arquivo arquivo;
     private boolean confirmaRequerimento;
     private boolean saveStatus;
@@ -138,7 +137,6 @@ public class RequerimentoBean implements Serializable {
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.PERIODO;
         atendimentos = new ArrayList<>();
-        arquivos = new ArrayList<>();
         arquivo = null;
         confirmaRequerimento = false;
         saveStatus = false;
@@ -310,22 +308,21 @@ public class RequerimentoBean implements Serializable {
 
     public void salvaRequerimento() {
         RequestContext context = RequestContext.getCurrentInstance();
-        validaRequerimento();
-        if (saveStatus) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            context.addCallbackParam("resultado", true);
-            if (operation.equals(ADICIONA)) {
-                requerimentoDao.adicionar(requerimento);
-                itemSelecionado = requerimento;
-            } else {
-                requerimentoDao.atualizar(requerimento);
+        String msgError = validaRequerimento();
+        try {
+            if (saveStatus) {
+                if (operation.equals(ADICIONA)) {
+                    requerimentoDao.adicionar(requerimento);
+                    itemSelecionado = requerimento;
+                } else {
+                    requerimentoDao.atualizar(requerimento);
+                }
             }
-            setSaveStatus(true);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-        } else {
+        } catch (Exception e) {
             setSaveStatus(false);
-            context.addCallbackParam("resultado", false);
         }
+        context.addCallbackParam("resultado", saveStatus);
+        handleCompleteSaveRequerimento(msgError);
     }
 
     public void excluiRequerimento() {
@@ -341,37 +338,55 @@ public class RequerimentoBean implements Serializable {
         }
     }
 
+    public void handleCompleteSaveRequerimento(String msgError) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg;
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), null);
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", msgError);
+        }
+        context.addMessage(null, msg);
+    }
+
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Requerimento) event.getObject();
     }
 
-    public void validaRequerimento() {
+    public String validaRequerimento() {
         String loginUser = getLoginUsuario();
         requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
         setSaveStatus(errors.isEmpty());
-        if (!isSaveStatus()) {
-            FacesMessage msg;
-            StringBuilder formattedMsg = new StringBuilder(LocaleBean.getMessageBundle().getString("dadosInvalidos"));
-            for (ConstraintViolation<Requerimento> error : errors) {
-                String invalidValue = error.getPropertyPath().toString();
-                Pattern pattErrorValue = Pattern.compile("(?<=\\.)\\w+");
-                Matcher matcherValue = pattErrorValue.matcher(invalidValue);
-                String errorMsg = error.getMessage();
-                if (matcherValue.find()) {
-                    formattedMsg.append(String.format("- %s: %s. ", LocaleBean.getMessageBundle().getString(matcherValue.group()), errorMsg));
-                }
+        StringBuilder formattedMsg = new StringBuilder(LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+        for (ConstraintViolation<Requerimento> error : errors) {
+            String invalidValue = error.getPropertyPath().toString();
+            Pattern pattErrorValue = Pattern.compile("(?<=\\.)\\w+");
+            Matcher matcherValue = pattErrorValue.matcher(invalidValue);
+            String errorMsg = error.getMessage();
+            if (matcherValue.find()) {
+                formattedMsg.append(String.format("- %s: %s. ", LocaleBean.getMessageBundle().getString(matcherValue.group()), errorMsg));
             }
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", formattedMsg.toString());
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
+        return formattedMsg.toString();
     }
 
     public void adicionaItemRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        requerimento.addItemRequerimento((EmentaDeDisciplina) sessionMap.get("itemRequerimento"));
-        sessionMap.remove("itemRequerimento");
-        sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
+        ItemRequerimento item = (ItemRequerimento) sessionMap.remove("itemRequerimento");
+        Set<ConstraintViolation<ItemRequerimento>> errors = validator.validate(item);
+        if (errors.isEmpty()) {
+            if (tipoRequerimento.equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
+                //adiciona item da sessao na lista de items
+                requerimento.addItemRequerimento((EmentaDeDisciplina) item);
+                sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
+            }
+        } else {
+            //devolve item para a sessao, caso haja erro
+            sessionMap.put("itemRequerimento", item);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("dadosInvalidos"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
     public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
@@ -611,10 +626,6 @@ public class RequerimentoBean implements Serializable {
         return atendimentos;
     }
 
-    public List<Arquivo> getArquivos() {
-        return arquivos;
-    }
-
     public Arquivo getArquivo() {
         return arquivo;
     }
@@ -716,9 +727,5 @@ public class RequerimentoBean implements Serializable {
      */
     public void setTipoBusca(TipoBusca tipoBusca) {
         this.tipoBusca = tipoBusca;
-    }
-
-    public Date getMaxDate() {
-        return Calendar.getInstance().getTime();
     }
 }

@@ -64,11 +64,13 @@
                                                       itemValue="INDEFERIDO" itemDisabled="#{usuarioBean.perfil == 'DISCENTE'}" />
                                     </p:selectOneButton>
                                 </p:column>
-
                                 <p:column rowspan="4">
                                     <p:calendar id="dataProva"
+                                                beforeShowDay="disableSundays"
                                                 mode="inline"
-                                                maxdate="#{requerimentoBean.maxDate}"
+                                                disabled="#{configBean.isExpiredPeriodo(itemRequerimento.dataProva)}"
+                                                mindate="#{configBean.getValue('minPeriodo')}"
+                                                maxdate="#{configBean.getValue('maxPeriodo')}"
                                                 styleClass="calendarWidget"
                                                 value="#{itemRequerimento.dataProva}">
                                         <p:ajax update="dataProvaText" event="dateSelect" />
@@ -122,9 +124,10 @@
                                           fileLimit="1"
                                           multiple="false"
                                           process="@this"
+                                          disabled="#{itemRequerimento.arquivos.size() ge configBean.getValue('maxArquivos')}"
                                           sizeLimit="1048576"
                                           fileUploadListener="#{requerimentoBean.uploadArquivo}"
-                                          update="arquivos arquivoContent :formHeader:systemMessages" />
+                                          update=":salvaRequerimentoForm:requerimentoTab:arquivoTab2 :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />
                             <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
                                         type="ordered" styleClass="dataList" 
@@ -134,7 +137,7 @@
                                     <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
                                 </p:commandLink>
                                 <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}"
-                                                 update="arquivos :formHeader:systemMessages"
+                                                 update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages"
                                                  icon="ui-icon-trash" styleClass="floatRight"
                                                  process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}" />
                             </p:dataList>

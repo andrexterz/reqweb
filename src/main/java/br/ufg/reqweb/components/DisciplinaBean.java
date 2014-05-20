@@ -189,9 +189,9 @@ public class DisciplinaBean implements Serializable {
                 }
                 try {
                     disciplinaDao.adicionar(items);
-                    saveStatus = true;
+                    setSaveStatus(true);
                 } catch (Exception e) {
-                    saveStatus = false;
+                    setSaveStatus(false);
                 }
 
             }
@@ -213,7 +213,7 @@ public class DisciplinaBean implements Serializable {
                 }
             }
         } catch (Exception e) {
-            saveStatus = false;
+            setSaveStatus(false);
         }
         context.addCallbackParam("resultado", saveStatus);
         handleCompleteSaveDisciplinas();
@@ -377,6 +377,14 @@ public class DisciplinaBean implements Serializable {
         this.progress = progress;
     }
 
+    public boolean isSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(boolean saveStatus) {
+        this.saveStatus = saveStatus;
+    }
+    
     public boolean getStopImportaDisciplinas() {
         return stopImportaDisciplinas;
     }

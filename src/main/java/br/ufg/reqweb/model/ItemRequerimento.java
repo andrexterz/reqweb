@@ -13,6 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -23,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"requerimento_id","disciplina_id"})})
 public abstract class ItemRequerimento extends BaseModel {
     
     private static final long serialVersionUID = 1L;

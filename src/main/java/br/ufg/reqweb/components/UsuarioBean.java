@@ -74,8 +74,8 @@ public class UsuarioBean implements Serializable {
     private boolean autenticado;
     private List<Perfil> perfilRemovido;
     private int progress;
-    private volatile boolean stopImportaUsuarios;
     private boolean saveStatus;
+    private volatile boolean stopImportaUsuarios;
     private Thread tImportJob;
     private Usuario itemSelecionado;
     private String termoBusca;
@@ -227,9 +227,9 @@ public class UsuarioBean implements Serializable {
                 }
                 try {
                     usuarioDao.adicionar(usrList);
-                    saveStatus = true;
+                    setSaveStatus(true);
                 } catch (Exception e) {
-                    saveStatus = false;
+                    setSaveStatus(false);
                 }
             }
         };
@@ -332,7 +332,7 @@ public class UsuarioBean implements Serializable {
                 }
             }
         } catch (Exception e) {
-            saveStatus = false;
+            setSaveStatus(false);
         }
 
         context.addCallbackParam("resultado", saveStatus);
@@ -439,6 +439,14 @@ public class UsuarioBean implements Serializable {
         this.progress = progress;
     }
 
+    public boolean isSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(boolean saveStatus) {
+        this.saveStatus = saveStatus;
+    }
+    
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
     }

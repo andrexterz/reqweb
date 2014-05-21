@@ -13,7 +13,7 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
        
-    <context:component-scan base-package="br.ufg.reqweb.components, br.ufg.reqweb.dao, br.ufg.reqweb.model" />
+    <context:component-scan base-package="br.ufg.reqweb.components, br.ufg.reqweb.dao" />
     <!-- mvc not used with jsf -->
     <!-- mvc:annotation-driven /-->
     <!-- JSR-303 validator -->
@@ -33,7 +33,8 @@
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">        
         <property name="dataSource" ref="dataSource" />
-        <property name="annotatedClasses"> 
+        <property name="packagesToScan" value="br.ufg.reqweb.model" />
+        <!--property name="annotatedClasses"> 
             <list>
                 <value>br.ufg.reqweb.model.Curso</value>
                 <value>br.ufg.reqweb.model.Disciplina</value>               
@@ -50,7 +51,7 @@
                 <value>br.ufg.reqweb.model.Arquivo</value>
                 <value>br.ufg.reqweb.model.EmentaDeDisciplina</value>
             </list>
-        </property>
+        </property-->
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>

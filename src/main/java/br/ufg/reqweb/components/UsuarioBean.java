@@ -193,7 +193,8 @@ public class UsuarioBean implements Serializable {
                 for (LdapInfo infoUsuario : infoUsuarios) {
                     if (!stopImportaUsuarios) {
                         counter++;
-                        progress = (int) ((counter / (float) length) * 100);
+                        //0 to 99% completes only when transaction finishes
+                        progress = (int) ((counter / (float) length) * 99);
                         Usuario usr = new Usuario();
                         usr.setLogin(infoUsuario.getUsuario());
                         usr.setNome(infoUsuario.getNome());
@@ -227,6 +228,8 @@ public class UsuarioBean implements Serializable {
                 }
                 try {
                     usuarioDao.adicionar(usrList);
+                    //complete 100%
+                    progress++;
                     setSaveStatus(true);
                 } catch (Exception e) {
                     setSaveStatus(false);

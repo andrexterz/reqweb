@@ -177,7 +177,7 @@ public class DisciplinaBean implements Serializable {
                 for (Disciplina d : disciplinaListPreview.values()) {
                     if (!stopImportaDisciplinas) {
                         counter++;
-                        progress = (int) ((counter / (float) length) * 100);
+                        progress = (int) ((counter / (float) length) * 99);
                         Set<ConstraintViolation<Disciplina>> errors = validator.validate(d);
                         if (errors.isEmpty()) {
                             items.add(d);
@@ -193,7 +193,7 @@ public class DisciplinaBean implements Serializable {
                 } catch (Exception e) {
                     setSaveStatus(false);
                 }
-
+                progress++;
             }
         };
         tImportJob.start();

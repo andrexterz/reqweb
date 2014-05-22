@@ -180,7 +180,7 @@ public class TurmaBean implements Serializable {
                 for (Turma t : turmaListPreview.values()) {
                     if (!stopImportaTurmas) {
                         counter++;
-                        progress = (int) ((counter / (float) length) * 100);
+                        progress = (int) ((counter / (float) length) * 99);
                         Set<ConstraintViolation<Turma>> errors = validator.validate(t);
                         if (errors.isEmpty()) {
                             items.add(t);
@@ -196,6 +196,7 @@ public class TurmaBean implements Serializable {
                 } catch (Exception e) {
                     setSaveStatus(false);
                 }
+                progress++;
             }
         };
         tImportJob.start();

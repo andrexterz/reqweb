@@ -228,12 +228,12 @@ public class UsuarioBean implements Serializable {
                 }
                 try {
                     usuarioDao.adicionar(usrList);
-                    //complete 100%
-                    progress++;
                     setSaveStatus(true);
                 } catch (Exception e) {
                     setSaveStatus(false);
                 }
+                //complete 100%
+                progress++;
             }
         };
         tImportJob.start();
@@ -449,7 +449,7 @@ public class UsuarioBean implements Serializable {
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-    
+
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
     }

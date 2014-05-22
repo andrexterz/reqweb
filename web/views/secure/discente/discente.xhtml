@@ -9,27 +9,29 @@
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
             <h:form id="discenteMenuLinks">
-                <h:panelGrid columns="1" styleClass="menuItens">
-                    <c:forEach items="#{requerimentoBean.tipoRequerimentoList}" var="tipoRequerimentoItem">
-                        <h:commandLink id="#{tipoRequerimentoItem.tipo}Lnk"
+                <h:panelGroup layout="block" styleClass="menuItens">
+                    <h:panelGrid columns="1" styleClass="menuItens">
+                        <c:forEach items="#{requerimentoBean.tipoRequerimentoList}" var="tipoRequerimentoItem">
+                            <h:commandLink id="#{tipoRequerimentoItem.tipo}Lnk"
+                                           action="requerimentos?faces-redirect=true"
+                                           value="#{tipoRequerimentoItem.tipoLocale}"
+                                           styleClass="#{tipoRequerimentoItem.tipo}">
+                                <f:setPropertyActionListener
+                                    target="#{requerimentoBean.tipoRequerimento}"
+                                    value="#{tipoRequerimentoItem}" />
+                            </h:commandLink>
+                        </c:forEach>
+                        <h:commandLink id="requerimentosLnk"
                                        action="requerimentos?faces-redirect=true"
-                                       value="#{tipoRequerimentoItem.tipoLocale}"
-                                       styleClass="#{tipoRequerimentoItem.tipo}">
+                                       value="#{msg.requerimentos}"
+                                       styleClass="requerimentos">
                             <f:setPropertyActionListener
                                 target="#{requerimentoBean.tipoRequerimento}"
-                                value="#{tipoRequerimentoItem}" />
-                        </h:commandLink>
-                    </c:forEach>
-                    <h:commandLink id="requerimentosLnk"
-                                   action="requerimentos?faces-redirect=true"
-                                   value="#{msg.requerimentos}"
-                                   styleClass="requerimentos">
-                        <f:setPropertyActionListener
-                            target="#{requerimentoBean.tipoRequerimento}"
-                            value="#{null}" />
+                                value="#{null}" />
 
-                    </h:commandLink>
-                </h:panelGrid>
+                        </h:commandLink>
+                    </h:panelGrid>
+                </h:panelGroup>
             </h:form>
         </ui:define>
         <ui:define name="content">

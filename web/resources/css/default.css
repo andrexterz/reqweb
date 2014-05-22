@@ -346,16 +346,6 @@ input[type="text"], input[type="password"], select {
     background-position: 0 -48px;
 }
 /*********************************** menu *************************************/
-#menu {
-    position: absolute;
-    top: 72px;
-    right: auto;
-    bottom: 34px;
-    left: 0;
-    width: 224px;
-    background: #555;
-}
-
 .menuTop {
     width: 100%;
     height: 24px;
@@ -376,11 +366,28 @@ input[type="text"], input[type="password"], select {
     margin-left: auto;
     margin-right: auto;
 }
+/*
+#menu {
+    position: absolute;
+    top: 72px;
+    right: auto;
+    bottom: 34px;
+    left: 0;
+    width: 224px;
+    background: #555;
+    z-index: 100;
+}
 
 .menuItens {
     margin-top: 8px;
     margin-left: 8px;
-    width: 212px;
+    width: 100%;
+}
+
+.menuItemSelected {
+    color: #a5d0ff!important;
+    text-decoration: none;
+    background-position: 0 -32px!important;
 }
 
 .menuItens a {
@@ -393,7 +400,7 @@ input[type="text"], input[type="password"], select {
     background-repeat: no-repeat;
     text-indent: 36px;
     display: table-cell;  
-    width: 200px;
+    width: 100%;
     vertical-align: middle;
 }
 
@@ -403,11 +410,75 @@ input[type="text"], input[type="password"], select {
     background-position: 0 -32px;
 }
 
-.menuItemSelected {
+*/
+#menu {
+    position: absolute;
+    overflow:hidden;
+    color: transparent;
+    top: 72px;
+    right: auto;
+    bottom: 34px;
+    left: 0;
+    width: auto;
+    background: #555;
+    border: 1px solid #999;
+    border-left:none;
+    -webkit-border-radius: 0 4px 4px 0;
+    -moz-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    z-index: 100;
+
+}
+
+.menuItens {
+    font-size: 0;
+    width: 60px;
+    -o-transition: all 500ms;
+    -moz-transition: all 500ms;
+    -webkit-transition: all 500ms;
+    transition: all 500ms;    
+}
+
+.menuItens:hover {
+    color: #fff;
+    font-size: 80%;
+    width: 300px;
+    -o-transition: all 500ms;
+    -moz-transition: all 500ms;
+    -webkit-transition: all 500ms;
+    transition: all 500ms;    
+}
+
+.menuItens .menuItemSelected {
+    color: inherit;
+    background-position: 0 -32px!important;    
+}
+
+.menuItens:hover .menuItemSelected {
     color: #a5d0ff!important;
     text-decoration: none;
     background-position: 0 -32px!important;
 }
+
+.menuItens a {
+    color: inherit;
+    text-indent: 40px;    
+    text-decoration: none;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    height: 32px;
+    display: table-cell;  
+    width: 300px;
+    vertical-align: middle;    
+}
+
+.menuItens a:hover {
+    color: #a5d0ff!important;
+    text-decoration: none;
+    background-position: 0 -32px;
+    background-color: #555677;
+}
+
 
 .declaracaoDeMatricula {
     background-image: url("#{resource['img/declaracaoDeMatricula.png']}");
@@ -445,7 +516,8 @@ input[type="text"], input[type="password"], select {
     top: 72px;
     right: 0;
     bottom: 34px;    
-    left: 226px;
+    //left: 226px;
+    left: 62px;
     background: #bdccd4;
 }
 
@@ -950,7 +1022,6 @@ input[type="text"], input[type="password"], select {
 
 .tableGrid {
     width: 100%;
-    //border: 1px solid #a8a8a8;
     border-collapse: collapse;
     text-align: left;
     margin-top: 8px;

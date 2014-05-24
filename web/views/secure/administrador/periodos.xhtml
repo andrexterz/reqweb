@@ -35,12 +35,13 @@
                                  disabled="#{periodoBean.selecionado== false}"
                                  oncomplete="excluirPeriodoDialog.show()"
                                  update=":excluiPeriodoForm"/>
-                <p:inputMask id="periodoBusca" mask="9999" styleClass="searchBox" value="#{periodoBean.termoBusca}" />
-                <p:watermark for="periodoBusca" value="#{msg.ano}" />
-                <!-- ao pressionar <return>, o formulario submete o commandButton[id=periodoBuscaCommand] -->
-                <p:commandButton style="visibility: hidden;" id="periodoBuscaCommand"  styleClass="searchCommand floatRight" update="tablePeriodos" />
-                <p:defaultCommand target="periodoBuscaCommand" />
-
+                <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                    <p:inputMask id="periodoBusca" mask="9999" styleClass="searchBox" value="#{periodoBean.termoBusca}" />
+                    <p:watermark for="periodoBusca" value="#{msg.ano}" />
+                    <!-- ao pressionar <return>, o formulario submete o commandButton[id=periodoBuscaCommand] -->
+                    <p:commandButton style="visibility: hidden;" id="periodoBuscaCommand"  styleClass="searchCommand floatRight" update="tablePeriodos" />
+                    <p:defaultCommand target="periodoBuscaCommand" />
+                </h:panelGroup>
             </h:panelGroup>
 
             <p:dataTable id="tablePeriodos"

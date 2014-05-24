@@ -10,7 +10,7 @@
         <ui:define name="menu">
             <h:form id="discenteMenuLinks">
                 <h:panelGroup layout="block" styleClass="menuItens">
-                    <h:panelGrid columns="1" styleClass="menuItens">
+                    <h:panelGrid columns="1">
                         <c:forEach items="#{requerimentoBean.tipoRequerimentoList}" var="tipoRequerimentoItem">
                             <h:commandLink id="#{tipoRequerimentoItem.tipo}Lnk"
                                            action="requerimentos?faces-redirect=true"

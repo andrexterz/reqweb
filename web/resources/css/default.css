@@ -361,56 +361,14 @@ input[type="text"], input[type="password"], select {
 }
 
 .menuContainerLogo{
+    width: 60px;
     display: block;
-    margin-top: 3em;
+    text-align: center;
+    margin-top: 2em;
     margin-left: auto;
     margin-right: auto;
 }
-/*
-#menu {
-    position: absolute;
-    top: 72px;
-    right: auto;
-    bottom: 34px;
-    left: 0;
-    width: 224px;
-    background: #555;
-    z-index: 100;
-}
 
-.menuItens {
-    margin-top: 8px;
-    margin-left: 8px;
-    width: 100%;
-}
-
-.menuItemSelected {
-    color: #a5d0ff!important;
-    text-decoration: none;
-    background-position: 0 -32px!important;
-}
-
-.menuItens a {
-    font-size: 80%!important;
-    width: 100%;
-    height: 32px;
-    color: #fff;
-    text-decoration: none;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    text-indent: 36px;
-    display: table-cell;  
-    width: 100%;
-    vertical-align: middle;
-}
-
-.menuItens a:hover {
-    color: #a5d0ff;
-    text-decoration: none;
-    background-position: 0 -32px;
-}
-
-*/
 #menu {
     position: absolute;
     overflow:hidden;
@@ -431,22 +389,24 @@ input[type="text"], input[type="password"], select {
 }
 
 .menuItens {
+    margin: 0;
+    padding-left: 4px;
     font-size: 0;
-    width: 60px;
-    -o-transition: all 500ms;
-    -moz-transition: all 500ms;
-    -webkit-transition: all 500ms;
-    transition: all 500ms;    
+    width: 56px;
+    -o-transition: all 250ms;
+    -moz-transition: all 250ms;
+    -webkit-transition: all 250ms;
+    transition: all 250ms;    
 }
 
 .menuItens:hover {
     color: #fff;
-    font-size: 80%;
+    font-size: 90%;
     width: 300px;
-    -o-transition: all 500ms;
-    -moz-transition: all 500ms;
-    -webkit-transition: all 500ms;
-    transition: all 500ms;    
+    -o-transition: all 250ms;
+    -moz-transition: all 250ms;
+    -webkit-transition: all 250ms;
+    transition: all 250ms;    
 }
 
 .menuItens .menuItemSelected {
@@ -966,6 +926,7 @@ input[type="text"], input[type="password"], select {
     background-position: 99% 50%!important;    
 }
 .searchBoxWrapper {
+    width: 50%;
     float: right;
     padding: 4px;
 }
@@ -976,7 +937,7 @@ input[type="text"], input[type="password"], select {
 }
 
 .searchBoxAutocomplete {
-    width: 25%!important;
+    width: 30%!important;
     float: right;
 }
 
@@ -990,7 +951,7 @@ input[type="text"], input[type="password"], select {
 }
 
 .searchBox {
-    width: 25%!important;
+    width: 30%!important;
     float: right;
     background-image: url("#{resource['img/search.png']}")!important;
     padding-right: 20px!important;

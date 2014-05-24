@@ -11,7 +11,9 @@
         <ui:define name="menuTitle"></ui:define>
         <ui:define name="componentTitle">#{msg.LoginPage}</ui:define>
         <ui:define name="menu">
-            <p:graphicImage value="#{resource['img/logo-mono.png']}" styleClass="menuContainerLogo" />
+            <div class="menuContainerLogo">
+                <p:graphicImage value="#{resource['img/logo-mono-vertical.png']}" />
+            </div>
         </ui:define>
         <ui:define name="content">
             <h:panelGrid columns="2" styleClass="loginLayout" columnClasses="loginLayoutColumnA, loginLayoutColumnB" rendered="#{!usuarioBean.autenticado}">

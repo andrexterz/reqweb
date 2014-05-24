@@ -76,5 +76,10 @@ public class Disciplina extends BaseModel {
      */
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s: %s", nome, curso.getSigla());
     }    
 }

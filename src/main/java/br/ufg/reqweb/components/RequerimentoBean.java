@@ -11,6 +11,7 @@ import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
 import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.DocumentoDeEstagio;
 import br.ufg.reqweb.model.EmentaDeDisciplina;
 import br.ufg.reqweb.model.ExtratoAcademico;
 import br.ufg.reqweb.model.ItemRequerimento;
@@ -264,6 +265,13 @@ public class RequerimentoBean implements Serializable {
             sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
         }
+
+        if (tipoRequerimento.equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
+            DocumentoDeEstagio itemRequerimento = new DocumentoDeEstagio();
+            sessionMap.put("itemRequerimento", itemRequerimento);
+            requerimento.addItemRequerimento(itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+        }
     }
 
     public void editaRequerimento() {
@@ -291,6 +299,10 @@ public class RequerimentoBean implements Serializable {
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
                 sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
             }
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
+                sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
+            }
+            
         }
     }
 
@@ -473,7 +485,7 @@ public class RequerimentoBean implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("arquivoEnviado"));
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (Exception e) {
-            System.out.println("upload error: " + e.getCause());
+            System.out.println("upload error: " + e.getLocalizedMessage());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }

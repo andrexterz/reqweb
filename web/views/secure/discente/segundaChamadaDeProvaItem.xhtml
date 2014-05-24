@@ -88,7 +88,7 @@
                                                     converter="#{turmaConverter}"
                                                     minQueryLength="3" maxResults="10" var="t"
                                                     itemLabel="#{t}" itemValue="#{t}"
-                                                    forceSelection="true" completeMethod="#{turmaBean.findTurma}">
+                                                    forceSelection="true" completeMethod="#{turmaBean.findTurmaByActivePeriodo}">
                                         <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
                                     </p:autoComplete>
                                     <p:watermark for="turmaRequerimento" value="#{msg.turma}" />

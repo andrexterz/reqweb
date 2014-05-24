@@ -18,21 +18,21 @@
                     <p:fileDownload value="#{indicePrioridadeBean.indicePrioridadeAsCSV}" />
                 </p:menuitem>
             </p:menuButton>
+            <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                <p:inputText id="indicePrioridadeBusca"
+                             styleClass="searchBox"
+                             value="#{indicePrioridadeBean.termoBusca}" />
 
-            <p:inputText id="indicePrioridadeBusca"
-                         styleClass="searchBox"
-                         value="#{indicePrioridadeBean.termoBusca}" />
+                <p:watermark for="indicePrioridadeBusca" value="#{msg.discente}/#{msg.usuarioMatricula}" />
 
-            <p:watermark for="indicePrioridadeBusca" value="#{msg.discente}/#{msg.usuarioMatricula}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=indicePrioridadeCommand] -->
+                <p:commandButton style="visibility: hidden;"
+                                 id="indicePrioridadeBuscaCommand"
+                                 styleClass="searchCommand floatRight"
+                                 update="tableIndicePrioridade" />
 
-            <!-- ao pressionar <return>, o formulario submete o commandButton[id=indicePrioridadeCommand] -->
-            <p:commandButton style="visibility: hidden;"
-                             id="indicePrioridadeBuscaCommand"
-                             styleClass="searchCommand floatRight"
-                             update="tableIndicePrioridade" />
-
-            <p:defaultCommand target="indicePrioridadeBuscaCommand" />
-
+                <p:defaultCommand target="indicePrioridadeBuscaCommand" />
+            </h:panelGroup>
         </h:panelGroup>            
         <p:dataTable id="tableIndicePrioridade"
                      paginator="true"

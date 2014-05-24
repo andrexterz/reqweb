@@ -17,10 +17,8 @@ public enum TipoItemRequerimentoEnum {
     EXTRATO_ACADEMICO("extratoAcademico"),
     SEGUNDA_CHAMADA_DE_PROVA("segundaChamadaDeProva"),
     EMENTA_DE_DISCIPLINA("ementaDeDisciplina"),
-    CONTRATO_DE_ESTAGIO("contratoDeEstagio"),
-    RELATORIO_DE_ESTAGIO("relatorioDeEstagio"),
-    INCLUSAO_DE_DISCIPLINA("inclusaoDeDisciplina"),
-    EXCLUSAO_DE_DISCIPLINA("exclusaoDeDisciplina");
+    DOCUMENTO_DE_ESTAGIO("documentoDeEstagio"),
+    AJUSTE_DE_MATRICULA("ajusteDeMatricula");
 
     private TipoItemRequerimentoEnum(String tipo) {
         this.tipo = tipo;

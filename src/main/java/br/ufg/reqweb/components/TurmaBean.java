@@ -373,6 +373,10 @@ public class TurmaBean implements Serializable {
     public List<Turma> findTurma(String query) {
         return turmaDao.find(query);
     }
+    
+    public List<Turma> findTurmaByActivePeriodo(String query) {
+        return turmaDao.find(query, true);
+    }
 
     public Turma getTurma() {
         return turma;

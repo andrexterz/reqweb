@@ -30,30 +30,30 @@
                     <p:fileDownload value="#{disciplinaBean.disciplinasAsCSV}" />
                 </p:menuitem>
             </p:menuButton>
+            <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
+                                converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
+                                minQueryLength="4"
+                                var="c" itemLabel="#{c.nome}" itemValue="#{c}" forceSelection="true"
+                                completeMethod="#{cursoBean.findCurso}">
+                    <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
+                </p:autoComplete>
+                <p:watermark for="cursoFiltro" value="#{msg.curso}" />
 
-            <p:autoComplete id="cursoFiltro" styleClass="autoComplete"
-                            converter="#{cursoConverter}" value="#{disciplinaBean.curso}"
-                            minQueryLength="4"
-                            var="c" itemLabel="#{c.nome}" itemValue="#{c}" forceSelection="true"
-                            completeMethod="#{cursoBean.findCurso}">
-                <p:ajax event="itemSelect" listener="#{disciplinaBean.autoCompleteSelecionaCurso}" />
-            </p:autoComplete>
-            <p:watermark for="cursoFiltro" value="#{msg.curso}" />
+                <p:inputText id="disciplinaBusca"
+                             styleClass="searchBox"
+                             value="#{disciplinaBean.termoBusca}" />
 
-            <p:inputText id="disciplinaBusca"
-                         styleClass="searchBox"
-                         value="#{disciplinaBean.termoBusca}" />
+                <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
 
-            <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
+                <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
+                <p:commandButton style="visibility: hidden;"
+                                 id="disciplinaBuscaCommand"
+                                 styleClass="searchCommand floatRight"
+                                 update="tableDisciplinas" />
 
-            <!-- ao pressionar <return>, o formulario submete o commandButton[id=disciplinaCommand] -->
-            <p:commandButton style="visibility: hidden;"
-                             id="disciplinaBuscaCommand"
-                             styleClass="searchCommand floatRight"
-                             update="tableDisciplinas" />
-
-            <p:defaultCommand target="disciplinaBuscaCommand" />
-
+                <p:defaultCommand target="disciplinaBuscaCommand" />
+            </h:panelGroup>
         </h:panelGroup>                     
         <p:dataTable id="tableDisciplinas"
                      paginator="true"

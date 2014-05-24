@@ -105,6 +105,30 @@ public class TurmaDao {
             return new ArrayList<>();
         }
     }
+    
+    @Transactional(readOnly = true)
+    public List<Turma> find(String termo, boolean periodoAtivo) {
+        try {
+            List<Turma> turmas;
+            if (termo.isEmpty()) {
+                turmas = this.sessionFactory.getCurrentSession()
+                        .createCriteria(Turma.class)
+                        .add(Restrictions.eq("periodo.ativo", periodoAtivo)).list();
+            } else {
+                turmas = this.sessionFactory.getCurrentSession()
+                        .createCriteria(Turma.class)
+                        .createAlias("disciplina", "d")
+                        .createAlias("periodo", "p")
+                        .add(Restrictions.like("d.nome",termo.toUpperCase(),MatchMode.ANYWHERE))
+                        .add(Restrictions.eq("p.ativo", periodoAtivo))
+                        .list();
+            }
+            return turmas;
+        } catch (HibernateException | NumberFormatException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<Turma> find(int firstResult, int maxResult) {

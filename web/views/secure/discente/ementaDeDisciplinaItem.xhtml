@@ -14,12 +14,12 @@
         </p:column>
     </p:row>
     <p:row>
-        <p:column>
+        <p:column colspan="2">
             <p:outputLabel for="disciplinaEmenta" value="#{msg.disciplina}"  />
         </p:column>
     </p:row>
     <p:row>
-        <p:column> 
+        <p:column styleClass="col90"> 
             <p:autoComplete id="disciplinaEmenta"
                             value="#{itemRequerimento.disciplina}"
                             converter="#{disciplinaConverter}"
@@ -30,33 +30,32 @@
             </p:autoComplete>
             <p:watermark value="#{msg.disciplina}" for="disciplinaEmenta" />
         </p:column>
-        <p:column styleClass="floatRight">
-            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" update="ementas disciplinaEmenta :formHeader:systemMessages"
-                             process="@this" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
-
+        <p:column styleClass="col10">
+            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" styleClass="floatRight" update="ementas disciplinaEmenta :formHeader:systemMessages"
+                             process="@form" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
         </p:column>
     </p:row>
     <p:row>
         <p:column colspan="2">
             <h:panelGroup layout="block" styleClass="ementaDeDisciplinaBox">
-            <p:dataTable id="ementas" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="tableGrid"
-                         value="#{requerimentoBean.requerimento.itemRequerimentoList}"
-                         var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
-                <p:column styleClass="col5 alignCenter" headerText="#">
-                    <h:outputText value="#{itemNum+1}" />
-                </p:column>
-                <p:column styleClass="col80" headerText="#{msg.disciplina}">
-                    <h:outputText value="#{reqItem.disciplina.nome}" />
-                </p:column>
-                <p:column styleClass="col10" headerText="#{msg.curso}">
-                    <h:outputText title="#{reqItem.disciplina.curso.nome}" value="#{reqItem.disciplina.curso.sigla}" />
-                </p:column>
-                <p:column styleClass="col5" headerText="x">
-                    <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" update="ementas :formHeader:systemMessages"
-                                     icon="ui-icon-trash" styleClass="floatRight" process="@this" />
-                </p:column>
-            </p:dataTable>
-                </h:panelGroup>
+                <p:dataTable id="ementas" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="tableGrid"
+                             value="#{requerimentoBean.requerimento.itemRequerimentoList}"
+                             var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
+                    <p:column styleClass="col5 alignCenter" headerText="#">
+                        <h:outputText value="#{itemNum+1}" />
+                    </p:column>
+                    <p:column styleClass="col80" headerText="#{msg.disciplina}">
+                        <h:outputText value="#{reqItem.disciplina.nome}" />
+                    </p:column>
+                    <p:column styleClass="col10" headerText="#{msg.curso}">
+                        <h:outputText title="#{reqItem.disciplina.curso.nome}" value="#{reqItem.disciplina.curso.sigla}" />
+                    </p:column>
+                    <p:column styleClass="col5" headerText="x">
+                        <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" update="ementas :formHeader:systemMessages"
+                                         icon="ui-icon-trash" styleClass="floatRight" process="@this" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
         </p:column>
     </p:row>
 </ui:composition>

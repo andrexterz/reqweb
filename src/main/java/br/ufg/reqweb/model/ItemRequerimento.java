@@ -25,7 +25,9 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"requerimento_id","disciplina_id"})})
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"requerimento_id","disciplina_id"}),
+    @UniqueConstraint(columnNames = {"requerimento_id","turma_id"})})
 public abstract class ItemRequerimento extends BaseModel {
     
     private static final long serialVersionUID = 1L;

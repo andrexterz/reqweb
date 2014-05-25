@@ -15,12 +15,12 @@
         </p:column>
     </p:row>
     <p:row>
-        <p:column>
+        <p:column colspan="3">
             <p:outputLabel for="turmaAjuste" value="#{msg.turma}"  />
         </p:column>
     </p:row>
     <p:row>
-        <p:column> 
+        <p:column styleClass="col60"> 
             <p:autoComplete id="turmaAjuste"
                             value="#{itemRequerimento.turma}"
                             converter="#{turmaConverter}"
@@ -31,17 +31,17 @@
             </p:autoComplete>
             <p:watermark value="#{msg.turma}" for="turmaAjuste" />
         </p:column>
-        <p:column>
+        <p:column styleClass="col30">
             <p:selectOneButton value="#{itemRequerimento.tipoDeAjuste}">
-                <f:selectItem itemLabel="#{msg.inclusaoDeDisciplina}"
+                <f:selectItem itemLabel="#{msg.adicionar}"
                               itemValue="INCLUSAO_DE_DISCIPLINA"  />
-                <f:selectItem itemLabel="#{msg.exclusaoDeDisciplina}"
+                <f:selectItem itemLabel="#{msg.excluir}"
                               itemValue="EXCLUSAO_DE_DISCIPLINA" />
             </p:selectOneButton>
         </p:column>
-        <p:column styleClass="floatRight">
-            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" update="ajustes turmaAjuste :formHeader:systemMessages"
-                             process="@this" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
+        <p:column styleClass="col10">
+            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" styleClass="floatRight" update="ajustes turmaAjuste :formHeader:systemMessages"
+                             process="@form" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
 
         </p:column>
     </p:row>
@@ -54,7 +54,7 @@
                     <p:column styleClass="col5 alignCenter" headerText="#">
                         <h:outputText value="#{itemNum+1}" />
                     </p:column>
-                    <p:column styleClass="col45" headerText="#{msg.disciplina}">
+                    <p:column styleClass="col50" headerText="#{msg.disciplina}">
                         <h:outputText value="#{reqItem.turma.disciplina.nome}" />
                     </p:column>
                     <p:column styleClass="col10 alignCenter" headerText="#{msg.turma}">
@@ -63,12 +63,12 @@
                     <p:column styleClass="col20" headerText="#{msg.acao}">
                         <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
                     </p:column>
-                    <p:column styleClass="col10" headerText="#{msg.curso}">
+                    <p:column styleClass="col10 alignCenter" headerText="#{msg.curso}">
                         <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
                     </p:column>
-                    <p:column styleClass="col5" headerText="x">
+                    <p:column styleClass="col5 alignCenter" headerText="x">
                         <p:commandButton title="#{msg.excluir} #{reqItem.turma}" update="ajustes :formHeader:systemMessages"
-                                         icon="ui-icon-trash" styleClass="floatRight" process="@this" />
+                                         icon="ui-icon-trash" process="@this" />
                     </p:column>
                 </p:dataTable>
             </h:panelGroup>

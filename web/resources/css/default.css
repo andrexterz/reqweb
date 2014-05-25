@@ -726,6 +726,11 @@ input[type="text"], input[type="password"], select {
     height: auto;
 }
 
+.ajusteDeMatriculaBox {
+    width: 620px;
+    height: auto;
+}
+
 
 .aviso {
     word-wrap: break-word;

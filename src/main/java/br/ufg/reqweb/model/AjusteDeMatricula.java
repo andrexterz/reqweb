@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -27,12 +28,19 @@ public class AjusteDeMatricula extends ItemRequerimento {
         tipoItemRequerimento = TipoItemRequerimentoEnum.AJUSTE_DE_MATRICULA;
     }
 
+    public AjusteDeMatricula(TipoDeAjuste tipoDeAjuste, Turma turma) {
+        status = ItemRequerimentoStatusEnum.ABERTO;
+        tipoItemRequerimento = TipoItemRequerimentoEnum.AJUSTE_DE_MATRICULA;        
+        this.tipoDeAjuste = tipoDeAjuste;
+        this.turma = turma;
+    }
+
     public enum TipoDeAjuste {
         INCLUSAO_DE_DISCIPLINA("inclusaoDeDisciplina"),
         EXCLUSAO_DE_DISCIPLINA("exclusaoDeDisciplina");
 
         private TipoDeAjuste(String tipo) {
-            this.tipo = null;
+            this.tipo = tipo;
         }
         
         private final String tipo;
@@ -46,9 +54,11 @@ public class AjusteDeMatricula extends ItemRequerimento {
         }        
     }
     
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TipoDeAjuste tipoDeAjuste;
     
+    @NotNull
     @ManyToOne
     private Turma turma;
     

@@ -7,6 +7,7 @@ package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.RequerimentoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.AjusteDeMatricula;
 import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.DeclaracaoDeMatricula;
@@ -244,21 +245,23 @@ public class RequerimentoBean implements Serializable {
         if (tipoRequerimento.equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
             DeclaracaoDeMatricula itemRequerimento = new DeclaracaoDeMatricula();
             sessionMap.put("itemRequerimento", itemRequerimento);
-            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
             requerimento.addItemRequerimento(itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+
         }
         if (tipoRequerimento.equals(TipoRequerimentoEnum.EXTRATO_ACADEMICO)) {
             ExtratoAcademico itemRequerimento = new ExtratoAcademico();
             sessionMap.put("itemRequerimento", itemRequerimento);
-            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
             requerimento.addItemRequerimento(itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+
         }
         if (tipoRequerimento.equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
             setStep(FormControl.STEP1);
             SegundaChamadaDeProva itemRequerimento = new SegundaChamadaDeProva();
             sessionMap.put("itemRequerimento", itemRequerimento);
-            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
             requerimento.addItemRequerimento(itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
         }
         if (tipoRequerimento.equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
             EmentaDeDisciplina itemRequerimento = new EmentaDeDisciplina();
@@ -270,6 +273,12 @@ public class RequerimentoBean implements Serializable {
             DocumentoDeEstagio itemRequerimento = new DocumentoDeEstagio();
             sessionMap.put("itemRequerimento", itemRequerimento);
             requerimento.addItemRequerimento(itemRequerimento);
+            System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
+        }
+
+        if (tipoRequerimento.equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+            AjusteDeMatricula itemRequerimento = new AjusteDeMatricula();
+            sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
         }
     }
@@ -302,7 +311,9 @@ public class RequerimentoBean implements Serializable {
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
                 sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
             }
-            
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+                sessionMap.put("itemRequerimento", new AjusteDeMatricula());
+            }
         }
     }
 
@@ -393,10 +404,28 @@ public class RequerimentoBean implements Serializable {
                 requerimento.addItemRequerimento((EmentaDeDisciplina) item);
                 sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
             }
+
+            if (tipoRequerimento.equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+                //adiciona item da sessao na lista de items
+                requerimento.addItemRequerimento((AjusteDeMatricula) item);
+                sessionMap.put("itemRequerimento", new AjusteDeMatricula());
+            }
+
         } else {
             //devolve item para a sessao, caso haja erro
             sessionMap.put("itemRequerimento", item);
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("dadosInvalidos"), null);
+            StringBuilder formattedMsg = new StringBuilder(LocaleBean.getMessageBundle().getString("dadosInvalidos"));
+            for (ConstraintViolation<ItemRequerimento> error : errors) {
+                String invalidValue = error.getPropertyPath().toString();
+                Pattern pattErrorValue = Pattern.compile("(?<=\\.)\\w+");
+                Matcher matcherValue = pattErrorValue.matcher(invalidValue);
+                String errorMsg = error.getMessage();
+                if (matcherValue.find()) {
+                    formattedMsg.append(String.format("- %s: %s. ", LocaleBean.getMessageBundle().getString(matcherValue.group()), errorMsg));
+                }
+            }
+
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, formattedMsg.toString(), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -419,6 +448,11 @@ public class RequerimentoBean implements Serializable {
                 EmentaDeDisciplina itemRequerimento = (EmentaDeDisciplina) sessionMap.get("itemRequerimento");
                 Disciplina disciplina = (Disciplina) event.getObject();
                 itemRequerimento.setDisciplina(disciplina);
+            }
+            if (tipoRequerimento.equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+                AjusteDeMatricula itemRequerimento = (AjusteDeMatricula) sessionMap.get("itemRequerimento");
+                Turma turma = (Turma) event.getObject();
+                itemRequerimento.setTurma(turma);
             }
 
         } catch (NullPointerException e) {

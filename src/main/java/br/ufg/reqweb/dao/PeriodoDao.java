@@ -7,11 +7,12 @@ package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Semestre;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -31,12 +32,20 @@ public class PeriodoDao {
 
     @Transactional
     public void adicionar(Periodo periodo) {
-        this.sessionFactory.getCurrentSession().save(periodo);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.save(periodo);
+        if (periodo.isAtivo() == true) {
+            disableOthers(session, periodo);
+        }
     }
 
     @Transactional
     public void atualizar(Periodo periodo) {
-        this.sessionFactory.getCurrentSession().update(periodo);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.update(periodo);
+        if (periodo.isAtivo() == true) {
+            disableOthers(session, periodo);
+        }
     }
 
     @Transactional
@@ -102,5 +111,21 @@ public class PeriodoDao {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+    
+    private void disableOthers(Session session, Periodo periodo) {
+        Criteria criteria = session.createCriteria(Periodo.class);
+        List<Periodo> periodoList = criteria.list();
+        int counter = 0;
+        for (Periodo p: periodoList) {
+            if (!Objects.equals(p.getId(), periodo.getId())) {
+                p.setAtivo(false);
+                session.save(p);
+            }
+            if (++counter % 20 == 0) {
+                session.flush();
+                session.clear();
+            }
+        }        
     }
 }

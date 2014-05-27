@@ -10,68 +10,70 @@
             <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />
         </f:facet>
         <h:form id="salvaPeriodoForm">
-            <p:panelGrid id="periodoDlgPanel" styleClass="formGrid">
-                <p:row>
-                    <p:column styleClass="col50">
-                        <h:outputLabel for="#{periodoBean.periodo.ano}" value="#{msg.ano}" />
-                    </p:column>
-                    <p:column styleClass="col50">
-                        <h:outputLabel for="#{periodoBean.periodo.semestre}" value="#{msg.semestre}" />
-                    </p:column>
-                </p:row>
-                <p:row>
-                    <p:column>
-                        <h:inputHidden value="#{periodoBean.periodo.id}" id="periodoId" />
-                        <p:inputMask value="#{periodoBean.periodo.ano}" mask="9999" id="ano" />
-                    </p:column>
-                    <p:column>
-                        <p:selectOneMenu value="#{periodoBean.periodo.semestre}" id="semestre">
-                            <f:selectItems value="#{periodoBean.semestres}"
-                                           var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.value}" />
-                        </p:selectOneMenu>
-                    </p:column>
-                </p:row>
-                <p:row>
-                    <p:column>
-                        <h:outputLabel for="#{periodoBean.periodo.dataInicio}" value="#{msg.dataInicio}" />
-                    </p:column>
-                    <p:column>
-                        <h:outputLabel for="#{periodoBean.periodo.dataTermino}" value="#{msg.dataTermino}" />
-                    </p:column>                    
-                </p:row>
-                <p:row>
-                    <p:column>
-                        <p:calendar id="dataInicio" pattern="dd/MM/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataInicio}" />
-                    </p:column>
-                    <p:column>
-                        <p:calendar id="dataTermino" pattern="dd/MM/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataTermino}" />
-                    </p:column>                    
-                </p:row>
-                <p:row>
-                    <p:column colspan="2" styleClass="periodoAtivo">
-                        <h:panelGroup layout="block" styleClass="periodoAtivo">
-                            <h:outputLabel for="#{periodoBean.periodo.ativo}" value="#{msg.ativo}" />
-                            <p:selectBooleanButton value="#{periodoBean.periodo.ativo}"
-                                                   styleClass="floatRight"
-                                                   onLabel="#{msg.sim}"
-                                                   offLabel="#{msg.nao}"
-                                                   onIcon="ui-icon-check"
-                                                   offIcon="ui-icon-close"/>                            
-                        </h:panelGroup>
+            <f:validateBean disabled="true">
+                <p:panelGrid id="periodoDlgPanel" styleClass="formGrid">
+                    <p:row>
+                        <p:column styleClass="col50">
+                            <h:outputLabel for="#{periodoBean.periodo.ano}" value="#{msg.ano}" />
+                        </p:column>
+                        <p:column styleClass="col50">
+                            <h:outputLabel for="#{periodoBean.periodo.semestre}" value="#{msg.semestre}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:inputHidden value="#{periodoBean.periodo.id}" id="periodoId" />
+                            <p:inputMask value="#{periodoBean.periodo.ano}" mask="9999" id="ano" />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu value="#{periodoBean.periodo.semestre}" id="semestre">
+                                <f:selectItems value="#{periodoBean.semestres}"
+                                               var="s" itemValue="#{s}" itemLabel="#{msg.semestre} #{s.value}" />
+                            </p:selectOneMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <h:outputLabel for="#{periodoBean.periodo.dataInicio}" value="#{msg.dataInicio}" />
+                        </p:column>
+                        <p:column>
+                            <h:outputLabel for="#{periodoBean.periodo.dataTermino}" value="#{msg.dataTermino}" />
+                        </p:column>                    
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:calendar id="dataInicio" pattern="dd/MM/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataInicio}" />
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="dataTermino" pattern="dd/MM/yyyy" styleClass="calendarWidget" value="#{periodoBean.periodo.dataTermino}" />
+                        </p:column>                    
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="2" styleClass="periodoAtivo">
+                            <h:panelGroup layout="block" styleClass="periodoAtivo">
+                                <h:outputLabel for="#{periodoBean.periodo.ativo}" value="#{msg.ativo}" />
+                                <p:selectBooleanButton value="#{periodoBean.periodo.ativo}"
+                                                       styleClass="floatRight"
+                                                       onLabel="#{msg.sim}"
+                                                       offLabel="#{msg.nao}"
+                                                       onIcon="ui-icon-check"
+                                                       offIcon="ui-icon-close"/>                            
+                            </h:panelGroup>
 
-                    </p:column>                    
-                </p:row>
-            </p:panelGrid>
-            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
-                <p:commandButton value="#{msg.salvar}"
-                                 process="@form"
-                                 actionListener="#{periodoBean.salvaPeriodo}"
-                                 oncomplete="dialogHandler('dlgPeriodoVar', xhr, status, args)"
-                                 update=":formHeader:systemMessages :periodoForm:tablePeriodos :periodoForm:periodoToolbar" />
-                <p:commandButton value="#{msg.cancelar}"
-                                 process="@none"
-                                 onclick="PF('dlgPeriodoVar').hide()"/>
-            </h:panelGroup>
+                        </p:column>                    
+                    </p:row>
+                </p:panelGrid>
+                <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{periodoBean.salvaPeriodo}"
+                                     oncomplete="dialogHandler('dlgPeriodoVar', xhr, status, args)"
+                                     update=":formHeader:systemMessages :periodoForm:tablePeriodos :periodoForm:periodoToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@none"
+                                     onclick="PF('dlgPeriodoVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>                
         </h:form>            
     </p:dialog>
 </ui:composition>

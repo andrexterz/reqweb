@@ -6,44 +6,10 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-
     <ui:composition template="/views/base.xhtml">
         <ui:define name="content">
-            <h:form id="teste002">
-                <p:commandButton value="load" update="arquivos" actionListener="#{requerimentoBean.findArquivos}" />
-                <p:dataList id="arquivos" value="#{requerimentoBean.arquivos}" var="arq">
-                    <p:commandLink value="#{arq.nomeArquivo}" ajax="false">
-                        <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                        <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                    </p:commandLink>
-                </p:dataList>
-                <p:dataTable id="tableRequerimentos" var="requerimentoItem"
-                             value="#{requerimentoBean.requerimentosDataModel}"
-                             lazy="true"
-                             emptyMessage="#{msg.emptyMessage}"
-                             paginator="true"
-                             selectionMode="single"
-                             selection="#{requerimentoBean.itemSelecionado}"
-                             paginatorPosition="bottom"
-                             rows="10" pageLinks="5">
-                    <p:ajax event="rowSelect" listener="#{requerimentoBean.selecionaItem}" />
-                    <p:column headerText="#{msg.requerimento}" styleClass="requerimentoColA">
-                        <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
-                    </p:column>
-                    <p:column headerText="#{msg.status}" sortBy="status" styleClass="requerimentoColB">
-                        <h:outputText value="#{requerimentoItem.status.statusLocale}" />
-                    </p:column>
-                    <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="requerimentoColC">
-                        <h:outputText value="#{requerimentoItem.dataCriacao}">
-                            <f:convertDateTime locale="#{localeBean.locale}" />
-                        </h:outputText>
-                    </p:column>
-                    <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="requerimentoColD">
-                        <h:outputText value="#{requerimentoItem.dataModificacao}">
-                            <f:convertDateTime locale="#{localeBean.locale}" />
-                        </h:outputText>
-                    </p:column>
-                </p:dataTable>                
+            <h:form id="testeform">
+                <h:outputText value="#{requerimentoDao.count()}" />
             </h:form>                    
         </ui:define>
     </ui:composition>

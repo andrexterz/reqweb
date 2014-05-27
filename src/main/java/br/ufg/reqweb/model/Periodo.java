@@ -16,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.ValidationException;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -39,15 +40,19 @@ public class Periodo extends BaseModel {
         this.ativo = ativo;
     }
 
+    @NotNull
     @Column
     private int ano;
 
+    @NotNull
     @Enumerated(EnumType.ORDINAL)
     private Semestre semestre;
-
+    
+    @NotNull
     @Temporal(TemporalType.DATE)
     private Date dataInicio;
 
+    @NotNull
     @Temporal(TemporalType.DATE)
     private Date dataTermino;
     
@@ -98,6 +103,9 @@ public class Periodo extends BaseModel {
      * @param dataInicio the dataInicio to set
      */
     public void setDataInicio(Date dataInicio) {
+        if (dataInicio.getTime() > dataTermino.getTime()) {
+            throw new ValidationException("dataTermino must be greater or equals dataInicio");
+        }
         this.dataInicio = dataInicio;
     }
 
@@ -108,6 +116,16 @@ public class Periodo extends BaseModel {
         return dataTermino;
     }
     
+    /**
+     * @param dataTermino the dataTermino to set
+     */
+    public void setDataTermino(Date dataTermino) {
+        if (dataInicio.getTime() > dataTermino.getTime()) {
+            throw new ValidationException("dataTermino must be greater or equals dataInicio");
+        }
+        this.dataTermino = dataTermino;
+    }
+
     /**
      * 
      * @return the ativo
@@ -124,14 +142,6 @@ public class Periodo extends BaseModel {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-    
-
-    /**
-     * @param dataTermino the dataTermino to set
-     */
-    public void setDataTermino(Date dataTermino) {
-        this.dataTermino = dataTermino;
     }
     
     @Override

@@ -13,7 +13,7 @@
     </p:row>
     <p:row id="step1" rendered="#{requerimentoBean.step == 'STEP1'}">
         <p:column>
-            <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox aviso">
+            <h:panelGroup layout="block" styleClass="requerimentoStepBox aviso">
                 <h:outputLabel value="#{msg.aviso}" />
                 <ul>
                     <li><h:outputText value="#{msg.mensagemResolucao}" /></li>
@@ -38,7 +38,7 @@
 
     <p:row id="step2" rendered="#{requerimentoBean.step == 'STEP2'}">
         <p:column>
-            <h:panelGroup layout="block" styleClass="segundaChamadaDeProvaBox">
+            <h:panelGroup layout="block" styleClass="requerimentoStepBox">
                 <p:tabView id="requerimentoTab" activeIndex="0" styleClass="requerimentoTab">
                     <p:tab id="arquivoTab1" title="#{msg.requerimento}">
                         <p:panelGrid styleClass="formGrid">

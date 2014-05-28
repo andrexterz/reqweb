@@ -3,74 +3,103 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:row>
-        <p:column colspan="3">
-            <h:outputLabel value="#{msg.observacao}" />
+    <p:row rendered="#{requerimentoBean.step == 'STEP1'}">
+        <p:column>
+            <h:panelGroup layout="block" styleClass="requerimentoStepBox aviso">
+                <h:outputLabel value="#{msg.aviso}" />
+                <ul>
+                    <li><h:outputText value="#{msg.mensagemAjusteDeMatricula}" /></li>
+                </ul>
+            </h:panelGroup>
+            <h:panelGroup layout="block" styleClass="formFooterButtons alignCenter">
+                <p:commandButton value="#{msg.fechar}"
+                                 process="@this"
+                                 update="requerimentoDlgPanel"
+                                 oncomplete="PF('dlgRequerimentoVar').hide()"/>            </h:panelGroup>
         </p:column>
     </p:row>
-    <p:row>
-        <p:column colspan="3">
-            <p:inputTextarea rows="5" cols="32" autoResize="false"
-                             value="#{requerimentoBean.requerimento.observacao}" />
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column colspan="3">
-            <p:outputLabel for="turmaAjuste" value="#{msg.turma}"  />
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column styleClass="col60"> 
-            <p:autoComplete id="turmaAjuste"
-                            value="#{itemRequerimento.turma}"
-                            converter="#{turmaConverter}"
-                            minQueryLength="3" maxResults="10" var="t"
-                            itemLabel="#{t}" itemValue="#{t}"
-                            forceSelection="true" completeMethod="#{turmaBean.findTurmaByActivePeriodo}">
-                <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
-            </p:autoComplete>
-            <p:watermark value="#{msg.turma}" for="turmaAjuste" />
-        </p:column>
-        <p:column styleClass="col30">
-            <p:selectOneButton value="#{itemRequerimento.tipoDeAjuste}">
-                <f:selectItem itemLabel="#{msg.inclusao}"
-                              itemValue="INCLUSAO_DE_DISCIPLINA"  />
-                <f:selectItem itemLabel="#{msg.exclusao}"
-                              itemValue="EXCLUSAO_DE_DISCIPLINA" />
-            </p:selectOneButton>
-        </p:column>
-        <p:column styleClass="col10">
-            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" styleClass="floatRight" update="ajustes turmaAjuste :formHeader:systemMessages"
-                             process="@form" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
+    <p:row rendered="#{requerimentoBean.step == 'STEP0'}">
+        <p:column>
+            <h:panelGroup layout="block" styleClass="requerimentoStepBox">
+                <p:panelGrid styleClass="table100 fontDefault">
+                    <p:row>
+                        <p:column colspan="3">
+                            <h:outputLabel value="#{msg.observacao}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="3">
+                            <p:inputTextarea rows="5" cols="32" autoResize="false"
+                                             value="#{requerimentoBean.requerimento.observacao}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column >
+                            <p:outputLabel for="turmaAjuste" value="#{msg.turma}"  />
+                        </p:column>
+                        <p:column >
+                            <p:outputLabel value="#{msg.requerimento}" />
+                        </p:column>
+                        <p:column >
+                            <p:outputLabel value="#{msg.adicionar}" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column styleClass="col60"> 
+                            <p:autoComplete id="turmaAjuste"
+                                            value="#{itemRequerimento.turma}"
+                                            converter="#{turmaConverter}"
+                                            minQueryLength="3" maxResults="10" var="t"
+                                            itemLabel="#{t}" itemValue="#{t}"
+                                            forceSelection="true" completeMethod="#{turmaBean.findTurmaByActivePeriodo}">
+                                <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
+                            </p:autoComplete>
+                            <p:watermark value="#{msg.turma}" for="turmaAjuste" />
+                        </p:column>
+                        <p:column styleClass="col30">
+                            <p:selectOneButton value="#{itemRequerimento.tipoDeAjuste}">
+                                <f:selectItem itemLabel="#{msg.inclusao}"
+                                              itemValue="INCLUSAO_DE_DISCIPLINA"  />
+                                <f:selectItem itemLabel="#{msg.exclusao}"
+                                              itemValue="EXCLUSAO_DE_DISCIPLINA" />
+                            </p:selectOneButton>
+                        </p:column>
+                        <p:column styleClass="col10">
+                            <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" styleClass="floatRight" update="ajustes turmaAjuste :formHeader:systemMessages"
+                                             process="@form" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
 
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column colspan="3">
-            <h:panelGroup layout="block" styleClass="ajusteDeMatriculaBox">
-                <p:dataTable id="ajustes" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="tableGrid"
-                             value="#{requerimentoBean.requerimento.itemRequerimentoList}"
-                             var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
-                    <p:column styleClass="col5 alignCenter" headerText="#">
-                        <h:outputText value="#{itemNum+1}" />
-                    </p:column>
-                    <p:column styleClass="col50" headerText="#{msg.disciplina}">
-                        <h:outputText value="#{reqItem.turma.disciplina.nome}" />
-                    </p:column>
-                    <p:column styleClass="col10 alignCenter" headerText="#{msg.turma}">
-                        <h:outputText value="#{reqItem.turma.nome}" />
-                    </p:column>
-                    <p:column styleClass="col20" headerText="#{msg.acao}">
-                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
-                    </p:column>
-                    <p:column styleClass="col10 alignCenter" headerText="#{msg.curso}">
-                        <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
-                    </p:column>
-                    <p:column styleClass="col5 alignCenter" headerText="x">
-                        <p:commandButton title="#{msg.excluir} #{reqItem.turma}" update="ajustes :formHeader:systemMessages"
-                                         icon="ui-icon-trash" process="@this" />
-                    </p:column>
-                </p:dataTable>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column colspan="3">
+                            <h:panelGroup layout="block" styleClass="ajusteDeMatriculaBox">
+                                <p:dataTable id="ajustes" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="tableGrid"
+                                             value="#{requerimentoBean.requerimento.itemRequerimentoList}"
+                                             var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
+                                    <p:column styleClass="col5 alignCenter" headerText="#">
+                                        <h:outputText value="#{itemNum+1}" />
+                                    </p:column>
+                                    <p:column styleClass="col50" headerText="#{msg.disciplina}">
+                                        <h:outputText value="#{reqItem.turma.disciplina.nome}" />
+                                    </p:column>
+                                    <p:column styleClass="col10 alignCenter" headerText="#{msg.turma}">
+                                        <h:outputText value="#{reqItem.turma.nome}" />
+                                    </p:column>
+                                    <p:column styleClass="col20" headerText="#{msg.acao}">
+                                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
+                                    </p:column>
+                                    <p:column styleClass="col10 alignCenter" headerText="#{msg.curso}">
+                                        <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
+                                    </p:column>
+                                    <p:column styleClass="col5 alignCenter" headerText="x">
+                                        <p:commandButton title="#{msg.excluir} #{reqItem.turma}" update="ajustes :formHeader:systemMessages"
+                                                         icon="ui-icon-trash" process="@this" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGroup>
+                        </p:column>
+                    </p:row>            
+                </p:panelGrid>
             </h:panelGroup>
         </p:column>
     </p:row>

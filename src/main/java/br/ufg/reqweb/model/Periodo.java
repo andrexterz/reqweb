@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.model;
 
+import br.ufg.reqweb.model.validators.ValidYear;
 import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.ValidationException;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -40,7 +42,7 @@ public class Periodo extends BaseModel {
         this.ativo = ativo;
     }
 
-    @NotNull
+    @ValidYear
     @Column
     private int ano;
 
@@ -71,10 +73,6 @@ public class Periodo extends BaseModel {
      * @param ano the ano to set
      */
     public void setAno(int ano) {
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        if (ano < currentYear) {
-            throw new ValidationException(String.format("Year %d must be greater or equals %d", ano, currentYear));
-        }
         this.ano = ano;
     }
 
@@ -103,9 +101,6 @@ public class Periodo extends BaseModel {
      * @param dataInicio the dataInicio to set
      */
     public void setDataInicio(Date dataInicio) {
-        if (dataInicio.getTime() > dataTermino.getTime()) {
-            throw new ValidationException("dataTermino must be greater or equals dataInicio");
-        }
         this.dataInicio = dataInicio;
     }
 
@@ -120,10 +115,17 @@ public class Periodo extends BaseModel {
      * @param dataTermino the dataTermino to set
      */
     public void setDataTermino(Date dataTermino) {
-        if (dataInicio.getTime() > dataTermino.getTime()) {
-            throw new ValidationException("dataTermino must be greater or equals dataInicio");
-        }
         this.dataTermino = dataTermino;
+    }
+    
+    @AssertTrue
+    public boolean isValidPeriodo() {
+        Calendar yearDataInicio = Calendar.getInstance();
+        Calendar yearDataTermino = Calendar.getInstance();
+        yearDataInicio.setTime(dataInicio);
+        yearDataTermino.setTime(dataInicio);
+        System.out.println(String.format("corrente %d /inicio %d /termino %d", ano, yearDataInicio.get(Calendar.YEAR), yearDataTermino.get(Calendar.YEAR)));
+        return (ano == yearDataInicio.get(Calendar.YEAR) && ano == yearDataTermino.get(Calendar.YEAR) && dataTermino.getTime() >= dataInicio.getTime());
     }
 
     /**

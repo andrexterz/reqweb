@@ -86,7 +86,7 @@ public class PeriodoBean implements Serializable {
         RequestContext context = RequestContext.getCurrentInstance();
         try {
             Set<ConstraintViolation<Periodo>> errors = validator.validate(periodo);
-            saveStatus = errors.isEmpty();
+            setSaveStatus(errors.isEmpty());
             if (saveStatus) {
                 if (operation.equals(ADICIONA)) {
                     periodoDao.adicionar(periodo);
@@ -95,24 +95,23 @@ public class PeriodoBean implements Serializable {
                     periodoDao.atualizar(periodo);
                 }
             }
-
         } catch (Exception e) {
             setSaveStatus(false);
         }
-        context.addCallbackParam("resultado", saveStatus);
         handleCompleteSavePeriodo();
+        context.addCallbackParam("resultado", saveStatus);
     }
-    
+
     public void handleCompleteSavePeriodo() {
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage msg;
         if (saveStatus) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), null);
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
         }
         context.addMessage(null, msg);
-    }    
+    }
 
     public List<Periodo> findPeriodo(String query) {
         return periodoDao.find(query);
@@ -202,5 +201,5 @@ public class PeriodoBean implements Serializable {
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-    
+
 }

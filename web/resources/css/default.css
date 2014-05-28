@@ -30,6 +30,10 @@ body {
     color: #000000;
 }
 
+.fontDefault {
+    font-size: 100%!important;
+}
+
 .squareBorders {
     border-radius: 0!important;
 }
@@ -714,7 +718,7 @@ input[type="text"], input[type="password"], select {
     text-decoration: none;
 }
 
-.segundaChamadaDeProvaBox {
+.requerimentoStepBox {
     width: 590px;
     height: 320px;
     border: 1px solid #a8a8a8;
@@ -726,12 +730,6 @@ input[type="text"], input[type="password"], select {
     height: auto;
 }
 
-.ajusteDeMatriculaBox {
-    width: 640px;
-    height: auto;
-}
-
-
 .aviso {
     word-wrap: break-word;
     border-radius: 4px;
@@ -742,7 +740,7 @@ input[type="text"], input[type="password"], select {
 }
 
 .aviso * {
-    margin: 2em;
+    margin: 1em;
 }
 
 .aviso label {

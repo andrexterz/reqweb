@@ -114,7 +114,7 @@ public class RequerimentoBean implements Serializable {
 
         STEP0(0),//generic form
         STEP1(1),//warning screen
-        STEP2(2);//segundaChamadaDeProva form
+        STEP2(2);//wizard form
 
         private FormControl(int value) {
             this.value = value;
@@ -277,6 +277,9 @@ public class RequerimentoBean implements Serializable {
         }
 
         if (tipoRequerimento.equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+            if (isReqAjusteDeMatriculaExists()) {
+                setStep(FormControl.STEP1);
+            }
             AjusteDeMatricula itemRequerimento = new AjusteDeMatricula();
             sessionMap.put("itemRequerimento", itemRequerimento);
             System.out.println("objeto itemRequerimento criado: " + itemRequerimento.getClass());
@@ -703,6 +706,10 @@ public class RequerimentoBean implements Serializable {
 
     public void setConfirmaRequerimento(boolean confirmaRequerimento) {
         this.confirmaRequerimento = confirmaRequerimento;
+    }
+    
+    public boolean isReqAjusteDeMatriculaExists() {
+        return requerimentoDao.countReqAjusteDeMatricula(getLoginUsuario()) > 0;
     }
 
     public boolean isSaveStatus() {

@@ -25,6 +25,7 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -292,12 +293,15 @@ public class RequerimentoDao {
 
     @Transactional(readOnly = true)
     public List<Requerimento> find(String sortField, String sortOrder, Map<String, Object> filters) {
-        if (filters == null) filters = new HashMap();
+        if (filters == null) {
+            filters = new HashMap();
+        }
         try {
             Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Requerimento.class);
             for (String field : filters.keySet()) {
                 /**
-                 * login eq / tipoRequerimento eq / termo like / dataCriacao between
+                 * login eq / tipoRequerimento eq / termo like / dataCriacao
+                 * between
                  */
                 if (field.equals("login")) {
                     criteria.createAlias("discente", "d");
@@ -309,7 +313,7 @@ public class RequerimentoDao {
                 if (field.equals("termo")) {
                     criteria.createAlias("discente", "d");
                     criteria.add(Restrictions.or(Restrictions.eq("d.matricula", filters.get("termo")),
-                            Restrictions.like("d.nome",filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()))
+                            Restrictions.like("d.nome", filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()))
                             .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
                 }
                 if (field.equals("dataCriacao")) {
@@ -351,9 +355,9 @@ public class RequerimentoDao {
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
-        }        
+        }
     }
-    
+
     @Transactional(readOnly = true)
     public List<Atendimento> findAtendimento(Requerimento requerimento) {
         try {
@@ -365,17 +369,20 @@ public class RequerimentoDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
-    public List<Arquivo> findArquivos(ItemRequerimento itemRequerimento) {
+    public int countReqAjusteDeMatricula(String login) {
         try {
-            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Arquivo.class);
-            criteria.add(Restrictions.eq("itemRequerimento", itemRequerimento));
-            return criteria.list();
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }        
+            int result = ((Long) this.sessionFactory.getCurrentSession()
+                    .createQuery("SELECT COUNT(i.turma.periodo) FROM AjusteDeMatricula i WHERE i.turma.periodo.ativo = true AND i.requerimento.discente.login = :login AND i.requerimento.tipoRequerimento = :tipoRequerimento GROUP BY i.turma.periodo")
+                    .setParameter("tipoRequerimento", TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)
+                    .setString("login", login)
+                    .uniqueResult()).intValue();
+            return result;
+        } catch (HibernateException|NullPointerException e) {
+            return 0;
+        }
+
     }
 
     /**
@@ -413,5 +420,5 @@ public class RequerimentoDao {
             return 0;
         }
     }
-    
+
 }

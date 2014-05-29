@@ -22,12 +22,12 @@ public class DocumentoDeEstagio extends ItemRequerimento {
     
     public DocumentoDeEstagio() {
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.DOCUMENTO_DE_ESTAGIO;
+        tipoItemRequerimento = TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO;
     }
 
     public DocumentoDeEstagio(TipoDeDocumento tipoDeDocumento) {
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.DOCUMENTO_DE_ESTAGIO;        
+        tipoItemRequerimento = TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO;        
         this.tipoDeDocumento = tipoDeDocumento;
     }
 

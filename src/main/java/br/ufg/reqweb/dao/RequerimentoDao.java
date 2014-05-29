@@ -5,7 +5,6 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.Arquivo;
 import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.Requerimento;
@@ -25,7 +24,6 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.ResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -89,8 +87,7 @@ public class RequerimentoDao {
                     .createCriteria(Requerimento.class)
                     .createAlias("discente", "d")
                     .add(Restrictions.or(Restrictions.eq("d.matricula", termo),
-                                    Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
-                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                                    Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()));
 
             if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
                 if (sortOrder.toLowerCase().equals("asc")) {
@@ -100,6 +97,7 @@ public class RequerimentoDao {
                     criteria.addOrder(Property.forName(sortField).desc());
                 }
             }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
@@ -313,8 +311,7 @@ public class RequerimentoDao {
                 if (field.equals("termo")) {
                     criteria.createAlias("discente", "d");
                     criteria.add(Restrictions.or(Restrictions.eq("d.matricula", filters.get("termo")),
-                            Restrictions.like("d.nome", filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()))
-                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                            Restrictions.like("d.nome", filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()));
                 }
                 if (field.equals("dataCriacao")) {
                     Date[] arrayDate = (Date[]) filters.get("dataCriacao");
@@ -329,6 +326,7 @@ public class RequerimentoDao {
                     criteria.addOrder(Property.forName(sortField).desc());
                 }
             }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());

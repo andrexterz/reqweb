@@ -28,14 +28,14 @@ public class DeclaracaoDeMatricula extends ItemRequerimento {
         //status
         status = ItemRequerimentoStatusEnum.ABERTO;
         //tipo item
-        tipoItemRequerimento = TipoItemRequerimentoEnum.DECLARACAO_DE_MATRICULA;
+        tipoItemRequerimento = TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA;
                 
     }
 
     public DeclaracaoDeMatricula(int numeroCopias) {
         this.numeroCopias = numeroCopias;
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.DECLARACAO_DE_MATRICULA;
+        tipoItemRequerimento = TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA;
     }
     
     @Min(value = 1)

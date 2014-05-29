@@ -54,7 +54,7 @@ public class Usuario extends BaseModel {
     private String email;
 
     //@Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Perfil> perfilList;
 
     /**

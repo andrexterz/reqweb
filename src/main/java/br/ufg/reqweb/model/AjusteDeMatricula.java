@@ -7,6 +7,7 @@
 package br.ufg.reqweb.model;
 
 import br.ufg.reqweb.components.LocaleBean;
+import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,12 +26,12 @@ public class AjusteDeMatricula extends ItemRequerimento {
 
     public AjusteDeMatricula() {
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.AJUSTE_DE_MATRICULA;
+        tipoItemRequerimento = TipoRequerimentoEnum.AJUSTE_DE_MATRICULA;
     }
 
     public AjusteDeMatricula(TipoDeAjuste tipoDeAjuste, Turma turma) {
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.AJUSTE_DE_MATRICULA;        
+        tipoItemRequerimento = TipoRequerimentoEnum.AJUSTE_DE_MATRICULA;        
         this.tipoDeAjuste = tipoDeAjuste;
         this.turma = turma;
     }
@@ -88,5 +89,14 @@ public class AjusteDeMatricula extends ItemRequerimento {
      */
     public void setTurma(Turma turma) {
         this.turma = turma;
-    }    
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass() == this.getClass()) {
+            AjusteDeMatricula other = (AjusteDeMatricula) obj;
+            return Objects.equals(other.getTurma(), this.getTurma());
+        }
+        return false;
+    }
 }

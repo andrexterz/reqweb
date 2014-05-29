@@ -13,6 +13,8 @@
                 <p:panelGrid id="usuarioDlgPanel" columns="1" styleClass="formGrid">
                     <h:outputLabel value="#{msg.usuario}" />
                     <h:outputText value="#{usuarioBean.usuario.nome}" />
+                    <h:outputLabel value="#{msg.usuarioEmail}" />
+                    <p:inputText value="#{usuarioBean.usuario.email}" />
                     <h:outputLabel for="perfilNovo" value="#{msg.perfil}" />
                     <p:selectOneMenu id="perfilNovo" value="#{perfilBean.itemSelecionado}">
                         <f:selectItem itemLabel="#{msg.perfil}" value="#{null}" />

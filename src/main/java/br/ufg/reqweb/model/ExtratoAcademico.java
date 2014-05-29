@@ -20,7 +20,7 @@ public class ExtratoAcademico extends ItemRequerimento {
 
     public ExtratoAcademico() {
         status = ItemRequerimentoStatusEnum.ABERTO;
-        tipoItemRequerimento = TipoItemRequerimentoEnum.EXTRATO_ACADEMICO;
+        tipoItemRequerimento = TipoRequerimentoEnum.EXTRATO_ACADEMICO;
     }
     
 

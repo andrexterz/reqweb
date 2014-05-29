@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -42,9 +43,8 @@ public abstract class ItemRequerimento extends BaseModel {
     protected ItemRequerimentoStatusEnum status;
     
     
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "character varying(32)")
-    protected TipoItemRequerimentoEnum tipoItemRequerimento;
+    @Transient
+    protected TipoRequerimentoEnum tipoItemRequerimento;
     
     
     /**
@@ -79,17 +79,7 @@ public abstract class ItemRequerimento extends BaseModel {
      * @return the tipoItemRequerimento
      */
 
-    public TipoItemRequerimentoEnum getTipoItemRequerimento() {
+    public TipoRequerimentoEnum getTipoItemRequerimento() {
         return tipoItemRequerimento;
     }
-    
-    /**
-     * 
-     * @param tipoItemRequerimento 
-     */
-
-    public void setTipoItemRequerimento(TipoItemRequerimentoEnum tipoItemRequerimento) {
-        this.tipoItemRequerimento = tipoItemRequerimento;
-    }
-    
 }

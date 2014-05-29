@@ -83,12 +83,13 @@ public class RequerimentoBean implements Serializable {
     private String termoBuscaDiscente;
     private String termoBuscaPeriodo;
     private List<Atendimento> atendimentos;
+    private final List<ItemRequerimento> itemRemovidoList;
     private Arquivo arquivo;
     private boolean confirmaRequerimento;
     private boolean saveStatus;
     private FormControl step;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
-
+    
     public enum TipoBusca {
 
         PERIODO("dataCriacao"),
@@ -139,6 +140,7 @@ public class RequerimentoBean implements Serializable {
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.PERIODO;
         atendimentos = new ArrayList<>();
+        itemRemovidoList  = new ArrayList<>();
         arquivo = null;
         confirmaRequerimento = false;
         saveStatus = false;
@@ -327,6 +329,7 @@ public class RequerimentoBean implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove("itemRequerimento");
         requerimento.getItemRequerimentoList().clear();
+        itemRemovidoList.clear();
         System.out.println("cleaning up requerimento... ");
         setStep(FormControl.STEP0);
         setConfirmaRequerimento(false);
@@ -401,16 +404,19 @@ public class RequerimentoBean implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         ItemRequerimento item = (ItemRequerimento) sessionMap.remove("itemRequerimento");
         Set<ConstraintViolation<ItemRequerimento>> errors = validator.validate(item);
-        if (errors.isEmpty()) {
-            if (tipoRequerimento.equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
-                //adiciona item da sessao na lista de items
-                requerimento.addItemRequerimento((EmentaDeDisciplina) item);
+        if (errors.isEmpty() && !requerimento.getItemRequerimentoList().contains(item)) {
+            if (itemRemovidoList.contains(item)) {
+                item = itemRemovidoList.get(itemRemovidoList.indexOf(item));
+                itemRemovidoList.remove(item);
+            }
+            //adiciona item da sessao na lista de items
+            requerimento.addItemRequerimento(item);
+            
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
                 sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
             }
 
-            if (tipoRequerimento.equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
-                //adiciona item da sessao na lista de items
-                requerimento.addItemRequerimento((AjusteDeMatricula) item);
+            if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
                 sessionMap.put("itemRequerimento", new AjusteDeMatricula());
             }
 
@@ -435,6 +441,10 @@ public class RequerimentoBean implements Serializable {
 
     public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
         requerimento.removeItemRequerimento(itemRequerimento);
+        if (itemRequerimento.getId() != null) {
+            itemRemovidoList.add(itemRequerimento);
+        }
+        System.out.println("n# of items: "  + requerimento.getItemRequerimentoList().size());
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemRemovido"), null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }

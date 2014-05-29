@@ -92,8 +92,11 @@
                                         <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
                                     </p:column>
                                     <p:column styleClass="col5 alignCenter" headerText="x">
-                                        <p:commandButton title="#{msg.excluir} #{reqItem.turma}" update="ajustes :formHeader:systemMessages"
-                                                         icon="ui-icon-trash" process="@this" />
+                                        <p:commandButton title="#{msg.excluir} #{reqItem.turma}"
+                                                         actionListener="#{requerimentoBean.removeItemRequerimento(reqItem)}"
+                                                         update="ajustes :formHeader:systemMessages"
+                                                         icon="ui-icon-trash" styleClass="floatRight" process="@this" />
+
                                     </p:column>
                                 </p:dataTable>
                             </h:panelGroup>

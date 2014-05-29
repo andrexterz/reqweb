@@ -13,12 +13,14 @@ import br.ufg.reqweb.components.LocaleBean;
  * @author andre
  */
 public enum TipoRequerimentoEnum {
+    
     DECLARACAO_DE_MATRICULA("declaracaoDeMatricula"),
     EXTRATO_ACADEMICO("extratoAcademico"),
     SEGUNDA_CHAMADA_DE_PROVA("segundaChamadaDeProva"),    
     EMENTA_DE_DISCIPLINA("ementaDeDisciplina"),
     DOCUMENTO_DE_ESTAGIO("documentoDeEstagio"),
     AJUSTE_DE_MATRICULA("ajusteDeMatricula");
+    
     private TipoRequerimentoEnum(String tipo) {
         this.tipo = tipo;
     }

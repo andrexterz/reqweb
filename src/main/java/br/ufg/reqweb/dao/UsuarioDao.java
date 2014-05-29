@@ -41,9 +41,6 @@ public class UsuarioDao {
             userExists = loginNames.contains(usuario.getLogin());
             if (!userExists) {
                 session.save(usuario);
-                for (Perfil p : usuario.getPerfilList()) {
-                    session.save(p);
-                }
                 if (++counter % 20 == 0) {
                     session.flush();
                     session.clear();
@@ -56,9 +53,6 @@ public class UsuarioDao {
     public void atualizar(Usuario usuario) {
         Session session = this.sessionFactory.getCurrentSession();
         session.update(usuario);
-        for (Perfil p : usuario.getPerfilList()) {
-            session.saveOrUpdate(p);
-        }
     }
 
     @Transactional
@@ -115,8 +109,6 @@ public class UsuarioDao {
         }
         return usuario;
     }
-    
-    
 
     @Transactional(readOnly = true)
     public List<Usuario> find(String termo) {
@@ -124,7 +116,7 @@ public class UsuarioDao {
             return this.sessionFactory.getCurrentSession()
                     .createCriteria(Usuario.class)
                     .add(Restrictions.or(Restrictions.eq("matricula", termo),
-                            Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase()))
+                                    Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase()))
                     .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                     .list();
         } catch (HibernateException e) {

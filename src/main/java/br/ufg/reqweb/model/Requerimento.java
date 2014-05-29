@@ -60,7 +60,7 @@ public class Requerimento extends BaseModel {
     
     @Valid
     @Size(min = 1)
-    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemRequerimento> itemRequerimentoList;
     
     @Enumerated(EnumType.STRING)

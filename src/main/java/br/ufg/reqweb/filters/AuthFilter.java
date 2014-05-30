@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufg.reqweb.auth;
+package br.ufg.reqweb.filters;
 
 import br.ufg.reqweb.components.UsuarioBean;
 import java.io.IOException;
@@ -21,7 +21,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author andre
  */
-public class LoginFilter implements Filter {
+public class AuthFilter implements Filter {
+    
+    private UsuarioBean usuarioBean;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -34,21 +36,30 @@ public class LoginFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
         String path = httpRequest.getContextPath();
         try {
-            UsuarioBean usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
+            usuarioBean = (UsuarioBean) session.getAttribute("usuarioBean");
             if (usuarioBean.isAutenticado()) {
                 String url = httpRequest.getRequestURI();
-                System.out.println("url: " + url);
-                chain.doFilter(request, response);
+                System.out.println(String.format("url: %s", url));
+                if (isUrlAuthorized(url)) {
+                    chain.doFilter(request, response);
+                } else {
+                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                }
             } else {
-                httpResponse.sendRedirect(path + "/index.jsp");
+                httpResponse.sendRedirect(String.format("%s/index.jsp", path));
             }
         } catch (NullPointerException | ViewExpiredException e) {
-            httpResponse.sendRedirect(path + "/index.jsp");
+            httpResponse.sendRedirect(String.format("%s/index.jsp", path));
+            System.out.println(String.format("error: %s", e.getLocalizedMessage()));            
         }
     }
 
     @Override
     public void destroy() {
+    }
+    
+    private boolean isUrlAuthorized(String url) {
+        return url.contains(usuarioBean.homeDir());
     }
 
 }

@@ -433,7 +433,6 @@ public class RequerimentoBean implements Serializable {
                     formattedMsg.append(String.format("- %s: %s. ", LocaleBean.getMessageBundle().getString(matcherValue.group()), errorMsg));
                 }
             }
-
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, formattedMsg.toString(), null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
@@ -444,9 +443,6 @@ public class RequerimentoBean implements Serializable {
         if (itemRequerimento.getId() != null) {
             itemRemovidoList.add(itemRequerimento);
         }
-        System.out.println("n# of items: "  + requerimento.getItemRequerimentoList().size());
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemRemovido"), null);
-        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void autoCompleteSelecionaObjectItem(SelectEvent event) {
@@ -548,7 +544,7 @@ public class RequerimentoBean implements Serializable {
 
     public String getLoginUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        return ((UsuarioBean) sessionMap.get("usuarioBean")).getLogin();
+        return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getLogin();
     }
 
     public PerfilEnum getPerfilUsuario() {

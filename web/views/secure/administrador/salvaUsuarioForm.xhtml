@@ -4,7 +4,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dlgUsuarioForm" modal="true"
-              widgetVar="dlgUsuarioVar" width="420" resizable="false" appendTo="@(body)">
+              widgetVar="dlgUsuarioVar" width="480" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioEditar}" />
         </f:facet>
@@ -40,7 +40,7 @@
                                      value="#{msg.adicionar}"
                                      title="#{msg.adicionar}"
                                      actionListener="#{usuarioBean.addPerfil}"
-                                     update="perfilList" />
+                                     update="perfilList :formHeader:systemMessages" />
                 </p:panelGrid>
                 <p:dataTable id="perfilList" styleClass="tableGrid"
                              paginator="true" rows="3"

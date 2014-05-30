@@ -19,6 +19,7 @@
             <h:outputScript library="js" name="reqweb.js" />
         </h:head>
         <h:body>
+            <ui:include src="secure/usuarioInfoForm.xhtml" />
             <h:panelGroup layout="block" id="header">
                 <p:panelGrid columns="2" columnClasses="headerColA,headerColB" id="mainHeader">
                     <p:column>
@@ -49,9 +50,9 @@
                                                    ajax="false" />
                                 </p:column>
                                 <p:column>
-                                    <h:outputText
-                                        value="#{usuarioBean.login} - #{usuarioBean.perfil.papelLocale}"
-                                        rendered="#{usuarioBean.autenticado}" />
+                                    <p:commandLink value="#{usuarioBean.sessionUsuario.login} - #{usuarioBean.perfil.papelLocale}"
+                                            rendered="#{usuarioBean.autenticado}" oncomplete="PF('dlgUsuarioInfoVar').show()" />
+
                                 </p:column>
                                 <p:column>
                                     <p:commandLink action="#{usuarioBean.authLogout()}"

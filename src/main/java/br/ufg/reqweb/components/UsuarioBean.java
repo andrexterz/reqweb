@@ -1,12 +1,12 @@
 package br.ufg.reqweb.components;
 
-import br.ufg.reqweb.util.LdapInfo;
 import br.ufg.reqweb.dao.CursoDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
+import br.ufg.reqweb.util.LdapInfo;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -50,26 +50,25 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(value = "session")
 public class UsuarioBean implements Serializable {
-
+    
     @Autowired
     private UsuarioDao usuarioDao;
-
+    
     @Autowired
     private CursoDao cursoDao;
-
+    
     @Autowired
     private Validator validator;
-
+    
     @Autowired
     private ProviderManager authManager;
-
+    
     private final LazyDataModel<Usuario> usuariosDataModel;
     private List<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(UsuarioBean.class);
-    private String login;
-    private String senha;
     private PerfilEnum perfil;
+    private Usuario sessionUsuario;
     private Usuario usuario;
     private boolean autenticado;
     private List<Perfil> perfilRemovido;
@@ -79,24 +78,25 @@ public class UsuarioBean implements Serializable {
     private Thread tImportJob;
     private Usuario itemSelecionado;
     private String termoBusca;
-
+    
     public UsuarioBean() {
         usuarios = new ArrayList<>();
         usuario = new Usuario();
+        sessionUsuario = null;
         autenticado = false;
         perfilRemovido = new ArrayList<>();
         tImportJob = null;
         termoBusca = "";
         saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
-
+            
             private List<Usuario> data;
-
+            
             @Override
             public Object getRowKey(Usuario usuario) {
                 return usuario.getId().toString();
             }
-
+            
             @Override
             public Usuario getRowData(String key) {
                 for (Usuario u : data) {
@@ -106,14 +106,14 @@ public class UsuarioBean implements Serializable {
                 }
                 return null;
             }
-
+            
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
                 if (termoBusca.equals("")) {
                     data = usuarioDao.find(first, pageSize);
                     setRowCount(usuarioDao.count());
-
+                    
                 } else {
                     data = usuarioDao.find(termoBusca);
                     setRowCount(data.size());
@@ -124,29 +124,33 @@ public class UsuarioBean implements Serializable {
                     } catch (IndexOutOfBoundsException e) {
                         return data.subList(first, first + (data.size() % pageSize));
                     }
-
+                    
                 }
                 return data;
             }
         };
     }
-
+    
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, String> loginParameters = context.getExternalContext().getRequestParameterMap();
+        String formLogin = loginParameters.get("loginForm:login");
+        String formSenha = loginParameters.get("loginForm:senha");
         try {
             Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            for (Perfil p : usuarioDao.findByLogin(login).getPerfilList()) {
+            sessionUsuario = usuarioDao.findByLogin(formLogin);
+            for (Perfil p : sessionUsuario.getPerfilList()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(p.getTipoPerfil().name()));
             }
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(login, senha, grantedAuthorities);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(formLogin, formSenha, grantedAuthorities);
             Authentication auth = authManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
             autenticado = auth.isAuthenticated();
         } catch (AuthenticationException | NullPointerException e) {
-            log.error("erro de autenticação -> " + e.getCause());
+            log.error("erro de autenticação -> " + e.getLocalizedMessage());
         }
         if (autenticado) {
-            log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
+            log.info(String.format("usuario %s: %s efetuou login", formLogin, perfil.getPapel()));
             return home();
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
@@ -154,29 +158,29 @@ public class UsuarioBean implements Serializable {
             return null;
         }
     }
-
+    
     public String homeDir() {
         String homeDir = String.format("/views/secure/%s", perfil.toString()).toLowerCase();
         return homeDir;
     }
-
+    
     public String home() {
         String home = String.format("/views/secure/%s/%s?faces-redirect=true", perfil.toString(), perfil.toString()).toLowerCase();
         return home;
     }
-
+    
     public String authLogout() {
         System.out.println("usuario efetuou logout");
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
         return "/views/login?faces-redirect=true";
     }
-
+    
     public void setupImportUsuarios() {
         progress = 0;
         stopImportaUsuarios = true;
     }
-
+    
     public void importaUsuarios() {
         final List<Usuario> usrList = new ArrayList<>();
         stopImportaUsuarios = false;
@@ -238,7 +242,7 @@ public class UsuarioBean implements Serializable {
         };
         tImportJob.start();
     }
-
+    
     public void cancelImpUsuarios() {
         setupImportUsuarios();
         try {
@@ -246,12 +250,12 @@ public class UsuarioBean implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
             context.addMessage(null, msg);
-
+            
         } catch (NullPointerException | InterruptedException e) {
             log.error("no thread to cancel");
         }
     }
-
+    
     public void handleCompleteImpUsuarios() {
         stopImportaUsuarios = true;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -263,15 +267,15 @@ public class UsuarioBean implements Serializable {
         }
         context.addMessage(null, msg);
     }
-
+    
     public StreamedContent getDocentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DOCENTE);
     }
-
+    
     public StreamedContent getDiscentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DISCENTE);
     }
-
+    
     public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
         StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
         for (Usuario u : usuarioDao.find(perfilTipo)) {
@@ -292,7 +296,7 @@ public class UsuarioBean implements Serializable {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()));
         return file;
     }
-
+    
     public void editaUsuario() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
@@ -301,7 +305,7 @@ public class UsuarioBean implements Serializable {
             usuario = getItemSelecionado();
         }
     }
-
+    
     public void excluiUsuario() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
@@ -319,7 +323,7 @@ public class UsuarioBean implements Serializable {
             }
         }
     }
-
+    
     public void salvaUsuario() {
         RequestContext context = RequestContext.getCurrentInstance();
         try {
@@ -337,11 +341,11 @@ public class UsuarioBean implements Serializable {
         } catch (Exception e) {
             setSaveStatus(false);
         }
-
+        
         context.addCallbackParam("resultado", saveStatus);
         handleCompleteImpUsuarios();
     }
-
+    
     public void cancelSalvaUsuario() {
         List<Perfil> tempPerfilList = new ArrayList<Perfil>() {
             {
@@ -364,7 +368,7 @@ public class UsuarioBean implements Serializable {
         perfilRemovido.clear();
         System.out.println("cancelando alteração de usuário");
     }
-
+    
     public void addPerfil() {
         if (isSelecionado()) {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -375,81 +379,69 @@ public class UsuarioBean implements Serializable {
             Perfil perfilItem = new Perfil();
             perfilItem.setTipoPerfil(p);
             perfilItem.setCurso(c);
-            usuario.adicionaPerfil(perfilItem);
-            System.out.println("perfil added: "
-                    + perfilItem.getId() + ": "
-                    + perfilItem.getTipoPerfil());
+            perfilItem.setUsuario(usuario);
+            if (perfilRemovido.contains(perfilItem)) {
+                perfilItem = perfilRemovido.get(perfilRemovido.indexOf(perfilItem));
+                perfilRemovido.remove(perfilItem);
+            }
+            if (!usuario.getPerfilList().contains(perfilItem)) {
+                usuario.adicionaPerfil(perfilItem);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("dadosInvalidos"), null);
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
         }
     }
-
+    
     public void removePerfil(ActionEvent event) {
         Perfil perfilItem = (Perfil) event.getComponent().getAttributes().get("perfil");
         usuario.removePerfil(perfilItem);
         if (perfilItem.getId() != null) {
             perfilRemovido.add(perfilItem);
         }
-        System.out.println("perfil removed: "
-                + perfilItem.getId()
-                + ": " + perfilItem.getTipoPerfil());
     }
-
+    
     public void onCursoDisable() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         cb.setItemSelecionado(null);
     }
-
+    
     public boolean isCursoDisabled() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         return (cb != null && Arrays.asList(Perfil.perfilCursoMustBeNull).contains(pb.getItemSelecionado()));
     }
-
+    
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Usuario) event.getObject();
     }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
+    
     public PerfilEnum getPerfil() {
         return perfil;
     }
-
+    
     public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
-
+    
     public int getProgress() {
         return progress;
     }
-
+    
     public void setProgress(int progress) {
         this.progress = progress;
     }
-
+    
     public boolean isSaveStatus() {
         return saveStatus;
     }
-
+    
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-
+    
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
     }
@@ -467,35 +459,39 @@ public class UsuarioBean implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
+    
+    public Usuario getSessionUsuario() {
+        return sessionUsuario;
+    }
+    
     public boolean isAutenticado() {
         return autenticado;
     }
-
+    
     public List<Usuario> findUsuario(String query) {
         return usuarioDao.find(query);
     }
-
+    
     public List<Usuario> findDocente(String query) {
         return usuarioDao.find(query, PerfilEnum.DOCENTE);
     }
-
+    
     public List<Usuario> findDiscente(String query) {
         return usuarioDao.find(query, PerfilEnum.DISCENTE);
     }
-
+    
     public List<Usuario> findCoordenadorCurso(String query) {
         return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_CURSO);
     }
-
+    
     public List<Usuario> findCoordenadorEstagio(String query) {
         return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_ESTAGIO);
     }
-
+    
     public List<Usuario> findSecretaria(String query) {
         return usuarioDao.find(query, PerfilEnum.SECRETARIA);
     }
-
+    
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
             return usuarioDao.findAll();
@@ -503,11 +499,11 @@ public class UsuarioBean implements Serializable {
             return usuarioDao.find(termoBusca);
         }
     }
-
+    
     public LazyDataModel<Usuario> getUsuariosDataModel() {
         return usuariosDataModel;
     }
-
+    
     public List<Usuario> getUsuarios() {
         if (usuarios.isEmpty() | usuarioDao.count() != usuarios.size()) {
             usuarios = usuarioDao.findAll();

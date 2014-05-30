@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <p:dialog id="dlgUsuarioInfoForm" modal="true"
+              widgetVar="dlgUsuarioInfoVar" width="480" resizable="false" appendTo="@(body)">
+        <f:facet name="header">
+            <h:outputText value="#{msg.usuarioDetalhe}: #{usuarioBean.sessionUsuario.id}" />
+        </f:facet>
+        <h:form id="detalheUsuarioInfoForm">
+            <p:panelGrid styleClass="formGrid">
+                <p:row>
+                    <p:column styleClass="col30">
+                        <h:outputText value="#{msg.usuario}" />
+                    </p:column>
+                    <p:column styleClass="col70">
+                        <h:outputText value="#{usuarioBean.sessionUsuario.login}" />
+                    </p:column>
+                </p:row>
+                <p:row>                
+                    <p:column>
+                        <h:outputText value="#{msg.usuarioMatricula}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.sessionUsuario.matricula}" />
+                    </p:column>                
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputText value="#{msg.nome}" />
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{usuarioBean.sessionUsuario.nome}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputText value="#{msg.usuarioEmail}" />
+                    </p:column>
+                    <p:column>
+                        <p:inplace styleClass="editItem defaultInput" editor="true" 
+                                   saveLabel="#{msg.atualizar}" cancelLabel="#{msg.cancelar}">
+                            <p:inputText id="emailUsuario" value="#{usuarioBean.sessionUsuario.email}" />
+                        </p:inplace>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="2">
+                            <p:dataTable value="#{usuarioBean.sessionUsuario.perfilList}"
+                                         var="p"
+                                         emptyMessage="#{msg.emptyMessage}"
+                                         styleClass="tableGrid">
+                                <p:column styleClass="col45" headerText="#{msg.perfil}">
+                                    <h:outputText value="#{p.tipoPerfil.papelLocale}" />
+                                </p:column>
+                                <p:column styleClass="col55" headerText="#{msg.curso}">
+                                    <h:outputText value="#{p.curso.nome}" />
+                                </p:column>
+                            </p:dataTable>
+                    </p:column>                        
+                </p:row>
+            </p:panelGrid>
+
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton value="#{msg.fechar}"
+                                 process="@none"
+                                 onclick="PF('dlgUsuarioInfoVar').hide()"/>
+            </h:panelGroup>
+            <p:defaultCommand target="emailUsuario" />
+        </h:form>            
+    </p:dialog>
+</ui:composition>

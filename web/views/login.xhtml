@@ -9,22 +9,26 @@
     <ui:composition template="base.xhtml">
         <ui:define name="title">Login - ReqWeb</ui:define>
         <ui:define name="menuTitle"></ui:define>
-        <ui:define name="componentTitle">#{msg.LoginPage}</ui:define>
+        <ui:define name="componentTitle">
+            <h:outputText value="#{msg.LoginPage}" rendered="#{!usuarioBean.autenticado}" />
+            <h:outputText value="#{msg.usuarioDetalhe}" rendered="#{usuarioBean.autenticado}" />
+        </ui:define>
         <ui:define name="menu">
             <div class="menuContainerLogo">
                 <p:graphicImage value="#{resource['img/logo-mono-vertical.png']}" />
             </div>
         </ui:define>
         <ui:define name="content">
-            <h:panelGrid columns="2" styleClass="loginLayout" columnClasses="loginLayoutColumnA, loginLayoutColumnB" rendered="#{!usuarioBean.autenticado}">
-                <h:form id="loginForm">
+            <h:panelGrid id="panelLogin" columns="2" styleClass="loginLayout"
+                         columnClasses="loginLayoutColumnA, loginLayoutColumnB">
+                <h:form id="loginForm" styleClass="loginForm">
                     <!-- senha teste de: amanda: Aed5ahm4 -->
                     <div class="loginFormTitle">#{msg.login}</div>
                     <h:panelGrid columns="1">
                         <h:outputLabel value="#{msg.usuario}" for="login" />
-                        <h:inputText value="#{usuarioBean.login}" id="login" />
+                        <h:inputText id="login" />
                         <h:outputLabel value="#{msg.senha}" for="senha" />
-                        <h:inputSecret value="#{usuarioBean.senha}" id="senha" validatorMessage="#{msg.loginErro}" />
+                        <h:inputSecret id="senha" validatorMessage="#{msg.loginErro}" />
 
                         <h:outputLabel value="#{msg.perfil}" for="perfil" />
                         <h:selectOneMenu id="perfil" value="#{usuarioBean.perfil}">
@@ -32,7 +36,9 @@
                                            var="p" itemValue="#{p}"
                                            itemLabel="#{p.papelLocale}" />
                         </h:selectOneMenu>
-                        <h:commandButton action="#{usuarioBean.authLogin}" value="#{msg.botaoLogin}" />
+                        <h:commandButton action="#{usuarioBean.authLogin}" value="#{msg.botaoLogin}">
+                            <p:ajax update=":panelLogin" process="@form" />
+                        </h:commandButton>
                     </h:panelGrid>
                     <h:messages class="loginMessage" id="loginError" />
                     <h:outputText value="#{loginError}" />

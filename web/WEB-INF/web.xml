@@ -40,11 +40,19 @@
     </servlet-mapping>
     <filter>
         <filter-name>LoginFilter</filter-name>
-        <filter-class>br.ufg.reqweb.auth.LoginFilter</filter-class>
+        <filter-class>br.ufg.reqweb.filters.AuthFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
         <url-pattern>/views/secure/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>CacheControlFilter</filter-name>
+        <filter-class>br.ufg.reqweb.filters.CacheControlFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CacheControlFilter</filter-name>
+        <url-pattern>/views/login.xhtml</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>PrimeFacesFileUploadFilter</filter-name>

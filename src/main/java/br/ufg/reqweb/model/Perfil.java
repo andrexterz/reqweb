@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.model;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -87,5 +88,17 @@ public class Perfil extends BaseModel {
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass() == this.getClass()) {
+            Perfil other = (Perfil) obj;
+            return (Objects.equals(other.getTipoPerfil(), this.getTipoPerfil()) && Objects.equals(other.getUsuario(), this.getUsuario())
+                    );
+        }
+        return false;
+    }
+    
+    
 
 }

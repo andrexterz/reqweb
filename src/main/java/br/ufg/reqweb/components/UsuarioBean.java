@@ -134,23 +134,24 @@ public class UsuarioBean implements Serializable {
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, String> loginParameters = context.getExternalContext().getRequestParameterMap();
-        String formLogin = loginParameters.get("loginForm:login");
-        String formSenha = loginParameters.get("loginForm:senha");
+        String login = loginParameters.get("loginForm:login");
+        String senha = loginParameters.get("loginForm:senha");
+        GrantedAuthority perfilAuthority = new SimpleGrantedAuthority(perfil.name());
         try {
             Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            sessionUsuario = usuarioDao.findByLogin(formLogin);
+            sessionUsuario = usuarioDao.findByLogin(login);
             for (Perfil p : sessionUsuario.getPerfilList()) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(p.getTipoPerfil().name()));
             }
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(formLogin, formSenha, grantedAuthorities);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(login, senha, grantedAuthorities);
             Authentication auth = authManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            autenticado = auth.isAuthenticated();
+            autenticado = auth.isAuthenticated() && grantedAuthorities.contains(perfilAuthority);
         } catch (AuthenticationException | NullPointerException e) {
             log.error("erro de autenticação -> " + e.getLocalizedMessage());
         }
         if (autenticado) {
-            log.info(String.format("usuario %s: %s efetuou login", formLogin, perfil.getPapel()));
+            log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
             return home();
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
@@ -412,6 +413,12 @@ public class UsuarioBean implements Serializable {
         PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         return (cb != null && Arrays.asList(Perfil.perfilCursoMustBeNull).contains(pb.getItemSelecionado()));
+    }
+    
+    public void salvaSessionUsuario() {
+        setUsuario(sessionUsuario);
+        salvaUsuario();
+        setUsuario(null);
     }
     
     public void selecionaItem(SelectEvent event) {

@@ -97,6 +97,15 @@ public class Requerimento extends BaseModel {
             atendimento.setRequerimento(this);
         }
     }
+    
+    public void addAtendimento(Atendimento atendimento) {
+        atendimentoList.add(atendimento);
+        atendimento.setRequerimento(this);
+    }
+    
+    public void removeAtendimento(Atendimento atendimento) {
+        atendimentoList.remove(atendimento);
+    }    
 
     /**
      * @return the tipoRequerimento
@@ -177,7 +186,7 @@ public class Requerimento extends BaseModel {
     }
     
     public void removeItemRequerimento(ItemRequerimento itemRequerimento) {
-    itemRequerimentoList.remove(itemRequerimento);
+        itemRequerimentoList.remove(itemRequerimento);
     }
 
     /**

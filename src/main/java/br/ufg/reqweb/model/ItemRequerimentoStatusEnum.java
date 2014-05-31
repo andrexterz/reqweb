@@ -6,6 +6,8 @@
 
 package br.ufg.reqweb.model;
 
+import br.ufg.reqweb.components.LocaleBean;
+
 /**
  *
  * @author andre
@@ -13,6 +15,7 @@ package br.ufg.reqweb.model;
 public enum ItemRequerimentoStatusEnum {
     
     ABERTO("aberto"),
+    RECEBIDO("recebido"),
     DEFERIDO("deferido"),
     INDEFERIDO("indeferido");
 
@@ -24,5 +27,9 @@ public enum ItemRequerimentoStatusEnum {
 
     public String getStatus() {
         return status;
+    }    
+    
+    public String getStatusLocale() {
+        return LocaleBean.getMessageBundle().getString(status);
     }    
 }

@@ -16,8 +16,10 @@ import br.ufg.reqweb.model.DocumentoDeEstagio;
 import br.ufg.reqweb.model.EmentaDeDisciplina;
 import br.ufg.reqweb.model.ExtratoAcademico;
 import br.ufg.reqweb.model.ItemRequerimento;
+import br.ufg.reqweb.model.ItemRequerimentoStatusEnum;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Requerimento;
+import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
@@ -39,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
@@ -89,7 +92,7 @@ public class RequerimentoBean implements Serializable {
     private boolean saveStatus;
     private FormControl step;
     private final LazyDataModel<Requerimento> requerimentosDataModel;
-    
+
     public enum TipoBusca {
 
         PERIODO("dataCriacao"),
@@ -140,7 +143,7 @@ public class RequerimentoBean implements Serializable {
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.PERIODO;
         atendimentos = new ArrayList<>();
-        itemRemovidoList  = new ArrayList<>();
+        itemRemovidoList = new ArrayList<>();
         arquivo = null;
         confirmaRequerimento = false;
         saveStatus = false;
@@ -321,6 +324,16 @@ public class RequerimentoBean implements Serializable {
             }
         }
     }
+    
+    public Requerimento getLoadedItemRequerimento() {
+        if (isSelecionado()) {
+            return requerimentoDao.findById(getItemSelecionado().getId());
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemSelecionar"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return null;
+        }
+    }    
 
     /**
      * cancels actions from <code>novoRequerimento</code>
@@ -400,6 +413,71 @@ public class RequerimentoBean implements Serializable {
         return formattedMsg.toString();
     }
 
+    public void handleStatusRequerimento(ValueChangeEvent event) {
+        ItemRequerimentoStatusEnum statusItem = (ItemRequerimentoStatusEnum) event.getNewValue();
+
+        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA) || requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EXTRATO_ACADEMICO)) {
+            if (!statusItem.equals(ItemRequerimentoStatusEnum.ABERTO)) {
+                requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+            } else {
+                requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+            }
+        }
+
+        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA) || requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+            int statusAbertoCounter = 0;
+            for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
+                if (item.getStatus().equals(ItemRequerimentoStatusEnum.ABERTO)) {
+                    statusAbertoCounter++;
+                }
+            }
+            if (statusAbertoCounter == 0) {
+                requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+            } else if (statusAbertoCounter > 0 && statusAbertoCounter < requerimento.getItemRequerimentoList().size()) {
+                requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+            } else {
+                requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+            }
+        }
+
+        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
+            if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                switch (statusItem) {
+                    case DEFERIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                    case INDEFERIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                    default:
+                        requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+                }
+            } else {
+                requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+            }
+        }
+        if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
+            if (getPerfilUsuario().equals(PerfilEnum.SECRETARIA)) {
+                switch (statusItem) {
+                    case RECEBIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                    case INDEFERIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                    default:
+                        requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+                }
+            } else {
+                switch (statusItem) {
+                    case DEFERIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                    case INDEFERIDO:
+                        requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                    default:
+                        requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                }
+            }
+
+        }
+    }
+
     public void adicionaItemRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         ItemRequerimento item = (ItemRequerimento) sessionMap.remove("itemRequerimento");
@@ -411,7 +489,7 @@ public class RequerimentoBean implements Serializable {
             }
             //adiciona item da sessao na lista de items
             requerimento.addItemRequerimento(item);
-            
+
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA)) {
                 sessionMap.put("itemRequerimento", new EmentaDeDisciplina());
             }
@@ -484,16 +562,6 @@ public class RequerimentoBean implements Serializable {
             tipoRequerimentoBusca = (TipoRequerimentoEnum) event.getObject();
         } catch (NullPointerException e) {
             tipoRequerimentoBusca = null;
-        }
-    }
-
-    public List<ItemRequerimento> getItemRequerimentoSelecionadoList() {
-        if (isSelecionado()) {
-            return requerimentoDao.findItemRequerimentoList(itemSelecionado);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemSelecionar"), null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            return new ArrayList<>();
         }
     }
 
@@ -713,7 +781,7 @@ public class RequerimentoBean implements Serializable {
     public void setConfirmaRequerimento(boolean confirmaRequerimento) {
         this.confirmaRequerimento = confirmaRequerimento;
     }
-    
+
     public boolean isReqAjusteDeMatriculaExists() {
         return requerimentoDao.countReqAjusteDeMatricula(getLoginUsuario()) > 0;
     }

@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Email;
 
 /**
  *
@@ -50,6 +51,7 @@ public class Usuario extends BaseModel {
     private String matricula;
 
     @NotNull
+    @Email
     @Column(unique = true)
     private String email;
 

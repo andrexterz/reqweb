@@ -36,7 +36,8 @@
                 </h:panelGrid>
                 <p:accordionPanel>
                     <p:tab title="#{msg.requerimentos}">
-                        <p:dataTable value="#{requerimentoBean.itemRequerimentoSelecionadoList}" var="itemRequerimento">
+                        <p:dataTable value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList}"
+                                     var="itemRequerimento" emptyMessage="#{msg.emptyMessage}">
                             <p:column headerText="#{msg.requerimento}" styleClass="colCenter">
                                 <h:outputText value="#{itemRequerimento.requerimento.tipoRequerimento.tipoLocale}" />
                             </p:column>

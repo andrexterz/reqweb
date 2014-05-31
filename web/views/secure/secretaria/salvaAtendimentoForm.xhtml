@@ -1,0 +1,38 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <p:dialog id="dlgAtendimentoForm" modal="true"
+              widgetVar="dlgAtendimentoVar" width="auto"
+              resizable="false" appendTo="@(body)">
+        <p:ajax event="close" listener="#{requerimentoBean.cleanupRequerimento}"/>
+        <f:facet name="header">
+            <h:outputText value="#{msg.atendimento} #{msg.prepDe} #{requerimentoBean.requerimento.tipoRequerimento.tipoLocale}" />
+        </f:facet>
+        <h:form id="salvaAtendimentoForm" styleClass="formGrid">
+            <!--validacao do lado do servidor utilizando beanValidator -->
+            <!--tag anula Validation PhaseListener do JSF -->
+            <f:validateBean disabled="true">
+                <p:panelGrid id="atendimentoDlgPanel" styleClass="formGrid">
+                    <c:if  test="#{requerimentoBean.operation == 'e'}">
+                        <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
+                    </c:if>
+                </p:panelGrid>
+                <h:panelGroup id="formControls" layout="block" rendered="#{requerimentoBean.showControls}" styleClass="alignCenter formFooterButtons">
+                    <p:commandButton value="#{msg.salvar}"
+                                     process="@form"
+                                     actionListener="#{requerimentoBean.salvaRequerimento}"
+                                     oncomplete="dialogHandler('dlgAtendimentoVar', xhr, status, args)"
+                                     update="atendimentoDlgPanel :formHeader:systemMessages :atendimentoForm:tableRequerimentos :atendimentoForm:atendimentoToolbar" />
+                    <p:commandButton value="#{msg.cancelar}"
+                                     process="@this"
+                                     update="atendimentoDlgPanel"
+                                     oncomplete="PF('dlgAtendimentoVar').hide()"/>
+                </h:panelGroup>
+            </f:validateBean>
+        </h:form>            
+    </p:dialog>
+</ui:composition>
+

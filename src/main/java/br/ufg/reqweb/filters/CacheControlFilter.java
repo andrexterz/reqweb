@@ -44,7 +44,7 @@ public class CacheControlFilter implements Filter {
         usuarioBean = session == null ? null: (UsuarioBean) session.getAttribute("usuarioBean");        
         if (usuarioBean != null && usuarioBean.isAutenticado()) {
             URI uri = URI.create(usuarioBean.home());
-            String url = Paths.get(path, String.format("%s%s?%s", uri.getPath(), ".xhtml", uri.getQuery())).toString();
+            String url = Paths.get(path, String.format("%s%s", uri.getPath(), ".xhtml")).toString();
             System.out.println(
                     String.format(
                             "usuario:%s logged in - no cache for login page -> redirecting to %s",

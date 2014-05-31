@@ -345,18 +345,6 @@ public class RequerimentoDao {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemRequerimento> findItemRequerimentoList(Requerimento requerimento) {
-        try {
-            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(ItemRequerimento.class);
-            criteria.add(Restrictions.eq("requerimento", requerimento));
-            return criteria.list();
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Transactional(readOnly = true)
     public List<Atendimento> findAtendimento(Requerimento requerimento) {
         try {
             Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Atendimento.class);

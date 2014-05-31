@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.copias}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputText value="#{itemRequerimento.numeroCopias}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.status}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:selectOneButton value="#{itemRequerimento.status}"
+                               valueChangeListener="#{requerimentoBean.handleStatusRequerimento}">
+                <f:selectItem itemLabel="#{msg.aberto}"
+                              itemValue="ABERTO" />
+                <f:selectItem itemLabel="#{msg.deferido}"
+                              itemValue="DEFERIDO" />
+                <f:selectItem itemLabel="#{msg.indeferido}"
+                              itemValue="INDEFERIDO"/>
+            </p:selectOneButton>                            
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.observacao}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:inputTextarea rows="5" cols="32" autoResize="false" readonly="true"
+                             value="#{requerimentoBean.requerimento.observacao}" />
+        </p:column>
+    </p:row>
+</ui:composition>
+

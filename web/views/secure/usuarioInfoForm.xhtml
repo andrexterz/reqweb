@@ -39,9 +39,10 @@
                         <h:outputText value="#{msg.usuarioEmail}" />
                     </p:column>
                     <p:column>
-                        <p:inplace styleClass="editItem defaultInput" editor="true" 
+                        <p:inplace styleClass="editItem defaultInput" editor="true" emptyLabel="#{msg.adicionar}"
                                    saveLabel="#{msg.atualizar}" cancelLabel="#{msg.cancelar}">
                             <p:inputText id="emailUsuario" value="#{usuarioBean.sessionUsuario.email}" />
+                            <p:ajax event="save" listener="#{usuarioBean.salvaSessionUsuario}" update=":formHeader:systemMessages" />
                         </p:inplace>
                     </p:column>
                 </p:row>

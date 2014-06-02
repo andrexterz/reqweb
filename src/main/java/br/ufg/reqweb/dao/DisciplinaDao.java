@@ -130,8 +130,7 @@ public class DisciplinaDao {
     public List<Disciplina> findAll() {
         try {
             List<Disciplina> disciplinas = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Disciplina d")
-                    .addEntity(Disciplina.class)
+                    .createQuery("SELECT d FROM Disciplina d ORDER BY d.curso.sigla ASC")
                     .list();
             return disciplinas;
         } catch (HibernateException | NumberFormatException e) {

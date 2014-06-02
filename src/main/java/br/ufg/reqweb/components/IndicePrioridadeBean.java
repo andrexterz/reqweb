@@ -206,7 +206,7 @@ public class IndicePrioridadeBean {
             csvData.append(ip.getDiscente().getId());
         }
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv");
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv", "UTF8");
         return file;
     }
 

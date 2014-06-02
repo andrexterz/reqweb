@@ -252,7 +252,7 @@ public class TurmaBean implements Serializable {
         }
 
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv");
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv", "UTF8");
         return file;
     }
 

@@ -32,6 +32,7 @@ public class Disciplina extends BaseModel {
     @Column
     private String nome;
     
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "curso_id")
     private Curso curso;

@@ -294,7 +294,7 @@ public class UsuarioBean implements Serializable {
             csvData.append(u.getMatricula());
         }
         InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()));
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
         return file;
     }
     

@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,32 +105,31 @@ public class DisciplinaBean implements Serializable {
                 return null;
             }
 
-
-             @Override
+            @Override
             public List<Disciplina> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-             setPageSize(pageSize);
-             if (curso != null) {
-             data = disciplinaDao.findByCurso(termoBusca, curso);
-             setRowCount(data.size());
-             } else {
-             if (termoBusca.equals("")) {
-             data = disciplinaDao.find(first, pageSize);
-             setRowCount(disciplinaDao.count());
-             } else {
-             data = disciplinaDao.find(termoBusca);
-             setRowCount(data.size());
-             }
-             }
-             if (data.size() > pageSize) {
-             try {
-             return data.subList(first, first + pageSize);
-             } catch (IndexOutOfBoundsException e) {
-             return data.subList(first, first + (data.size() % pageSize));
-             }
-                    
-             }                
-             return data;
-             }
+                setPageSize(pageSize);
+                if (curso != null) {
+                    data = disciplinaDao.findByCurso(termoBusca, curso);
+                    setRowCount(data.size());
+                } else {
+                    if (termoBusca.equals("")) {
+                        data = disciplinaDao.find(first, pageSize);
+                        setRowCount(disciplinaDao.count());
+                    } else {
+                        data = disciplinaDao.find(termoBusca);
+                        setRowCount(data.size());
+                    }
+                }
+                if (data.size() > pageSize) {
+                    try {
+                        return data.subList(first, first + pageSize);
+                    } catch (IndexOutOfBoundsException e) {
+                        return data.subList(first, first + (data.size() % pageSize));
+                    }
+
+                }
+                return data;
+            }
         };
 
     }
@@ -258,7 +258,12 @@ public class DisciplinaBean implements Serializable {
             csvData.append(d.getCurso().getSigla());
         }
 
-        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        InputStream stream;
+        try {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        }
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_disciplinas.csv");
         return file;
     }
@@ -384,7 +389,7 @@ public class DisciplinaBean implements Serializable {
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-    
+
     public boolean getStopImportaDisciplinas() {
         return stopImportaDisciplinas;
     }

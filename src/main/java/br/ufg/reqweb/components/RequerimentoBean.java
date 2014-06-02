@@ -85,7 +85,6 @@ public class RequerimentoBean implements Serializable {
     private TipoRequerimentoEnum tipoRequerimentoBusca;
     private String termoBuscaDiscente;
     private String termoBuscaPeriodo;
-    private List<Atendimento> atendimentos;
     private final List<ItemRequerimento> itemRemovidoList;
     private Arquivo arquivo;
     private boolean confirmaRequerimento;
@@ -142,7 +141,6 @@ public class RequerimentoBean implements Serializable {
         termoBuscaDiscente = "";
         termoBuscaPeriodo = "";
         tipoBusca = TipoBusca.PERIODO;
-        atendimentos = new ArrayList<>();
         itemRemovidoList = new ArrayList<>();
         arquivo = null;
         confirmaRequerimento = false;
@@ -301,6 +299,11 @@ public class RequerimentoBean implements Serializable {
             setStep(FormControl.STEP0);
             setSaveStatus(false);
             requerimento = requerimentoDao.findById(getItemSelecionado().getId());
+            if (!getPerfilUsuario().equals(PerfilEnum.DISCENTE) && requerimento.getAtendimento() == null) {
+                Atendimento atendimento = new Atendimento();
+                requerimento.setAtendimento(atendimento);
+                atendimento.setAtendente(((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario());
+            }
             System.out.println("items in requerimento: " + requerimento.getItemRequerimentoList().size());
             if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA)) {
                 sessionMap.put("itemRequerimento", requerimento.getItemRequerimentoList().iterator().next());
@@ -324,7 +327,7 @@ public class RequerimentoBean implements Serializable {
             }
         }
     }
-    
+
     public Requerimento getLoadedItemRequerimento() {
         if (isSelecionado()) {
             return requerimentoDao.findById(getItemSelecionado().getId());
@@ -333,7 +336,7 @@ public class RequerimentoBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return null;
         }
-    }    
+    }
 
     /**
      * cancels actions from <code>novoRequerimento</code>
@@ -341,11 +344,11 @@ public class RequerimentoBean implements Serializable {
     public void cleanupRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove("itemRequerimento");
-        requerimento.getItemRequerimentoList().clear();
         itemRemovidoList.clear();
-        System.out.println("cleaning up requerimento... ");
+        requerimento.getItemRequerimentoList().clear();
         setStep(FormControl.STEP0);
         setConfirmaRequerimento(false);
+        System.out.println("cleaning up requerimento... ");
     }
 
     public void salvaRequerimento() {
@@ -477,6 +480,30 @@ public class RequerimentoBean implements Serializable {
 
         }
     }
+    
+    public void salvaAtendimento() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        requerimento.getAtendimento().setAtendente(((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario());
+        System.out.println("fired command");
+    }
+
+    public boolean isAtendimentoRequired() {
+        int statusIndeferidoCounter = 0;
+        boolean observacaoIsEmpty;
+        try {
+            System.out.println("is obs empty? " + requerimento.getAtendimento().getObservacao() == null);
+            observacaoIsEmpty = requerimento.getAtendimento().getObservacao().isEmpty();
+        } catch (NullPointerException e) {
+            observacaoIsEmpty = true;
+            System.out.println("error:" + e.getLocalizedMessage());
+        }
+        for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
+            if (item.getStatus().equals(ItemRequerimentoStatusEnum.INDEFERIDO)) {
+                statusIndeferidoCounter++;
+            }
+        }
+        return (statusIndeferidoCounter > 0);
+    }
 
     public void adicionaItemRequerimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -562,15 +589,6 @@ public class RequerimentoBean implements Serializable {
             tipoRequerimentoBusca = (TipoRequerimentoEnum) event.getObject();
         } catch (NullPointerException e) {
             tipoRequerimentoBusca = null;
-        }
-    }
-
-    public void findAtendimentos() {
-        if (isSelecionado()) {
-            atendimentos = requerimentoDao.findAtendimento(itemSelecionado);
-        } else {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("itemSelecionar"), null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
@@ -745,10 +763,6 @@ public class RequerimentoBean implements Serializable {
         this.termoBuscaPeriodo = termoBuscaPeriodo;
     }
 
-    public List<Atendimento> getAtendimentos() {
-        return atendimentos;
-    }
-
     public Arquivo getArquivo() {
         return arquivo;
     }
@@ -768,6 +782,10 @@ public class RequerimentoBean implements Serializable {
             System.out.println("getContent error: " + e.getMessage());
         }
         return content;
+    }
+
+    public boolean isEditavel() {
+        return (itemSelecionado != null && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO));
     }
 
     public boolean isShowControls() {

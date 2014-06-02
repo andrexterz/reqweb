@@ -14,12 +14,15 @@
         </p:column>
     </p:row>
     <p:row>
-        <p:column colspan="2">
+        <p:column>
             <p:outputLabel for="disciplinaEmenta" value="#{msg.disciplina}"  />
+        </p:column>
+        <p:column styleClass="alignRight">
+            <p:outputLabel value="#{msg.adicionar}"  />
         </p:column>
     </p:row>
     <p:row>
-        <p:column styleClass="col90"> 
+        <p:column styleClass="col85"> 
             <p:autoComplete id="disciplinaEmenta"
                             value="#{itemRequerimento.disciplina}"
                             converter="#{disciplinaConverter}"
@@ -30,7 +33,7 @@
             </p:autoComplete>
             <p:watermark value="#{msg.disciplina}" for="disciplinaEmenta" />
         </p:column>
-        <p:column styleClass="col10">
+        <p:column styleClass="col15">
             <p:commandButton title="#{msg.adicionar}" icon="ui-icon-plus" styleClass="floatRight" update="ementas disciplinaEmenta :formHeader:systemMessages"
                              process="@form" actionListener="#{requerimentoBean.adicionaItemRequerimento}" />
         </p:column>

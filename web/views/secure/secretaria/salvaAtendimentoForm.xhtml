@@ -15,12 +15,16 @@
             <!--validacao do lado do servidor utilizando beanValidator -->
             <!--tag anula Validation PhaseListener do JSF -->
             <f:validateBean disabled="true">
+                
+                <h:outputText value="#{msg.discente}: #{requerimentoBean.requerimento.discente.nome}" />
+                <p:separator />
                 <p:panelGrid id="atendimentoDlgPanel" styleClass="formGrid">
                     <c:if  test="#{requerimentoBean.operation == 'e'}">
                         <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
                     </c:if>
                 </p:panelGrid>
                 <h:panelGroup id="formControls" layout="block" rendered="#{requerimentoBean.showControls}" styleClass="alignCenter formFooterButtons">
+
                     <p:commandButton value="#{msg.salvar}"
                                      process="@form"
                                      actionListener="#{requerimentoBean.salvaRequerimento}"

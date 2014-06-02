@@ -48,17 +48,23 @@
                 </p:row>
                 <p:row>
                     <p:column colspan="2">
-                            <p:dataTable value="#{usuarioBean.sessionUsuario.perfilList}"
-                                         var="p"
-                                         emptyMessage="#{msg.emptyMessage}"
-                                         styleClass="tableGrid">
-                                <p:column styleClass="col45" headerText="#{msg.perfil}">
-                                    <h:outputText value="#{p.tipoPerfil.papelLocale}" />
-                                </p:column>
-                                <p:column styleClass="col55" headerText="#{msg.curso}">
-                                    <h:outputText value="#{p.curso.nome}" />
-                                </p:column>
-                            </p:dataTable>
+                        <p:dataTable value="#{usuarioBean.sessionUsuario.perfilList}"
+                                     var="p"
+                                     emptyMessage="#{msg.emptyMessage}"
+                                     styleClass="tableGrid">
+                            <f:facet name="header">
+                                <h:outputLabel value="#{msg.perfis}" />
+                            </f:facet>
+                            <p:column styleClass="col60" headerText="#{msg.perfil}">
+                                <h:outputText value="#{p.tipoPerfil.papelLocale}" />
+                            </p:column>
+                            <p:column styleClass="col30 alignCenter" headerText="#{msg.curso}">
+                                <h:outputText value="#{p.curso.sigla}" />
+                            </p:column>
+                            <p:column styleClass="col10 alignCenter" headerText="#{msg.ativo}">
+                                <h:panelGroup rendered="#{p.tipoPerfil eq usuarioBean.perfil}" styleClass="ui-icon ui-icon-bullet iconDefault floatCenter"/>
+                            </p:column>
+                        </p:dataTable>
                     </p:column>                        
                 </p:row>
             </p:panelGrid>

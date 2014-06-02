@@ -19,7 +19,9 @@
             <h:outputScript library="js" name="reqweb.js" />
         </h:head>
         <h:body>
-            <ui:include src="secure/usuarioInfoForm.xhtml" />
+            <c:if test="#{usuarioBean.autenticado}" >
+                <ui:include src="secure/usuarioInfoForm.xhtml" />
+            </c:if>
             <h:panelGroup layout="block" id="header">
                 <p:panelGrid columns="2" columnClasses="headerColA,headerColB" id="mainHeader">
                     <p:column>

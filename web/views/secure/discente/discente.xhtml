@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
@@ -13,7 +14,7 @@
                     <h:panelGrid columns="1">
                         <c:forEach items="#{requerimentoBean.tipoRequerimentoList}" var="tipoRequerimentoItem">
                             <h:commandLink id="#{tipoRequerimentoItem.tipo}Lnk"
-                                           action="requerimentos?faces-redirect=true"
+                                           action="requerimentos"
                                            value="#{tipoRequerimentoItem.tipoLocale}"
                                            styleClass="#{tipoRequerimentoItem.tipo}">
                                 <f:setPropertyActionListener

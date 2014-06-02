@@ -17,6 +17,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
@@ -41,8 +42,9 @@ public class Requerimento extends BaseModel {
     @JoinColumn(name = "usuario_id", updatable = false)
     private Usuario discente;
     
-    @OneToMany(mappedBy = "requerimento", cascade = CascadeType.ALL)
-    private List<Atendimento> atendimentoList;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    private Atendimento atendimento;
     
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "character varying(32)")
@@ -82,31 +84,20 @@ public class Requerimento extends BaseModel {
     }
 
     /**
-     * @return the atendimentoList
+     * @return the atendimento
      */
-    public List<Atendimento> getAtendimentoList() {
-        return atendimentoList;
+    public Atendimento getAtendimento() {
+        return atendimento;
     }
 
     /**
-     * @param atendimentoList the atendimentoList to set
+     * @param atendimento the atendimento to set
      */
-    public void setAtendimentoList(List<Atendimento> atendimentoList) {
-        this.atendimentoList = atendimentoList;
-        for (Atendimento atendimento: atendimentoList) {
-            atendimento.setRequerimento(this);
-        }
-    }
-    
-    public void addAtendimento(Atendimento atendimento) {
-        atendimentoList.add(atendimento);
+    public void setAtendimento(Atendimento atendimento) {
         atendimento.setRequerimento(this);
+        this.atendimento = atendimento;
     }
     
-    public void removeAtendimento(Atendimento atendimento) {
-        atendimentoList.remove(atendimento);
-    }    
-
     /**
      * @return the tipoRequerimento
      */

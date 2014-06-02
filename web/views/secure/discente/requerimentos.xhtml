@@ -17,7 +17,7 @@
         <ui:include src="excluiRequerimentoForm.xhtml" />
         <ui:include src="detalheRequerimentoForm.xhtml" />
         <h:form id="requerimentoForm" styleClass="formBody">
-            <h:panelGroup layout="block" id="requerimentoToolbar" styleClass="formToolbar">
+            <p:outputPanel id="requerimentoToolbar" autoUpdate="true" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
                                  disabled="#{requerimentoBean.tipoRequerimento == null}"
@@ -26,20 +26,19 @@
                                  update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 disabled="#{requerimentoBean.selecionado == false}"
+                                 disabled="#{!requerimentoBean.editavel}"
                                  actionListener="#{requerimentoBean.editaRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
 
                 <p:commandButton value="#{msg.excluir}"
-                                 disabled="#{requerimentoBean.selecionado== false}"
+                                 disabled="#{!requerimentoBean.editavel}"
                                  oncomplete="PF('excluirRequerimentoDialog').show()"
                                  update=":excluiRequerimentoForm" />
 
                 <p:commandButton value="#{msg.atendimento}"
-                                 disabled="#{requerimentoBean.selecionado== false}"
+                                 disabled="#{!requerimentoBean.selecionado}"
                                  oncomplete="detalheRequerimentoDialog.show()"
-                                 actionListener="#{requerimentoBean.findAtendimentos}"
                                  update=":dlgDetalheRequerimentoDialog" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
@@ -82,7 +81,7 @@
                     <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand floatRight" update="tableRequerimentos :formHeader:systemMessages" />
                     <p:defaultCommand target="requerimentoBuscaCommand" />
                 </h:panelGroup>
-            </h:panelGroup>
+            </p:outputPanel>
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
                          value="#{requerimentoBean.requerimentosDataModel}"
                          lazy="true"

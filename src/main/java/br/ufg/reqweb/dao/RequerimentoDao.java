@@ -6,7 +6,6 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Atendimento;
-import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
@@ -338,18 +337,6 @@ public class RequerimentoDao {
     public List<Requerimento> findAll() {
         try {
             return this.sessionFactory.getCurrentSession().createQuery("FROM Requerimento r").list();
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<Atendimento> findAtendimento(Requerimento requerimento) {
-        try {
-            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Atendimento.class);
-            criteria.add(Restrictions.eq("requerimento", requerimento));
-            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

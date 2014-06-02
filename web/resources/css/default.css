@@ -38,6 +38,11 @@ body {
     border-radius: 0!important;
 }
 
+.floatCenter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .floatLeft {
     float: left;
 }
@@ -748,6 +753,19 @@ input[type="text"], input[type="password"], select {
     text-decoration: none;
 }
 
+.copiasEmphasis {
+    display: block;
+    padding: 2px 4px 2px 4px;
+    width: auto;
+    height: 18px;
+    margin-left: auto;
+    margin-right: auto;
+    border: thin solid #e4e4e4;
+    color: red;
+    font-weight: bold;
+    background: #ffffcc;
+}
+
 .requerimentoStepBox {
     width: 590px;
     height: 340px;
@@ -907,6 +925,11 @@ input[type="text"], input[type="password"], select {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border: 1px solid #a8a8a8;
+}
+
+.formToolbar .ui-panel-content {
+    font-size: 100%;
+    padding: 0;
 }
 
 .formToolbarButtons {

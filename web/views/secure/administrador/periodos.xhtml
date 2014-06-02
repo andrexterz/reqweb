@@ -74,8 +74,7 @@
                     </h:outputText>
                 </p:column>                
                 <p:column headerText="#{msg.ativo}" styleClass="col5">
-                    <p:graphicImage rendered="#{periodoItem.ativo == true}" styleClass="ui-icon ui-icon-check iconDefault floatRight"/>
-                    <p:graphicImage rendered="#{periodoItem.ativo == false}" styleClass="ui-icon ui-icon-close iconDefault floatRight"/>
+                    <h:panelGroup rendered="#{periodoItem.ativo == true}" styleClass="ui-icon ui-icon-bullet iconDefault floatCenter"/>
                 </p:column>                
             </p:dataTable>
         </h:form>

@@ -24,8 +24,8 @@
                                  update="tableRequerimentos :dlgAtendimentoForm :salvaAtendimentoForm" />
 
                 <p:commandButton value="#{msg.atendimento}"
-                                 disabled="#{requerimentoBean.selecionado== false}"
-                                 oncomplete="detalheAtendimentoDialog.show()" />
+                                 disabled="#{requerimentoBean.selecionado == false}"
+                                 oncomplete="javascript:alert('implementar')" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />

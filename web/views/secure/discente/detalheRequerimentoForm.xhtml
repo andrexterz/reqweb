@@ -15,7 +15,7 @@
                         <h:outputText value="#{msg.status}" />
                     </h:column>
                     <h:column>
-                        <h:outputText value="#{requerimentoBean.itemSelecionado.status}" />
+                        <h:outputText value="#{requerimentoBean.itemSelecionado.status.statusLocale}" />
                     </h:column>
                     <h:column>
                         <h:outputText value="#{msg.dataCriacao}" />
@@ -47,41 +47,22 @@
                         </p:dataTable>
                     </p:tab>
                     <p:tab title="#{msg.atendimento}">
-                        <p:dataGrid value="#{requerimentoBean.atendimentos}"
-                                    var="atendimentoItem"
-                                    emptyMessage="#{msg.emptyMessage}"
-                                    paginator="true"
-                                    rows="1"
-                                    columns="1"
-                                    paginatorPosition="top">
-                            <f:facet name="header">
-                                <h:outputText value="#{msg.atendimento}" />
-                            </f:facet>
-                            <p:panel styleClass="table100">
-                                <p:panelGrid styleClass="formGrid rowStriped">
-                                    <p:row>
-                                        <p:column headerText="#{msg.atendente}" styleClass="col75 colLeft">
-                                            <h:outputLabel value="#{msg.atendente}: " />
-                                            <h:outputText value="#{atendimentoItem.atendente.nome}" />
-                                        </p:column>
-                                        <p:column headerText="#{msg.data}" styleClass="col25 colRight">
-                                            <h:outputLabel value="#{msg.data}: " />
-                                            <h:outputText value="#{atendimentoItem.dataAtendimento}">
-                                                <f:convertDateTime locale="#{localeBean.locale}" />
-                                            </h:outputText>
-                                        </p:column>
-                                    </p:row>
-                                    <p:row>
-                                        <p:column colspan="2">
-                                            <h:inputTextarea value="#{atendimentoItem.observacao}"
-                                                             rows="6"
-                                                             readonly="true"
-                                                             styleClass="observacao" />
-                                        </p:column>
-                                    </p:row>
-                                </p:panelGrid>
-                            </p:panel>
-                        </p:dataGrid> 
+                        <p:panelGrid styleClass="formGrid rowStriped">
+                            <p:row>
+                                <p:column headerText="#{msg.atendente}" styleClass="col75 colLeft">
+                                    <h:outputLabel value="#{msg.atendente}: " />
+                                    <h:outputText value="#{requerimentoBean.loadedItemRequerimento.atendimento.atendente.nome}" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:inputTextarea value="#{requerimentoBean.loadedItemRequerimento.atendimento.observacao}"
+                                                     rows="6"
+                                                     readonly="true"
+                                                     styleClass="observacao" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
                     </p:tab>
                 </p:accordionPanel>
             </h:panelGroup>

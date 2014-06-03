@@ -400,7 +400,12 @@ public class RequerimentoBean implements Serializable {
 
     public String validaRequerimento() {
         String loginUser = getLoginUsuario();
-        requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
+        if (requerimento.getId() == null) {
+            requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
+        }
+        if (!getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+            handleStatusRequerimento();
+        }
         Set<ConstraintViolation<Requerimento>> errors = validator.validate(requerimento);
         setSaveStatus(errors.isEmpty());
         StringBuilder formattedMsg = new StringBuilder(LocaleBean.getMessageBundle().getString("dadosInvalidos"));
@@ -416,17 +421,14 @@ public class RequerimentoBean implements Serializable {
         return formattedMsg.toString();
     }
 
-    public void handleStatusRequerimento(ValueChangeEvent event) {
-        ItemRequerimentoStatusEnum statusItem = (ItemRequerimentoStatusEnum) event.getNewValue();
-
+    public void handleStatusRequerimento() {
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA) || requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EXTRATO_ACADEMICO)) {
-            if (!statusItem.equals(ItemRequerimentoStatusEnum.ABERTO)) {
+            if (!requerimento.getItemRequerimentoList().iterator().next().getStatus().equals(ItemRequerimentoStatusEnum.ABERTO)) {
                 requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
             } else {
                 requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
             }
         }
-
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA) || requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
             int statusAbertoCounter = 0;
             for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
@@ -434,18 +436,22 @@ public class RequerimentoBean implements Serializable {
                     statusAbertoCounter++;
                 }
             }
-            if (statusAbertoCounter == 0) {
-                requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
-            } else if (statusAbertoCounter > 0 && statusAbertoCounter < requerimento.getItemRequerimentoList().size()) {
-                requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
-            } else {
+            System.out.format("Abertos: %d de %d\n", statusAbertoCounter, requerimento.getItemRequerimentoList().size());
+            if (statusAbertoCounter == requerimento.getItemRequerimentoList().size()) {
+                System.out.println("status aberto");
                 requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
             }
+            if (statusAbertoCounter > 0 && statusAbertoCounter < requerimento.getItemRequerimentoList().size()) {
+                System.out.println("status em andamento");
+                requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+            } else {
+                System.out.println("status finalizado");
+                requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+            }
         }
-
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
             if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-                switch (statusItem) {
+                switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
                     case DEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
                     case INDEFERIDO:
@@ -459,7 +465,7 @@ public class RequerimentoBean implements Serializable {
         }
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
             if (getPerfilUsuario().equals(PerfilEnum.SECRETARIA)) {
-                switch (statusItem) {
+                switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
                     case RECEBIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
                     case INDEFERIDO:
@@ -468,7 +474,7 @@ public class RequerimentoBean implements Serializable {
                         requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
                 }
             } else {
-                switch (statusItem) {
+                switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
                     case DEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
                     case INDEFERIDO:
@@ -479,8 +485,9 @@ public class RequerimentoBean implements Serializable {
             }
 
         }
+        System.out.println("changing status to: " + requerimento.getStatus());
     }
-    
+
     public void salvaAtendimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         requerimento.getAtendimento().setAtendente(((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario());
@@ -491,11 +498,9 @@ public class RequerimentoBean implements Serializable {
         int statusIndeferidoCounter = 0;
         boolean observacaoIsEmpty;
         try {
-            System.out.println("is obs empty? " + requerimento.getAtendimento().getObservacao() == null);
             observacaoIsEmpty = requerimento.getAtendimento().getObservacao().isEmpty();
         } catch (NullPointerException e) {
             observacaoIsEmpty = true;
-            System.out.println("error:" + e.getLocalizedMessage());
         }
         for (ItemRequerimento item : requerimento.getItemRequerimentoList()) {
             if (item.getStatus().equals(ItemRequerimentoStatusEnum.INDEFERIDO)) {

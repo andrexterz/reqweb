@@ -10,6 +10,7 @@ import br.ufg.reqweb.util.LdapInfo;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -293,7 +294,12 @@ public class UsuarioBean implements Serializable {
             csvData.append(",");
             csvData.append(u.getMatricula());
         }
-        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        InputStream stream;
+        try {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        }
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
         return file;
     }

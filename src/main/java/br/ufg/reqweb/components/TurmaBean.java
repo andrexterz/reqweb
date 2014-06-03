@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -250,8 +251,12 @@ public class TurmaBean implements Serializable {
             csvData.append(",");
             csvData.append(t.getDisciplina().getCurso().getSigla());
         }
-
-        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        InputStream stream;
+        try {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        }
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv", "UTF8");
         return file;
     }

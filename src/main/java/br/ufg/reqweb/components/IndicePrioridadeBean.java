@@ -14,6 +14,7 @@ import br.ufg.reqweb.util.CSVParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -205,8 +206,13 @@ public class IndicePrioridadeBean {
             csvData.append(",");
             csvData.append(ip.getDiscente().getId());
         }
-        InputStream stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv", "UTF8");
+        InputStream stream;
+        try {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            stream = new ByteArrayInputStream(csvData.toString().getBytes());
+        }
+        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv");
         return file;
     }
 

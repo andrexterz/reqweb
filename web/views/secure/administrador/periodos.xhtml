@@ -65,12 +65,12 @@
                 </p:column>    
                 <p:column headerText="#{msg.dataInicio}" styleClass="col30 alignCenter">
                     <h:outputText value="#{periodoItem.dataInicio}">
-                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>
                 <p:column headerText="#{msg.dataTermino}" styleClass="col30 alignCenter">
                     <h:outputText value="#{periodoItem.dataTermino}">
-                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        <f:convertDateTime locale="#{localeBean.locale}" />
                     </h:outputText>
                 </p:column>                
                 <p:column headerText="#{msg.ativo}" styleClass="col5">

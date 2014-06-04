@@ -38,11 +38,12 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
         arquivos = new ArrayList<>();
     }
 
-    public SegundaChamadaDeProva(Turma turma, Date dataProva, List<Arquivo> arquivos) {
+    public SegundaChamadaDeProva(Turma turma, Date dataProvaA, Date dataProvaB, List<Arquivo> arquivos) {
         status = ItemRequerimentoStatusEnum.ABERTO;
         tipoItemRequerimento = TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA;
         this.turma = turma;
-        this.dataProva = dataProva;
+        this.dataProvaA = dataProvaA;
+        this.dataProvaB = dataProvaB;
         this.arquivos = arquivos;
     }
     
@@ -53,7 +54,10 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     @Past
     @NotNull
     @Temporal(TemporalType.DATE)
-    private Date dataProva;
+    private Date dataProvaA;
+    
+    @Temporal(TemporalType.DATE)
+    private Date dataProvaB;
     
     @Valid
     @OneToMany(mappedBy = "itemRequerimento",fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -76,17 +80,31 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
     }
 
     /**
-     * @return the dataProva
+     * @return the dataProvaA
      */
-    public Date getDataProva() {
-        return dataProva;
+    public Date getDataProvaA() {
+        return dataProvaA;
     }
 
     /**
-     * @param dataProva the dataProva to set
+     * @param dataProvaA the dataProvaA to set
      */
-    public void setDataProva(Date dataProva) {
-        this.dataProva = dataProva;
+    public void setDataProvaA(Date dataProvaA) {
+        this.dataProvaA = dataProvaA;
+    }
+    
+    /**
+     * @return the dataProvaB
+     */
+    public Date getDataProvaB() {
+        return dataProvaB;
+    }
+
+    /**
+     * @param dataProvaB the dataProvaB to set
+     */
+    public void setDataProvaB(Date dataProvaB) {
+        this.dataProvaA = dataProvaB;
     }
     
     public List<Arquivo> getArquivos () {

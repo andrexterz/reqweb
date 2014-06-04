@@ -20,7 +20,7 @@
         </h:head>
         <h:body>
             <c:if test="#{usuarioBean.autenticado}" >
-                <ui:include src="secure/usuarioInfoForm.xhtml" />
+                <ui:include src="secure/common/usuarioInfoForm.xhtml" />
             </c:if>
             <h:panelGroup layout="block" id="header">
                 <p:panelGrid columns="2" columnClasses="headerColA,headerColB" id="mainHeader">

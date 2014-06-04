@@ -191,9 +191,11 @@ public class RequerimentoBean implements Serializable {
                 }
                 if (getTipoBusca().equals(TipoBusca.TIPO_REQUERIMENTO) && getTipoRequerimentoBusca() != null) {
                     filtros.put("tipoRequerimento", getTipoRequerimentoBusca());
-                } else if (getTipoBusca().equals(TipoBusca.DISCENTE) && (getTermoBuscaDiscente() != null && !getTermoBuscaDiscente().isEmpty())) {
+                }
+                if (getTipoBusca().equals(TipoBusca.DISCENTE) && (getTermoBuscaDiscente() != null && !getTermoBuscaDiscente().isEmpty())) {
                     filtros.put("termo", getTermoBuscaDiscente());
-                } else if (getTipoBusca().equals(TipoBusca.PERIODO) && (getTermoBuscaPeriodo() != null && !getTermoBuscaPeriodo().isEmpty())) {
+                }
+                if (getTipoBusca().equals(TipoBusca.PERIODO) && (getTermoBuscaPeriodo() != null && !getTermoBuscaPeriodo().isEmpty())) {
                     Pattern pattDateA = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}");
                     Matcher matcherA = pattDateA.matcher(termoBuscaPeriodo);
 
@@ -214,7 +216,6 @@ public class RequerimentoBean implements Serializable {
                         }
                     }
                 }
-
                 if (filtros.isEmpty()) {
                     data = requerimentoDao.find(first, pageSize, sortField, order);
                     setRowCount(requerimentoDao.count());

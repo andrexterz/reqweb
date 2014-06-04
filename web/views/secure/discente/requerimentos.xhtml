@@ -15,9 +15,9 @@
         </script>
         <ui:include src="salvaRequerimentoForm.xhtml" />
         <ui:include src="excluiRequerimentoForm.xhtml" />
-        <ui:include src="detalheRequerimentoForm.xhtml" />
+        <ui:include src="/views/secure/common/detalheRequerimentoForm.xhtml" />
         <h:form id="requerimentoForm" styleClass="formBody">
-            <p:outputPanel id="requerimentoToolbar" autoUpdate="true" styleClass="formToolbar">
+            <p:outputPanel id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
                                  disabled="#{requerimentoBean.tipoRequerimento == null}"

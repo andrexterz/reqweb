@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:dataTable value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList}" var="itemRequerimento" rows="3"
+                 paginator="true" paginatorPosition="bottom" emptyMessage="#{msg.emptyMessage}" styleClass="tableGrid">
+        <f:facet name="header">
+            <h:outputText value="#{msg.ementaDeDisciplina}" />
+        </f:facet>
+        <p:column headerText="#{msg.disciplina}" styleClass="col65">
+            <h:outputText value="#{itemRequerimento.disciplina.nome}" />
+        </p:column>
+        <p:column headerText="#{msg.curso}" styleClass="col20 alignCenter">
+            <h:outputText value="#{itemRequerimento.disciplina.curso.sigla}" />
+        </p:column>
+        <p:column headerText="#{msg.status}" styleClass="col15 alignCenter">
+            <h:outputText styleClass="statusAberto" rendered="#{itemRequerimento.status eq 'ABERTO'}"
+                          value="#{itemRequerimento.status.statusLocale}" />
+            <h:outputText styleClass="statusDeferido" rendered="#{itemRequerimento.status eq 'DEFERIDO'}"
+                          value="#{itemRequerimento.status.statusLocale}" />
+            <h:outputText styleClass="statusIndeferido" rendered="#{itemRequerimento.status eq 'INDEFERIDO'}"
+                          value="#{itemRequerimento.status.statusLocale}" />
+        </p:column>
+    </p:dataTable>
+</ui:composition>
+

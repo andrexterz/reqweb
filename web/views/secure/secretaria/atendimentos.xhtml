@@ -14,8 +14,9 @@
             });
         </script>
         <ui:include src="salvaAtendimentoForm.xhtml" />
+        <ui:include src="/views/secure/common/detalheRequerimentoForm.xhtml" />
         <h:form id="atendimentoForm" styleClass="formBody">
-            <h:panelGroup layout="block" id="atendimentoToolbar" styleClass="formToolbar">
+            <p:outputPanel layout="block" id="atendimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.atender}"
                                  process="@this"
                                  disabled="#{requerimentoBean.selecionado == false}"
@@ -24,8 +25,9 @@
                                  update="tableRequerimentos :dlgAtendimentoForm :salvaAtendimentoForm" />
 
                 <p:commandButton value="#{msg.atendimento}"
-                                 disabled="#{requerimentoBean.selecionado == false}"
-                                 oncomplete="javascript:alert('implementar')" />
+                                 disabled="#{!requerimentoBean.selecionado}"
+                                 oncomplete="detalheRequerimentoDialog.show()"
+                                 update=":dlgDetalheRequerimentoDialog" />
 
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <h:outputLabel for="searchType" value="#{msg.buscar}" />
@@ -61,14 +63,15 @@
                                  rendered="#{requerimentoBean.tipoBusca == 'PERIODO'}" />
                     <p:watermark for="requerimentoBuscaPeriodo" value="#{msg.periodo}" />
                     <p:inputText id="requerimentoBuscaDiscente"
+                                 value="#{requerimentoBean.termoBuscaDiscente}"
                                  styleClass="searchBox"
                                  rendered="#{requerimentoBean.tipoBusca == 'DISCENTE'}" />
-                    <p:watermark for="requerimentoBuscaDiscente" value="#{msg.discente}" />
+                    <p:watermark for="requerimentoBuscaDiscente" value="#{msg.nome}/#{msg.usuarioMatricula}" />
                     <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
                     <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand floatRight" update="tableRequerimentos :formHeader:systemMessages" />
                     <p:defaultCommand target="requerimentoBuscaCommand" />
                 </h:panelGroup>
-            </h:panelGroup>
+                </p:outputPanel>
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
                          value="#{requerimentoBean.requerimentosDataModel}"
                          lazy="true"

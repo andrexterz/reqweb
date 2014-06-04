@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:panelGrid styleClass="formGrid rowLine">
+        <p:row>
+            <p:column>
+                <h:outputLabel value="#{msg.tipoDeDocumento}" />    
+            </p:column>
+            <p:column styleClass="alignRight">
+                <h:outputText value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().tipoDeDocumento.tipoLocale}" />
+            </p:column>
+        </p:row>
+        <p:row>
+            <p:column>
+                <h:outputLabel value="#{msg.status}" />    
+            </p:column>
+            <p:column styleClass="alignRight">
+                <h:outputText styleClass="statusAberto" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'ABERTO'}"
+                              value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                <h:outputText styleClass="statusDeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'DEFERIDO'}"
+                              value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                <h:outputText styleClass="statusIndeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'INDEFERIDO'}"
+                              value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+            </p:column>
+        </p:row>
+    </p:panelGrid>
+</ui:composition>
+

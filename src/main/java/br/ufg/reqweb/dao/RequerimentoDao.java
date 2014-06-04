@@ -302,10 +302,10 @@ public class RequerimentoDao {
                  */
                 if (field.equals("login")) {
                     criteria.createAlias("discente", "d");
-                    criteria.add(Restrictions.eq("d.login", filters.get(field)));
+                    criteria.add(Restrictions.and(Restrictions.eq("d.login", filters.get(field))));
                 }
                 if (field.equals("tipoRequerimento")) {
-                    criteria.add(Restrictions.eq(field, filters.get(field)));
+                    criteria.add(Restrictions.and(Restrictions.eq(field, filters.get(field))));
                 }
                 if (field.equals("termo")) {
                     criteria.createAlias("discente", "d");

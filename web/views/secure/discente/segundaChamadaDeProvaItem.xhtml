@@ -47,9 +47,9 @@
                                     <h:outputLabel value="#{msg.status}" />
                                 </p:column>
                                 <p:column styleClass="col35">
-                                    <h:outputLabel value="#{msg.dataProva}: " />
-                                    <h:outputText id="dataProvaText" value="#{itemRequerimento.dataProva}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    <h:outputLabel value="#{msg.dataProvaA}: " />
+                                    <h:outputText id="dataProvaText" value="#{itemRequerimento.dataProvaA}">
+                                        <f:convertDateTime locale="#{localeBean.locale}" />
                                     </h:outputText>
                                 </p:column>
                             </p:row>
@@ -68,11 +68,11 @@
                                     <p:calendar id="dataProva"
                                                 beforeShowDay="disableSundays"
                                                 mode="inline"
-                                                disabled="#{configBean.isExpiredPeriodo(itemRequerimento.dataProva)}"
+                                                disabled="#{configBean.isExpiredPeriodo(itemRequerimento.dataProvaA)}"
                                                 mindate="#{configBean.getValue('minPeriodo')}"
                                                 maxdate="#{configBean.getValue('maxPeriodo')}"
                                                 styleClass="calendarWidget"
-                                                value="#{itemRequerimento.dataProva}">
+                                                value="#{itemRequerimento.dataProvaA}">
                                         <p:ajax update="dataProvaText" event="dateSelect" />
                                     </p:calendar>
                                 </p:column>

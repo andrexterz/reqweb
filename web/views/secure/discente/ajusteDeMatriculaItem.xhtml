@@ -85,11 +85,11 @@
                                     <p:column styleClass="col10 alignCenter" headerText="#{msg.turma}">
                                         <h:outputText value="#{reqItem.turma.nome}" />
                                     </p:column>
-                                    <p:column styleClass="col25 alignCenter" headerText="#{msg.acao}">
-                                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
-                                    </p:column>
                                     <p:column styleClass="col10 alignCenter" headerText="#{msg.curso}">
                                         <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
+                                    </p:column>
+                                    <p:column styleClass="col25 alignCenter" headerText="#{msg.acao}">
+                                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
                                     </p:column>
                                     <p:column styleClass="col5 alignCenter" headerText="x">
                                         <p:commandButton title="#{msg.excluir} #{reqItem.turma}"

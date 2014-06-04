@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <p:dialog id="dlgDetalheRequerimentoDialog" widgetVar="detalheRequerimentoDialog"
+              appendTo="@(body)" width="620" resizable="false" modal="true">
+        <f:facet name="header">
+            <h:outputText value="#{msg.atendimento}: #{requerimentoBean.loadedItemRequerimento.tipoRequerimento.tipoLocale}: #{requerimentoBean.loadedItemRequerimento.id}" />
+        </f:facet>
+        <h:form id="detalheeRequerimentoForm">            
+            <p:accordionPanel styleClass="requerimentoTab">
+                <p:tab title="#{msg.detalhe}">
+                    <c:if  test="#{requerimentoBean.selecionado}">
+                        <div class="detalheDialogBox">
+                            <p:panelGrid styleClass="formGrid rowLine">
+                                <p:row>
+                                    <p:column>
+                                        <h:outputLabel value="#{msg.discente}" />
+                                    </p:column>
+                                    <p:column styleClass="alignRight">
+                                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.discente.nome}" />
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <h:outputLabel value="#{msg.dataCriacao}" />
+                                    </p:column>
+                                    <p:column styleClass="alignRight">
+                                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.dataCriacao}">
+                                            <f:convertDateTime locale="#{localeBean.locale}" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <h:outputLabel value="#{msg.dataModificacao}" />
+                                    </p:column>
+                                    <p:column styleClass="alignRight">
+                                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.dataModificacao}">
+                                            <f:convertDateTime locale="#{localeBean.locale}" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                            <ui:include src="#{requerimentoBean.loadedItemRequerimento.tipoRequerimento.tipo}Item.xhtml" />
+                            <p:panelGrid styleClass="formGrid">
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <h:outputLabel value="#{msg.observacao}" />    
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <h:inputTextarea readonly="true" rows="5" styleClass="observacao"
+                                                         value="#{requerimentoBean.loadedItemRequerimento.observacao}" />
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </div>
+                    </c:if>
+                </p:tab>
+                <p:tab title="#{msg.atendimento}">
+                    <div class="detalheDialogBox">
+                        <p:panelGrid styleClass="formGrid rowStriped">
+                            <p:row>
+                                <p:column headerText="#{msg.atendente}" styleClass="col75 colLeft">
+                                    <h:outputLabel value="#{msg.atendente}: " />
+                                    <h:outputText value="#{requerimentoBean.loadedItemRequerimento.atendimento.atendente.nome}" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:inputTextarea value="#{requerimentoBean.loadedItemRequerimento.atendimento.observacao}"
+                                                     rows="6"
+                                                     readonly="true"
+                                                     styleClass="observacao" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </div>
+                </p:tab>
+            </p:accordionPanel>
+            <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                <p:commandButton id="cancelaDetalheRequerimento"
+                                 value="#{msg.fechar}"
+                                 onclick="PF('detalheRequerimentoDialog').hide()" 
+                                 type="button" /> 
+            </h:panelGroup>
+        </h:form>                    
+    </p:dialog>
+</ui:composition>
+

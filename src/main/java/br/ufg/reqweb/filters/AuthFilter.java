@@ -59,7 +59,8 @@ public class AuthFilter implements Filter {
     }
     
     private boolean isUrlAuthorized(String url) {
-        return url.contains(usuarioBean.homeDir());
+        String commonDir = "/views/secure/common";
+        return url.contains(usuarioBean.homeDir()) || url.contains(commonDir);
     }
 
 }

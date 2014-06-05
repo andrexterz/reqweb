@@ -76,10 +76,7 @@
                                 <p:dataTable id="ajustes" paginator="true" rows="3" rowIndexVar="itemNum" styleClass="tableGrid"
                                              value="#{requerimentoBean.requerimento.itemRequerimentoList}"
                                              var="reqItem" emptyMessage="#{msg.emptyMessage}" paginatorPosition="bottom">
-                                    <p:column styleClass="col5 alignCenter" headerText="#">
-                                        <h:outputText value="#{itemNum+1}" />
-                                    </p:column>
-                                    <p:column styleClass="col45" headerText="#{msg.disciplina}">
+                                    <p:column styleClass="col50" headerText="#{msg.disciplina}">
                                         <h:outputText value="#{reqItem.turma.disciplina.nome}" />
                                     </p:column>
                                     <p:column styleClass="col10 alignCenter" headerText="#{msg.turma}">
@@ -89,7 +86,7 @@
                                         <h:outputText value="#{reqItem.turma.disciplina.curso.sigla}" />
                                     </p:column>
                                     <p:column styleClass="col25 alignCenter" headerText="#{msg.acao}">
-                                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" />
+                                        <h:outputText value="#{reqItem.tipoDeAjuste.tipoLocale}" styleClass="#{reqItem.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'? 'addedItem': 'removedItem'}" />
                                     </p:column>
                                     <p:column styleClass="col5 alignCenter" headerText="x">
                                         <p:commandButton title="#{msg.excluir} #{reqItem.turma}"

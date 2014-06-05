@@ -18,9 +18,7 @@
             <h:outputText value="#{itemRequerimento.turma.disciplina.curso.sigla}" />
         </p:column>
         <p:column headerText="#{msg.acao}" styleClass="col20 alignCenter">
-            <h:outputText styleClass="addedItem" rendered="#{itemRequerimento.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'}"
-                          value="#{itemRequerimento.tipoDeAjuste.tipoLocale}" />
-            <h:outputText styleClass="removedItem" rendered="#{itemRequerimento.tipoDeAjuste eq 'EXCLUSAO_DE_DISCIPLINA'}"
+            <h:outputText styleClass="#{itemRequerimento.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'? 'addedItem': 'removedItem'}"
                           value="#{itemRequerimento.tipoDeAjuste.tipoLocale}" />
         </p:column>
         <p:column headerText="#{msg.status}" styleClass="col10 alignCenter">

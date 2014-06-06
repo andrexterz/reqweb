@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:row>
+        <p:column>
+            <p:dataTable id="ajusteReqItem" var="itemRequerimento" paginator="true" rows="5" paginatorPosition="bottom"
+                         styleClass="table100" value="#{requerimentoBean.requerimento.itemRequerimentoList}">
+                <p:column headerText="#{msg.disciplina}" styleClass="col40">
+                    <h:outputText value="#{itemRequerimento.turma.disciplina.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.turma}" styleClass="col10 alignCenter">
+                    <h:outputText value="#{itemRequerimento.turma.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.curso}" styleClass="col10 alignCenter">
+                    <h:outputText value="#{itemRequerimento.turma.disciplina.curso.sigla}" />
+                </p:column>
+                <p:column headerText="#{msg.acao}" styleClass="col20 alignCenter">
+                    <h:outputText value="#{itemRequerimento.tipoDeAjuste.tipoLocale}"
+                                  styleClass="#{itemRequerimento.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'? 'addedItem': 'removedItem'}" />
+                </p:column>
+                <p:column headerText="#{msg.status}" styleClass="col20 alignCenter">
+                    <p:selectOneButton value="#{itemRequerimento.status}">
+                        <f:selectItem itemLabel="#{msg.aberto}"
+                                      itemValue="ABERTO" />
+                        <f:selectItem itemLabel="#{msg.deferido}"
+                                      itemValue="DEFERIDO" />
+                        <f:selectItem itemLabel="#{msg.indeferido}"
+                                      itemValue="INDEFERIDO"/>
+                        <p:ajax event="change" process="@form" update=":salvaAtendimentoForm:observacaoAtendimento" />
+                    </p:selectOneButton>                            
+                </p:column>
+            </p:dataTable>
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.observacao} #{msg.prepDe}: #{requerimentoBean.requerimento.discente.nome}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:inputTextarea rows="5" cols="32" autoResize="false" readonly="true"
+                             value="#{requerimentoBean.requerimento.observacao}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <h:outputLabel value="#{msg.observacao} #{msg.prepDo} #{msg.atendente}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column>
+            <p:inplace emptyLabel="#{msg.adicionar} #{msg.observacao}" styleClass="editItem" event="click" 
+                       editor="true" saveLabel="#{msg.salvar}" cancelLabel="#{msg.cancelar}">
+                <p:ajax event="save" process="@this" update="formControls" listener="#{requerimentoBean.salvaAtendimento}" />
+                <p:inputTextarea id="observacaoAtendimento" rows="5" cols="32" autoResize="false"
+                                 required="#{requerimentoBean.atendimentoRequired}"
+                                 value="#{requerimentoBean.requerimento.atendimento.observacao}">
+                </p:inputTextarea>
+                <p:watermark for="observacaoAtendimento" value="#{msg.observacao} #{msg.prepDo} #{msg.atendente}"/>
+            </p:inplace>
+        </p:column>
+    </p:row>
+</ui:composition>
+

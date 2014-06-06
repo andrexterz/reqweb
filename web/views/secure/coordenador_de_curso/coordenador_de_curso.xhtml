@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition template="/views/base.xhtml">
@@ -27,6 +26,15 @@
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="AJUSTE_DE_MATRICULA" />
                         </h:commandLink>
+                        <h:commandLink id="requerimentosLnk"
+                                       action="atendimentos?faces-redirect=true"
+                                       value="#{msg.requerimentos}"
+                                       styleClass="requerimentos">
+                            <f:setPropertyActionListener
+                                target="#{requerimentoBean.tipoRequerimento}"
+                                value="#{null}" />
+                        </h:commandLink>
+
                     </h:panelGrid>
                 </h:panelGroup>
             </h:form>

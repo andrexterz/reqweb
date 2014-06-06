@@ -1,4 +1,4 @@
-<ui:composition template="secretaria.xhtml"
+<ui:composition template="coordenador_de_curso.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
@@ -19,7 +19,7 @@
             <p:outputPanel layout="block" id="atendimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.atender}"
                                  process="@this"
-                                 disabled="#{requerimentoBean.selecionado == false}"
+                                 disabled="#{requerimentoBean.tipoRequerimento eq null}"
                                  actionListener="#{requerimentoBean.editaRequerimento}"
                                  oncomplete="PF('dlgAtendimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgAtendimentoForm :salvaAtendimentoForm" />
@@ -34,8 +34,10 @@
                     <p:selectOneButton styleClass="searchBoxMenu"
                                        id="searchType"
                                        value="#{requerimentoBean.tipoBusca}">
-                        <f:selectItem itemLabel="#{msg.dataCriacao}" itemValue="PERIODO" />
-                        <f:selectItem itemLabel="#{msg.discente}" itemValue="DISCENTE" />
+                        <f:selectItems value="#{requerimentoBean.tipoBuscaEnum.entrySet()}"
+                                       var="tipoBuscaItem"
+                                       itemLabel="#{tipoBuscaItem.key}"
+                                       itemValue="#{tipoBuscaItem.value}"/>                        
                         <p:ajax update="searchPanel tableRequerimentos" />
                     </p:selectOneButton>
                     <p:autoComplete id="requerimentoTipoRequerimento"
@@ -68,7 +70,7 @@
                     <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand floatRight" update="tableRequerimentos :formHeader:systemMessages" />
                     <p:defaultCommand target="requerimentoBuscaCommand" />
                 </h:panelGroup>
-                </p:outputPanel>
+            </p:outputPanel>
             <p:dataTable id="tableRequerimentos" var="requerimentoItem"
                          value="#{requerimentoBean.requerimentosDataModel}"
                          lazy="true"

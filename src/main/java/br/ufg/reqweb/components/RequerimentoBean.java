@@ -451,37 +451,49 @@ public class RequerimentoBean implements Serializable {
             }
         }
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)) {
+            ItemRequerimentoStatusEnum status = requerimento.getItemRequerimentoList().iterator().next().getStatus();
             if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-                switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
+                switch (status) {
                     case DEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                        break;
                     case INDEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                        break;
                     default:
                         requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+                        break;
                 }
             } else {
                 requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
             }
+            System.out.format("entering segunda_chamada_de_prova -> status is %s. current user: %s\n", status.toString(), getPerfilUsuario().toString());
         }
         if (requerimento.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)) {
+            ItemRequerimentoStatusEnum status = requerimento.getItemRequerimentoList().iterator().next().getStatus();
             if (getPerfilUsuario().equals(PerfilEnum.SECRETARIA)) {
-                switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
+                switch (status) {
                     case RECEBIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                        break;
                     case INDEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                        break;
                     default:
                         requerimento.setStatus(RequerimentoStatusEnum.ABERTO);
+                        break;
                 }
             } else {
                 switch (requerimento.getItemRequerimentoList().iterator().next().getStatus()) {
                     case DEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                        break;
                     case INDEFERIDO:
                         requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
+                        break;
                     default:
                         requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
+                        break;
                 }
             }
 

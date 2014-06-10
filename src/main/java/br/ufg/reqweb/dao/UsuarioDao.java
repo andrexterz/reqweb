@@ -4,20 +4,21 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Usuario;
-
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import javax.validation.ValidationException;
-
+import java.util.Map;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -72,21 +73,6 @@ public class UsuarioDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Usuario> find(int firstResult, int maxResult) {
-        try {
-            List<Usuario> usuarioList = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Usuario u ORDER BY u.nome ASC")
-                    .setFirstResult(firstResult)
-                    .setMaxResults(maxResult)
-                    .list();
-            return usuarioList;
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         Usuario usuario;
         try {
@@ -126,16 +112,89 @@ public class UsuarioDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Usuario> find(String termo, PerfilEnum tipoPerfil) {
+    public List<Usuario> find(int first, int pageSize, String sortField, String sortOrder, Map<String, Object> filters) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
+        if (filters == null) {
+            filters = new HashMap();
+        }
         try {
-            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
-                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil AND lower(u.nome) LIKE lower(:termo)")
-                    .setParameter("tipoPerfil", tipoPerfil)
-                    .setParameter("termo", "%" + termo + "%")
-                    .list();
-            return usuarios;
+            for (String field : filters.keySet()) {
+                if (field.equals("termo")) {
+                    String termo = (String) filters.get("termo");
+                    criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
+                            Restrictions.eq("matricula", termo)))
+                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                }
+                if (field.equals("tipoPerfil")) {
+                    PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
+                    criteria.createAlias("perfilList", "p");
+                    criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)))
+                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                    Curso curso = (Curso) filters.get("curso");
+                    if (curso != null) {
+                        System.out.println("curso: " + curso.getNome());
+                        criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
+                    } else {
+                        System.out.println("curso is null");
+                    }
+                }
+            }
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            criteria.setFirstResult(first);
+            criteria.setMaxResults(pageSize);
+            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> find(int first, int pageSize, String sortField, String sortOrder) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            criteria.setFirstResult(first);
+            criteria.setMaxResults(pageSize);
+            return criteria.list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> find(String termo, PerfilEnum tipoPerfil) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
+            if (termo != null && !termo.isEmpty()) {
+
+                criteria.add(Restrictions.or(Restrictions.eq("matricula", termo),
+                        Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase()));
+            }
+
+            if (tipoPerfil != null) {
+                criteria.createAlias("perfilList", "p");
+                criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
+            }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+            return criteria.list();
+        } catch (HibernateException e) {
+            System.out.println("find() -> query error: " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -167,4 +226,37 @@ public class UsuarioDao {
         }
     }
 
+    @Transactional(readOnly = true)
+    public int count(Map<String, Object> filters) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
+        if (filters == null) {
+            filters = new HashMap();
+        }
+        for (String field : filters.keySet()) {
+            if (field.equals("termo")) {
+                String termo = (String) filters.get("termo");
+                criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
+                        Restrictions.eq("matricula", termo)));
+            }
+            if (field.equals("tipoPerfil")) {
+                PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
+                criteria.createAlias("perfilList", "p");
+                criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
+                Curso curso = (Curso) filters.get("curso");
+                if (curso != null) {
+                    System.out.println("curso: " + curso.getNome());
+                    criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
+                } else {
+                    System.out.println("curso is null");
+                }
+            }
+        }
+        try {
+            criteria.setProjection(Projections.distinct(Projections.id()));
+            return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        } catch (HibernateException e) {
+            System.out.println("count -> query error: " + e.getMessage());
+            return 0;
+        }
+    }
 }

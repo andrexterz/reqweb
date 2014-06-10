@@ -4,8 +4,8 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <p:dialog id="dlgDetalheUsuarioForm" widgetVar="dlgDetalheUsuarioVar"
-              modal="true" width="480" resizable="false" appendTo="@(body)">
+    <p:dialog id="dlgDetalheUsuarioForm" modal="true" widgetVar="dlgDetalheUsuarioVar"
+              width="480" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}: #{usuarioBean.itemSelecionado.id}" />
         </f:facet>
@@ -50,6 +50,10 @@
                                          var="p"
                                          emptyMessage="#{msg.emptyMessage}"
                                          styleClass="tableGrid">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.perfis}" />
+                                </f:facet>
+
                                 <p:column styleClass="col45" headerText="#{msg.perfil}">
                                     <h:outputText value="#{p.tipoPerfil.papelLocale}" />
                                 </p:column>

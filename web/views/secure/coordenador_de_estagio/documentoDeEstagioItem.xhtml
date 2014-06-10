@@ -6,31 +6,6 @@
 
     <p:row>
         <p:column>
-            <p:dataTable id="ementaReqItem" var="reqItem" paginator="true" rows="5" paginatorPosition="bottom"
-                         styleClass="table100" value="#{requerimentoBean.requerimento.itemRequerimentoList}">
-                <p:column headerText="#{msg.disciplina}" styleClass="col50">
-                    <h:outputText value="#{reqItem.disciplina.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="col10 alignCenter">
-                    <h:outputText value="#{reqItem.disciplina.curso.sigla}" />
-                </p:column>
-                <p:column headerText="#{msg.status}" styleClass="col40 alignCenter">
-                    <p:selectOneButton value="#{reqItem.status}">
-                        <f:selectItem itemLabel="#{msg.aberto}"
-                                      itemValue="ABERTO" />
-                        <f:selectItem itemLabel="#{msg.deferido}"
-                                      itemValue="DEFERIDO" />
-                        <f:selectItem itemLabel="#{msg.indeferido}"
-                                      itemValue="INDEFERIDO"/>
-                        <p:ajax event="change" process="@this" update=":salvaAtendimentoForm" />
-                    </p:selectOneButton>                            
-
-                </p:column>
-            </p:dataTable>
-        </p:column>
-    </p:row>
-    <p:row>
-        <p:column>
             <h:outputLabel value="#{msg.observacao} #{msg.prepDe}: #{requerimentoBean.requerimento.discente.nome}" />
         </p:column>
     </p:row>

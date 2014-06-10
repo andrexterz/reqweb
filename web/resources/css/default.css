@@ -462,6 +462,25 @@ input[type="text"], input[type="password"], select {
     background-color: #555677;
 }
 
+.cursos {
+    background-image: url("#{resource['img/cursos.png']}");
+}
+
+.periodos {
+    background-image: url("#{resource['img/periodos.png']}");
+}
+
+.arquivos {
+    background-image: url("#{resource['img/arquivos.png']}");
+}
+
+.usuarios {
+    background-image: url("#{resource['img/usuarios.png']}");
+}
+
+.log {
+    background-image: url("#{resource['img/log.png']}");
+}
 
 .declaracaoDeMatricula {
     background-image: url("#{resource['img/declaracaoDeMatricula.png']}");

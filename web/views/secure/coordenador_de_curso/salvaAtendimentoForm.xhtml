@@ -4,9 +4,8 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <p:dialog id="dlgAtendimentoForm" modal="true"
-              widgetVar="dlgAtendimentoVar" width="auto"
-              resizable="false" appendTo="@(body)">
+    <p:dialog id="dlgAtendimentoForm" modal="true"  
+              widgetVar="dlgAtendimentoVar" width="auto" resizable="false" appendTo="@(body)">
         <p:ajax event="close" listener="#{requerimentoBean.cleanupRequerimento}"/>
         <f:facet name="header">
             <h:outputText value="#{msg.atendimento} #{msg.prepDe} #{requerimentoBean.requerimento.tipoRequerimento.tipoLocale}" />
@@ -23,7 +22,7 @@
                         <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
                     </c:if>
                 </p:panelGrid>
-                <h:panelGroup id="formControls" layout="block" rendered="#{requerimentoBean.showControls}" styleClass="alignCenter formFooterButtons">
+                <h:panelGroup id="formControls" layout="block" styleClass="alignCenter formFooterButtons">
 
                     <p:commandButton value="#{msg.salvar}"
                                      process="@form"

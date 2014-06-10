@@ -19,7 +19,7 @@
             <p:outputPanel layout="block" id="atendimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.atender}"
                                  process="@this"
-                                 disabled="#{requerimentoBean.selecionado == false}"
+                                 disabled="#{!requerimentoBean.selecionado or requerimentoBean.tipoRequerimento eq null}"
                                  actionListener="#{requerimentoBean.editaRequerimento}"
                                  oncomplete="PF('dlgAtendimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgAtendimentoForm :salvaAtendimentoForm" />

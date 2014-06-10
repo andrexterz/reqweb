@@ -3,8 +3,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgCursoForm" modal="true"
-              widgetVar="dlgCursoVar" width="360" resizable="false" appendTo="@(body)">
+    <p:dialog id="dlgCursoForm" modal="true" widgetVar="dlgCursoVar"
+              width="360" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.cursoNovo}" rendered="#{cursoBean.operation == 'a'}" />
             <h:outputText value="#{msg.cursoEditar}" rendered="#{cursoBean.operation == 'e'}" />

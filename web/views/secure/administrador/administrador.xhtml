@@ -8,11 +8,11 @@
         <ui:define name="menu">
             <h:panelGroup layout="block" styleClass="menuItens">
                 <h:panelGrid columns="1" >
-                    <h:link id="cursosLnk" outcome="cursos" value="#{msg.cursos}" style="background-image: url(#{resource['img/cursos.png']});" />
-                    <h:link id="periodosLnk" outcome="periodos" value="#{msg.periodos}" style="background-image: url(#{resource['img/periodos.png']});" />
-                    <h:link id="arquivosLnk" outcome="arquivos" value="#{msg.arquivos}" style="background-image: url(#{resource['img/arquivos.png']});" />
-                    <h:link id="usuariosLnk" outcome="usuarios" value="#{msg.usuarios}" style="background-image: url(#{resource['img/usuarios.png']});" />
-                    <h:link id="logLnk" outcome="administrador" value="#{msg.log}" style="background-image: url(#{resource['img/log.png']});" />
+                    <h:link id="cursosLnk" outcome="cursos" value="#{msg.cursos}" styleClass="cursos" />
+                    <h:link id="periodosLnk" outcome="periodos" value="#{msg.periodos}" styleClass="periodos" />
+                    <h:link id="arquivosLnk" outcome="arquivos" value="#{msg.arquivos}" styleClass="arquivos" />
+                    <h:link id="usuariosLnk" outcome="usuarios" value="#{msg.usuarios}" styleClass="usuarios" />
+                    <h:link id="logLnk" outcome="administrador" value="#{msg.log}" styleClass="log"  />
                 </h:panelGrid>
             </h:panelGroup>                
         </ui:define>

@@ -3,7 +3,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgUsuarioInfoForm" modal="true"
+    <p:dialog id="dlgUsuarioInfoForm" modal="true" showEffect="fade" hideEffect="fade"
               widgetVar="dlgUsuarioInfoVar" width="480" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.usuarioDetalhe}: #{usuarioBean.sessionUsuario.id}" />

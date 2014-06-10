@@ -3,8 +3,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgPeriodoForm" modal="true"
-              widgetVar="dlgPeriodoVar" width="400" resizable="false" appendTo="@(body)">
+    <p:dialog id="dlgPeriodoForm" modal="true" widgetVar="dlgPeriodoVar"
+              width="400" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.periodoNovo}" rendered="#{periodoBean.operation == 'a'}" />
             <h:outputText value="#{msg.periodoEditar}" rendered="#{periodoBean.operation == 'e'}" />

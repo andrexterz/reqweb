@@ -6,7 +6,6 @@
 package br.ufg.reqweb.model;
 
 import br.ufg.reqweb.components.LocaleBean;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -56,9 +55,6 @@ public class DocumentoDeEstagio extends ItemRequerimento {
     @Enumerated(EnumType.STRING)
     private TipoDeDocumento tipoDeDocumento;
     
-    @Column(columnDefinition = "boolean default false")
-    private boolean recebido;
-
 
     public TipoDeDocumento getTipoDeDocumento() {
         return tipoDeDocumento;
@@ -69,11 +65,7 @@ public class DocumentoDeEstagio extends ItemRequerimento {
     }
 
     public boolean isRecebido() {
-        return recebido;
+        return status.equals(ItemRequerimentoStatusEnum.RECEBIDO);
     }
 
-    public void setRecebido(boolean recebido) {
-        this.recebido = recebido;
-    }
-    
 }

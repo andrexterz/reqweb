@@ -7,7 +7,7 @@
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
-            <h:form id="secretariaMenuLinks">
+            <h:form id="coordenadorDeCursoMenuLinks">
                 <h:panelGroup layout="block" styleClass="menuItens">
                     <h:panelGrid columns="1">
                         <h:commandLink id="segundaChamadaDeProvaLnk"
@@ -34,7 +34,14 @@
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="#{null}" />
                         </h:commandLink>
-
+                        <h:commandLink id="discentesLnk"
+                                       action="discentes?faces-redirect=true"
+                                       value="#{msg.discentes}"
+                                       styleClass="usuarios">
+                            <f:setPropertyActionListener
+                                target="#{usuarioBean.tipoPerfilBusca}"
+                                value="DISCENTE" />
+                        </h:commandLink>
                     </h:panelGrid>
                 </h:panelGroup>
             </h:form>

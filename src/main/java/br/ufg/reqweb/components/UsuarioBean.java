@@ -51,19 +51,19 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(value = "session")
 public class UsuarioBean implements Serializable {
-    
+
     @Autowired
     private UsuarioDao usuarioDao;
-    
+
     @Autowired
     private CursoDao cursoDao;
-    
+
     @Autowired
     private Validator validator;
-    
+
     @Autowired
     private ProviderManager authManager;
-    
+
     private final LazyDataModel<Usuario> usuariosDataModel;
     private List<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
@@ -79,7 +79,8 @@ public class UsuarioBean implements Serializable {
     private Thread tImportJob;
     private Usuario itemSelecionado;
     private String termoBusca;
-    
+    private PerfilEnum tipoPerfilBusca;
+
     public UsuarioBean() {
         usuarios = new ArrayList<>();
         usuario = new Usuario();
@@ -88,16 +89,17 @@ public class UsuarioBean implements Serializable {
         perfilRemovido = new ArrayList<>();
         tImportJob = null;
         termoBusca = "";
+        tipoPerfilBusca = null;
         saveStatus = false;
         usuariosDataModel = new LazyDataModel<Usuario>() {
-            
+
             private List<Usuario> data;
-            
+
             @Override
             public Object getRowKey(Usuario usuario) {
                 return usuario.getId().toString();
             }
-            
+
             @Override
             public Usuario getRowData(String key) {
                 for (Usuario u : data) {
@@ -107,31 +109,61 @@ public class UsuarioBean implements Serializable {
                 }
                 return null;
             }
-            
+
             @Override
             public List<Usuario> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                setPageSize(pageSize);
-                if (termoBusca.equals("")) {
-                    data = usuarioDao.find(first, pageSize);
-                    setRowCount(usuarioDao.count());
-                    
-                } else {
-                    data = usuarioDao.find(termoBusca);
-                    setRowCount(data.size());
+                String order;
+                switch (sortOrder.name()) {
+                    case "ASCENDING":
+                        order = "asc";
+                        break;
+                    case "DESCENDING":
+                        order = "desc";
+                        break;
+                    default:
+                        order = null;
+                        break;
                 }
+                setPageSize(pageSize);
+                Map<String, Object> filtros = new HashMap();
+                if (termoBusca != null && !termoBusca.equals("")) {
+                    System.out.format("entering termo: '%s'\n", termoBusca);
+                    filtros.put("termo", termoBusca);
+                }
+                if (tipoPerfilBusca != null) {
+                    System.out.format("entering perfil: '%s'\n", tipoPerfilBusca);
+                    filtros.put("tipoPerfil", tipoPerfilBusca);
+                }
+                if (getPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO) || getPerfil().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
+                    Curso curso = null;
+                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                        if (p.getTipoPerfil().equals(getPerfil())) {
+                            curso = p.getCurso();
+                            break;
+                        }
+                    }
+                    if (curso != null) {
+                        System.out.format("entering curso: '%s'\n", curso.getNome());
+                        filtros.put("curso", curso);
+                    }
+                }
+                data = usuarioDao.find(first, pageSize, sortField, order, filtros);
+                setRowCount(usuarioDao.count(filtros));
+
+                System.out.format("result size: %d / count size: %d\n", data.size(), getRowCount());
                 if (data.size() > pageSize) {
                     try {
                         return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
                         return data.subList(first, first + (data.size() % pageSize));
                     }
-                    
+
                 }
                 return data;
             }
         };
     }
-    
+
     public String authLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, String> loginParameters = context.getExternalContext().getRequestParameterMap();
@@ -160,29 +192,29 @@ public class UsuarioBean implements Serializable {
             return null;
         }
     }
-    
+
     public String homeDir() {
         String homeDir = String.format("/views/secure/%s", perfil.toString()).toLowerCase();
         return homeDir;
     }
-    
+
     public String home() {
-        String home = String.format("/views/secure/%s/%s?faces-redirect=true", perfil.toString(), perfil.toString()).toLowerCase();
+        String home = String.format("/views/secure/%s/%s", perfil.toString(), perfil.toString()).toLowerCase();
         return home;
     }
-    
+
     public String authLogout() {
         System.out.println("usuario efetuou logout");
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
         return "/views/login?faces-redirect=true";
     }
-    
+
     public void setupImportUsuarios() {
         progress = 0;
         stopImportaUsuarios = true;
     }
-    
+
     public void importaUsuarios() {
         final List<Usuario> usrList = new ArrayList<>();
         stopImportaUsuarios = false;
@@ -244,7 +276,7 @@ public class UsuarioBean implements Serializable {
         };
         tImportJob.start();
     }
-    
+
     public void cancelImpUsuarios() {
         setupImportUsuarios();
         try {
@@ -252,12 +284,12 @@ public class UsuarioBean implements Serializable {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("operacaoCancelada"), "");
             context.addMessage(null, msg);
-            
+
         } catch (NullPointerException | InterruptedException e) {
             log.error("no thread to cancel");
         }
     }
-    
+
     public void handleCompleteImpUsuarios() {
         stopImportaUsuarios = true;
         FacesContext context = FacesContext.getCurrentInstance();
@@ -269,15 +301,15 @@ public class UsuarioBean implements Serializable {
         }
         context.addMessage(null, msg);
     }
-    
+
     public StreamedContent getDocentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DOCENTE);
     }
-    
+
     public StreamedContent getDiscentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DISCENTE);
     }
-    
+
     public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
         StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
         for (Usuario u : usuarioDao.find(perfilTipo)) {
@@ -303,7 +335,7 @@ public class UsuarioBean implements Serializable {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
         return file;
     }
-    
+
     public void editaUsuario() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
@@ -312,7 +344,7 @@ public class UsuarioBean implements Serializable {
             usuario = getItemSelecionado();
         }
     }
-    
+
     public void excluiUsuario() {
         FacesMessage msg;
         if (getItemSelecionado() == null) {
@@ -330,7 +362,7 @@ public class UsuarioBean implements Serializable {
             }
         }
     }
-    
+
     public void salvaUsuario() {
         RequestContext context = RequestContext.getCurrentInstance();
         try {
@@ -348,11 +380,11 @@ public class UsuarioBean implements Serializable {
         } catch (Exception e) {
             setSaveStatus(false);
         }
-        
+
         context.addCallbackParam("resultado", saveStatus);
         handleCompleteImpUsuarios();
     }
-    
+
     public void cancelSalvaUsuario() {
         List<Perfil> tempPerfilList = new ArrayList<Perfil>() {
             {
@@ -375,7 +407,7 @@ public class UsuarioBean implements Serializable {
         perfilRemovido.clear();
         System.out.println("cancelando alteração de usuário");
     }
-    
+
     public void addPerfil() {
         if (isSelecionado()) {
             Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -399,7 +431,7 @@ public class UsuarioBean implements Serializable {
             }
         }
     }
-    
+
     public void removePerfil(ActionEvent event) {
         Perfil perfilItem = (Perfil) event.getComponent().getAttributes().get("perfil");
         usuario.removePerfil(perfilItem);
@@ -407,54 +439,54 @@ public class UsuarioBean implements Serializable {
             perfilRemovido.add(perfilItem);
         }
     }
-    
+
     public void onCursoDisable() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         cb.setItemSelecionado(null);
     }
-    
+
     public boolean isCursoDisabled() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         return (cb != null && Arrays.asList(Perfil.perfilCursoMustBeNull).contains(pb.getItemSelecionado()));
     }
-    
+
     public void salvaSessionUsuario() {
         setUsuario(sessionUsuario);
         salvaUsuario();
         setUsuario(null);
     }
-    
+
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Usuario) event.getObject();
     }
-    
+
     public PerfilEnum getPerfil() {
         return perfil;
     }
-    
+
     public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
-    
+
     public int getProgress() {
         return progress;
     }
-    
+
     public void setProgress(int progress) {
         this.progress = progress;
     }
-    
+
     public boolean isSaveStatus() {
         return saveStatus;
     }
-    
+
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-    
+
     public boolean getStopImportaUsuarios() {
         return stopImportaUsuarios;
     }
@@ -472,39 +504,39 @@ public class UsuarioBean implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
+
     public Usuario getSessionUsuario() {
         return sessionUsuario;
     }
-    
+
     public boolean isAutenticado() {
         return autenticado;
     }
-    
+
     public List<Usuario> findUsuario(String query) {
         return usuarioDao.find(query);
     }
-    
+
     public List<Usuario> findDocente(String query) {
         return usuarioDao.find(query, PerfilEnum.DOCENTE);
     }
-    
+
     public List<Usuario> findDiscente(String query) {
         return usuarioDao.find(query, PerfilEnum.DISCENTE);
     }
-    
+
     public List<Usuario> findCoordenadorCurso(String query) {
         return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_CURSO);
     }
-    
+
     public List<Usuario> findCoordenadorEstagio(String query) {
         return usuarioDao.find(query, PerfilEnum.COORDENADOR_DE_ESTAGIO);
     }
-    
+
     public List<Usuario> findSecretaria(String query) {
         return usuarioDao.find(query, PerfilEnum.SECRETARIA);
     }
-    
+
     public List<Usuario> getFiltroUsuarios() {
         if (termoBusca.equals("")) {
             return usuarioDao.findAll();
@@ -512,11 +544,11 @@ public class UsuarioBean implements Serializable {
             return usuarioDao.find(termoBusca);
         }
     }
-    
+
     public LazyDataModel<Usuario> getUsuariosDataModel() {
         return usuariosDataModel;
     }
-    
+
     public List<Usuario> getUsuarios() {
         if (usuarios.isEmpty() | usuarioDao.count() != usuarios.size()) {
             usuarios = usuarioDao.findAll();
@@ -560,4 +592,13 @@ public class UsuarioBean implements Serializable {
     public void setTermoBusca(String termoBusca) {
         this.termoBusca = termoBusca;
     }
+
+    public PerfilEnum getTipoPerfilBusca() {
+        return tipoPerfilBusca;
+    }
+
+    public void setTipoPerfilBusca(PerfilEnum tipoPerfilBusca) {
+        this.tipoPerfilBusca = tipoPerfilBusca;
+    }
+
 }

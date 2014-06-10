@@ -8,7 +8,7 @@
         <p:column>
             <p:dataTable id="ajusteReqItem" var="itemRequerimento" paginator="true" rows="5" paginatorPosition="bottom"
                          styleClass="table100" value="#{requerimentoBean.requerimento.itemRequerimentoList}">
-                <p:column headerText="#{msg.disciplina}" styleClass="col40">
+                <p:column headerText="#{msg.disciplina}" styleClass="col45">
                     <h:outputText value="#{itemRequerimento.turma.disciplina.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.turma}" styleClass="col10 alignCenter">
@@ -17,7 +17,7 @@
                 <p:column headerText="#{msg.curso}" styleClass="col10 alignCenter">
                     <h:outputText value="#{itemRequerimento.turma.disciplina.curso.sigla}" />
                 </p:column>
-                <p:column headerText="#{msg.acao}" styleClass="col20 alignCenter">
+                <p:column headerText="#{msg.acao}" styleClass="col15 alignCenter">
                     <h:outputText value="#{itemRequerimento.tipoDeAjuste.tipoLocale}"
                                   styleClass="#{itemRequerimento.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'? 'addedItem': 'removedItem'}" />
                 </p:column>
@@ -29,7 +29,7 @@
                                       itemValue="DEFERIDO" />
                         <f:selectItem itemLabel="#{msg.indeferido}"
                                       itemValue="INDEFERIDO"/>
-                        <p:ajax event="change" process="@form" update=":salvaAtendimentoForm:observacaoAtendimento" />
+                        <p:ajax event="change" process="@this" update=":salvaAtendimentoForm" />
                     </p:selectOneButton>                            
                 </p:column>
             </p:dataTable>

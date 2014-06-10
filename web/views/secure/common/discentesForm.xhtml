@@ -1,33 +1,19 @@
-<ui:composition template="administrador.xhtml"
+<ui:composition template="#{usuarioBean.home()}.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:define name="componentTitle">#{msg.usuarios}</ui:define>
+    <ui:define name="componentTitle">#{msg.discentes}</ui:define>
     <ui:define name="content">
         <script>
             $(document).ready(function() {
                 jQuery("#usuariosLnk").addClass("menuItemSelected");
             });
         </script>
-        <ui:include src="importaUsuarioForm.xhtml"  />
-        <ui:include src="salvaUsuarioForm.xhtml"  />
-        <ui:include src="excluiUsuarioForm.xhtml" />
-        <ui:include src="detalheUsuarioForm.xhtml" />
+        <ui:include src="/views/secure/common/detalheDiscenteForm.xhtml" />
         <h:form id="usuarioForm" styleClass="formBody">
             <h:panelGroup layout="block" id="usuarioToolbar" styleClass="formToolbar">
-                <p:commandButton value="#{msg.editar}"
-                                 process="@this"
-                                 update=":salvaUsuarioForm"
-                                 oncomplete="PF('dlgUsuarioVar').show()"
-                                 disabled="#{usuarioBean.selecionado == false}"
-                                 actionListener="#{usuarioBean.editaUsuario}" />
-
-                <p:commandButton value="#{msg.excluir}"
-                                 disabled="#{usuarioBean.selecionado== false}"
-                                 oncomplete="PF('excluirUsuarioDialog').show()"
-                                 update=":excluiUsuarioForm:" />
 
                 <p:commandButton value="#{msg.detalhe}" icon="ui-icon-search"
                                  disabled="#{usuarioBean.selecionado == false}"
@@ -35,14 +21,6 @@
                                  oncomplete="PF('dlgDetalheUsuarioVar').show()" />
 
                 <p:menuButton value="#{msg.importar}/#{msg.exportar}">
-                    <p:menuitem value="#{msg.importar} (#{msg.usuarioLDAP})"
-                                actionListener="#{usuarioBean.setupImportUsuarios}"
-                                icon="ui-icon-arrowthickstop-1-n"
-                                oncomplete="startImpDialog('importaUsuarioLDAPDialogVar','confirmImpButtonUsuario','pbImpUsuario')" />
-                    <p:menuitem value="#{msg.docentes} #{msg.paraCSV}"
-                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
-                        <p:fileDownload value="#{usuarioBean.docentesAsCSV}" />
-                    </p:menuitem>
                     <p:menuitem value="#{msg.discentes} #{msg.paraCSV}"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{usuarioBean.discentesAsCSV}" />
@@ -65,8 +43,6 @@
                          selectionMode="single"
                          selection="#{usuarioBean.itemSelecionado}"
                          paginatorPosition="bottom"
-                         sortBy="login"
-                         sortOrder="ASCENDING"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":usuarioForm:usuarioToolbar" />
                 <p:column headerText="#{msg.usuario}" sortBy="login" styleClass="usuarioColLogin">

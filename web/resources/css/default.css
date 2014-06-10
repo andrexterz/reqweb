@@ -339,8 +339,18 @@ input[type="text"], input[type="password"], select {
 .headerCommandB a {
     color: #fff;
     text-decoration: none;
-    font-size: 100%!important;    
+    padding-right: 20px;
+    font-size: 100%!important;
+    background-image: url("#{resource['img/settings.png']}");
+    background-position: 99% 50%;
+    background-repeat:no-repeat;
 }
+
+
+.headerCommandB a:hover {
+    color: #a5d0ff;
+}
+
 
 .headerCommandC {
     background-color: #b3b3b3;    
@@ -751,7 +761,7 @@ input[type="text"], input[type="password"], select {
     border-radius: 2px;    
 }
 
-.usuarioColLogin {
+f.usuarioColLogin {
     width: 20%;
     text-align: left;
 }

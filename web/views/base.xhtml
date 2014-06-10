@@ -40,7 +40,7 @@
                         </h:form>
                     </p:column>
                     <p:column>
-                        <h:form class="headerForm" id="formHeader">
+                        <h:form id="formHeader">
                             <p:panelGrid columns="3" styleClass="headerCommand"
                                          columnClasses="headerCommandA,headerCommandB,headerCommandC">
                                 <p:column>
@@ -52,7 +52,8 @@
                                 </p:column>
                                 <p:column>
                                     <p:commandLink value="#{usuarioBean.sessionUsuario.login} - #{usuarioBean.perfil.papelLocale}"
-                                                   rendered="#{usuarioBean.autenticado}" oncomplete="PF('dlgUsuarioInfoVar').show()" />
+                                                   rendered="#{usuarioBean.autenticado}" oncomplete="PF('dlgUsuarioInfoVar').show()"
+                                                   styleClass="settingsUsuarioIcon" />
 
                                 </p:column>
                                 <p:column>

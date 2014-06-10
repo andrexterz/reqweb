@@ -89,7 +89,8 @@ public class UsuarioDao {
         try {
             usuario = (Usuario) this.sessionFactory.getCurrentSession()
                     .createCriteria(Usuario.class)
-                    .add(Restrictions.eq("login", login)).uniqueResult();
+                    .add(Restrictions.eq("login", login))
+                    .uniqueResult();
         } catch (HibernateException e) {
             usuario = null;
         }
@@ -118,18 +119,18 @@ public class UsuarioDao {
             filters = new HashMap();
         }
         try {
+            if (!filters.isEmpty()) {
             for (String field : filters.keySet()) {
                 if (field.equals("termo")) {
                     String termo = (String) filters.get("termo");
                     criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
-                            Restrictions.eq("matricula", termo)))
-                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                            Restrictions.eq("matricula", termo)));
                 }
                 if (field.equals("tipoPerfil")) {
                     PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
                     criteria.createAlias("perfilList", "p");
-                    criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)))
-                            .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                    criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
+
                     Curso curso = (Curso) filters.get("curso");
                     if (curso != null) {
                         System.out.println("curso: " + curso.getNome());
@@ -147,30 +148,20 @@ public class UsuarioDao {
                     criteria.addOrder(Property.forName(sortField).desc());
                 }
             }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             criteria.setFirstResult(first);
             criteria.setMaxResults(pageSize);
             return criteria.list();
-        } catch (HibernateException e) {
-            System.out.println("query error: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<Usuario> find(int first, int pageSize, String sortField, String sortOrder) {
-        try {
-            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
-            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
-                if (sortOrder.toLowerCase().equals("asc")) {
-                    criteria.addOrder(Property.forName(sortField).asc());
-                }
-                if (sortOrder.toLowerCase().equals("desc")) {
-                    criteria.addOrder(Property.forName(sortField).desc());
-                }
+            } else {
+                String query = "SELECT DISTINCT u FROM Usuario u order by u.sortField :sortOrder";
+                return this.sessionFactory.getCurrentSession()
+                        .createQuery("")
+                        .setParameter("sortField", sortField)
+                        .setParameter("sortOrder", sortOrder)
+                        .setFirstResult(first)
+                        .setMaxResults(pageSize)
+                        .list();
             }
-            criteria.setFirstResult(first);
-            criteria.setMaxResults(pageSize);
-            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

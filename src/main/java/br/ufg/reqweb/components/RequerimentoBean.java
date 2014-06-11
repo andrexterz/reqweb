@@ -17,12 +17,14 @@ import br.ufg.reqweb.model.EmentaDeDisciplina;
 import br.ufg.reqweb.model.ExtratoAcademico;
 import br.ufg.reqweb.model.ItemRequerimento;
 import br.ufg.reqweb.model.ItemRequerimentoStatusEnum;
+import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.SegundaChamadaDeProva;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
+import br.ufg.reqweb.model.Usuario;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -41,7 +43,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.primefaces.context.RequestContext;
@@ -184,6 +185,22 @@ public class RequerimentoBean implements Serializable {
                 Map<String, Object> filtros = new HashMap();
                 if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
                     filtros.put("login", getLoginUsuario());
+                }
+                if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                        if (p.getTipoPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                            filtros.put("curso", p.getCurso());
+                            break;
+                        }
+                    }
+                }
+                if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
+                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                        if (p.getTipoPerfil().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
+                            filtros.put("curso", p.getCurso());
+                            break;
+                        }
+                    }
                 }
                 if (getTipoRequerimento() != null) {
                     setTipoRequerimentoBusca(null);
@@ -645,7 +662,12 @@ public class RequerimentoBean implements Serializable {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("arquivoExcluido"), null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-
+    
+    public Usuario getSessionUsuario() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
+    }
+    
     public String getLoginUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getLogin();

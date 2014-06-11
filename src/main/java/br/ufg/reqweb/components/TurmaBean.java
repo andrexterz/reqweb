@@ -9,10 +9,11 @@ import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.dao.PeriodoDao;
 import br.ufg.reqweb.dao.TurmaDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Periodo;
-import org.apache.log4j.Logger;
 import br.ufg.reqweb.model.Semestre;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
@@ -31,6 +32,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -380,7 +382,18 @@ public class TurmaBean implements Serializable {
     }
     
     public List<Turma> findTurmaByActivePeriodo(String query) {
-        return turmaDao.find(query, true);
+        return turmaDao.find(query, null, true);
+    }
+
+    public List<Turma> findTurmaByCursoAndActivePeriodo(String query) {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Curso curso = null;
+        for (Perfil p:((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
+            if (p.getTipoPerfil().equals(PerfilEnum.DISCENTE) && p.getCurso() != null) {
+                curso = p.getCurso();
+            }
+        }
+        return turmaDao.find(query, curso, true);
     }
 
     public Turma getTurma() {

@@ -5,7 +5,6 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.model.Atendimento;
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import java.util.ArrayList;
@@ -311,6 +310,10 @@ public class RequerimentoDao {
                     criteria.createAlias("discente", "d");
                     criteria.add(Restrictions.or(Restrictions.eq("d.matricula", filters.get("termo")),
                             Restrictions.like("d.nome", filters.get("termo").toString(), MatchMode.ANYWHERE).ignoreCase()));
+                }
+                if (field.equals("curso")) {
+                    criteria.createAlias("discente.perfilList", "p");
+                    criteria.add(Restrictions.and(Restrictions.eq("p.curso", filters.get(field))));
                 }
                 if (field.equals("dataCriacao")) {
                     Date[] arrayDate = (Date[]) filters.get("dataCriacao");

@@ -88,7 +88,7 @@
                                                     converter="#{turmaConverter}"
                                                     minQueryLength="3" maxResults="10" var="t"
                                                     itemLabel="#{t}" itemValue="#{t}"
-                                                    forceSelection="true" completeMethod="#{turmaBean.findTurmaByActivePeriodo}">
+                                                    forceSelection="true" completeMethod="#{turmaBean.findTurmaByCursoAndActivePeriodo}">
                                         <p:ajax event="itemSelect" update="docenteTurma" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
                                     </p:autoComplete>
                                     <p:watermark for="turmaRequerimento" value="#{msg.turma}" />
@@ -107,7 +107,7 @@
                             </p:row>
                             <p:row>
                                 <p:column colspan="2">
-                                    <p:inputTextarea rows="5" cols="32" autoResize="false" 
+                                    <p:inputTextarea rows="5" cols="32" autoResize="false"
                                                      value="#{requerimentoBean.requerimento.observacao}" />
                                 </p:column>
                             </p:row>
@@ -127,7 +127,7 @@
                                           disabled="#{itemRequerimento.arquivos.size() ge configBean.getValue('maxArquivos')}"
                                           sizeLimit="1048576"
                                           fileUploadListener="#{requerimentoBean.uploadArquivo}"
-                                          update=":salvaRequerimentoForm:requerimentoTab:arquivoTab2 :formHeader:systemMessages" />
+                                          update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />
                             <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
                                         type="ordered" styleClass="dataList" 
@@ -149,7 +149,7 @@
 
                 <p:commandButton id="bntSalvar"
                                  value="#{msg.salvar}"
-                                 process="@this"
+                                 process="@form"
                                  oncomplete="dialogHandler('dlgRequerimentoVar', xhr, status, args)"
                                  update=":salvaRequerimentoForm :formHeader:systemMessages :requerimentoForm:tableRequerimentos :requerimentoForm:requerimentoToolbar"
                                  actionListener="#{requerimentoBean.salvaRequerimento}" />

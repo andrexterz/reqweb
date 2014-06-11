@@ -5,12 +5,12 @@
  */
 package br.ufg.reqweb.dao;
 
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Turma;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
@@ -95,7 +95,7 @@ public class TurmaDao {
                 turmas = this.sessionFactory.getCurrentSession()
                         .createCriteria(Turma.class)
                         .createAlias("disciplina", "d")
-                        .add(Restrictions.like("d.nome",termo.toUpperCase(),MatchMode.ANYWHERE))
+                        .add(Restrictions.like("d.nome", termo.toUpperCase(), MatchMode.ANYWHERE))
                         .add(Restrictions.eq("periodo.id", periodo.getId()))
                         .list();
             }
@@ -105,25 +105,21 @@ public class TurmaDao {
             return new ArrayList<>();
         }
     }
-    
+
     @Transactional(readOnly = true)
-    public List<Turma> find(String termo, boolean periodoAtivo) {
+    public List<Turma> find(String termo, Curso curso, boolean periodoAtivo) {
         try {
-            List<Turma> turmas;
-            if (termo.isEmpty()) {
-                turmas = this.sessionFactory.getCurrentSession()
-                        .createCriteria(Turma.class)
-                        .add(Restrictions.eq("periodo.ativo", periodoAtivo)).list();
-            } else {
-                turmas = this.sessionFactory.getCurrentSession()
-                        .createCriteria(Turma.class)
-                        .createAlias("disciplina", "d")
-                        .createAlias("periodo", "p")
-                        .add(Restrictions.like("d.nome",termo.toUpperCase(),MatchMode.ANYWHERE))
-                        .add(Restrictions.eq("p.ativo", periodoAtivo))
-                        .list();
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Turma.class);
+            criteria.createAlias("periodo", "p")
+                    .createAlias("disciplina", "d")
+                    .add(Restrictions.eq("p.ativo", periodoAtivo));
+            if (termo != null && !termo.isEmpty()) {
+                criteria.add(Restrictions.like("d.nome", termo.toUpperCase(), MatchMode.ANYWHERE));
             }
-            return turmas;
+            if (curso != null) {
+                criteria.add(Restrictions.and(Restrictions.eq("d.curso", curso)));
+            }
+            return criteria.list();
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

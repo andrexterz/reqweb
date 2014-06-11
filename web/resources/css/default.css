@@ -780,6 +780,13 @@ f.usuarioColLogin {
 }
 
 /************************************ requerimentos ***************************/
+.segundaChamadaDeProvaBox {
+    width: 590px;
+    height: auto;
+    border: 1px solid #a8a8a8;
+    padding: 2px;
+}
+
 .segundaChamadaDeProvaSteps {
     height: 16px;
 }

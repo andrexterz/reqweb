@@ -153,11 +153,8 @@ public class UsuarioDao {
             criteria.setMaxResults(pageSize);
             return criteria.list();
             } else {
-                String query = "SELECT DISTINCT u FROM Usuario u order by u.sortField :sortOrder";
                 return this.sessionFactory.getCurrentSession()
-                        .createQuery("")
-                        .setParameter("sortField", sortField)
-                        .setParameter("sortOrder", sortOrder)
+                        .createQuery(String.format("SELECT DISTINCT u FROM Usuario u order by u.%1$s %2$s", sortField, sortOrder))
                         .setFirstResult(first)
                         .setMaxResults(pageSize)
                         .list();

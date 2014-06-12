@@ -185,7 +185,7 @@ public class UsuarioBean implements Serializable {
         }
         if (autenticado) {
             log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
-            return home();
+            return String.format("%s?faces-redirect=true", home());
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
             context.addMessage("loginError", msg);

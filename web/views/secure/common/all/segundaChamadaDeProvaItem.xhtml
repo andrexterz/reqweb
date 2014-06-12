@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:tabView>
+        <p:tab title="#{msg.segundaChamadaDeProva}">
+            <p:panelGrid styleClass="formGrid rowLine">
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="#{msg.dataProvaA}" />
+                    </p:column>
+                    <p:column styleClass="alignRight">
+                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().dataProvaA}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="#{msg.dataProvaB}" />
+                    </p:column>
+                    <p:column styleClass="alignRight">
+                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().dataProvaB}">
+                            <f:convertDateTime locale="#{localeBean.locale}" />
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="#{msg.disciplina}" />
+                    </p:column>
+                    <p:column styleClass="alignRight">
+                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().turma}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="#{msg.docente}" />
+                    </p:column>
+                    <p:column styleClass="alignRight">
+                        <h:outputText value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().turma.docente.nome}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="#{msg.status}" />    
+                    </p:column>
+                    <p:column styleClass="alignRight">
+                        <h:outputText styleClass="statusAberto" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'ABERTO'}"
+                                      value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                        <h:outputText styleClass="statusDeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'DEFERIDO'}"
+                                      value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                        <h:outputText styleClass="statusIndeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'INDEFERIDO'}"
+                                      value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </p:tab>
+        <p:tab title="#{msg.arquivos}">
+            <p:dataList emptyMessage="#{msg.emptyMessage}"
+                        type="ordered" styleClass="dataList" 
+                        value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().arquivos}" var="arq">
+                <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" rel="#{arq.nomeArquivo}" ajax="false">
+                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                </p:commandLink>
+                <p:commandLink title="#{msg.baixar} #{arq.nomeArquivo}" rel="#{arq.nomeArquivo}" styleClass="iconFileType floatRight" ajax="false">
+                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                </p:commandLink>
+            </p:dataList>
+        </p:tab>
+    </p:tabView>
+</ui:composition>
+

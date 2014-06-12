@@ -5,6 +5,7 @@
 package br.ufg.reqweb.filters;
 
 import br.ufg.reqweb.components.UsuarioBean;
+import br.ufg.reqweb.model.PerfilEnum;
 import java.io.IOException;
 import javax.faces.application.ViewExpiredException;
 import javax.servlet.Filter;
@@ -59,8 +60,20 @@ public class AuthFilter implements Filter {
     }
     
     private boolean isUrlAuthorized(String url) {
-        String commonDir = "/views/secure/common";
-        return url.contains(usuarioBean.homeDir()) || url.contains(commonDir);
+        boolean granted = false;
+        String commonDir = "/views/secure/common/all";
+        String staffCommonDir = "/views/secure/common/staff";
+        boolean isStaff = !usuarioBean.getPerfil().equals(PerfilEnum.DISCENTE);
+        if (url.contains(usuarioBean.homeDir())) {
+            granted = true;
+        }
+        if (url.contains(staffCommonDir) && isStaff) {
+            granted = true;
+        }
+        if (url.contains(commonDir)) {
+            granted = true;
+        }
+        return  granted;
     }
 
 }

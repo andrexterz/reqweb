@@ -42,6 +42,11 @@
                                 target="#{usuarioBean.tipoPerfilBusca}"
                                 value="DISCENTE" />
                         </h:commandLink>
+                        <h:commandLink id="turmasLnk"
+                                       action="turmas?faces-redirect=true"
+                                       value="#{msg.turmas}"
+                                       styleClass="turmas">
+                        </h:commandLink>
                     </h:panelGrid>
                 </h:panelGroup>
             </h:form>

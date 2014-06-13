@@ -9,6 +9,9 @@ import br.ufg.reqweb.dao.CursoDao;
 import br.ufg.reqweb.dao.DisciplinaDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
+import br.ufg.reqweb.model.Perfil;
+import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.model.Usuario;
 import br.ufg.reqweb.util.CSVParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -230,10 +233,23 @@ public class DisciplinaBean implements Serializable {
     /**
      *
      * @param query
-     * @return the List<Disciplina>
+     * @return the <code>List<Disciplina></code>
      * method for autocomplete widget
      */
     public List<Disciplina> findDisciplina(String query) {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Usuario usuario = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
+        PerfilEnum tipoPerfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
+        Curso c = null;
+        if (tipoPerfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+            for (Perfil p: usuario.getPerfilList()) {
+                if (tipoPerfil.equals(p.getTipoPerfil())) {
+                    c = p.getCurso();
+                    break;
+                }
+            }
+            return disciplinaDao.findByCurso(query, c);            
+        }
         return disciplinaDao.find(query);
     }
 

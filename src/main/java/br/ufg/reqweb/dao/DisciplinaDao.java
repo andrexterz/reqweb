@@ -7,10 +7,9 @@ package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Disciplina;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -76,20 +75,14 @@ public class DisciplinaDao {
     @Transactional(readOnly = true)
     public List<Disciplina> findByCurso(String termo, Curso curso) {
         try {
-            List<Disciplina> disciplinas;
-            if (termo.isEmpty()) {
-                disciplinas = this.sessionFactory.getCurrentSession()
-                        .createQuery("FROM Disciplina d WHERE d.curso.id = :cursoId")
-                        .setParameter("cursoId", curso.getId())
-                        .list();
-            } else {
-                disciplinas = this.sessionFactory.getCurrentSession()
-                        .createCriteria(Disciplina.class)
-                        .add(Restrictions.like("nome",termo, MatchMode.ANYWHERE).ignoreCase())
-                        .add(Restrictions.eq("curso.id", curso.getId()))
-                        .list();
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Disciplina.class);
+            if (!termo.isEmpty()) {
+                criteria.add(Restrictions.and((Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase())));
             }
-            return disciplinas;
+            if (curso != null) {
+                criteria.add(Restrictions.and(Restrictions.eq("curso",curso)));
+            }
+            return criteria.list();
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

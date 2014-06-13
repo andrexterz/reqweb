@@ -129,18 +129,38 @@
                                           fileUploadListener="#{requerimentoBean.uploadArquivo}"
                                           update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />
-                            <p:dataList id="arquivos" emptyMessage="#{msg.emptyMessage}"
-                                        type="ordered" styleClass="dataList" 
-                                        value="#{itemRequerimento.arquivos}" var="arq">
-                                <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" ajax="false">
-                                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                                </p:commandLink>
-                                <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}"
-                                                 update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages"
-                                                 icon="ui-icon-trash" styleClass="floatRight"
-                                                 process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}" />
-                            </p:dataList>
+                            <p:dataTable id="arquivos" emptyMessage="#{msg.emptyMessage}" styleClass="table100 rowLine"
+                                         value="#{itemRequerimento.arquivos}" var="arq">
+                                <p:column styleClass="col40 alignLeft">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="#{msg.arquivo}" />
+                                    </f:facet>
+                                    <h:outputText value="#{arq.nomeArquivo} " />
+                                </p:column>
+                                <p:column styleClass="col30 alignLeft"> 
+                                    <f:facet name="header">
+                                        <h:outputLabel value="#{msg.tipoDeDocumento}" />
+                                    </f:facet>
+                                    <h:outputText value="#{arq.mimetype}" />
+                                </p:column>
+                                <p:column styleClass="col20 alignCenter">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="#{msg.baixar}" />
+                                    </f:facet>
+                                    <p:commandLink title="#{msg.baixar} #{arq.nomeArquivo}" rel="#{arq.nomeArquivo}" styleClass="iconFileType" ajax="false">
+                                        <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                                        <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                                    </p:commandLink>
+                                </p:column>
+                                <p:column styleClass="col10 alignRight">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="x" />
+                                    </f:facet>
+                                    <p:commandButton title="#{msg.excluir} #{arq.nomeArquivo}" icon="ui-icon-trash" 
+                                                     update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages"
+                                                     process="@this" actionListener="#{requerimentoBean.removeArquivo(arq)}" />
+                                </p:column>
+                            </p:dataTable>
                         </h:panelGrid>
                     </p:tab>
                 </p:tabView>

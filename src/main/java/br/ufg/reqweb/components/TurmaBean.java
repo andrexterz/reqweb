@@ -95,24 +95,24 @@ public class TurmaBean implements Serializable {
         itemPreviewSelecionado = null;
         termoBusca = "";
         turmasDataModel = new LazyDataModel<Turma>() {
-            
+
             private List<Turma> data;
 
             @Override
             public Object getRowKey(Turma turma) {
-                return turma.getId().toString(); 
+                return turma.getId().toString();
             }
 
             @Override
             public Turma getRowData(String key) {
-                for (Turma t: data) {
+                for (Turma t : data) {
                     if (t.getId().toString().equals(key)) {
                         return t;
                     }
                 }
                 return null;
             }
-            
+
             @Override
             public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 setPageSize(pageSize);
@@ -125,7 +125,21 @@ public class TurmaBean implements Serializable {
                         data = turmaDao.find(first, pageSize);
                         setRowCount(turmaDao.count());
                     } else {
-                        data = turmaDao.find(termoBusca);
+                        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+                        Usuario usuario = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
+                        PerfilEnum tipoPerfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
+                        Curso c = null;
+                        if (tipoPerfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                            for (Perfil p : usuario.getPerfilList()) {
+                                if (tipoPerfil.equals(p.getTipoPerfil())) {
+                                    c = p.getCurso();
+                                    break;
+                                }
+                            }
+                            data = turmaDao.find(termoBusca, c, false);
+                        } else {
+                            data = turmaDao.find(termoBusca);
+                        }
                         setRowCount(data.size());
                     }
 
@@ -134,9 +148,9 @@ public class TurmaBean implements Serializable {
                     try {
                         return data.subList(first, first + pageSize);
                     } catch (IndexOutOfBoundsException e) {
-                         return data.subList(first, first + (data.size() % pageSize));
+                        return data.subList(first, first + (data.size() % pageSize));
                     }
-                    
+
                 }
                 return data;
             }
@@ -249,7 +263,7 @@ public class TurmaBean implements Serializable {
             csvData.append(",");
             csvData.append(t.getDisciplina().getId());
             csvData.append(",");
-            csvData.append(t.getDocente() == null ? "": t.getDocente().getId());
+            csvData.append(t.getDocente() == null ? "" : t.getDocente().getId());
             csvData.append(",");
             csvData.append(t.getDisciplina().getCurso().getSigla());
         }
@@ -293,7 +307,7 @@ public class TurmaBean implements Serializable {
                 String nome = row[2].trim();
                 Semestre semestre = Semestre.getSemestre(Integer.parseInt(row[3].trim()));
                 Long disciplinaId = Long.parseLong(row[4].trim());
-                Long docenteId = row[5].trim().isEmpty() ? null: Long.parseLong(row[5].trim());
+                Long docenteId = row[5].trim().isEmpty() ? null : Long.parseLong(row[5].trim());
                 Turma t = new Turma();
                 t.setId(id);
                 t.setNome(nome);
@@ -368,7 +382,7 @@ public class TurmaBean implements Serializable {
             turma.setDocente(null);
         }
     }
-    
+
     public void autoCompleteSelecionaPeriodo(SelectEvent event) {
         try {
             periodo = (Periodo) event.getObject();
@@ -376,11 +390,11 @@ public class TurmaBean implements Serializable {
             periodo = null;
         }
     }
-    
+
     public List<Turma> findTurma(String query) {
         return turmaDao.find(query);
     }
-    
+
     public List<Turma> findTurmaByActivePeriodo(String query) {
         return turmaDao.find(query, null, true);
     }
@@ -388,7 +402,7 @@ public class TurmaBean implements Serializable {
     public List<Turma> findTurmaByCursoAndActivePeriodo(String query) {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         Curso curso = null;
-        for (Perfil p:((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
+        for (Perfil p : ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
             if (p.getTipoPerfil().equals(PerfilEnum.DISCENTE) && p.getCurso() != null) {
                 curso = p.getCurso();
             }
@@ -467,7 +481,6 @@ public class TurmaBean implements Serializable {
     public void setSaveStatus(boolean saveStatus) {
         this.saveStatus = saveStatus;
     }
-    
 
     public boolean getStopImportaTurmas() {
         return stopImportaTurmas;

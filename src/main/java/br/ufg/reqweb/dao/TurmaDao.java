@@ -110,11 +110,13 @@ public class TurmaDao {
     public List<Turma> find(String termo, Curso curso, boolean periodoAtivo) {
         try {
             Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Turma.class);
-            criteria.createAlias("periodo", "p")
-                    .createAlias("disciplina", "d")
-                    .add(Restrictions.eq("p.ativo", periodoAtivo));
+            if (periodoAtivo) {
+                criteria.createAlias("periodo", "p")
+                        .add(Restrictions.eq("p.ativo", periodoAtivo));
+            }
             if (termo != null && !termo.isEmpty()) {
-                criteria.add(Restrictions.like("d.nome", termo.toUpperCase(), MatchMode.ANYWHERE));
+                criteria.createAlias("disciplina", "d")
+                        .add(Restrictions.like("d.nome", termo.toUpperCase(), MatchMode.ANYWHERE));
             }
             if (curso != null) {
                 criteria.add(Restrictions.and(Restrictions.eq("d.curso", curso)));

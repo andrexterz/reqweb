@@ -59,18 +59,32 @@
             </p:panelGrid>
         </p:tab>
         <p:tab title="#{msg.arquivos}">
-            <p:dataList emptyMessage="#{msg.emptyMessage}"
-                        type="ordered" styleClass="dataList" 
-                        value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().arquivos}" var="arq">
-                <p:commandLink value="#{arq.nomeArquivo}" title="#{msg.baixar}" rel="#{arq.nomeArquivo}" ajax="false">
-                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                </p:commandLink>
-                <p:commandLink title="#{msg.baixar} #{arq.nomeArquivo}" rel="#{arq.nomeArquivo}" styleClass="iconFileType floatRight" ajax="false">
-                    <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
-                    <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
-                </p:commandLink>
-            </p:dataList>
+            <h:panelGroup layout="block" styleClass="arquivoList">
+                <p:dataTable value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().arquivos}"
+                             emptyMessage="#{msg.emptyMessage}" var="arq" styleClass="formGrid rowLine">
+                    <p:column styleClass="col50 alignLeft">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{msg.arquivo}" />
+                        </f:facet>
+                        <h:outputText value="#{arq.nomeArquivo} " />
+                    </p:column>
+                    <p:column styleClass="col35 alignLeft"> 
+                        <f:facet name="header">
+                            <h:outputLabel value="#{msg.tipoDeDocumento}" />
+                        </f:facet>
+                        <h:outputText value="#{arq.mimetype}" />
+                    </p:column>
+                    <p:column styleClass="col15 alignRight">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{msg.baixar}" />
+                        </f:facet>
+                        <p:commandLink title="#{msg.baixar} #{arq.nomeArquivo}" rel="#{arq.nomeArquivo}" styleClass="iconFileType" ajax="false">
+                            <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
+                            <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
         </p:tab>
     </p:tabView>
 </ui:composition>

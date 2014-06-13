@@ -54,7 +54,6 @@
                                     <p:commandLink value="#{usuarioBean.sessionUsuario.login} - #{usuarioBean.perfil.papelLocale}"
                                                    rendered="#{usuarioBean.autenticado}" oncomplete="PF('dlgUsuarioInfoVar').show()"
                                                    styleClass="settingsUsuarioIcon" />
-
                                 </p:column>
                                 <p:column>
                                     <p:commandLink action="#{usuarioBean.authLogout()}"
@@ -64,14 +63,11 @@
                                                    value="#{msg.logout}" />
                                 </p:column>
                             </p:panelGrid>
-
                             <p:growl id="systemMessages" showDetail="true" life="2500" globalOnly="true" widgetVar="sysMsg" />
-
                         </h:form>
                     </p:column>
                 </p:panelGrid>
             </h:panelGroup>
-
             <h:panelGroup layout="block" id="menu">
                 <h:panelGroup layout="block" styleClass="menuTop">
                     <ui:insert name="menuTitle">
@@ -80,7 +76,6 @@
                 </h:panelGroup>
                 <ui:insert name="menu"></ui:insert>
             </h:panelGroup>
-
             <h:panelGroup layout="block" id="content">
                 <h:panelGroup layout="block" styleClass="menuTop">
                     <ui:insert name="componentTitle">
@@ -94,12 +89,10 @@
                         </c:choose>
                     </ui:insert>
                 </h:panelGroup>
-
                 <ui:insert name="content">
                     content
                 </ui:insert>
             </h:panelGroup>
-
             <h:panelGroup layout="block" id="footer">
                 <h:panelGroup layout="block" styleClass="footerColA">
                     <h:outputText value="ReqWeb &copy; 2013 - Instituto de Informática | UFG - #{localeBean.locale}" />
@@ -112,7 +105,6 @@
                         <h:outputText value=""/>
                     </f:facet>
                 </p:ajaxStatus>                    
-
             </h:panelGroup>            
         </h:body>
     </f:view>

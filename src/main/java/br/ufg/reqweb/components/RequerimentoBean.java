@@ -181,7 +181,6 @@ public class RequerimentoBean implements Serializable {
                         break;
                 }
                 setPageSize(pageSize);
-
                 Map<String, Object> filtros = new HashMap();
                 if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
                     filtros.put("login", getLoginUsuario());

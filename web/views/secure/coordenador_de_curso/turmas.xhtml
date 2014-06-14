@@ -7,6 +7,7 @@
     <ui:define name="content">
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
+
         <h:form id="turmasForm" styleClass="formBody">
             <h:panelGroup layout="block" id="turmasToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
@@ -63,12 +64,14 @@
                          selectionMode="single"
                          selection="#{turmaBean.itemSelecionado}"
                          paginatorPosition="bottom"
+                         sortBy="disciplina"
+                         sortOrder="ASCENDING"
                          rows="10" pageLinks="5">
                 <p:ajax event="rowSelect" update=":turmasForm:turmasToolbar" listener="#{turmaBean.selecionaItem}" />
-                <p:column headerText="#{msg.turma}" styleClass="col5 alignCenter">
+                <p:column headerText="#{msg.turma}" sortBy="nome" styleClass="col5 alignCenter">
                     <h:outputText value="#{turmaItem.nome}" />
                 </p:column>
-                <p:column headerText="#{msg.disciplina}" styleClass="col35">
+                <p:column headerText="#{msg.disciplina}" sortBy="disciplina" styleClass="col35">
                     <h:outputText value="#{turmaItem.disciplina.nome}" />
                 </p:column>
                 <p:column headerText="#{msg.curso}" styleClass="col25">

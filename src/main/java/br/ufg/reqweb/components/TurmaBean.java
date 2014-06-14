@@ -115,35 +115,39 @@ public class TurmaBean implements Serializable {
 
             @Override
             public List<Turma> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-                setPageSize(pageSize);
-
-                if (periodo != null) {
-                    data = turmaDao.find(termoBusca, periodo);
-                    setRowCount(data.size());
-                } else {
-                    if (termoBusca.equals("")) {
-                        data = turmaDao.find(first, pageSize);
-                        setRowCount(turmaDao.count());
-                    } else {
-                        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-                        Usuario usuario = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
-                        PerfilEnum tipoPerfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
-                        Curso c = null;
-                        if (tipoPerfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-                            for (Perfil p : usuario.getPerfilList()) {
-                                if (tipoPerfil.equals(p.getTipoPerfil())) {
-                                    c = p.getCurso();
-                                    break;
-                                }
-                            }
-                            data = turmaDao.find(termoBusca, c, false);
-                        } else {
-                            data = turmaDao.find(termoBusca);
-                        }
-                        setRowCount(data.size());
-                    }
-
+                String order;
+                switch (sortOrder.name()) {
+                    case "ASCENDING":
+                        order = "asc";
+                        break;
+                    case "DESCENDING":
+                        order = "desc";
+                        break;
+                    default:
+                        order = null;
+                        break;
                 }
+                setPageSize(pageSize);
+                Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+                Usuario usuario = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
+                PerfilEnum tipoPerfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
+                Map<String, Object> filtros = new HashMap();
+                if (periodo != null) {
+                    filtros.put("periodo", periodo);
+                }
+                if (!termoBusca.equals("")) {
+                    filtros.put("termo", termoBusca);
+                }
+                if (tipoPerfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                    for (Perfil p : usuario.getPerfilList()) {
+                        if (tipoPerfil.equals(p.getTipoPerfil())) {
+                            filtros.put("curso", p.getCurso());
+                            break;
+                        }
+                    }
+                }
+                data = turmaDao.find(first, pageSize, sortField, order, filtros);
+                setRowCount(turmaDao.count(filtros));
                 if (data.size() > pageSize) {
                     try {
                         return data.subList(first, first + pageSize);

@@ -9,11 +9,16 @@ import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Turma;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -129,14 +134,35 @@ public class TurmaDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Turma> find(int firstResult, int maxResult) {
+    public List<Turma> find(int firstResult, int maxResult, String sortField, String sortOrder, Map<String, Object> filters) {
+        if (filters == null) {
+            filters = new HashMap();
+        }
         try {
-            List<Turma> turma = this.sessionFactory.getCurrentSession()
-                    .createQuery("FROM Turma t ORDER BY t.nome")
-                    .setFirstResult(firstResult)
-                    .setMaxResults(maxResult)
-                    .list();
-            return turma;
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Turma.class);
+            criteria.createAlias("disciplina", "d");
+            for (String field : filters.keySet()) {
+                if (field.equals("termo")) {
+                    criteria.add(Restrictions.and(Restrictions.like("d.nome", filters.get(field).toString(), MatchMode.ANYWHERE).ignoreCase()));
+                }
+                if (field.equals("periodo")) {
+                    criteria.add(Restrictions.and(Restrictions.eq("periodo", filters.get(field))));
+                }
+                if (field.equals("curso")) {
+                    criteria.add(Restrictions.and(Restrictions.eq("d.curso", filters.get(field))));
+                }
+            }
+            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                System.out.format("sorted by: %s, ordering %s\n", sortField, sortOrder);
+                if (sortOrder.toLowerCase().equals("asc")) {
+                    criteria.addOrder(Property.forName(sortField).asc());
+                }
+                if (sortOrder.toLowerCase().equals("desc")) {
+                    criteria.addOrder(Property.forName(sortField).desc());
+                }
+            }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+            return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();
@@ -168,6 +194,34 @@ public class TurmaDao {
             System.out.println("query error: " + e.getMessage());
             return 0;
         }
+    }
+
+    @Transactional(readOnly = true)
+    public int count(Map<String, Object> filters) {
+        if (filters == null) {
+            filters = new HashMap();
+        }
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Turma.class);
+            criteria.createAlias("disciplina", "d");
+            for (String field : filters.keySet()) {
+                if (field.equals("termo")) {
+                    criteria.add(Restrictions.and(Restrictions.like("d.nome", filters.get(field).toString(), MatchMode.ANYWHERE).ignoreCase()));
+                }
+                if (field.equals("periodo")) {
+                    criteria.add(Restrictions.and(Restrictions.eq("periodo", filters.get(field))));
+                }
+                if (field.equals("curso")) {
+                    criteria.add(Restrictions.and(Restrictions.eq("d.curso", filters.get(field))));
+                }
+            }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+            return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return 0;
+        }
+
     }
 
 }

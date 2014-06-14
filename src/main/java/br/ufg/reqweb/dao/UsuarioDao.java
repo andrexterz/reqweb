@@ -120,38 +120,38 @@ public class UsuarioDao {
         }
         try {
             if (!filters.isEmpty()) {
-            for (String field : filters.keySet()) {
-                if (field.equals("termo")) {
-                    String termo = (String) filters.get("termo");
-                    criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
-                            Restrictions.eq("matricula", termo)));
-                }
-                if (field.equals("tipoPerfil")) {
-                    PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
-                    criteria.createAlias("perfilList", "p");
-                    criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
+                for (String field : filters.keySet()) {
+                    if (field.equals("termo")) {
+                        String termo = (String) filters.get("termo");
+                        criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
+                                Restrictions.eq("matricula", termo)));
+                    }
+                    if (field.equals("tipoPerfil")) {
+                        PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
+                        criteria.createAlias("perfilList", "p");
+                        criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
 
-                    Curso curso = (Curso) filters.get("curso");
-                    if (curso != null) {
-                        System.out.println("curso: " + curso.getNome());
-                        criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
-                    } else {
-                        System.out.println("curso is null");
+                        Curso curso = (Curso) filters.get("curso");
+                        if (curso != null) {
+                            System.out.println("curso: " + curso.getNome());
+                            criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
+                        } else {
+                            System.out.println("curso is null");
+                        }
                     }
                 }
-            }
-            if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
-                if (sortOrder.toLowerCase().equals("asc")) {
-                    criteria.addOrder(Property.forName(sortField).asc());
+                if ((sortField != null && !sortField.isEmpty()) && (sortOrder != null && !sortOrder.isEmpty())) {
+                    if (sortOrder.toLowerCase().equals("asc")) {
+                        criteria.addOrder(Property.forName(sortField).asc());
+                    }
+                    if (sortOrder.toLowerCase().equals("desc")) {
+                        criteria.addOrder(Property.forName(sortField).desc());
+                    }
                 }
-                if (sortOrder.toLowerCase().equals("desc")) {
-                    criteria.addOrder(Property.forName(sortField).desc());
-                }
-            }
-            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-            criteria.setFirstResult(first);
-            criteria.setMaxResults(pageSize);
-            return criteria.list();
+                criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+                criteria.setFirstResult(first);
+                criteria.setMaxResults(pageSize);
+                return criteria.list();
             } else {
                 return this.sessionFactory.getCurrentSession()
                         .createQuery(String.format("SELECT DISTINCT u FROM Usuario u order by u.%1$s %2$s", sortField, sortOrder))
@@ -216,30 +216,30 @@ public class UsuarioDao {
 
     @Transactional(readOnly = true)
     public int count(Map<String, Object> filters) {
-        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
-        if (filters == null) {
-            filters = new HashMap();
-        }
-        for (String field : filters.keySet()) {
-            if (field.equals("termo")) {
-                String termo = (String) filters.get("termo");
-                criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
-                        Restrictions.eq("matricula", termo)));
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Usuario.class);
+            if (filters == null) {
+                filters = new HashMap();
             }
-            if (field.equals("tipoPerfil")) {
-                PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
-                criteria.createAlias("perfilList", "p");
-                criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
-                Curso curso = (Curso) filters.get("curso");
-                if (curso != null) {
-                    System.out.println("curso: " + curso.getNome());
-                    criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
-                } else {
-                    System.out.println("curso is null");
+            for (String field : filters.keySet()) {
+                if (field.equals("termo")) {
+                    String termo = (String) filters.get("termo");
+                    criteria.add(Restrictions.or(Restrictions.like("nome", termo, MatchMode.ANYWHERE).ignoreCase(),
+                            Restrictions.eq("matricula", termo)));
+                }
+                if (field.equals("tipoPerfil")) {
+                    PerfilEnum tipoPerfil = (PerfilEnum) filters.get("tipoPerfil");
+                    criteria.createAlias("perfilList", "p");
+                    criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
+                    Curso curso = (Curso) filters.get("curso");
+                    if (curso != null) {
+                        System.out.println("curso: " + curso.getNome());
+                        criteria.add(Restrictions.and(Restrictions.eq("p.curso", curso)));
+                    } else {
+                        System.out.println("curso is null");
+                    }
                 }
             }
-        }
-        try {
             criteria.setProjection(Projections.distinct(Projections.id()));
             return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         } catch (HibernateException e) {

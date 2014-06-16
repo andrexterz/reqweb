@@ -6,22 +6,46 @@
 
     <p:row>
         <p:column>
-            <h:outputLabel value="#{msg.observacao} #{msg.prepDe}: #{requerimentoBean.requerimento.discente.nome}" />
+            <h:outputLabel value="#{msg.tipoDeDocumento}" />
+        </p:column>
+        <p:column styleClass="alignRight">
+            <h:outputText value="#{itemRequerimento.tipoDeDocumento.tipoLocale}" />
         </p:column>
     </p:row>
     <p:row>
         <p:column>
+            <h:outputLabel value="#{msg.status}" />
+        </p:column>
+        <p:column styleClass="alignRight">
+            <p:selectOneButton value="#{itemRequerimento.status}" styleClass="noMargin">
+                <f:selectItem itemLabel="#{msg.recebido}"
+                              itemValue="RECEBIDO" />
+                <f:selectItem itemLabel="#{msg.deferido}"
+                              itemValue="DEFERIDO" />
+                <f:selectItem itemLabel="#{msg.indeferido}"
+                              itemValue="INDEFERIDO"/>
+                <p:ajax event="change" process="@this" update="salvaAtendimentoForm" />
+            </p:selectOneButton>
+        </p:column>
+    </p:row>    
+    <p:row>
+        <p:column colspan="2">
+            <h:outputLabel value="#{msg.observacao} #{msg.prepDe}: #{requerimentoBean.requerimento.discente.nome}" />
+        </p:column>
+    </p:row>
+    <p:row>
+        <p:column colspan="2">
             <p:inputTextarea rows="5" cols="32" autoResize="false" readonly="true"
                              value="#{requerimentoBean.requerimento.observacao}" />
         </p:column>
     </p:row>
     <p:row>
-        <p:column>
+        <p:column colspan="2">
             <h:outputLabel value="#{msg.observacao} #{msg.prepDo} #{msg.atendente}" />
         </p:column>
     </p:row>
     <p:row>
-        <p:column>
+        <p:column colspan="2">
             <p:inplace emptyLabel="#{msg.adicionar} #{msg.observacao}" styleClass="editItem" event="click" 
                        editor="true" saveLabel="#{msg.salvar}" cancelLabel="#{msg.cancelar}">
                 <p:ajax event="save" process="@this" update="formControls" listener="#{requerimentoBean.salvaAtendimento}" />

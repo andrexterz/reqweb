@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
  * @author andre
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"tipoPerfil","usuario_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"tipoPerfil","usuario_id", "curso_id"})})
 public class Perfil extends BaseModel {
 
     /**
@@ -93,8 +93,9 @@ public class Perfil extends BaseModel {
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass() == this.getClass()) {
             Perfil other = (Perfil) obj;
-            return (Objects.equals(other.getTipoPerfil(), this.getTipoPerfil()) && Objects.equals(other.getUsuario(), this.getUsuario())
-                    );
+            return (Objects.equals(other.getTipoPerfil(), this.getTipoPerfil())
+                    && Objects.equals(other.getUsuario(), this.getUsuario())
+                    && Objects.equals(other.getCurso(), this.getCurso()));
         }
         return false;
     }

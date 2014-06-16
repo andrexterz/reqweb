@@ -18,6 +18,15 @@
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="DOCUMENTO_DE_ESTAGIO" />
                         </h:commandLink>
+                        <h:commandLink id="discentesLnk"
+                                       action="discentes?faces-redirect=true"
+                                       value="#{msg.discentes}"
+                                       styleClass="usuarios">
+                            <f:setPropertyActionListener
+                                target="#{usuarioBean.tipoPerfilBusca}"
+                                value="DISCENTE" />
+                        </h:commandLink>
+                        
                     </h:panelGrid>
                 </h:panelGroup>
             </h:form>

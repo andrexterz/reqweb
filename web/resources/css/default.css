@@ -119,6 +119,10 @@ input[type="text"], input[type="password"], select {
     color: #333;
 }
 
+.noMargin {
+    margin: 0;
+}
+
 /*********************************** generic tables ***************************/
 .table100 {
     width: 100%;

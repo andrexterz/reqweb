@@ -17,7 +17,7 @@
                 
                 <h:outputText value="#{msg.discente}: #{requerimentoBean.requerimento.discente.nome}" />
                 <p:separator />
-                <p:panelGrid id="atendimentoDlgPanel" styleClass="formGrid">
+                <p:panelGrid id="atendimentoDlgPanel" styleClass="formGrid rowLine">
                     <c:if  test="#{requerimentoBean.operation == 'e'}">
                         <ui:include src="#{requerimentoBean.requerimento.tipoRequerimento.tipo}Item.xhtml" />                        
                     </c:if>

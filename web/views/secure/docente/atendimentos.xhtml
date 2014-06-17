@@ -1,0 +1,107 @@
+<ui:composition template="secretaria.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipoLocale: msg.requerimentos}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                var widgetId = ["#secretariaMenuLinks\\:", "#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipo: 'requerimentos'}", "Lnk"].join("");
+                $(widgetId).addClass("menuItemSelected");
+            });
+        </script>
+        <ui:include src="salvaAtendimentoForm.xhtml" />
+        <ui:include src="/views/secure/common/all/detalheRequerimentoForm.xhtml" />
+        <h:form id="atendimentoForm" styleClass="formBody">
+            <p:outputPanel layout="block" id="atendimentoToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.atender}"
+                                 process="@this"
+                                 disabled="#{!requerimentoBean.selecionado or requerimentoBean.tipoRequerimento eq null}"
+                                 actionListener="#{requerimentoBean.editaRequerimento}"
+                                 oncomplete="PF('dlgAtendimentoVar').show()"                                 
+                                 update="tableRequerimentos :dlgAtendimentoForm :salvaAtendimentoForm" />
+
+                <p:commandButton value="#{msg.atendimento}"
+                                 disabled="#{!requerimentoBean.selecionado}"
+                                 oncomplete="detalheRequerimentoDialog.show()"
+                                 update=":dlgDetalheRequerimentoDialog" />
+
+                <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                    <h:outputLabel for="searchType" value="#{msg.buscar}" />
+                    <p:selectOneButton styleClass="searchBoxMenu"
+                                       id="searchType"
+                                       value="#{requerimentoBean.tipoBusca}">
+                        <f:selectItem itemLabel="#{msg.dataCriacao}" itemValue="PERIODO" />
+                        <f:selectItem itemLabel="#{msg.discente}" itemValue="DISCENTE" />
+                        <p:ajax update="searchPanel tableRequerimentos" />
+                    </p:selectOneButton>
+                    <p:autoComplete id="requerimentoTipoRequerimento"
+                                    completeMethod="#{requerimentoBean.findTipoRequerimento}"
+                                    value="#{requerimentoBean.tipoRequerimentoBusca}"
+                                    disabled="#{requerimentoBean.tipoRequerimento != null}"
+                                    minQueryLength="4"
+                                    forceSelection="true"
+                                    styleClass="searchBoxAutocomplete"
+                                    converter="#{tipoRequerimentoEnumConverter}"
+                                    var="tipoReqItem"
+                                    itemLabel="#{tipoReqItem.tipoLocale}"
+                                    itemValue="#{tipoReqItem}"
+                                    rendered="#{requerimentoBean.tipoBusca == 'TIPO_REQUERIMENTO'}">
+                        <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaTipoBuscaRequerimento}" />
+                    </p:autoComplete>
+                    <p:watermark for="requerimentoTipoRequerimento" value="#{msg.requerimento}" />
+                    <p:inputMask id="requerimentoBuscaPeriodo"
+                                 value="#{requerimentoBean.termoBuscaPeriodo}"
+                                 mask="99/99/9999 - 99/99/9999"
+                                 styleClass="searchBox"
+                                 rendered="#{requerimentoBean.tipoBusca == 'PERIODO'}" />
+                    <p:watermark for="requerimentoBuscaPeriodo" value="#{msg.periodo}" />
+                    <p:inputText id="requerimentoBuscaDiscente"
+                                 value="#{requerimentoBean.termoBuscaDiscente}"
+                                 styleClass="searchBox"
+                                 rendered="#{requerimentoBean.tipoBusca == 'DISCENTE'}" />
+                    <p:watermark for="requerimentoBuscaDiscente" value="#{msg.nome}/#{msg.usuarioMatricula}" />
+                    <!-- ao pressionar <return>, o formulario submete o commandButton[id=requerimentoBuscaCommand] -->
+                    <p:commandButton style="visibility: hidden;" id="requerimentoBuscaCommand"  styleClass="searchCommand floatRight" update="tableRequerimentos :formHeader:systemMessages" />
+                    <p:defaultCommand target="requerimentoBuscaCommand" />
+                </h:panelGroup>
+                </p:outputPanel>
+            <p:dataTable id="tableRequerimentos" var="requerimentoItem"
+                         value="#{requerimentoBean.requerimentosDataModel}"
+                         lazy="true"
+                         emptyMessage="#{msg.emptyMessage}"
+                         paginator="true"
+                         selectionMode="single"
+                         selection="#{requerimentoBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":atendimentoForm:atendimentoToolbar" listener="#{requerimentoBean.selecionaItem}" />
+                <p:column headerText="#{msg.requerimento}" styleClass="col20">
+                    <h:outputText value="#{requerimentoItem.tipoRequerimento.tipoLocale}" />
+                </p:column>
+                <p:column headerText="#{msg.usuarioMatricula}" styleClass="col15 alignCenter">
+                    <h:outputText value="#{requerimentoItem.discente.matricula}" />
+                </p:column>
+                <p:column headerText="#{msg.discente}" styleClass="col25">
+                    <h:outputText value="#{requerimentoItem.discente.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.status}" sortBy="status" styleClass="col10 alignCenter">
+                    <h:outputText value="#{requerimentoItem.status.statusLocale}" />
+                </p:column>
+                <p:column headerText="#{msg.dataCriacao}" sortBy="dataCriacao" styleClass="col15 alignRight">
+                    <h:outputText value="#{requerimentoItem.dataCriacao}">
+                        <f:convertDateTime locale="#{localeBean.locale}" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.dataModificacao}" sortBy="dataModificacao" styleClass="col15 alignRight">
+                    <h:outputText value="#{requerimentoItem.dataModificacao}">
+                        <f:convertDateTime locale="#{localeBean.locale}" />
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

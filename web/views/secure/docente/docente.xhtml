@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/views/base.xhtml">
+        <ui:define name="menu">
+            <h:form id="secretariaMenuLinks">
+                <h:panelGroup layout="block" styleClass="menuItens">
+                    <h:panelGrid columns="1">
+                        <h:commandLink id="extratoAcademicoLnk"
+                                       action="atendimentos?faces-redirect=true"
+                                       value="#{msg.segundaChamadaDeProva}"
+                                       styleClass="extratoAcademico">
+                            <f:setPropertyActionListener
+                                target="#{requerimentoBean.tipoRequerimento}"
+                                value="SEGUNDA_CHAMADA_DE_PROVA" />
+                        </h:commandLink>
+                        <h:commandLink id="discentesLnk"
+                                       action="discentes?faces-redirect=true"
+                                       value="#{msg.discentes}"
+                                       styleClass="usuarios">
+                            <f:setPropertyActionListener
+                                target="#{usuarioBean.tipoPerfilBusca}"
+                                value="DISCENTE" />
+                        </h:commandLink>
+                    </h:panelGrid>
+                </h:panelGroup>
+            </h:form>
+        </ui:define>
+        <ui:define name="content">
+            <div class="homePageText">
+                <p>REQWEB</p>
+                <p>#{msg.docenteHome}</p>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>

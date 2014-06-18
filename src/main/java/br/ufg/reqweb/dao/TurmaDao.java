@@ -8,6 +8,7 @@ package br.ufg.reqweb.dao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Turma;
+import br.ufg.reqweb.model.Usuario;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,18 @@ public class TurmaDao {
                         .list();
             }
             return turmas;
+        } catch (HibernateException | NumberFormatException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Turma> find(Usuario docente) {
+        try {
+            Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(Turma.class);
+            criteria.add(Restrictions.eq("docente", docente));
+            return criteria.list();
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

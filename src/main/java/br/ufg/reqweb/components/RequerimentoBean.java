@@ -6,6 +6,7 @@
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.RequerimentoDao;
+import br.ufg.reqweb.dao.TurmaDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.AjusteDeMatricula;
 import br.ufg.reqweb.model.Arquivo;
@@ -78,6 +79,9 @@ public class RequerimentoBean implements Serializable {
 
     @Autowired
     private RequerimentoDao requerimentoDao;
+
+    @Autowired
+    private TurmaDao turmaDao;
 
     private Requerimento requerimento;
     private Requerimento itemSelecionado;
@@ -183,7 +187,7 @@ public class RequerimentoBean implements Serializable {
                 setPageSize(pageSize);
                 Map<String, Object> filtros = new HashMap();
                 if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-                    filtros.put("login", getLoginUsuario());
+                    filtros.put("login", getSessionUsuario().getLogin());
                 }
                 if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
                     for (Perfil p: getSessionUsuario().getPerfilList()) {
@@ -201,6 +205,10 @@ public class RequerimentoBean implements Serializable {
                         }
                     }
                 }
+                if (getPerfilUsuario().equals(PerfilEnum.DOCENTE)) {
+                    filtros.put("turmas", turmaDao.find(getSessionUsuario()));
+                }
+                
                 if (getTipoRequerimento() != null) {
                     setTipoRequerimentoBusca(null);
                     filtros.put("tipoRequerimento", getTipoRequerimento());
@@ -416,7 +424,7 @@ public class RequerimentoBean implements Serializable {
     }
 
     public String validaRequerimento() {
-        String loginUser = getLoginUsuario();
+        String loginUser = getSessionUsuario().getLogin();
         if (requerimento.getId() == null) {
             requerimento.setDiscente(usuarioDao.findByLogin(loginUser));
         }
@@ -641,7 +649,7 @@ public class RequerimentoBean implements Serializable {
             }
 
             Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            arq.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS.%3$s", getLoginUsuario(), calendar.getTime(), fileExt));
+            arq.setNomeArquivo(String.format("%1$s%2$tF-%2$tH%2$tM%2$tS.%3$s", getSessionUsuario().getLogin(), calendar.getTime(), fileExt));
             arq.setConteudo(file.getContents());
             SegundaChamadaDeProva itemRequerimento = (SegundaChamadaDeProva) sessionMap.get("itemRequerimento");
             itemRequerimento.addArquivo(arq);
@@ -667,11 +675,6 @@ public class RequerimentoBean implements Serializable {
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
     }
     
-    public String getLoginUsuario() {
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getLogin();
-    }
-
     public PerfilEnum getPerfilUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
@@ -840,7 +843,7 @@ public class RequerimentoBean implements Serializable {
     }
 
     public boolean isReqAjusteDeMatriculaExists() {
-        return requerimentoDao.countReqAjusteDeMatricula(getLoginUsuario()) > 0;
+        return requerimentoDao.countReqAjusteDeMatricula(getSessionUsuario().getLogin()) > 0;
     }
 
     public boolean isSaveStatus() {

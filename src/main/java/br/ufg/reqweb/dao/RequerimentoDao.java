@@ -7,6 +7,7 @@ package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
+import br.ufg.reqweb.model.Turma;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -302,6 +303,11 @@ public class RequerimentoDao {
                 if (field.equals("login")) {
                     criteria.createAlias("discente", "d");
                     criteria.add(Restrictions.and(Restrictions.eq("d.login", filters.get(field))));
+                }
+                if (field.equals("turmas")) {
+                    criteria.createAlias("turma", "t");
+                    List<Turma> turmas = (List<Turma>) filters.get(field);
+                    criteria.add(Restrictions.and(Restrictions.in("t", turmas)));
                 }
                 if (field.equals("tipoRequerimento")) {
                     criteria.add(Restrictions.and(Restrictions.eq(field, filters.get(field))));

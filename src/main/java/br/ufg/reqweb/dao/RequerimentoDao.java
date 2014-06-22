@@ -305,9 +305,9 @@ public class RequerimentoDao {
                     criteria.add(Restrictions.and(Restrictions.eq("d.login", filters.get(field))));
                 }
                 if (field.equals("turmas")) {
-                    criteria.createAlias("turma", "t");
+                    criteria.createAlias("itemRequerimentoList", "i");
                     List<Turma> turmas = (List<Turma>) filters.get(field);
-                    criteria.add(Restrictions.and(Restrictions.in("t", turmas)));
+                    criteria.add(Restrictions.and(Restrictions.in("i.turma", turmas)));
                 }
                 if (field.equals("tipoRequerimento")) {
                     criteria.add(Restrictions.and(Restrictions.eq(field, filters.get(field))));

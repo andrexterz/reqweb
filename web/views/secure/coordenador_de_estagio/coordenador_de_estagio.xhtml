@@ -7,7 +7,7 @@
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
-            <h:form id="coordenadorDeEstagioMenuLinks">
+            <h:form id="menuLinks">
                 <h:panelGroup layout="block" styleClass="menuItens">
                     <h:panelGrid columns="1">
                         <h:commandLink id="documentoDeEstagioLnk"
@@ -18,7 +18,7 @@
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="DOCUMENTO_DE_ESTAGIO" />
                         </h:commandLink>
-                        <h:commandLink id="discentesLnk"
+                        <h:commandLink id="usuariosLnk"
                                        action="discentes?faces-redirect=true"
                                        value="#{msg.discentes}"
                                        styleClass="usuarios">

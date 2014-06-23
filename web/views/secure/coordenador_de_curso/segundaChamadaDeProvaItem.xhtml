@@ -8,21 +8,27 @@
         <p:column>
             <p:tabView activeIndex="0" styleClass="segundaChamadaDeProvaBox">
                 <p:tab title="#{msg.requerimento}">
-                    <p:panelGrid styleClass="formGrid">
+                    <p:panelGrid styleClass="formGrid rowLine">
                         <p:row>
-                            <p:column>
+                            <p:column styleClass="col40">
                                 <h:outputLabel value="#{msg.disciplina}" />
                             </p:column>
-                            <p:column styleClass="alignCenter">
+                            <p:column styleClass="col30">
+                                <h:outputLabel value="#{msg.docente}" />
+                            </p:column>
+                            <p:column styleClass="col15 alignCenter">
                                 <h:outputLabel value="#{msg.turma}" />
                             </p:column>
-                            <p:column styleClass="alignCenter">
+                            <p:column styleClass="col15 alignCenter">
                                 <h:outputLabel value="#{msg.curso}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column>
                                 <h:outputText value="#{itemRequerimento.turma.disciplina.nome}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{itemRequerimento.turma.docente.nome}" />
                             </p:column>
                             <p:column styleClass="alignCenter">
                                 <h:outputText value="#{itemRequerimento.turma.nome}" />
@@ -32,12 +38,18 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column>
                                 <h:outputLabel value="#{msg.status}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputLabel value="#{msg.dataProvaA}" />
+                            </p:column>
+                            <p:column colspan="2">
+                                <h:outputLabel value="#{msg.dataProvaB}" />
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column>
                                 <p:selectOneButton value="#{itemRequerimento.status}">
                                     <f:selectItem itemLabel="#{msg.aberto}"
                                                   itemValue="ABERTO" />
@@ -48,25 +60,35 @@
                                     <p:ajax event="change" process="@this" update=":salvaAtendimentoForm" />
                                 </p:selectOneButton>
                             </p:column>
+                            <p:column>
+                                <h:outputText value="#{itemRequerimento.dataProvaA}">
+                                    <f:convertDateTime locale="#{localeBean.locale}" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column colspan="2">
+                                <h:outputText value="#{itemRequerimento.dataProvaB}">
+                                    <f:convertDateTime locale="#{localeBean.locale}" />
+                                </h:outputText>
+                            </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column colspan="4">
                                 <h:outputLabel value="#{msg.observacao} #{msg.prepDe}: #{requerimentoBean.requerimento.discente.nome}" />
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column colspan="4">
                                 <p:inputTextarea rows="5" cols="32" autoResize="false" readonly="true"
                                                  value="#{requerimentoBean.requerimento.observacao}" />
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column colspan="4">
                                 <h:outputLabel value="#{msg.observacao} #{msg.prepDo} #{msg.atendente}" />
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column colspan="3">
+                            <p:column colspan="4">
                                 <p:inplace emptyLabel="#{msg.adicionar} #{msg.observacao}" styleClass="editItem" event="click" 
                                            editor="true" saveLabel="#{msg.salvar}" cancelLabel="#{msg.cancelar}">
                                     <p:ajax event="save" process="@this" update=":salvaAtendimentoForm:formControls" listener="#{requerimentoBean.salvaAtendimento}" />

@@ -7,18 +7,18 @@
 
     <ui:composition template="/views/base.xhtml">
         <ui:define name="menu">
-            <h:form id="secretariaMenuLinks">
+            <h:form id="menuLinks">
                 <h:panelGroup layout="block" styleClass="menuItens">
                     <h:panelGrid columns="1">
-                        <h:commandLink id="extratoAcademicoLnk"
+                        <h:commandLink id="segundaChamadaDeProvaLnk"
                                        action="atendimentos?faces-redirect=true"
                                        value="#{msg.segundaChamadaDeProva}"
-                                       styleClass="extratoAcademico">
+                                       styleClass="segundaChamadaDeProva">
                             <f:setPropertyActionListener
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="SEGUNDA_CHAMADA_DE_PROVA" />
                         </h:commandLink>
-                        <h:commandLink id="discentesLnk"
+                        <h:commandLink id="usuariosLnk"
                                        action="discentes?faces-redirect=true"
                                        value="#{msg.discentes}"
                                        styleClass="usuarios">

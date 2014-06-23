@@ -487,7 +487,7 @@ input[type="text"], input[type="password"], select {
     background-image: url("#{resource['img/periodos.png']}");
 }
 
-.turmas {
+.turmasLnk {
     background-image: url("#{resource['img/turmas.png']}");
 }
 
@@ -789,7 +789,7 @@ f.usuarioColLogin {
 
 /************************************ requerimentos ***************************/
 .segundaChamadaDeProvaBox {
-    width: 590px;
+    width: 620px;
     height: auto;
     border: 1px solid #a8a8a8;
     padding: 2px;

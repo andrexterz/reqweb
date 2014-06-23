@@ -5,6 +5,12 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipoLocale: msg.requerimentos}</ui:define>
     <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#menuLinks\\:turmasLnk").addClass("menuItemSelected");
+            });
+        </script>
+        
         <ui:include src="salvaTurmaForm.xhtml" />
         <ui:include src="excluiTurmaForm.xhtml" />
 

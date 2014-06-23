@@ -9,7 +9,7 @@
     <ui:define name="content">
         <script>
             $(document).ready(function() {
-                var widgetId = ["#discenteMenuLinks\\:", "#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipo: 'requerimentos'}", "Lnk"].join("");
+                var widgetId = ["#menuLinks\\:", "#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipo: 'requerimentos'}", "Lnk"].join("");
                 $(widgetId).addClass("menuItemSelected");
             });
         </script>

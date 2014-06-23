@@ -7,21 +7,18 @@
     <p:row>
         <p:column>
             <p:dataTable id="ajusteReqItem" var="itemRequerimento" paginator="true" rows="5" paginatorPosition="bottom"
-                         styleClass="table100" value="#{requerimentoBean.requerimento.itemRequerimentoList}">
-                <p:column headerText="#{msg.disciplina}" styleClass="col45">
-                    <h:outputText value="#{itemRequerimento.turma.disciplina.nome}" />
+                         styleClass="tableGrid" value="#{requerimentoBean.requerimento.itemRequerimentoList}">
+                <p:column styleClass="col40" headerText="#{msg.disciplina}">
+                    <h:outputText value="#{itemRequerimento.turma}" />
                 </p:column>
-                <p:column headerText="#{msg.turma}" styleClass="col10 alignCenter">
-                    <h:outputText value="#{itemRequerimento.turma.nome}" />
-                </p:column>
-                <p:column headerText="#{msg.curso}" styleClass="col10 alignCenter">
+                <p:column styleClass="col10 alignCenter" headerText="#{msg.curso}">
                     <h:outputText value="#{itemRequerimento.turma.disciplina.curso.sigla}" />
                 </p:column>
-                <p:column headerText="#{msg.acao}" styleClass="col15 alignCenter">
+                <p:column styleClass="col25 alignCenter" headerText="#{msg.acao}">
                     <h:outputText value="#{itemRequerimento.tipoDeAjuste.tipoLocale}"
                                   styleClass="#{itemRequerimento.tipoDeAjuste eq 'INCLUSAO_DE_DISCIPLINA'? 'addedItem': 'removedItem'}" />
                 </p:column>
-                <p:column headerText="#{msg.status}" styleClass="col20 alignCenter">
+                <p:column styleClass="col25 alignCenter" headerText="#{msg.status}">
                     <p:selectOneButton value="#{itemRequerimento.status}">
                         <f:selectItem itemLabel="#{msg.aberto}"
                                       itemValue="ABERTO" />

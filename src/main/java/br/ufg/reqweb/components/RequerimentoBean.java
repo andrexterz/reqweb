@@ -469,7 +469,7 @@ public class RequerimentoBean implements Serializable {
             if (statusAbertoCounter > 0 && statusAbertoCounter < requerimento.getItemRequerimentoList().size()) {
                 System.out.println("status em andamento");
                 requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
-            } else {
+            } if (statusAbertoCounter == 0) {
                 System.out.println("status finalizado");
                 requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
             }

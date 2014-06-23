@@ -104,7 +104,7 @@ public class SegundaChamadaDeProva extends ItemRequerimento {
      * @param dataProvaB the dataProvaB to set
      */
     public void setDataProvaB(Date dataProvaB) {
-        this.dataProvaA = dataProvaB;
+        this.dataProvaB = dataProvaB;
     }
     
     public List<Arquivo> getArquivos () {

@@ -20,6 +20,8 @@
             <p:column styleClass="alignRight">
                 <h:outputText styleClass="statusAberto" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'ABERTO'}"
                               value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
+                <h:outputText styleClass="statusAberto" rendered="#{requerimentoBean.loadedItemRequerimento.status eq 'EM_ANDAMENTO'}"
+                              value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
                 <h:outputText styleClass="statusDeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'DEFERIDO'}"
                               value="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status.statusLocale}" />
                 <h:outputText styleClass="statusIndeferido" rendered="#{requerimentoBean.loadedItemRequerimento.itemRequerimentoList.iterator().next().status eq 'INDEFERIDO'}"

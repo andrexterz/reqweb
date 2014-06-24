@@ -190,7 +190,7 @@ public class RequerimentoBean implements Serializable {
                     filtros.put("login", getSessionUsuario().getLogin());
                 }
                 if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                    for (Perfil p : getSessionUsuario().getPerfilList()) {
                         if (p.getTipoPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
                             filtros.put("curso", p.getCurso());
                             break;
@@ -198,7 +198,7 @@ public class RequerimentoBean implements Serializable {
                     }
                 }
                 if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
-                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                    for (Perfil p : getSessionUsuario().getPerfilList()) {
                         if (p.getTipoPerfil().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
                             filtros.put("curso", p.getCurso());
                             break;
@@ -208,7 +208,7 @@ public class RequerimentoBean implements Serializable {
                 if (getPerfilUsuario().equals(PerfilEnum.DOCENTE)) {
                     filtros.put("turmas", turmaDao.find(getSessionUsuario()));
                 }
-                
+
                 if (getTipoRequerimento() != null) {
                     setTipoRequerimentoBusca(null);
                     filtros.put("tipoRequerimento", getTipoRequerimento());
@@ -469,7 +469,8 @@ public class RequerimentoBean implements Serializable {
             if (statusAbertoCounter > 0 && statusAbertoCounter < requerimento.getItemRequerimentoList().size()) {
                 System.out.println("status em andamento");
                 requerimento.setStatus(RequerimentoStatusEnum.EM_ANDAMENTO);
-            } if (statusAbertoCounter == 0) {
+            }
+            if (statusAbertoCounter == 0) {
                 System.out.println("status finalizado");
                 requerimento.setStatus(RequerimentoStatusEnum.FINALIZADO);
             }
@@ -669,12 +670,12 @@ public class RequerimentoBean implements Serializable {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("arquivoExcluido"), null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-    
+
     public Usuario getSessionUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
     }
-    
+
     public PerfilEnum getPerfilUsuario() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
@@ -827,7 +828,24 @@ public class RequerimentoBean implements Serializable {
     }
 
     public boolean isEditavel() {
-        return (itemSelecionado != null && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO));
+        boolean editavel = false;
+        if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)
+                || getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)
+                || getPerfilUsuario().equals(PerfilEnum.DOCENTE)) {
+            editavel = itemSelecionado != null && !itemSelecionado.getStatus().equals(RequerimentoStatusEnum.FINALIZADO);
+        }
+        if (getPerfilUsuario().equals(PerfilEnum.SECRETARIA)) {
+            if (itemSelecionado != null) {
+                editavel = (itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)
+                        && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO))
+                        || (!itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)
+                        && !itemSelecionado.getStatus().equals(RequerimentoStatusEnum.FINALIZADO));
+            }
+        }
+        if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
+            editavel = itemSelecionado != null && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO);
+        }
+        return (itemSelecionado != null && editavel);
     }
 
     public boolean isShowControls() {

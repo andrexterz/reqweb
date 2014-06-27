@@ -1,5 +1,6 @@
 package br.ufg.reqweb.util.servicelocator;
 
+import br.ufg.reqweb.util.Settings;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -39,9 +40,10 @@ public class LDAPServiceLocator {
         Hashtable<String, String> env = new Hashtable<String, String>(11);
 
         // Especifica a fabrica de INITIAL CONTEXT
-        env.put(Context.INITIAL_CONTEXT_FACTORY, LDAPParametrosConfig.INITIAL_CTX);
+        
+        env.put(Context.INITIAL_CONTEXT_FACTORY, Settings.getInstance().getConf().getProperty("initialCtx"));
         // Especifica o IP/Nome e a porta do servidor LDAP
-        env.put(Context.PROVIDER_URL, LDAPParametrosConfig.SERVIDOR);
+        env.put(Context.PROVIDER_URL, Settings.getInstance().getConf().getProperty("server"));
         // As linhas abaixo são usadas quando o servidor LDAP não permite busca como anonymous             
         //env.put(Context.SECURITY_PRINCIPAL, LDAPParametrosConfig.ADMIN_DN );                
         //Especifia o tipo de autenticação

@@ -4,7 +4,6 @@
  */
 package br.ufg.reqweb.util;
 
-import br.ufg.reqweb.util.servicelocator.LDAPParametrosConfig;
 import br.ufg.reqweb.util.servicelocator.LDAPServiceLocator;
 import br.ufg.reqweb.model.PerfilEnum;
 
@@ -43,36 +42,6 @@ public class LdapInfo implements Serializable {
     private String email;
     static private DirContext ctx;
 
-    public static LdapInfo autenticar(String usuario, String senha, String grupo) {
-        LdapInfo ldapInfo = new LdapInfo();
-
-        if (ldapInfo.doLogin(usuario, senha)) {
-            ldapInfo.buscaGrupo(grupo);
-            if (ldapInfo.getGrupo() == null && !grupo.equals("100")) {
-                ldapInfo = null;
-            }
-            return ldapInfo;
-        } else {
-            return null;
-        }
-
-    }
-
-    private boolean doLogin(String usuario, String senha) {
-
-        this.usuario = usuario;
-        boolean res;
-        String usuarioLdap = "uid=" + usuario + ", OU=Users,dc=dionisio, dc=inf, dc=ufg, dc=br";
-
-        try {
-            ctx = LDAPServiceLocator.getInstance().getContext(usuarioLdap, senha);
-            res = true;
-        } catch (NamingException ex) {
-            res = false;
-        }
-        return res;
-    }
-
     public  static List<LdapInfo> scanLdap() {
         List<LdapInfo> usuarios = new ArrayList<>();
         Attributes matchAttrs = new BasicAttributes(false);
@@ -82,7 +51,7 @@ public class LdapInfo implements Serializable {
         try {
             ctx = LDAPServiceLocator.getInstance().getContext("", "");
             resultado = ctx.search(
-                    LDAPParametrosConfig.SEARCHBASE,
+                    Settings.getInstance().getConf().getProperty("searchBase"),
                     matchAttrs,
                     atributosRetorno);
 
@@ -142,7 +111,7 @@ public class LdapInfo implements Serializable {
         NamingEnumeration<?> resultado;
         try {
             resultado = ctx.search(
-                    LDAPParametrosConfig.SEARCHBASE, matchAttrs,
+                    Settings.getInstance().getConf().getProperty("searchBase"), matchAttrs,
                     atributosRetorno);
 
             if (resultado.hasMore()) {

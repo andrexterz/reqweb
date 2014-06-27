@@ -6,18 +6,21 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
        
     <context:component-scan base-package="br.ufg.reqweb.components, br.ufg.reqweb.dao" />
     <!-- mvc not used with jsf -->
     <!-- mvc:annotation-driven /-->
     <!-- JSR-303 validator -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+    <util:properties id="reqwebSettings" location="classpath:reqweb.properties" />
     
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/views/"/>
@@ -26,9 +29,9 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
-        <property name="url" value="jdbc:postgresql://localhost/reqweb" />
-        <property name="username" value="web" />
-        <property name="password" value="web" />
+        <property name="url" value="#{reqwebSettings.databaseString}" />
+        <property name="username" value="#{reqwebSettings.databaseUser}" />
+        <property name="password" value="#{reqwebSettings.databasePassword}" />
     </bean> 
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">        
@@ -53,8 +56,8 @@
     <!-- spring security configuration -->
     <!-- apenas verifica se usuario foi autenticado. ignora roles -->
     
-    <security:ldap-server id="ldapSource" url="ldap://200.137.197.214:389/dc=dionisio,dc=inf,dc=ufg,dc=br" /> 
-    
+    <security:ldap-server id="ldapSource" url="#{reqwebSettings.url}" /> 
+
     <security:authentication-manager id="authManager">
         <security:ldap-authentication-provider user-search-filter="(uid={0})" />
     </security:authentication-manager>

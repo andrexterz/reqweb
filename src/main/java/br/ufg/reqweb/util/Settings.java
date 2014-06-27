@@ -15,10 +15,11 @@ import org.apache.log4j.Logger;
  * @author andre
  */
 public class Settings {
-    
+
+
     private static final Logger log = Logger.getLogger(Settings.class);
-    
-    Properties conf;
+    private static Settings instance;
+    private static Properties conf;
 
     public Settings() {
         conf = new Properties();
@@ -27,14 +28,22 @@ public class Settings {
             conf.load(in);
         } catch (IOException | NullPointerException e) {
             log.error("No config found: loading default configuration...");
-            conf.setProperty("minPeriodo",  "5");
+            conf.setProperty("minPeriodo", "5");
             conf.setProperty("maxArquivos", "3");
-            conf.setProperty("maxCopias",   "2");
-            conf.setProperty("maxArquivo",  "1048576");
+            conf.setProperty("maxCopias", "2");
+            conf.setProperty("maxArquivo", "1048576");
         }
     }
-    
-    public Properties getConf(){
+
+    public Properties getConf() {
         return conf;
+    }
+
+    public static Settings getInstance() {
+
+        if (instance == null) {
+            instance = new Settings();
+        }
+        return instance;
     }
 }

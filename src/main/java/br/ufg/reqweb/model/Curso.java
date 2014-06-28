@@ -21,8 +21,8 @@ public class Curso extends BaseModel {
     @Size(min = 5, max = 100)
     private String nome;
 
-    @Column(length = 6, unique = true, nullable = false)
-    @Size(min = 2, max = 6)
+    @Column(length = 8, unique = true, nullable = false)
+    @Size(min = 2, max = 8)
     private String sigla;
 
     /**

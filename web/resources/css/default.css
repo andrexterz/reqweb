@@ -503,6 +503,10 @@ input[type="text"], input[type="password"], select {
     background-image: url("#{resource['img/log.png']}");
 }
 
+.relatorios {
+    background-image: url("#{resource['img/log.png']}");
+}
+
 .declaracaoDeMatricula {
     background-image: url("#{resource['img/declaracaoDeMatricula.png']}");
 }
@@ -1142,6 +1146,11 @@ f.usuarioColLogin {
 
 .progressbar {
     width: 100%;
+}
+/********************************** relatorios ***********************************/
+.relatorioUsuario {
+    font-size: 100%;
+    background: #2eabe2;
 }
 
 /*********************************** footer ***********************************/

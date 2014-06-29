@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="usuarios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
+	<property name="ireport.zoom" value="1.3310000000000073"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from usuario;]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="login" class="java.lang.String"/>
+	<field name="matricula" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
+	<variable name="ufgLogo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="62" splitType="Stretch">
+			<staticText>
+				<reportElement x="51" y="0" width="340" height="18" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="14" isBold="true" isItalic="false" isStrikeThrough="false"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[REQWEB- SISTEMA DE REQUERIMENTOS WEB]]></text>
+			</staticText>
+			<line>
+				<reportElement x="50" y="-2" width="1" height="52" uuid="5bfc8d82-2f25-4769-b773-53ba4530e8c6"/>
+			</line>
+			<staticText>
+				<reportElement x="51" y="23" width="220" height="25" uuid="b8966809-93fa-4137-8f8b-59538cdfb0bd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="false"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[ÍNDICE DE PRIORIDADE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="55" width="555" height="1" uuid="efdf8c97-12c7-4282-a691-5875f2f40349"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="271" y="23" width="64" height="25" uuid="ca306a9a-44b5-4753-8177-d65ab60f84b2"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="335" y="23" width="29" height="25" uuid="f56b63b2-69cc-4304-a591-e8d2604f50f7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["pg " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="364" y="23" width="27" height="25" uuid="994d8205-1a92-40c7-b7f8-5d8328878538"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["/" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="48" height="48" uuid="36faa6a2-978c-4221-9e1a-18da2a243076"/>
+				<imageExpression><![CDATA["../resources/img/logo48x48black.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="507" y="0" width="48" height="48" uuid="1ba51dde-ddb7-4da7-9d89-a05c668e9f47"/>
+				<imageExpression><![CDATA["../resources/img/logoUFG48x48black.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24">
+			<staticText>
+				<reportElement x="0" y="4" width="64" height="20" uuid="edd5521b-0263-40b8-9a0d-ca56d98c3afd"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[matricula]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="4" width="207" height="20" uuid="82c79648-e645-4e83-b651-ac866ea76185"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[discente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="281" y="4" width="274" height="20" uuid="b0c50b19-0fe8-4045-8f25-ef1032ea0104"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[email]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="64" height="12" uuid="9bc92e34-bdac-4202-b959-9cadbf2c8fcb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matricula} == null ? "-": $F{matricula}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="64" y="0" width="207" height="12" uuid="7f2f6e56-2a73-4635-88f5-9eabd5732378"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="281" y="0" width="274" height="12" uuid="714812e5-6d6d-4ebc-a385-15a77224ab1a"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="6db3abdf-035d-42b9-a1fc-ef890d1a5377"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="0" y="4" width="555" height="50" uuid="8d0596b9-899e-4290-8bd1-b77f4f825724"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Instituto de Informática (INF) - UFG"
++"\nAlameda Palmeiras, Quadra D, Câmpus Samambaia"
++"\nCaixa Postal 131 - CEP 74001-970 - Goiânia - GO"
++"\nFone: (62) 3521-1181 / Fax: (62) 3521-1182"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

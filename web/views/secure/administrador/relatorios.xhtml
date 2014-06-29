@@ -1,0 +1,20 @@
+<ui:composition template="#{usuarioBean.home()}.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.discentes}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#menuLinks\\:relatoriosLnk").addClass("menuItemSelected");
+            });
+        </script>
+        <h:form id="relatorioForm" styleClass="formBody">
+            <p:commandLink value="#{msg.usuarios}" ajax="false">
+                <p:fileDownload value="#{reportBean.reportUsuarios}" />
+            </p:commandLink>
+        </h:form>
+    </ui:define>
+</ui:composition>

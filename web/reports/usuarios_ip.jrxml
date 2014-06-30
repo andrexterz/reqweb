@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="usuarios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="1.3310000000000073"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="usuariosIp" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
+	<property name="ireport.zoom" value="1.6105100000000099"/>
+	<property name="ireport.x" value="20"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[]]>
+	<queryString language="hql">
+		<![CDATA[select u.matricula, u.nome, c.nome as curso, ip.indiceprioridade  from Usuario u join IndicePrioridade ip join Perfil p join Curso c order by ip.indiceprioridade desc;]]>
 	</queryString>
-	<field name="id" class="java.lang.Long"/>
-	<field name="email" class="java.lang.String"/>
-	<field name="login" class="java.lang.String"/>
 	<field name="matricula" class="java.lang.String"/>
 	<field name="nome" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="indiceprioridade" class="java.lang.Float"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -29,10 +28,9 @@
 				<reportElement x="50" y="-2" width="1" height="52" uuid="5bfc8d82-2f25-4769-b773-53ba4530e8c6"/>
 			</line>
 			<textField>
-				<reportElement x="51" y="23" width="220" height="25" uuid="e302a088-4b6f-4d15-b353-853040bd13f7"/>
+				<reportElement x="51" y="23" width="220" height="25" uuid="e827aa83-aaf4-4ce5-aa66-a0c4a4190e4c"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="false"/>
-					<paragraph leftIndent="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
 			</textField>
@@ -84,11 +82,18 @@
 				<text><![CDATA[discente]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="281" y="4" width="274" height="20" uuid="b0c50b19-0fe8-4045-8f25-ef1032ea0104"/>
+				<reportElement x="271" y="4" width="207" height="17" uuid="6515bf78-dbfd-4304-9325-bb982f2c9f0d"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[email]]></text>
+				<text><![CDATA[curso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="478" y="4" width="77" height="17" uuid="48d5b8db-32dd-41dc-85b4-71b31d52d16d"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ip]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -109,11 +114,16 @@
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="281" y="0" width="274" height="12" uuid="714812e5-6d6d-4ebc-a385-15a77224ab1a"/>
+				<reportElement x="271" y="0" width="207" height="12" uuid="5e2ad4af-b6a9-4ea8-953a-fc3422890021"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{curso}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="478" y="0" width="77" height="12" uuid="9536e42b-2f14-48dc-a09d-d071a64f698b"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{indiceprioridade}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

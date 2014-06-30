@@ -136,7 +136,7 @@ public class UsuarioBean implements Serializable {
                 }
                 if (getPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO) || getPerfil().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
                     Curso curso = null;
-                    for (Perfil p: getSessionUsuario().getPerfilList()) {
+                    for (Perfil p : getSessionUsuario().getPerfilList()) {
                         if (p.getTipoPerfil().equals(getPerfil())) {
                             curso = p.getCurso();
                             break;
@@ -335,7 +335,7 @@ public class UsuarioBean implements Serializable {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
         return file;
     }
-
+    
     public void editaUsuario() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));

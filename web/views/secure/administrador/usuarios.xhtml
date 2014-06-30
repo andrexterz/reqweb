@@ -43,9 +43,17 @@
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{usuarioBean.docentesAsCSV}" />
                     </p:menuitem>
+                    <p:menuitem value="#{msg.docentes} #{msg.paraPDF}"
+                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                        <p:fileDownload value="#{reportBean.docentesAsPDF}" />
+                    </p:menuitem>
                     <p:menuitem value="#{msg.discentes} #{msg.paraCSV}"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{usuarioBean.discentesAsCSV}" />
+                    </p:menuitem>
+                    <p:menuitem value="#{msg.discentes} #{msg.paraPDF}"
+                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                        <p:fileDownload value="#{reportBean.discentesAsPDF}" />
                     </p:menuitem>
                 </p:menuButton>
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">

@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.components;
 
+import br.ufg.reqweb.dao.ReportDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.PerfilEnum;
 import java.io.ByteArrayInputStream;
@@ -17,8 +18,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportBean {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private ReportDao reportDao;
     
     @Autowired
     private UsuarioDao usuarioDao;
@@ -72,10 +72,10 @@ public class ReportBean {
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios_ip.jasper");
             Map reportParameters = new HashMap();
-            Session session = this.sessionFactory.getCurrentSession();
-            reportParameters.put("HIBERNATE_SESSION", session);
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("indicePrioridade"));
-            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters);
+            InputStream jsonStream = new ByteArrayInputStream(reportDao.findIndicePrioridade());
+            JsonDataSource jsonDataSource = new JsonDataSource(jsonStream);
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, jsonDataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName("reqweb_usuarios_ip.pdf");
             content.setContentType("application/pdf");

@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
 	<queryString language="hql">
-		<![CDATA[select u.matricula, u.nome, c.nome as curso, ip.indiceprioridade  from Usuario u join IndicePrioridade ip join Perfil p join Curso c order by ip.indiceprioridade desc;]]>
+		<![CDATA[]]>
 	</queryString>
 	<field name="matricula" class="java.lang.String"/>
 	<field name="nome" class="java.lang.String"/>

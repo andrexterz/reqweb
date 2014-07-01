@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="usuariosIp" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
 	<property name="ireport.zoom" value="1.6105100000000099"/>
-	<property name="ireport.x" value="20"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<queryString language="hql">
+	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<field name="matricula" class="java.lang.String"/>
@@ -31,6 +31,7 @@
 				<reportElement x="51" y="23" width="220" height="25" uuid="e827aa83-aaf4-4ce5-aa66-a0c4a4190e4c"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="false"/>
+					<paragraph leftIndent="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
 			</textField>

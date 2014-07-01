@@ -18,7 +18,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,15 +67,15 @@ public class ReportBean {
     }
     
     @Transactional(readOnly= true)
-    public StreamedContent getIndicePrioridade() {
+    public StreamedContent getIndicePrioridadeAsPDF() {
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios_ip.jasper");
+            //JRBeanCollectionDataSource beanDataSource = new JRBeanCollectionDataSource( reportDao.findIndicePrioridade());
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap());
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("indicePrioridade"));
-            InputStream jsonStream = new ByteArrayInputStream(reportDao.findIndicePrioridade());
-            JsonDataSource jsonDataSource = new JsonDataSource(jsonStream);
-            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, jsonDataSource);
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName("reqweb_usuarios_ip.pdf");
             content.setContentType("application/pdf");

@@ -445,7 +445,7 @@ public class UsuarioBean implements Serializable {
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         cb.setItemSelecionado(null);
     }
-
+   
     public boolean isCursoDisabled() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");

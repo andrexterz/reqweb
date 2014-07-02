@@ -47,3 +47,11 @@ function disableSundays(date) {
     var day = date.getDay();
     return eval("[(day !== 0),'']");
 }
+
+function startDownload() {
+    PF('downloadDialog').show();
+}
+ 
+function stopDownload() {
+    PF('downloadDialog').hide();
+}

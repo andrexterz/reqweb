@@ -194,28 +194,6 @@ public class IndicePrioridadeBean {
         }
     }
 
-    public StreamedContent getIndicePrioridadeAsCSV() {
-        StringBuilder csvData = new StringBuilder("id,indice_prioridade,discente_matricula, discente_id");
-        for (IndicePrioridade ip : indicePrioridadeDao.findAll()) {
-            csvData.append("\n");
-            csvData.append(ip.getId());
-            csvData.append(",");
-            csvData.append(ip.getIndicePrioridade());
-            csvData.append(",");
-            csvData.append(ip.getDiscente().getMatricula());
-            csvData.append(",");
-            csvData.append(ip.getDiscente().getId());
-        }
-        InputStream stream;
-        try {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        }
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv");
-        return file;
-    }
-
     public String getTermoBusca() {
         return termoBusca;
     }

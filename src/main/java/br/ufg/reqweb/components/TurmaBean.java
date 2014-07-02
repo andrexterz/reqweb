@@ -253,34 +253,6 @@ public class TurmaBean implements Serializable {
 
     }
 
-    public StreamedContent getTurmasAsCSV() {
-        StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,docente_id,curso_sigla");
-        for (Turma t : turmaDao.findAll()) {
-            csvData.append("\n");
-            csvData.append(t.getId());
-            csvData.append(",");
-            csvData.append(t.getPeriodo().getAno());
-            csvData.append(",");
-            csvData.append(t.getNome());
-            csvData.append(",");
-            csvData.append(t.getPeriodo().getSemestre().getValue());
-            csvData.append(",");
-            csvData.append(t.getDisciplina().getId());
-            csvData.append(",");
-            csvData.append(t.getDocente() == null ? "" : t.getDocente().getId());
-            csvData.append(",");
-            csvData.append(t.getDisciplina().getCurso().getSigla());
-        }
-        InputStream stream;
-        try {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        }
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv", "UTF8");
-        return file;
-    }
-
     public void uploadTurmas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;

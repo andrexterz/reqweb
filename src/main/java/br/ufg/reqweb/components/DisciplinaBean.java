@@ -261,29 +261,6 @@ public class DisciplinaBean implements Serializable {
         }
     }
 
-    public StreamedContent getDisciplinasAsCSV() {
-        StringBuilder csvData = new StringBuilder("id,codigo,disciplina,curso_sigla");
-        for (Disciplina d : disciplinaDao.findAll()) {
-            csvData.append("\n");
-            csvData.append(d.getId());
-            csvData.append(",");
-            csvData.append(d.getCodigo());
-            csvData.append(",");
-            csvData.append(d.getNome());
-            csvData.append(",");
-            csvData.append(d.getCurso().getSigla());
-        }
-
-        InputStream stream;
-        try {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        }
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_disciplinas.csv");
-        return file;
-    }
-
     public void uploadDisciplinas(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         List<String[]> data;

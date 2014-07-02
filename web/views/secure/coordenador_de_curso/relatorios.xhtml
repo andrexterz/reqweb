@@ -13,10 +13,10 @@
         </script>
         <h:form id="relatorioForm" styleClass="formBody">
             <h:panelGrid columns="1">
-                <p:commandLink value="#{msg.indicePrioridade}" ajax="false">
+                <p:commandLink value="#{msg.indicePrioridade}" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" ajax="false">
                     <p:fileDownload value="#{reportBean.indicePrioridadeAsPDF}" />
                 </p:commandLink>
-                <p:commandLink value="#{msg.ajusteDeMatricula}" ajax="false">
+                <p:commandLink value="#{msg.ajusteDeMatricula}" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" ajax="false">
                     <p:fileDownload value="#{reportBean.ajusteDeMatriculaAsPDF}" />
                 </p:commandLink>
             </h:panelGrid>

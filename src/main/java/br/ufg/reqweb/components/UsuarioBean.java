@@ -301,40 +301,6 @@ public class UsuarioBean implements Serializable {
         }
         context.addMessage(null, msg);
     }
-
-    public StreamedContent getDocentesAsCSV() {
-        return getUsuariosAsCSV(PerfilEnum.DOCENTE);
-    }
-
-    public StreamedContent getDiscentesAsCSV() {
-        return getUsuariosAsCSV(PerfilEnum.DISCENTE);
-    }
-
-    public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
-        StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
-        for (Usuario u : usuarioDao.find(perfilTipo)) {
-            csvData.append("\n");
-            csvData.append(u.getId());
-            csvData.append(",");
-            csvData.append(u.getNome());
-            csvData.append(",");
-            csvData.append(u.getLogin());
-            csvData.append(",");
-            csvData.append(u.getEmail());
-            csvData.append(",");
-            csvData.append(perfilTipo.getPapel());
-            csvData.append(",");
-            csvData.append(u.getMatricula());
-        }
-        InputStream stream;
-        try {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes("UTF8"));
-        } catch (UnsupportedEncodingException e) {
-            stream = new ByteArrayInputStream(csvData.toString().getBytes());
-        }
-        StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
-        return file;
-    }
     
     public void editaUsuario() {
         if (getItemSelecionado() == null) {

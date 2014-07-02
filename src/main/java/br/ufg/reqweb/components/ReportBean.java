@@ -7,6 +7,8 @@ package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.ReportDao;
 import br.ufg.reqweb.dao.UsuarioDao;
+import br.ufg.reqweb.model.Curso;
+import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -71,7 +73,6 @@ public class ReportBean {
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios_ip.jasper");
-            //JRBeanCollectionDataSource beanDataSource = new JRBeanCollectionDataSource( reportDao.findIndicePrioridade());
             JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap());
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("indicePrioridade"));
@@ -85,6 +86,36 @@ public class ReportBean {
             System.out.println("error: " + e.getMessage());
         }
         return content;
-        
+    }
+    
+    @Transactional(readOnly= true)
+    public StreamedContent getAjusteDeMatriculaAsPDF() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Curso curso = null;
+        for (Perfil p: ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
+            if (p.getTipoPerfil().equals(((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil())) {
+                curso = p.getCurso();
+                break;
+            }
+        }
+        DefaultStreamedContent content = new DefaultStreamedContent();
+        try {
+            String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/ajuste_de_matricula.jasper");
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listjusteDeMatriculaMap(curso));
+            Map reportParameters = new HashMap();
+            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("ajusteDeMatricula"));
+            reportParameters.put("INCLUIR", LocaleBean.getMessageBundle().getString("inclusao"));
+            reportParameters.put("EXCLUIR", LocaleBean.getMessageBundle().getString("exclusao"));
+            
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
+            InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
+            content.setName("reqweb_ajuste_de_matricula.pdf");
+            content.setContentType("application/pdf");
+            content.setStream(inputStream);
+
+        } catch (JRException e) {
+            System.out.println("error: " + e.getMessage());
+        }
+        return content;
     }
 }

@@ -17,9 +17,9 @@
 	<pageHeader>
 		<band height="62" splitType="Stretch">
 			<staticText>
-				<reportElement x="51" y="0" width="340" height="18" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="14" isBold="true" isItalic="false" isStrikeThrough="false"/>
+				<reportElement x="51" y="0" width="392" height="18" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isStrikeThrough="false"/>
 					<paragraph leftIndent="8"/>
 				</textElement>
 				<text><![CDATA[REQWEB- SISTEMA DE REQUERIMENTOS WEB]]></text>
@@ -28,9 +28,9 @@
 				<reportElement x="50" y="-2" width="1" height="52" uuid="5bfc8d82-2f25-4769-b773-53ba4530e8c6"/>
 			</line>
 			<textField>
-				<reportElement x="51" y="23" width="220" height="25" uuid="e827aa83-aaf4-4ce5-aa66-a0c4a4190e4c"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="14" isBold="false"/>
+				<reportElement x="51" y="23" width="231" height="25" uuid="e827aa83-aaf4-4ce5-aa66-a0c4a4190e4c"/>
+				<textElement verticalAlignment="Bottom" markup="none">
+					<font size="14" isBold="true"/>
 					<paragraph leftIndent="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
@@ -42,18 +42,24 @@
 				</graphicElement>
 			</line>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="271" y="23" width="64" height="25" uuid="ca306a9a-44b5-4753-8177-d65ab60f84b2"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="378" y="23" width="64" height="25" uuid="ca306a9a-44b5-4753-8177-d65ab60f84b2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="335" y="23" width="29" height="25" uuid="f56b63b2-69cc-4304-a591-e8d2604f50f7"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement x="282" y="23" width="48" height="25" uuid="f56b63b2-69cc-4304-a591-e8d2604f50f7"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA["pg " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="364" y="23" width="27" height="25" uuid="994d8205-1a92-40c7-b7f8-5d8328878538"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="330" y="23" width="48" height="25" uuid="994d8205-1a92-40c7-b7f8-5d8328878538"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA["/" + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<image>

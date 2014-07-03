@@ -4,6 +4,9 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
+	<parameter name="MATRICULA" class="java.lang.String"/>
+	<parameter name="NOME" class="java.lang.String"/>
+	<parameter name="CURSO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -17,7 +20,7 @@
 	<pageHeader>
 		<band height="62" splitType="Stretch">
 			<staticText>
-				<reportElement x="51" y="0" width="392" height="18" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
+				<reportElement x="51" y="0" width="392" height="23" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isStrikeThrough="false"/>
 					<paragraph leftIndent="8"/>
@@ -74,62 +77,64 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="24">
-			<staticText>
-				<reportElement x="0" y="4" width="64" height="20" uuid="edd5521b-0263-40b8-9a0d-ca56d98c3afd"/>
-				<textElement>
+			<textField>
+				<reportElement x="0" y="4" width="64" height="20" uuid="ab5e809b-5e4b-4bf1-9263-e25afc331058"/>
+				<textElement markup="none">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[matricula]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="64" y="4" width="207" height="20" uuid="82c79648-e645-4e83-b651-ac866ea76185"/>
-				<textElement>
+				<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="64" y="4" width="207" height="20" uuid="e544c830-a8df-4dca-8332-93b5d2d3de94"/>
+				<textElement markup="none">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[discente]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="271" y="4" width="207" height="17" uuid="6515bf78-dbfd-4304-9325-bb982f2c9f0d"/>
-				<textElement>
+				<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="271" y="4" width="207" height="17" uuid="0395e4d6-66e3-4ff1-9796-ee6aee788952"/>
+				<textElement markup="none">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[curso]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{CURSO}]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="478" y="4" width="77" height="17" uuid="48d5b8db-32dd-41dc-85b4-71b31d52d16d"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[ip]]></text>
+				<text><![CDATA[IP]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="17" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="64" height="12" uuid="9bc92e34-bdac-4202-b959-9cadbf2c8fcb"/>
+				<reportElement x="0" y="0" width="64" height="17" uuid="9bc92e34-bdac-4202-b959-9cadbf2c8fcb"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{matricula} == null ? "-": $F{matricula}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="64" y="0" width="207" height="12" uuid="7f2f6e56-2a73-4635-88f5-9eabd5732378"/>
+				<reportElement x="64" y="0" width="207" height="17" uuid="7f2f6e56-2a73-4635-88f5-9eabd5732378"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="271" y="0" width="207" height="12" uuid="5e2ad4af-b6a9-4ea8-953a-fc3422890021"/>
+				<reportElement x="271" y="0" width="207" height="17" uuid="5e2ad4af-b6a9-4ea8-953a-fc3422890021"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{curso}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00">
-				<reportElement x="478" y="0" width="77" height="12" uuid="9536e42b-2f14-48dc-a09d-d071a64f698b"/>
-				<textElement textAlignment="Right"/>
+				<reportElement x="478" y="0" width="77" height="17" uuid="9536e42b-2f14-48dc-a09d-d071a64f698b"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{indiceprioridade}]]></textFieldExpression>
 			</textField>
 		</band>

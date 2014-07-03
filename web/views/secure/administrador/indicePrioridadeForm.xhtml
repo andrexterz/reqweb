@@ -17,6 +17,9 @@
                 <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{reportBean.indicePrioridadeAsCSV}" />
                 </p:menuitem>
+                <p:menuitem value="#{msg.exportar} #{msg.paraPDF}" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                    <p:fileDownload value="#{reportBean.indicePrioridadeAsPDF}" />
+                </p:menuitem>
             </p:menuButton>
             <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                 <p:inputText id="indicePrioridadeBusca"

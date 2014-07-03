@@ -140,6 +140,10 @@ public class ReportBean {
             JRBeanCollectionDataSource beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo));
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("usuarios"));
+            reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("EMAIL", LocaleBean.getMessageBundle().getString("usuarioEmail"));
+
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, beanDataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName(String.format("reqweb_usuarios_%s.pdf", perfilTipo.name().toLowerCase()));
@@ -203,6 +207,9 @@ public class ReportBean {
             JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap());
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("indicePrioridade"));
+            reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName("reqweb_usuarios_ip.pdf");
@@ -233,6 +240,9 @@ public class ReportBean {
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("ajusteDeMatricula"));
             reportParameters.put("INCLUIR", LocaleBean.getMessageBundle().getString("inclusao"));
             reportParameters.put("EXCLUIR", LocaleBean.getMessageBundle().getString("exclusao"));
+            reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("ACAO", LocaleBean.getMessageBundle().getString("acao"));
 
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));

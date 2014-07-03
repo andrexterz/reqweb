@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ajusteDeMatricula" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="2.59374246010003"/>
-	<property name="ireport.x" value="22"/>
-	<property name="ireport.y" value="37"/>
+	<property name="ireport.zoom" value="2.143588810000026"/>
+	<property name="ireport.x" value="520"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
 	<parameter name="INCLUIR" class="java.lang.String"/>
 	<parameter name="EXCLUIR" class="java.lang.String"/>
+	<parameter name="MATRICULA" class="java.lang.String"/>
+	<parameter name="NOME" class="java.lang.String"/>
+	<parameter name="ACAO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -25,33 +28,36 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{disciplina} + ": " + $F{turma}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement x="39" y="19" width="100" height="16" uuid="977d0759-3f85-4f4b-b93b-4d8a5c8f9d06"/>
-					<textElement>
+				<textField>
+					<reportElement x="39" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
+					<textElement markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Matricula]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="139" y="19" width="292" height="16" uuid="134ebbde-d026-47f7-aee6-29fc1261a1c9"/>
-					<textElement>
+					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="139" y="19" width="292" height="16" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
+					<textElement markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Nome]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="431" y="19" width="124" height="16" uuid="0355206e-fc3b-4d45-9a4a-43919f4644b0"/>
-					<textElement textAlignment="Right">
+					<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="431" y="19" width="124" height="16" uuid="a3c9c126-b286-4c7c-8ab9-9391c39d839e"/>
+					<textElement textAlignment="Right" markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[Ajuste]]></text>
-				</staticText>
+					<textFieldExpression><![CDATA[$P{ACAO}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="6">
 				<line>
 					<reportElement mode="Opaque" x="0" y="2" width="555" height="1" uuid="c2ec255d-af00-45f8-a3f1-9b0d8d344597"/>
+					<graphicElement>
+						<pen lineStyle="Dotted"/>
+					</graphicElement>
 				</line>
 			</band>
 		</groupFooter>
@@ -62,7 +68,7 @@
 	<pageHeader>
 		<band height="62" splitType="Stretch">
 			<staticText>
-				<reportElement x="51" y="0" width="392" height="18" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
+				<reportElement x="51" y="0" width="392" height="23" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isStrikeThrough="false"/>
 					<paragraph leftIndent="8"/>
@@ -145,9 +151,9 @@
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<line>
-				<reportElement x="0" y="0" width="555" height="1" uuid="6db3abdf-035d-42b9-a1fc-ef890d1a5377"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="1" uuid="6db3abdf-035d-42b9-a1fc-ef890d1a5377"/>
 				<graphicElement>
-					<pen lineWidth="2.0"/>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<textField>

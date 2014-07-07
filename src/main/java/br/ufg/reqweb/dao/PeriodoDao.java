@@ -91,7 +91,7 @@ public class PeriodoDao {
     public List<Periodo> find(boolean ativo) {
         try {
             List<Periodo> periodos = this.sessionFactory.getCurrentSession()
-                    .createSQLQuery("SELECT * FROM Periodo p WHERE p.ano = :termo and p.ativo = :ativo")
+                    .createSQLQuery("SELECT * FROM Periodo p WHERE p.ativo = :ativo")
                     .addEntity(Periodo.class)
                     .setParameter("ativo", ativo).list();
             return periodos;

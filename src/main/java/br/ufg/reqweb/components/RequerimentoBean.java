@@ -56,6 +56,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -389,6 +390,9 @@ public class RequerimentoBean implements Serializable {
                 }
             }
         } catch (Exception e) {
+            if (e.getClass().equals(HibernateOptimisticLockingFailureException.class)) {
+                msgError = String.format("%s: %s", msgError, LocaleBean.getMessageBundle().getString("erroVersao"));
+            }
             setSaveStatus(false);
         }
         context.addCallbackParam("resultado", saveStatus);
@@ -829,10 +833,20 @@ public class RequerimentoBean implements Serializable {
 
     public boolean isEditavel() {
         boolean editavel = false;
-        if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)
-                || getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)
-                || getPerfilUsuario().equals(PerfilEnum.DOCENTE)) {
+        if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
             editavel = itemSelecionado != null && !itemSelecionado.getStatus().equals(RequerimentoStatusEnum.FINALIZADO);
+        }
+        if (getPerfilUsuario().equals(PerfilEnum.COORDENADOR_DE_ESTAGIO)) {
+            if (itemSelecionado != null) {
+                editavel = (itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)
+                        && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.EM_ANDAMENTO));
+            }
+        }
+        if (getPerfilUsuario().equals(PerfilEnum.DOCENTE)) {
+            if (itemSelecionado != null) {
+                editavel = (itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)
+                        && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.EM_ANDAMENTO));
+            }
         }
         if (getPerfilUsuario().equals(PerfilEnum.SECRETARIA)) {
             if (itemSelecionado != null) {
@@ -843,11 +857,25 @@ public class RequerimentoBean implements Serializable {
             }
         }
         if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {
-            editavel = itemSelecionado != null && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO);
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            boolean requerimentoValido = true;
+            if (itemSelecionado != null) {
+                System.out.println("item == tiporeq? " + itemSelecionado.getTipoRequerimento().equals(getTipoRequerimento()));
+                if (itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)) {
+                    requerimentoValido = ((PeriodoBean) sessionMap.get("periodoBean")).isPeriodoValido();
+                }
+            }
+            editavel = itemSelecionado != null
+                    && requerimentoValido
+                    && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO);
         }
-        return (itemSelecionado != null && editavel);
+        return editavel;
     }
-
+    
+    public boolean isSelecionavel() {
+        return (itemSelecionado != null && (itemSelecionado.getTipoRequerimento().equals(getTipoRequerimento()) || getTipoRequerimento() == null));
+    }
+    
     public boolean isShowControls() {
         return step == FormControl.STEP0;
     }

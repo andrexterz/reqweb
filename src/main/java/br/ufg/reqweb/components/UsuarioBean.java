@@ -67,7 +67,6 @@ public class UsuarioBean implements Serializable {
     private Usuario sessionUsuario;
     private Usuario usuario;
     private boolean autenticado;
-    private List<Perfil> perfilRemovido;
     private int progress;
     private boolean saveStatus;
     private volatile boolean stopImportaUsuarios;
@@ -81,7 +80,6 @@ public class UsuarioBean implements Serializable {
         usuario = new Usuario();
         sessionUsuario = null;
         autenticado = false;
-        perfilRemovido = new ArrayList<>();
         tImportJob = null;
         termoBusca = "";
         tipoPerfilBusca = null;
@@ -331,14 +329,12 @@ public class UsuarioBean implements Serializable {
             saveStatus = errors.isEmpty();
             if (saveStatus) {
                 if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
-                    if (!perfilRemovido.isEmpty()) {
-                        perfilRemovido.clear();
-                    }
                     usuarioDao.atualizar(usuario);
                     itemSelecionado = usuario;
                 }
             }
         } catch (Exception e) {
+            System.out.println("error: " + e.getLocalizedMessage());
             setSaveStatus(false);
         }
 
@@ -347,26 +343,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public void cancelSalvaUsuario() {
-        List<Perfil> tempPerfilList = new ArrayList<Perfil>() {
-            {
-                addAll(perfilRemovido);
-                for (Perfil p : usuario.getPerfilList()) {
-                    if (p.getId() == null) {
-                        add(p);
-                    }
-                }
-            }
-        };
-        for (Perfil p : tempPerfilList) {
-            if (p.getId() != null) {
-                usuario.adicionaPerfil(p);
-            } else {
-                usuario.removePerfil(p);
-            }
-            System.out.println("p: " + p);
-        }
-        perfilRemovido.clear();
-        System.out.println("cancelando alteração de usuário");
+        System.out.println("fechando <EditaUsuarioForm>");
     }
 
     public void addPerfil() {
@@ -380,12 +357,9 @@ public class UsuarioBean implements Serializable {
             perfilItem.setTipoPerfil(p);
             perfilItem.setCurso(c);
             perfilItem.setUsuario(usuario);
-            if (perfilRemovido.contains(perfilItem)) {
-                perfilItem = perfilRemovido.get(perfilRemovido.indexOf(perfilItem));
-                perfilRemovido.remove(perfilItem);
-            }
             if (!usuario.getPerfilList().contains(perfilItem)) {
                 usuario.adicionaPerfil(perfilItem);
+                salvaUsuario();
             } else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, LocaleBean.getMessageBundle().getString("dadosInvalidos"), null);
                 FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -396,9 +370,7 @@ public class UsuarioBean implements Serializable {
     public void removePerfil(ActionEvent event) {
         Perfil perfilItem = (Perfil) event.getComponent().getAttributes().get("perfil");
         usuario.removePerfil(perfilItem);
-        if (perfilItem.getId() != null) {
-            perfilRemovido.add(perfilItem);
-        }
+        salvaUsuario();
     }
 
     public void onCursoDisable() {

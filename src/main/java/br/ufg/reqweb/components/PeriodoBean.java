@@ -11,6 +11,7 @@ import br.ufg.reqweb.model.Semestre;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
@@ -121,6 +122,18 @@ public class PeriodoBean implements Serializable {
         List<Semestre> semestres = new ArrayList<>();
         semestres.addAll(Arrays.asList(Semestre.values()));
         return semestres;
+    }
+
+    public boolean isPeriodoValido() {
+        List<Periodo> periodos = periodoDao.find(true);
+        if (periodos.isEmpty()) {
+            System.out.println("nenhum periodo");
+            return false;
+        } else {
+            Periodo p = periodos.get(0);
+            Calendar currentDate = Calendar.getInstance(LocaleBean.getMessageBundle().getLocale());
+            return (p.getDataInicio().compareTo(currentDate.getTime()) <= 0 && p.getDataTermino().compareTo(currentDate.getTime()) >= 0);
+        }
     }
 
     public boolean isSelecionado() {

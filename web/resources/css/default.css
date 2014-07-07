@@ -1187,3 +1187,8 @@ f.usuarioColLogin {
 .footerColB img {
     margin-right: 16px;
 }
+
+.ajaxLoader {
+    width: auto;
+    height: 12px;
+}

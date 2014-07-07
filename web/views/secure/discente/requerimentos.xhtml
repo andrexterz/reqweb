@@ -20,24 +20,24 @@
             <p:outputPanel id="requerimentoToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.novo}"
                                  process="@this"
-                                 disabled="#{requerimentoBean.tipoRequerimento == null}"
+                                 disabled="#{requerimentoBean.tipoRequerimento eq null or requerimentoBean.tipoRequerimento eq 'AJUSTE_DE_MATRICULA' and !periodoBean.periodoValido}"
                                  action="#{requerimentoBean.novoRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
                 <p:commandButton value="#{msg.editar}"
                                  process="@this"
-                                 disabled="#{!requerimentoBean.editavel}"
+                                 disabled="#{!requerimentoBean.editavel or !requerimentoBean.selecionavel}"
                                  actionListener="#{requerimentoBean.editaRequerimento}"
                                  oncomplete="PF('dlgRequerimentoVar').show()"                                 
                                  update="tableRequerimentos :dlgRequerimentoForm :salvaRequerimentoForm" />
 
                 <p:commandButton value="#{msg.excluir}"
-                                 disabled="#{!requerimentoBean.editavel}"
+                                 disabled="#{!requerimentoBean.editavel or !requerimentoBean.selecionavel}"
                                  oncomplete="PF('excluirRequerimentoDialog').show()"
                                  update=":excluiRequerimentoForm" />
 
                 <p:commandButton value="#{msg.atendimento}"
-                                 disabled="#{!requerimentoBean.selecionado}"
+                                 disabled="#{!requerimentoBean.selecionavel}"
                                  oncomplete="detalheRequerimentoDialog.show()"
                                  update=":dlgDetalheRequerimentoDialog" />
 

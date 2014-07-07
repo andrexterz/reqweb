@@ -6,14 +6,26 @@
 
 package br.ufg.reqweb.components;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author André
  */
+
+@Component
+@Scope(value = "singleton")
 public class MailBean {
     
-    public MailBean () {
-        //obter properties aqui
+    private int counter = 0;
+
+    @Scheduled(cron = "${mailScheduler}")
+    public void runTimer() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/Y");
+        System.out.format("scheduder%d executed at: %s\n", ++counter, dateFormat.format(Calendar.getInstance().getTime()));
     }
-    
 }

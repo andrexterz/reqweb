@@ -22,10 +22,19 @@ import org.springframework.stereotype.Component;
 public class ConfigBean implements Serializable {
 
     private final Properties config;
-
+    private static ConfigBean instance;
+    
     public ConfigBean() {
         config = new Settings().getConf();
     }
+    
+    public static ConfigBean getInstance() {
+        if (instance == null) {
+            instance = new ConfigBean();
+        }
+        return instance;
+    }
+    
 
     /**
      *

@@ -139,6 +139,7 @@ public class TurmaDao {
             if (curso != null) {
                 criteria.add(Restrictions.and(Restrictions.eq("d.curso", curso)));
             }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             return criteria.list();
         } catch (HibernateException | NumberFormatException e) {
             System.out.println("query error: " + e.getMessage());

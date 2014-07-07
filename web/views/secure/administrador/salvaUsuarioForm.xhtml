@@ -60,19 +60,14 @@
                         <p:commandButton icon="ui-icon-trash"
                                          style="width: 16px; height: 16px;"
                                          title="#{msg.excluir} #{msg.perfil}"
-                                         update="perfilList"
+                                         update="perfilList :formHeader:systemMessages"
                                          actionListener="#{usuarioBean.removePerfil}">
                             <f:attribute name="perfil" value="#{perfil}" />
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>                
                 <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
-                    <p:commandButton value="#{msg.salvar}"
-                                     process="@form"
-                                     actionListener="#{usuarioBean.salvaUsuario}"
-                                     oncomplete="dialogHandler('dlgUsuarioVar', xhr, status, args)"
-                                     update=":salvaUsuarioForm :formHeader:systemMessages :usuarioForm:tableUsuarios :usuarioForm:usuarioToolbar" />
-                    <p:commandButton value="#{msg.cancelar}"
+                    <p:commandButton value="#{msg.fechar}"
                                      process="@this"
                                      actionListener="#{usuarioBean.cancelSalvaUsuario}"
                                      update=":salvaUsuarioForm:perfilList :usuarioForm:tableUsuarios"

@@ -5,6 +5,7 @@
  */
 package br.ufg.reqweb.dao;
 
+import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.IndicePrioridade;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,22 @@ public class IndicePrioridadeDao {
                     .createAlias("discente","d")
                     .add(Restrictions.or(Restrictions.eq("d.matricula", termo),
                             Restrictions.like("d.nome", termo, MatchMode.ANYWHERE).ignoreCase()))
+                    .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                    .list();
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<IndicePrioridade> find(Curso curso) {
+        try {
+            return this.sessionFactory.getCurrentSession()
+                    .createCriteria(IndicePrioridade.class)
+                    .createAlias("discente","d")
+                    .createAlias("perfil","p")
+                    .add(Restrictions.eq("p.curso", curso))
                     .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                     .list();
         } catch (HibernateException e) {

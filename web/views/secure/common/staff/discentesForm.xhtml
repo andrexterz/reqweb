@@ -26,6 +26,11 @@
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.discentesAsCSV}" />
                     </p:menuitem>
+                    <p:menuitem value="#{msg.discentes} #{msg.paraPDF}"
+                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                        <p:fileDownload value="#{reportBean.discentesAsPDF}" />
+                    </p:menuitem>
                 </p:menuButton>
                 <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
                     <p:inputText id="usuarioBusca" styleClass="searchBox" value="#{usuarioBean.termoBusca}" />

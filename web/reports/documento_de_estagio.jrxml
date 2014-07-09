@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ajusteDeMatricula" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="2.143588810000026"/>
-	<property name="ireport.x" value="362"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="documentoDeEstagio" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
+	<property name="ireport.zoom" value="1.4641000000000177"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<parameter name="INCLUIR" class="java.lang.String"/>
-	<parameter name="EXCLUIR" class="java.lang.String"/>
 	<parameter name="MATRICULA" class="java.lang.String"/>
 	<parameter name="NOME" class="java.lang.String"/>
-	<parameter name="ACAO" class="java.lang.String"/>
+	<parameter name="DOCENTE" class="java.lang.String"/>
+	<parameter name="TIPO_DE_DOCUMENTO" class="java.lang.String"/>
+	<parameter name="CONTRATO_DE_ESTAGIO" class="java.lang.String"/>
+	<parameter name="RELATORIO_DE_ESTAGIO" class="java.lang.String"/>
+	<parameter name="CURSO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="disciplina" class="java.lang.String"/>
-	<field name="matricula" class="java.lang.String"/>
 	<field name="discente" class="java.lang.String"/>
-	<field name="turma" class="java.lang.String"/>
-	<field name="tipodeajuste" class="java.lang.String"/>
-	<group name="disciplinaTurma">
-		<groupExpression><![CDATA[$F{disciplina} + ":" + $F{turma}]]></groupExpression>
+	<field name="matricula" class="java.lang.String"/>
+	<field name="docente" class="java.lang.String"/>
+	<field name="tipodedocumento" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<group name="tipoDeDocumento">
+		<groupExpression><![CDATA[$F{tipodedocumento}]]></groupExpression>
 		<groupHeader>
 			<band height="35">
-				<textField>
-					<reportElement x="0" y="0" width="555" height="14" uuid="39db1725-948f-455e-a394-6067a48ed448"/>
-					<textElement>
-						<font isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{disciplina} + ": " + $F{turma}]]></textFieldExpression>
-				</textField>
 				<textField>
 					<reportElement x="39" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
 					<textElement markup="none">
@@ -47,7 +42,21 @@
 					<textElement textAlignment="Right" markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{ACAO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{TIPO_DE_DOCUMENTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="282" height="14" uuid="39db1725-948f-455e-a394-6067a48ed448"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DOCENTE} + ": " + $F{docente}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="282" y="0" width="273" height="14" uuid="c8bd517b-2bce-41b3-85ec-c4ace487f9b7"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -144,7 +153,7 @@
 				<textElement textAlignment="Right">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tipodeajuste}.equals("INCLUSAO_DE_DISCIPLINA") ? $P{INCLUIR}: $P{EXCLUIR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipodedocumento}.equals("RELATORIO_DE_ESTAGIO") ? $P{RELATORIO_DE_ESTAGIO}: $P{CONTRATO_DE_ESTAGIO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

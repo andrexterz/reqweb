@@ -1148,9 +1148,52 @@ f.usuarioColLogin {
     width: 100%;
 }
 /********************************** relatorios ***********************************/
-.relatorioUsuario {
-    font-size: 100%;
-    background: #2eabe2;
+.relatorioPanel {
+    width: 152px;
+    height: 174px;
+    float: left;
+    margin: 4px;
+}
+
+.reportLabel {
+    width: 100%;
+    text-align: center;
+}
+
+.relatorioDownload {
+    background-image: url("#{resource['img/relatorios128x128color.png']}");    
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 128px;
+    height: 128px;
+    color: #2eabe2!important;
+    text-decoration: none;
+    text-align: center;
+    line-height: 16px;
+    vertical-align: bottom;    
+    display: table-cell;
+}
+
+.relatorioDownload:hover {
+    background-position: 0 -128px;
+}
+
+.relatorioDownloadDisabled {
+    background-image: url("#{resource['img/relatorios128x128gray.png']}");    
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 128px;
+    height: 128px;
+    color: #9c9c9c!important;
+    text-decoration: none;
+    text-align: center;
+    line-height: 16px;
+    vertical-align: bottom;    
+    display: table-cell;
+}
+
+.relatorioDownloadDisabled:hover {
+    background-position: 0 -128px;
 }
 
 /*********************************** footer ***********************************/

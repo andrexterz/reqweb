@@ -13,33 +13,23 @@
         </script>
         <h:form id="relatorioForm" styleClass="formBody">
             <p:panel styleClass="relatorioPanel">
-                <p:commandLink id="reportIndicePrioridade" value="#{msg.indicePrioridade}"  ajax="false"
+                <p:commandLink id="reportDocumentoDeEstagio" value="#{msg.documentoDeEstagio}"  ajax="false"
                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
                                styleClass="relatorioDownload">
-                    <p:fileDownload value="#{reportBean.indicePrioridadeAsPDF}" />
+                    <p:fileDownload value="#{reportBean.documentoDeEstagioAsPDF}" />
                 </p:commandLink>
                 <p:separator />
                 <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{reportBean.curso.sigla}" />
             </p:panel>
             <p:panel styleClass="relatorioPanel">
-                <p:commandLink id="reportAjusteDeMatricula" value="#{msg.ajusteDeMatricula}" ajax="false"
+                <p:commandLink id="reportUsuarios" value="#{msg.discentes}"  ajax="false"
                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
-                               styleClass="relatorioDownload" rendered="#{periodoBean.itemSelecionado ne null}">
-                    <p:fileDownload value="#{reportBean.ajusteDeMatriculaAsPDF}" />
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.discentesAsPDF}" />
                 </p:commandLink>
-                <h:outputText styleClass="relatorioDownloadDisabled" value="#{msg.ajusteDeMatricula}" rendered="#{periodoBean.itemSelecionado eq null}" />
                 <p:separator />
-                <p:selectOneMenu converter="#{periodoConverter}"
-                                 value="#{periodoBean.itemSelecionado}">
-                    <f:selectItem itemLabel="#{msg.periodo}" />
-                    <f:selectItems value="#{periodoBean.periodos}"
-                                   var="periodoItem"
-                                   itemLabel="#{periodoItem}"
-                                   itemValue="#{periodoItem}"/>
-                    <p:ajax update=":relatorioForm" />
-                </p:selectOneMenu>
+                <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{reportBean.curso.sigla}" />
             </p:panel>
-
         </h:form>
     </ui:define>
 </ui:composition>

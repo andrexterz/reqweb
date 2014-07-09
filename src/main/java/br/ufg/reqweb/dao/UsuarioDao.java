@@ -202,6 +202,21 @@ public class UsuarioDao {
     }
 
     @Transactional(readOnly = true)
+    public List<Usuario> find(PerfilEnum tipoPerfil, Curso curso) {
+        try {
+            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
+                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p JOIN curso c WHERE p.tipoPerfil = :tipoPerfil AND c=:curso")
+                    .setParameter("tipoPerfil", tipoPerfil)
+                    .setParameter("curso", curso)
+                    .list();
+            return usuarios;
+        } catch (HibernateException e) {
+            System.out.println("query error: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
     public int count() {
         try {
             int result = ((Long) this.sessionFactory.getCurrentSession()

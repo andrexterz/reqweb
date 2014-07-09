@@ -15,6 +15,7 @@ import br.ufg.reqweb.model.Disciplina;
 import br.ufg.reqweb.model.IndicePrioridade;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
 import java.io.ByteArrayInputStream;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -34,7 +36,6 @@ import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -58,6 +59,23 @@ public class ReportBean {
 
     @Autowired
     private TurmaDao turmaDao;
+    
+    private Curso curso;
+    
+    public ReportBean() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        curso = null;
+        for (Perfil p : ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
+            if (p.getTipoPerfil().equals(((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil())) {
+                curso = p.getCurso();
+                break;
+            }
+        }
+    }
+    
+    public Curso getCurso() {
+        return curso;
+    }
 
     public StreamedContent getDisciplinasAsCSV() {
         StringBuilder csvData = new StringBuilder("id,codigo,disciplina,curso_sigla");
@@ -81,7 +99,7 @@ public class ReportBean {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_disciplinas.csv");
         return file;
     }
-    
+
     public StreamedContent getIndicePrioridadeAsCSV() {
         StringBuilder csvData = new StringBuilder("id,indice_prioridade,discente_matricula, discente_id");
         for (IndicePrioridade ip : indicePrioridadeDao.findAll()) {
@@ -103,7 +121,7 @@ public class ReportBean {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_indice_prioridade.csv");
         return file;
     }
-    
+
     public StreamedContent getTurmasAsCSV() {
         StringBuilder csvData = new StringBuilder("id,ano,nome,semestre,disciplina_id,docente_id,curso_sigla");
         for (Turma t : turmaDao.findAll()) {
@@ -131,13 +149,17 @@ public class ReportBean {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", "reqweb_turmas.csv", "UTF8");
         return file;
     }
-    
 
     public StreamedContent getUsuariosAsPDF(PerfilEnum perfilTipo) {
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios.jasper");
-            JRBeanCollectionDataSource beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo));
+            JRBeanCollectionDataSource beanDataSource;
+            if (curso != null) {
+                beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo, curso));
+            } else {
+                beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo));
+            }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("usuarios"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
@@ -155,7 +177,7 @@ public class ReportBean {
         }
         return content;
     }
-    
+
     public StreamedContent getDocentesAsCSV() {
         return getUsuariosAsCSV(PerfilEnum.DOCENTE);
     }
@@ -189,7 +211,6 @@ public class ReportBean {
         StreamedContent file = new DefaultStreamedContent(stream, "text/csv", String.format("reqweb_usuarios_%s.csv", perfilTipo.name().toLowerCase()), "UTF8");
         return file;
     }
-    
 
     public StreamedContent getDocentesAsPDF() {
         return getUsuariosAsPDF(PerfilEnum.DOCENTE);
@@ -199,12 +220,18 @@ public class ReportBean {
         return getUsuariosAsPDF(PerfilEnum.DISCENTE);
     }
 
-    @Transactional(readOnly = true)
+    
     public StreamedContent getIndicePrioridadeAsPDF() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios_ip.jasper");
-            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap());
+            JRMapCollectionDataSource dataSource;
+            if (curso == null) {
+                dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap());
+            } else {
+                dataSource = new JRMapCollectionDataSource(reportDao.listIndicePrioridadeMap(curso));
+            }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("indicePrioridade"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
@@ -222,20 +249,13 @@ public class ReportBean {
         return content;
     }
 
-    @Transactional(readOnly = true)
     public StreamedContent getAjusteDeMatriculaAsPDF() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        Curso curso = null;
-        for (Perfil p : ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
-            if (p.getTipoPerfil().equals(((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil())) {
-                curso = p.getCurso();
-                break;
-            }
-        }
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/ajuste_de_matricula.jasper");
-            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listjusteDeMatriculaMap(curso));
+            Periodo periodo = ((PeriodoBean) sessionMap.get("periodoBean")).getItemSelecionado();
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listAjusteDeMatriculaMap(curso, periodo));
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("ajusteDeMatricula"));
             reportParameters.put("INCLUIR", LocaleBean.getMessageBundle().getString("inclusao"));
@@ -250,8 +270,41 @@ public class ReportBean {
             content.setContentType("application/pdf");
             content.setStream(inputStream);
 
-        } catch (JRException e) {
+        } catch (NullPointerException|JRException e) {
             System.out.println("error: " + e.getMessage());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+        return content;
+    }
+
+    public StreamedContent getDocumentoDeEstagioAsPDF() {
+        DefaultStreamedContent content = new DefaultStreamedContent();
+        try {
+            String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/documento_de_estagio.jasper");
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(curso));
+            Map reportParameters = new HashMap();
+            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("documentoDeEstagio"));
+            reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("DOCENTE", LocaleBean.getMessageBundle().getString("docente"));
+            reportParameters.put("TIPO_DE_DOCUMENTO", LocaleBean.getMessageBundle().getString("tipoDeDocumento"));
+            reportParameters.put("CONTRATO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("contratoDeEstagio"));
+            reportParameters.put("RELATORIO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("relatorioDeEstagio"));
+            reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
+
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
+            InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
+            content.setName("reqweb_documento_de_estagio.pdf");
+            content.setContentType("application/pdf");
+            content.setStream(inputStream);
+
+        } catch (NullPointerException|JRException e) {
+            System.out.println("error: " + e.getMessage());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
         return content;
     }

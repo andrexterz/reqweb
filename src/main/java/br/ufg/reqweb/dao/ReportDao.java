@@ -6,11 +6,11 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Curso;
-import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
+import br.ufg.reqweb.model.Usuario;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Query;
@@ -119,6 +119,50 @@ public class ReportDao {
         query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
         query.setString("tipoPerfil", PerfilEnum.COORDENADOR_DE_ESTAGIO.name());
         query.setString("status", RequerimentoStatusEnum.ABERTO.name());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Curso curso) {
+        Query query = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, r.status\n"
+                        + "from requerimento r\n"
+                        + "join itemrequerimento i on i.requerimento_id=r.id\n"
+                        + "join turma t on i.turma_id=t.id\n"
+                        + "join disciplina d on t.disciplina_id=d.id\n"
+                        + "join usuario dis on r.usuario_id=dis.id\n"
+                        + "join perfil p on p.usuario_id=dis.id\n"
+                        + "join curso c on p.curso_id=c.id\n"
+                        + "join usuario doc on t.docente_id=doc.id\n"
+                        + "where r.tiporequerimento = :tipoRequerimento and c.id = :cursoId and r.status = :status"
+                );
+        query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
+        query.setLong("cursoId", curso.getId());
+        query.setString("status", status.name());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Usuario usuario) {
+        Query query = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, r.status\n"
+                        + "from requerimento r\n"
+                        + "join itemrequerimento i on i.requerimento_id=r.id\n"
+                        + "join turma t on i.turma_id=t.id\n"
+                        + "join disciplina d on t.disciplina_id=d.id\n"
+                        + "join usuario dis on r.usuario_id=dis.id\n"
+                        + "join perfil p on p.usuario_id=dis.id\n"
+                        + "join curso c on p.curso_id=c.id\n"
+                        + "join usuario doc on t.docente_id=doc.id\n"
+                        + "where r.tiporequerimento = :tipoRequerimento and doc.id = :usuarioId and r.status = :status"
+                );
+        query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
+        query.setString("status", status.name());
+        query.setLong("usuarioId", usuario.getId());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }

@@ -16,12 +16,14 @@ import br.ufg.reqweb.model.IndicePrioridade;
 import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Periodo;
+import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -61,11 +63,17 @@ public class ReportBean {
     
     private Curso curso;
     
+    private PerfilEnum perfil;
+    
+    private Usuario usuario;
+    
     public ReportBean() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         curso = null;
+        perfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
+        usuario = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario();
         for (Perfil p : ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfilList()) {
-            if (p.getTipoPerfil().equals(((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil())) {
+            if (p.getTipoPerfil().equals(perfil)) {
                 curso = p.getCurso();
                 break;
             }
@@ -189,7 +197,13 @@ public class ReportBean {
 
     public StreamedContent getUsuariosAsCSV(PerfilEnum perfilTipo) {
         StringBuilder csvData = new StringBuilder("id,nome,login,email,tipo_perfil,matricula");
-        for (Usuario u : usuarioDao.find(perfilTipo)) {
+        List<Usuario> usuarios;
+        if (curso == null) {
+            usuarios = usuarioDao.find(perfilTipo);
+        } else {
+            usuarios = usuarioDao.find(perfilTipo, curso);
+        }
+        for (Usuario u : usuarios) {
             csvData.append("\n");
             csvData.append(u.getId());
             csvData.append(",");
@@ -289,6 +303,41 @@ public class ReportBean {
                 dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap());
             } else {
                 dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(curso));
+            }
+            Map reportParameters = new HashMap();
+            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("documentoDeEstagio"));
+            reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("DOCENTE", LocaleBean.getMessageBundle().getString("docente"));
+            reportParameters.put("TIPO_DE_DOCUMENTO", LocaleBean.getMessageBundle().getString("tipoDeDocumento"));
+            reportParameters.put("CONTRATO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("contratoDeEstagio"));
+            reportParameters.put("RELATORIO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("relatorioDeEstagio"));
+            reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
+
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
+            InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
+            content.setName("reqweb_documento_de_estagio.pdf");
+            content.setContentType("application/pdf");
+            content.setStream(inputStream);
+
+        } catch (NullPointerException|JRException e) {
+            System.out.println("error: " + e.getMessage());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+        return content;
+    }
+
+    public StreamedContent getSegundaChamadaDeProvaAsPDF() {
+        DefaultStreamedContent content = new DefaultStreamedContent();
+        try {
+            String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/segunda_chamada_de_prova.jasper");
+            JRMapCollectionDataSource dataSource;
+            if (perfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(RequerimentoStatusEnum.ABERTO, curso));
+            } else {
+                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(RequerimentoStatusEnum.EM_ANDAMENTO, usuario));
             }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("documentoDeEstagio"));

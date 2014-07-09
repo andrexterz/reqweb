@@ -127,7 +127,7 @@ public class ReportDao {
     public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, r.status\n"
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join turma t on i.turma_id=t.id\n"
@@ -149,7 +149,7 @@ public class ReportDao {
     public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Usuario usuario) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, r.status\n"
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join turma t on i.turma_id=t.id\n"

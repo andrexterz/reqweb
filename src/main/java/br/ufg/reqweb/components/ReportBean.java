@@ -340,18 +340,17 @@ public class ReportBean {
                 dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(RequerimentoStatusEnum.EM_ANDAMENTO, usuario));
             }
             Map reportParameters = new HashMap();
-            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("documentoDeEstagio"));
+            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("segundaChamadaDeProva"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
             reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
             reportParameters.put("DOCENTE", LocaleBean.getMessageBundle().getString("docente"));
-            reportParameters.put("TIPO_DE_DOCUMENTO", LocaleBean.getMessageBundle().getString("tipoDeDocumento"));
-            reportParameters.put("CONTRATO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("contratoDeEstagio"));
-            reportParameters.put("RELATORIO_DE_ESTAGIO", LocaleBean.getMessageBundle().getString("relatorioDeEstagio"));
+            reportParameters.put("DISCIPLINA", LocaleBean.getMessageBundle().getString("disciplina"));
+            reportParameters.put("TURMA", LocaleBean.getMessageBundle().getString("turma"));
             reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
 
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
-            content.setName("reqweb_documento_de_estagio.pdf");
+            content.setName("reqweb_segunda_chamada_de_prova.pdf");
             content.setContentType("application/pdf");
             content.setStream(inputStream);
 

@@ -20,7 +20,7 @@
 	<field name="tipodedocumento" class="java.lang.String"/>
 	<field name="curso" class="java.lang.String"/>
 	<group name="tipoDeDocumento">
-		<groupExpression><![CDATA[$F{tipodedocumento}]]></groupExpression>
+		<groupExpression><![CDATA[$F{docente} + $F{tipodedocumento}]]></groupExpression>
 		<groupHeader>
 			<band height="35">
 				<textField>

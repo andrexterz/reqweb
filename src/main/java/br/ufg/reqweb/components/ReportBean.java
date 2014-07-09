@@ -29,7 +29,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -154,19 +153,21 @@ public class ReportBean {
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios.jasper");
-            JRBeanCollectionDataSource beanDataSource;
+            //JRBeanCollectionDataSource beanDataSource;
+            JRMapCollectionDataSource dataSource;
             if (curso != null) {
-                beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo, curso));
+                dataSource = new JRMapCollectionDataSource(reportDao.listUsuarioMap(perfilTipo, curso));
             } else {
-                beanDataSource = new JRBeanCollectionDataSource(usuarioDao.find(perfilTipo));
+                dataSource = new JRMapCollectionDataSource(reportDao.listUsuarioMap(perfilTipo));
             }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("usuarios"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
             reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
             reportParameters.put("EMAIL", LocaleBean.getMessageBundle().getString("usuarioEmail"));
 
-            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, beanDataSource);
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName(String.format("reqweb_usuarios_%s.pdf", perfilTipo.name().toLowerCase()));
             content.setContentType("application/pdf");
@@ -283,7 +284,12 @@ public class ReportBean {
         DefaultStreamedContent content = new DefaultStreamedContent();
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/documento_de_estagio.jasper");
-            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(curso));
+            JRMapCollectionDataSource dataSource;
+            if (curso == null) {
+                dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap());
+            } else {
+                dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(curso));
+            }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("documentoDeEstagio"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));

@@ -1,0 +1,45 @@
+<ui:composition template="#{usuarioBean.home()}.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.relatorios}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#menuLinks\\:relatoriosLnk").addClass("menuItemSelected");
+            });
+        </script>
+        <h:form id="relatorioForm" styleClass="formBody">
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportDocumentoDeEstagio" value="#{msg.documentoDeEstagio}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.documentoDeEstagioAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.status}: #{msg.aberto}" />
+            </p:panel>
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportIndicePrioridade" value="#{msg.indicePrioridade}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.indicePrioridadeAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{msg.todos}" />
+            </p:panel>
+            
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportUsuarios" value="#{msg.discentes}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.discentesAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{msg.todos}" />
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

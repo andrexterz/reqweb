@@ -179,6 +179,7 @@ public class UsuarioDao {
                 criteria.createAlias("perfilList", "p");
                 criteria.add(Restrictions.and(Restrictions.eq("p.tipoPerfil", tipoPerfil)));
             }
+            criteria.addOrder(Property.forName("nome").asc());
             criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             return criteria.list();
         } catch (HibernateException e) {
@@ -191,7 +192,7 @@ public class UsuarioDao {
     public List<Usuario> find(PerfilEnum tipoPerfil) {
         try {
             List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
-                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil")
+                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil ORDER BY p.curso, u.nome ASC")
                     .setParameter("tipoPerfil", tipoPerfil)
                     .list();
             return usuarios;
@@ -205,7 +206,7 @@ public class UsuarioDao {
     public List<Usuario> find(PerfilEnum tipoPerfil, Curso curso) {
         try {
             List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
-                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p JOIN curso c WHERE p.tipoPerfil = :tipoPerfil AND c=:curso")
+                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil AND p.curso = :curso ORDER BY p.curso, u.nome ASC")
                     .setParameter("tipoPerfil", tipoPerfil)
                     .setParameter("curso", curso)
                     .list();

@@ -6,6 +6,7 @@
 package br.ufg.reqweb.dao;
 
 import br.ufg.reqweb.model.Curso;
+import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
@@ -43,7 +44,7 @@ public class ReportDao {
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }
-    
+
     @Transactional(readOnly = true)
     public List<Map<String, ?>> listIndicePrioridadeMap(Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
@@ -83,19 +84,74 @@ public class ReportDao {
     public List<Map<String, ?>> listDocumentoDeEstagioMap(Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, doc.email, i.tipodedocumento, c.nome as curso\n"
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join usuario dis on r.usuario_id=dis.id\n"
-                        + "join perfil p on p.usuario_id in (select usuario_id from perfil where tipoperfil=:tipoPerfil)\n"
-                        + "join usuario doc on doc.id in (p.usuario_id)\n"
-                        + "join curso c on c.id=p.curso_id\n"
-                        + "where r.tiporequerimento = :tipoRequerimento  and p.curso_id = :cursoId and r.status = :status"
+                        + "join perfil p_dis on p_dis.usuario_id=dis.id\n"
+                        + "join curso c on p_dis.curso_id=c.id\n"
+                        + "join perfil p_doc on p_doc.curso_id=p_dis.curso_id and p_doc.tipoperfil = :tipoPerfil\n"
+                        + "join usuario doc on p_doc.usuario_id=doc.id\n"
+                        + "where r.tiporequerimento = :tipoRequerimento and c.id = :cursoId and r.status = :status"
                 );
         query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
-        query.setString("tipoPerfil",PerfilEnum.COORDENADOR_DE_ESTAGIO.name());
+        query.setString("tipoPerfil", PerfilEnum.COORDENADOR_DE_ESTAGIO.name());
         query.setLong("cursoId", curso.getId());
         query.setString("status", RequerimentoStatusEnum.EM_ANDAMENTO.name());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listDocumentoDeEstagioMap() {
+        Query query = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
+                        + "from requerimento r\n"
+                        + "join itemrequerimento i on i.requerimento_id=r.id\n"
+                        + "join usuario dis on r.usuario_id=dis.id\n"
+                        + "join perfil p_dis on p_dis.usuario_id=dis.id\n"
+                        + "join curso c on p_dis.curso_id=c.id\n"
+                        + "join perfil p_doc on p_doc.curso_id=p_dis.curso_id and p_doc.tipoperfil=:tipoPerfil\n"
+                        + "join usuario doc on p_doc.usuario_id=doc.id\n"
+                        + "where r.tiporequerimento = :tipoRequerimento and r.status = :status"
+                );
+        query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
+        query.setString("tipoPerfil", PerfilEnum.COORDENADOR_DE_ESTAGIO.name());
+        query.setString("status", RequerimentoStatusEnum.ABERTO.name());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listUsuarioMap(PerfilEnum tipoPerfil, Curso curso) {
+        Query query = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(
+                        "select u.matricula, u.nome as discente, c.nome as curso, u.email\n"
+                        + "from usuario u\n"
+                        + "join perfil p on p.usuario_id=u.id\n"
+                        + "join curso c on c.id=p.curso_id\n"
+                        + "where c.id = :cursoId and p.tipoperfil = :tipoPerfil\n"
+                        + "order by u.nome asc"
+                );
+        query.setLong("cursoId", curso.getId());
+        query.setString("tipoPerfil", tipoPerfil.name());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listUsuarioMap(PerfilEnum tipoPerfil) {
+        Query query = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(
+                        "select u.matricula, u.nome as discente, c.nome as curso, u.email\n"
+                        + "from usuario u\n"
+                        + "join perfil p on p.usuario_id=u.id\n"
+                        + "join curso c on c.id=p.curso_id\n"
+                        + "where p.tipoperfil = :tipoPerfil\n"
+                        + "order by c.nome asc, u.nome asc"
+                );
+        query.setString("tipoPerfil", tipoPerfil.name());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }

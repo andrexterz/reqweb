@@ -853,7 +853,10 @@ public class RequerimentoBean implements Serializable {
                 editavel = (itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)
                         && itemSelecionado.getStatus().equals(RequerimentoStatusEnum.ABERTO))
                         || (!itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO)
-                        && !itemSelecionado.getStatus().equals(RequerimentoStatusEnum.FINALIZADO));
+                        && !itemSelecionado.getStatus().equals(RequerimentoStatusEnum.FINALIZADO)
+                        && !itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA)
+                        && !itemSelecionado.getTipoRequerimento().equals(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA)
+                        );
             }
         }
         if (getPerfilUsuario().equals(PerfilEnum.DISCENTE)) {

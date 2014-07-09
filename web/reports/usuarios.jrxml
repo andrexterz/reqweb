@@ -1,20 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="usuarios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="3.1384283767210204"/>
+	<property name="ireport.zoom" value="1.4641000000000104"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="13"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
+	<parameter name="CURSO" class="java.lang.String"/>
 	<parameter name="MATRICULA" class="java.lang.String"/>
 	<parameter name="NOME" class="java.lang.String"/>
 	<parameter name="EMAIL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="id" class="java.lang.Long"/>
-	<field name="email" class="java.lang.String"/>
-	<field name="login" class="java.lang.String"/>
 	<field name="matricula" class="java.lang.String"/>
-	<field name="nome" class="java.lang.String"/>
+	<field name="discente" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<group name="curso">
+		<groupExpression><![CDATA[$F{curso}]]></groupExpression>
+		<groupHeader>
+			<band height="35">
+				<textField>
+					<reportElement x="0" y="0" width="555" height="20" uuid="2c247692-e22b-406b-aaa2-045bfd740f1e"/>
+					<textElement markup="none">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="20" width="64" height="15" uuid="18c6c6b7-2e7f-40dc-b2ee-91208a2eee50"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="64" y="20" width="207" height="15" uuid="242a0b59-63cd-4543-a610-b5c0ced638b8"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="281" y="20" width="274" height="15" uuid="9d8e4754-5b6b-4869-92d2-a21d65a012d0"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{EMAIL}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6">
+				<line>
+					<reportElement mode="Opaque" x="0" y="2" width="555" height="1" uuid="cb400a59-5a63-406c-b81e-076b91c0dc8c"/>
+					<graphicElement>
+						<pen lineStyle="Dotted"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -76,31 +121,6 @@
 			</image>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="24">
-			<textField>
-				<reportElement x="0" y="4" width="64" height="20" uuid="18c6c6b7-2e7f-40dc-b2ee-91208a2eee50"/>
-				<textElement markup="none">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="64" y="4" width="207" height="20" uuid="242a0b59-63cd-4543-a610-b5c0ced638b8"/>
-				<textElement markup="none">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="281" y="4" width="274" height="20" uuid="9d8e4754-5b6b-4869-92d2-a21d65a012d0"/>
-				<textElement markup="none">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{EMAIL}]]></textFieldExpression>
-			</textField>
-		</band>
-	</columnHeader>
 	<detail>
 		<band height="17" splitType="Stretch">
 			<textField>
@@ -115,7 +135,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{discente}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="281" y="0" width="274" height="17" uuid="714812e5-6d6d-4ebc-a385-15a77224ab1a"/>

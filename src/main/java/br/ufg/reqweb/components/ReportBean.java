@@ -334,10 +334,13 @@ public class ReportBean {
         try {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/segunda_chamada_de_prova.jasper");
             JRMapCollectionDataSource dataSource;
+            RequerimentoStatusEnum status;
             if (perfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(RequerimentoStatusEnum.ABERTO, curso));
+                status = RequerimentoStatusEnum.ABERTO;
+                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(status, curso));
             } else {
-                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(RequerimentoStatusEnum.EM_ANDAMENTO, usuario));
+                status = RequerimentoStatusEnum.EM_ANDAMENTO;
+                dataSource = new JRMapCollectionDataSource(reportDao.listSegundaChamadaDeProvaMap(status, usuario));
             }
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("segundaChamadaDeProva"));
@@ -347,6 +350,8 @@ public class ReportBean {
             reportParameters.put("DISCIPLINA", LocaleBean.getMessageBundle().getString("disciplina"));
             reportParameters.put("TURMA", LocaleBean.getMessageBundle().getString("turma"));
             reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
+            reportParameters.put("DATA_PROVA", LocaleBean.getMessageBundle().getString("dataProvaA"));
+            reportParameters.put("DATA_REQUERIMENTO", LocaleBean.getMessageBundle().getString("dataCriacao"));
 
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));

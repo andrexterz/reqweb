@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="segundaChamadaDeProva" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
+	<property name="ireport.zoom" value="1.610510000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="TITULO" class="java.lang.String"/>
+	<parameter name="MATRICULA" class="java.lang.String"/>
+	<parameter name="NOME" class="java.lang.String"/>
+	<parameter name="DOCENTE" class="java.lang.String"/>
+	<parameter name="DISCIPLINA" class="java.lang.String"/>
+	<parameter name="TURMA" class="java.lang.String"/>
+	<parameter name="CURSO" class="java.lang.String"/>
+	<parameter name="DATA_PROVA" class="java.lang.String"/>
+	<parameter name="DATA_REQUERIMENTO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="matricula" class="java.lang.String"/>
+	<field name="discente" class="java.lang.String"/>
+	<field name="docente" class="java.lang.String"/>
+	<field name="disciplina" class="java.lang.String"/>
+	<field name="turma" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="data_prova" class="java.util.Date"/>
+	<field name="data_requerimento" class="java.util.Date"/>
+	<group name="curso">
+		<groupExpression><![CDATA[$F{disciplina} + ":" + $F{turma}]]></groupExpression>
+		<groupHeader>
+			<band height="35">
+				<textField>
+					<reportElement x="0" y="0" width="282" height="20" uuid="2c247692-e22b-406b-aaa2-045bfd740f1e"/>
+					<textElement markup="none">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DISCIPLINA} + ": " + $F{disciplina} + " - " + $F{turma}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="20" width="64" height="15" uuid="18c6c6b7-2e7f-40dc-b2ee-91208a2eee50"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="65" y="20" width="170" height="15" uuid="242a0b59-63cd-4543-a610-b5c0ced638b8"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="411" y="20" width="72" height="15" uuid="9d8e4754-5b6b-4869-92d2-a21d65a012d0"/>
+					<textElement textAlignment="Center" markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DATA_PROVA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="282" y="0" width="273" height="20" uuid="b5cae4b0-4340-4dcb-b754-47eadb443d30"/>
+					<textElement textAlignment="Right" markup="none">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="483" y="20" width="72" height="15" uuid="91f0d9e0-1fef-4487-a4f9-2ce3fb309b99"/>
+					<textElement textAlignment="Center" markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DATA_REQUERIMENTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="237" y="20" width="170" height="15" uuid="86bc5067-3184-4f66-b000-7b672fb80a27"/>
+					<textElement markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{DOCENTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6">
+				<line>
+					<reportElement mode="Opaque" x="0" y="2" width="555" height="1" uuid="cb400a59-5a63-406c-b81e-076b91c0dc8c"/>
+					<graphicElement>
+						<pen lineStyle="Dotted"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="62" splitType="Stretch">
+			<staticText>
+				<reportElement x="51" y="0" width="392" height="23" uuid="200e561b-cb51-4e9e-b605-0fd53adb60b7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isStrikeThrough="false"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[REQWEB- SISTEMA DE REQUERIMENTOS WEB]]></text>
+			</staticText>
+			<line>
+				<reportElement x="50" y="-2" width="1" height="52" uuid="5bfc8d82-2f25-4769-b773-53ba4530e8c6"/>
+			</line>
+			<textField>
+				<reportElement x="51" y="23" width="231" height="25" uuid="e827aa83-aaf4-4ce5-aa66-a0c4a4190e4c"/>
+				<textElement verticalAlignment="Bottom" markup="none">
+					<font size="14" isBold="true"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="55" width="555" height="1" uuid="efdf8c97-12c7-4282-a691-5875f2f40349"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="378" y="23" width="64" height="25" uuid="ca306a9a-44b5-4753-8177-d65ab60f84b2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="23" width="48" height="25" uuid="f56b63b2-69cc-4304-a591-e8d2604f50f7"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["pg " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="330" y="23" width="48" height="25" uuid="994d8205-1a92-40c7-b7f8-5d8328878538"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["/" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="48" height="48" uuid="36faa6a2-978c-4221-9e1a-18da2a243076"/>
+				<imageExpression><![CDATA["../resources/img/logo48x48black.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="507" y="0" width="48" height="48" uuid="1ba51dde-ddb7-4da7-9d89-a05c668e9f47"/>
+				<imageExpression><![CDATA["../resources/img/logoUFG48x48black.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="64" height="17" uuid="9bc92e34-bdac-4202-b959-9cadbf2c8fcb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matricula} == null ? "-": $F{matricula}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="0" width="170" height="17" uuid="7f2f6e56-2a73-4635-88f5-9eabd5732378"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{discente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="411" y="0" width="72" height="17" uuid="714812e5-6d6d-4ebc-a385-15a77224ab1a"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_prova}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="483" y="0" width="72" height="17" uuid="17c34809-2a1a-47b0-9685-3fd0bc3b09cd"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_requerimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="237" y="0" width="170" height="17" uuid="cefc3a1a-4e8c-4d93-822c-00d02f67ff0d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="6db3abdf-035d-42b9-a1fc-ef890d1a5377"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="0" y="4" width="555" height="50" uuid="8d0596b9-899e-4290-8bd1-b77f4f825724"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Instituto de Informática (INF) - UFG"
++"\nAlameda Palmeiras, Quadra D, Câmpus Samambaia"
++"\nCaixa Postal 131 - CEP 74001-970 - Goiânia - GO"
++"\nFone: (62) 3521-1181 / Fax: (62) 3521-1182"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

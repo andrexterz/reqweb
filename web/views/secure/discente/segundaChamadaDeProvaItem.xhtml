@@ -125,7 +125,7 @@
                                           multiple="false"
                                           process="@this"
                                           disabled="#{itemRequerimento.arquivos.size() ge configBean.getValue('maxArquivos')}"
-                                          sizeLimit="1048576"
+                                          sizeLimit="#{configBean.getValue('maxBytesArquivo')}"
                                           fileUploadListener="#{requerimentoBean.uploadArquivo}"
                                           update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />

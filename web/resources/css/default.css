@@ -499,6 +499,10 @@ input[type="text"], input[type="password"], select {
     background-image: url("#{resource['img/usuarios.png']}");
 }
 
+.configuracoes {
+    background-image: url("#{resource['img/configuracoes.png']}");
+}
+
 .log {
     background-image: url("#{resource['img/log.png']}");
 }

@@ -1,0 +1,141 @@
+<ui:composition template="administrador.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.configuracoes}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#configuracoesLnk").addClass("menuItemSelected");
+            });
+        </script>
+        <h:form id="configForm" styleClass="formBody">
+            <h:panelGroup layout="block" id="configToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.salvar}"
+                                 process="@form"
+                                 update=":formHeader:systemMessages"
+                                 actionListener="#{configBean.settings.salvaSettings}" />
+            </h:panelGroup>
+            <p:tabView >
+                <p:tab>
+                    <p:panelGrid styleClass="formGrid rowLine">
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="url: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.url}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="servidor: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.server}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="search base: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.searchBase}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="baseDN: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.baseDN}" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab>
+                    <p:panelGrid styleClass="formGrid rowLine">
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="database connection: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.databaseString}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="database user: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.databaseUser}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="database password: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.databasePassword}" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab>
+                    <p:panelGrid styleClass="formGrid rowLine">
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="mail host: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.hostMail}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="smtp port: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.smtpPort}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="use SSL: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <p:selectBooleanButton onLabel="true" offLabel="false" value="#{configBean.settings.useSSL}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="mail username: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.senderMail}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="mail password: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.password}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="mail scheduler: " />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.settings.mailScheduler}" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>

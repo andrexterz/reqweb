@@ -5,14 +5,15 @@
  */
 package br.ufg.reqweb.util;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import javax.faces.context.FacesContext;
 import org.apache.log4j.Logger;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.properties.EncryptableProperties;
 
 /**
@@ -21,15 +22,13 @@ import org.jasypt.properties.EncryptableProperties;
  */
 public final class Settings {
 
-
     private static final Logger log = Logger.getLogger(Settings.class);
     private final String propertyFile = "/reqweb.properties";
-    
+
     private static Settings instance;
     private StandardPBEStringEncryptor encryptor;
     private Properties conf;
-    
-   
+
     public Settings() {
         encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword("$key$ReqwebEncryptor$key$20140711");
@@ -41,13 +40,25 @@ public final class Settings {
             log.error("No config found: classpath:reqweb.properties");
         }
     }
-    
+
     public void salvaSettings() {
+        OutputStream outConf = null;
         try {
-            OutputStream outConf = new FileOutputStream(propertyFile);
+            String confPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath(propertyFile);
+            outConf = new FileOutputStream(confPath);
             conf.store(outConf, propertyFile);
+            System.out.println("saved: " + confPath);
         } catch (IOException e) {
-            log.error("error on saving: classpath:reqweb.properties");
+            log.error("error on saving: classpath:reqweb.properties: " + e.getLocalizedMessage());
+        } finally {
+            if (outConf != null) {
+                try {
+                    outConf.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+
         }
     }
 
@@ -62,10 +73,6 @@ public final class Settings {
         }
         return instance;
     }
-    
-
-    //Spring Scheduler cron like style 
-    private String mailScheduler;
 
     /**
      * @return the minPeriodo
@@ -225,7 +232,11 @@ public final class Settings {
      * @return the databasePassword
      */
     public String getDatabasePassword() {
-        return encryptor.decrypt(conf.getProperty("databasePassword"));
+        try {
+            return encryptor.decrypt(conf.getProperty("databasePassword"));
+        } catch (EncryptionOperationNotPossibleException e) {
+            return conf.getProperty("databasePassword");
+        }
     }
 
     /**
@@ -309,7 +320,12 @@ public final class Settings {
      * @return the password
      */
     public String getPassword() {
-        return encryptor.decrypt(conf.getProperty("password"));
+        try {
+            return encryptor.decrypt(conf.getProperty("password"));
+        } catch (EncryptionOperationNotPossibleException e) {
+            return conf.getProperty("password");
+        }
+        
     }
 
     /**
@@ -317,14 +333,15 @@ public final class Settings {
      */
     public void setPassword(String password) {
         conf.setProperty("password", encryptor.encrypt(password));
-        
+
     }
 
     /**
      * @return the mailScheduler
+     *Spring Scheduler cron like style 
      */
     public String getMailScheduler() {
-        return mailScheduler;
+        return conf.getProperty("mailScheduler");
     }
 
     /**
@@ -333,5 +350,5 @@ public final class Settings {
     public void setMailScheduler(String mailScheduler) {
         conf.setProperty("mailScheduler", mailScheduler);
     }
-    
+
 }

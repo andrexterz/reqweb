@@ -23,9 +23,11 @@ public class ConfigBean implements Serializable {
 
     private final Properties config;
     private static ConfigBean instance;
+    private final Settings settings;
     
     public ConfigBean() {
-        config = new Settings().getConf();
+        settings = new Settings();
+        config = settings.getConf();
     }
     
     public static ConfigBean getInstance() {
@@ -68,6 +70,10 @@ public class ConfigBean implements Serializable {
         } else {
             return false;
         }
+    }
+    
+    public Settings getSettings() {
+        return settings;
     }
 
 }

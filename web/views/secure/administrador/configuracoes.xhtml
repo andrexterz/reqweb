@@ -16,121 +16,157 @@
                 <p:commandButton value="#{msg.salvar}"
                                  process="@form"
                                  update=":formHeader:systemMessages"
-                                 actionListener="#{configBean.settings.salvaSettings}" />
+                                 actionListener="#{configBean.salvaSettings}" />
             </h:panelGroup>
             <p:tabView >
-                <p:tab>
+                <p:tab title="#{msg.configuracoesDeArquivos}">
                     <p:panelGrid styleClass="formGrid rowLine">
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="url: " />
+                                <h:outputLabel value="#{msg.maxArquivos}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.url}" />
+                                <h:inputText value="#{configBean.maxArquivos}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="servidor: " />
+                                <h:outputLabel value="#{msg.maxBytesArquivo}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.server}" />
+                                <h:inputText value="#{configBean.maxBytesArquivo}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="search base: " />
+                                <h:outputLabel value="#{msg.maxCopias}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.searchBase}" />
+                                <h:inputText value="#{configBean.maxCopias}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="baseDN: " />
+                                <h:outputLabel value="#{msg.minPeriodo}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.baseDN}" />
+                                <h:inputText value="#{configBean.minPeriodo}" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>
                 </p:tab>
-                <p:tab>
+                <p:tab title="#{msg.servidorLDAP}">
                     <p:panelGrid styleClass="formGrid rowLine">
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="database connection: " />
+                                <h:outputLabel value="#{msg.url}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.databaseString}" />
+                                <h:inputText value="#{configBean.url}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="database user: " />
+                                <h:outputLabel value="#{msg.servidorLDAP}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.databaseUser}" />
+                                <h:inputText value="#{configBean.server}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="database password: " />
+                                <h:outputLabel value="#{msg.searchBase}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.databasePassword}" />
+                                <h:inputText value="#{configBean.searchBase}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="#{msg.baseDN}" />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.baseDN}" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>
                 </p:tab>
-                <p:tab>
+                <p:tab title="#{msg.servidorBancoDeDados}">
                     <p:panelGrid styleClass="formGrid rowLine">
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="mail host: " />
+                                <h:outputLabel value="#{msg.databaseString}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.hostMail}" />
+                                <h:inputText value="#{configBean.databaseString}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="smtp port: " />
+                                <h:outputLabel value="#{msg.databaseUser}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.smtpPort}" />
+                                <h:inputText value="#{configBean.databaseUser}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="use SSL: " />
+                                <h:outputLabel value="#{msg.databasePassword}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <p:selectBooleanButton onLabel="true" offLabel="false" value="#{configBean.settings.useSSL}" />
+                                <h:inputText value="#{configBean.databasePassword}" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:tab>
+                <p:tab title="#{msg.servidorDeEmail}">
+                    <p:panelGrid styleClass="formGrid rowLine">
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="#{msg.mailHost}" />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.mailHost}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="mail username: " />
+                                <h:outputLabel value="#{msg.smtpPort}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.senderMail}" />
+                                <h:inputText value="#{configBean.smtpPort}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="mail password: " />
+                                <h:outputLabel value="#{msg.useSSL}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.password}" />
+                                <p:selectBooleanButton onLabel="true" offLabel="false" value="#{configBean.useSSL}" />
                             </p:column>
                         </p:row>
                         <p:row>
                             <p:column styleClass="col20">
-                                <h:outputLabel value="mail scheduler: " />
+                                <h:outputLabel value="#{msg.mailSender}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.settings.mailScheduler}" />
+                                <h:inputText value="#{configBean.mailSender}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="#{msg.mailPassword}" />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.mailPassword}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="col20">
+                                <h:outputLabel value="#{msg.mailScheduler}" title="#{msg.mailSchedulerTitle}" />
+                            </p:column>
+                            <p:column styleClass="col80">
+                                <h:inputText value="#{configBean.mailScheduler}" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>

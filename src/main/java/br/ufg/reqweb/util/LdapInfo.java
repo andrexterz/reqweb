@@ -4,6 +4,7 @@
  */
 package br.ufg.reqweb.util;
 
+import br.ufg.reqweb.components.ConfigBean;
 import br.ufg.reqweb.util.servicelocator.LDAPServiceLocator;
 import br.ufg.reqweb.model.PerfilEnum;
 
@@ -51,7 +52,7 @@ public class LdapInfo implements Serializable {
         try {
             ctx = LDAPServiceLocator.getInstance().getContext("", "");
             resultado = ctx.search(
-                    Settings.getInstance().getConf().getProperty("searchBase"),
+                    ConfigBean.getInstance().getConf().getProperty("ldap.searchBase"),
                     matchAttrs,
                     atributosRetorno);
 
@@ -111,7 +112,7 @@ public class LdapInfo implements Serializable {
         NamingEnumeration<?> resultado;
         try {
             resultado = ctx.search(
-                    Settings.getInstance().getConf().getProperty("searchBase"), matchAttrs,
+                    ConfigBean.getInstance().getConf().getProperty("ldap.searchBase"), matchAttrs,
                     atributosRetorno);
 
             if (resultado.hasMore()) {

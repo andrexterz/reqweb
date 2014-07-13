@@ -6,6 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <build>
+        <finalName>reqweb</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
@@ -202,7 +203,7 @@
             <artifactId>jasypt</artifactId>
             <version>1.9.2</version>
             <scope>compile</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

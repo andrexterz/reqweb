@@ -22,20 +22,23 @@
     <!-- mvc:annotation-driven /-->
     <!-- JSR-303 validator -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+    <!-- for scheduled annotation -->
     <util:properties id="reqwebSettings" location="classpath:reqweb.properties" />
     <context:property-placeholder properties-ref="reqwebSettings" />
-    
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/views/"/>
         <property name="suffix" value=".xhtml" />
     </bean>
-
+    
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
-        <property name="url" value="#{reqwebSettings.databaseString}" />
-        <property name="username" value="#{reqwebSettings.databaseUser}" />
-        <property name="password" value="#{reqwebSettings.databasePassword}" />
+        <property name="url" value="#{configBean.databaseString}" />
+        <property name="username" value="#{configBean.databaseUser}" />
+        <property name="password" value="#{configBean.databasePassword}" />
     </bean> 
+
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">        
         <property name="dataSource" ref="dataSource" />
@@ -58,8 +61,8 @@
     
     <!-- spring security configuration -->
     <!-- apenas verifica se usuario foi autenticado. ignora roles -->
-    
-    <security:ldap-server id="ldapSource" url="#{reqwebSettings.url}" /> 
+
+    <security:ldap-server id="ldapSource" url="#{configBean.url}" /> 
 
     <security:authentication-manager id="authManager">
         <security:ldap-authentication-provider user-search-filter="(uid={0})" />

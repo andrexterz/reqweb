@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 public class MailBean {
     
     private int counter = 0;
-
-    @Scheduled(cron = "${mailScheduler}")
+    
+    @Scheduled(cron = "${mail.mailScheduler}")
     public void runTimer() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/Y");
         System.out.format("scheduder%d executed at: %s\n", ++counter, dateFormat.format(Calendar.getInstance().getTime()));

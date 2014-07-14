@@ -84,7 +84,7 @@ public class ReportDao {
     public List<Map<String, ?>> listDocumentoDeEstagioMap(Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
+                        "select dis.nome as discente, dis.matricula, doc.email, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join usuario dis on r.usuario_id=dis.id\n"
@@ -103,10 +103,10 @@ public class ReportDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Map<String, ?>> listDocumentoDeEstagioMap() {
+    public List<Map<String, ?>> listDocumentoDeEstagioMap(RequerimentoStatusEnum status) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
+                        "select dis.nome as discente, dis.matricula, doc.email, doc.nome as docente, i.tipodedocumento, c.nome as curso\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join usuario dis on r.usuario_id=dis.id\n"
@@ -118,7 +118,7 @@ public class ReportDao {
                 );
         query.setString("tipoRequerimento", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.name());
         query.setString("tipoPerfil", PerfilEnum.COORDENADOR_DE_ESTAGIO.name());
-        query.setString("status", RequerimentoStatusEnum.ABERTO.name());
+        query.setString("status", status.name());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }

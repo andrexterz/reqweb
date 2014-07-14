@@ -36,9 +36,11 @@ public class ConfigBean implements Serializable {
     private static ConfigBean instance;
     private final String propertyFile = "/reqweb.properties";
     private final StandardPBEStringEncryptor encryptor;
-    private final Properties conf;    
+    private final Properties conf;
+    public boolean showPassword;
     
     public ConfigBean() {
+        showPassword = false;
         encryptor = new StandardPBEStringEncryptor();
         encryptor.setPassword("gIWxV7lW3rt3TJb1NweZKg");
         conf = new EncryptableProperties(encryptor);
@@ -117,6 +119,14 @@ public class ConfigBean implements Serializable {
     
     public Properties getConf() {
         return conf;
+    }
+
+    public boolean isShowPassword() {
+        return showPassword;
+    }
+    
+    public void setShowPassword (boolean showPassword) {
+        this.showPassword = showPassword;
     }
 
     /**

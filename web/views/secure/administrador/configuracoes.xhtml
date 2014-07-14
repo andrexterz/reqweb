@@ -17,8 +17,11 @@
                                  process="@form"
                                  update=":formHeader:systemMessages"
                                  actionListener="#{configBean.salvaSettings}" />
+                <p:selectBooleanButton onLabel="#{msg.showPassword}: #{msg.sim}" offLabel="#{msg.showPassword}: #{msg.nao}" value="#{configBean.showPassword}">
+                    <p:ajax update="configTab:configBancoDeDados configTab:configMail" />
+                </p:selectBooleanButton>
             </h:panelGroup>
-            <p:tabView >
+            <p:tabView id="configTab">
                 <p:tab title="#{msg.configuracoesDeArquivos}">
                     <p:panelGrid styleClass="formGrid rowLine">
                         <p:row>
@@ -92,7 +95,7 @@
                     </p:panelGrid>
                 </p:tab>
                 <p:tab title="#{msg.servidorBancoDeDados}">
-                    <p:panelGrid styleClass="formGrid rowLine">
+                    <p:panelGrid id="configBancoDeDados" styleClass="formGrid rowLine">
                         <p:row>
                             <p:column styleClass="col20">
                                 <h:outputLabel value="#{msg.databaseString}" />
@@ -114,13 +117,14 @@
                                 <h:outputLabel value="#{msg.databasePassword}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.databasePassword}" />
+                                <h:inputText value="#{configBean.databasePassword}" rendered="#{configBean.showPassword}" />
+                                <h:inputSecret redisplay="true" value="#{configBean.databasePassword}" rendered="#{!configBean.showPassword}" />
                             </p:column>
                         </p:row>
                     </p:panelGrid>
                 </p:tab>
                 <p:tab title="#{msg.servidorDeEmail}">
-                    <p:panelGrid styleClass="formGrid rowLine">
+                    <p:panelGrid id="configMail" styleClass="formGrid rowLine">
                         <p:row>
                             <p:column styleClass="col20">
                                 <h:outputLabel value="#{msg.mailHost}" />
@@ -142,7 +146,7 @@
                                 <h:outputLabel value="#{msg.useSSL}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <p:selectBooleanButton onLabel="true" offLabel="false" value="#{configBean.useSSL}" />
+                                <p:selectBooleanButton onLabel="#{msg.sim}" offLabel="#{msg.nao}" value="#{configBean.useSSL}" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -158,7 +162,8 @@
                                 <h:outputLabel value="#{msg.mailPassword}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.mailPassword}" />
+                                <h:inputText value="#{configBean.mailPassword}" rendered="#{configBean.showPassword}" />
+                                <h:inputSecret redisplay="true" value="#{configBean.mailPassword}" rendered="#{!configBean.showPassword}" />
                             </p:column>
                         </p:row>
                         <p:row>

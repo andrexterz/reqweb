@@ -300,7 +300,7 @@ public class ReportBean {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/documento_de_estagio.jasper");
             JRMapCollectionDataSource dataSource;
             if (curso == null) {
-                dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap());
+                dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(RequerimentoStatusEnum.ABERTO));
             } else {
                 dataSource = new JRMapCollectionDataSource(reportDao.listDocumentoDeEstagioMap(curso));
             }

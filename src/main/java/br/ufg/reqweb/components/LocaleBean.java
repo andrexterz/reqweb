@@ -77,5 +77,9 @@ public class LocaleBean implements Serializable {
             FacesContext.getCurrentInstance().getViewRoot().getLocale());
         return messages;
     }
+    
+    public static ResourceBundle getDefaultMessageBundle() {
+        return ResourceBundle.getBundle("locale.messages");
+    }
 
 }

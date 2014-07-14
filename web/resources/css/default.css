@@ -631,7 +631,7 @@ input[type="text"], input[type="password"], select {
     margin-left: 1em;
 }
 
-#loginForm input[type="text"], input[type="password"], select {
+#loginForm input[type="text"], #loginForm input[type="password"], #loginForm select {
     width: 100%!important;
 }
 

@@ -48,6 +48,16 @@
                 <p:separator />
                 <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{reportBean.curso.sigla}" />
             </p:panel>
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportResumo" value="#{msg.resumo}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.relatorioTotalAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{reportBean.curso.sigla}" />
+            </p:panel>
+            
         </h:form>
     </ui:define>
 </ui:composition>

@@ -30,7 +30,15 @@
                 <p:separator />
                 <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{msg.todos}" />
             </p:panel>
-            
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportResumo" value="#{msg.resumo}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload">
+                    <p:fileDownload value="#{reportBean.relatorioTotalAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.status}: #{msg.aberto}" />
+            </p:panel>
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportUsuarios" value="#{msg.discentes}"  ajax="false"
                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"

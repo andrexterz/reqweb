@@ -11,6 +11,7 @@ import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Usuario;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Query;
@@ -144,7 +145,7 @@ public class ReportDao {
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }
-    
+
     @Transactional(readOnly = true)
     public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Usuario usuario) {
         Query query = this.sessionFactory.getCurrentSession()
@@ -163,6 +164,60 @@ public class ReportDao {
         query.setString("tipoRequerimento", TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA.name());
         query.setString("status", status.name());
         query.setLong("usuarioId", usuario.getId());
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listTotalRequerimento(Curso curso, List<RequerimentoStatusEnum> statusList, List<TipoRequerimentoEnum> tipoRequerimentoList) {
+        List<String> tipoRequerimentoNames = new ArrayList<>();
+        List<String> statusNames = new ArrayList<>();
+        for (TipoRequerimentoEnum tipoRequerimento : tipoRequerimentoList) {
+            tipoRequerimentoNames.add(tipoRequerimento.name());
+        }
+        for (RequerimentoStatusEnum status : statusList) {
+            statusNames.add(status.name());
+        }
+        Query query;
+        if (curso == null) {
+            query = this.sessionFactory.getCurrentSession().createSQLQuery(
+                    "select c.nome as curso, r.tiporequerimento as requerimento, r.status as status, count(r.tiporequerimento) as total from requerimento r\n"
+                    + "join usuario u on u.id=r.usuario_id\n"
+                    + "join perfil p on p.usuario_id=u.id\n"
+                    + "join curso c on c.id=p.curso_id\n"
+                    + "group by c.nome, r.tiporequerimento, r.status\n"
+                    + "having r.status in :status\n"
+                    + "and r.tiporequerimento in :tipoRequerimento\n"
+                    + "order by c.nome asc, r.tiporequerimento asc"
+            );
+        } else {
+            query = this.sessionFactory.getCurrentSession().createSQLQuery(
+                    "select c.nome as curso, r.tiporequerimento as requerimento, r.status as status, count(r.tiporequerimento) as total from requerimento r\n"
+                    + "join usuario u on u.id=r.usuario_id\n"
+                    + "join perfil p on p.usuario_id=u.id\n"
+                    + "join curso c on c.id=p.curso_id\n"
+                    + "group by c.id, c.nome, r.tiporequerimento, r.status\n"
+                    + "having r.status in :status\n"
+                    + "and r.tiporequerimento in :tipoRequerimento\n"
+                    + "and c.id = :cursoId\n"
+                    + "order by c.nome asc, r.tiporequerimento asc"
+            );
+            query.setLong("cursoId", curso.getId());
+        }
+        query.setParameterList("status", statusNames);
+        query.setParameterList("tipoRequerimento", tipoRequerimentoNames);
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        return query.list();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, ?>> listRequerimentoByStatusMap(RequerimentoStatusEnum status) {
+        Query query = this.sessionFactory.getCurrentSession().createSQLQuery(
+                "select u.email, r.tiporequerimento as requerimento, r.status from requerimento r\n"
+                + "join usuario u on u.id=r.usuario_id\n"
+                + "where status = :status"
+        );
+        query.setString("status", status.name());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
     }

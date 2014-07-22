@@ -69,8 +69,8 @@
                                                 beforeShowDay="disableSundays"
                                                 mode="inline"
                                                 disabled="#{configBean.isExpiredPeriodo(itemRequerimento.dataProvaA)}"
-                                                mindate="#{configBean.getValue('minPeriodo')}"
-                                                maxdate="#{configBean.getValue('maxPeriodo')}"
+                                                mindate="#{configBean.minPeriodo}"
+                                                maxdate="#{configBean.maxPeriodo}"
                                                 styleClass="calendarWidget"
                                                 value="#{itemRequerimento.dataProvaA}">
                                         <p:ajax update="dataProvaText" event="dateSelect" />
@@ -124,8 +124,8 @@
                                           fileLimit="1"
                                           multiple="false"
                                           process="@this"
-                                          disabled="#{itemRequerimento.arquivos.size() ge configBean.getValue('maxArquivos')}"
-                                          sizeLimit="#{configBean.getValue('maxBytesArquivo')}"
+                                          disabled="#{itemRequerimento.arquivos.size() ge configBean.maxArquivos}"
+                                          sizeLimit="#{configBean.maxBytesArquivo}"
                                           fileUploadListener="#{requerimentoBean.uploadArquivo}"
                                           update="arquivos :salvaRequerimentoForm:requerimentoTab:arquivoContent :formHeader:systemMessages" />
                             <h:outputLabel for="arquivos" value="#{msg.arquivos}" />

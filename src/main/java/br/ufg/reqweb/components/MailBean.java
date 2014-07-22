@@ -6,13 +6,20 @@
 package br.ufg.reqweb.components;
 
 import br.ufg.reqweb.dao.ReportDao;
+import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.DocumentoDeEstagio;
+import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
+import br.ufg.reqweb.model.TipoRequerimentoEnum;
+import br.ufg.reqweb.model.Usuario;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
@@ -39,6 +46,9 @@ public class MailBean {
     @Autowired
     ReportDao reportDao;
 
+    @Autowired
+    UsuarioDao usuarioDao;
+
     Logger log = Logger.getLogger(MailBean.class);
 
     private void sendEmail(Map<String, String> content) throws EmailException {
@@ -58,12 +68,55 @@ public class MailBean {
     }
     
     private Map<String, String> messageDiscente() {
+        List<Map<String, ?>> rMap = reportDao.listRequerimentoByStatusMap(RequerimentoStatusEnum.FINALIZADO);
         Map<String, String> groups = new HashMap();
+        for (Map<String, ?> item : rMap) {
+            String k = item.get("email").toString();
+            String v = String.format("%s\t%s\n",
+                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString()).getTipo()),
+                    LocaleBean.getDefaultMessageBundle().getString(RequerimentoStatusEnum.valueOf(item.get("status").toString()).getStatus())
+            );
+            if (!groups.containsKey(k)) {
+                groups.put(k, v);
+            } else {
+                groups.put(k, String.format("%s%s", groups.get(k), v));
+            }
+        }
         return groups;
     }
     
     private Map<String, String> messageSecretaria() {
+        Map<String, String> cursoGroups = new HashMap();
         Map<String, String> groups = new HashMap();
+        List<TipoRequerimentoEnum> tipoRequerimentoList = new ArrayList();
+        tipoRequerimentoList.add(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.EXTRATO_ACADEMICO);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA);
+        List<RequerimentoStatusEnum> status = Arrays
+                .asList(new RequerimentoStatusEnum[] {RequerimentoStatusEnum.ABERTO});
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, status, tipoRequerimentoList);
+        for (Map<String, ?> item: rMap) {
+            String k = item.get("curso").toString();
+            String v = String.format("\t%s\t%s\n",
+                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString()).getTipo()),
+                    item.get("total").toString()
+            );
+            if (!cursoGroups.containsKey(k)) {
+                cursoGroups.put(k, v);
+            } else {
+                cursoGroups.put(k, String.format("%s%s", cursoGroups.get(k), v));
+            }
+        }
+        StringBuilder message = new StringBuilder();
+        for (Entry<String,String> msgGroup: cursoGroups.entrySet()) {
+            message.append(msgGroup.getKey());
+            message.append("\n");
+            message.append(msgGroup.getValue());
+        }
+        for (Usuario usuario: usuarioDao.find(PerfilEnum.SECRETARIA)) {
+            groups.put(usuario.getEmail(), message.toString());
+        }
         return groups;
     }
 
@@ -73,7 +126,41 @@ public class MailBean {
     }
     
     private Map<String, String> messageCoordenadorDeCurso() {
+        Map<String, String> cursoGroups = new HashMap();
         Map<String, String> groups = new HashMap();
+        List<TipoRequerimentoEnum> tipoRequerimentoList = new ArrayList();
+        tipoRequerimentoList.add(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.EXTRATO_ACADEMICO);
+        tipoRequerimentoList.add(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA);
+        List<RequerimentoStatusEnum> status = Arrays.asList(new RequerimentoStatusEnum[] {
+            RequerimentoStatusEnum.ABERTO,
+            RequerimentoStatusEnum.EM_ANDAMENTO
+        });
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, status, tipoRequerimentoList);
+        for (Map<String, ?> item: rMap) {
+            String k = item.get("curso").toString();
+            String v = String.format("\t%s\t%s\n",
+                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString()).getTipo()),
+                    item.get("total").toString()
+            );
+            if (!cursoGroups.containsKey(k)) {
+                cursoGroups.put(k, v);
+            } else {
+                cursoGroups.put(k, String.format("%s%s", cursoGroups.get(k), v));
+            }
+        }
+        StringBuilder message = new StringBuilder();
+        for (Entry<String,String> msgGroup: cursoGroups.entrySet()) {
+            message.append(msgGroup.getKey());
+            message.append("\n");
+            message.append(msgGroup.getValue());
+        }
+        for (Usuario usuario: usuarioDao.find(PerfilEnum.SECRETARIA)) {
+            groups.put(usuario.getEmail(), message.toString());
+        }
         return groups;
     }
     
@@ -107,6 +194,8 @@ public class MailBean {
         System.out.format("scheduder%d executed at: %s\n", ++counter, dateFormat.format(Calendar.getInstance().getTime()));
         try {
             sendEmail(messageCoordenadorDeEstagio());
+            sendEmail(messageSecretaria());
+            sendEmail(messageDiscente());
         } catch (EmailException e) {
             log.error(e);
         }

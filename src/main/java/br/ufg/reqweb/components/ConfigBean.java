@@ -31,14 +31,14 @@ import org.springframework.stereotype.Component;
 @Scope(value = "singleton")
 @Lazy(false)
 public class ConfigBean implements Serializable {
-    
+
     private static final Logger log = Logger.getLogger(ConfigBean.class);
     private static ConfigBean instance;
     private final String propertyFile = "/reqweb.properties";
     private final StandardPBEStringEncryptor encryptor;
     private final Properties conf;
     public boolean showPassword;
-    
+
     public ConfigBean() {
         showPassword = false;
         encryptor = new StandardPBEStringEncryptor();
@@ -51,14 +51,14 @@ public class ConfigBean implements Serializable {
             log.error("No config found: classpath:reqweb.properties");
         }
     }
-    
+
     public static ConfigBean getInstance() {
         if (instance == null) {
             instance = new ConfigBean();
         }
         return instance;
     }
-    
+
     public void salvaSettings() {
         OutputStream outConf = null;
         FacesMessage msg = null;
@@ -96,12 +96,12 @@ public class ConfigBean implements Serializable {
      * </ul>
      */
     public Object getValue(String key) {
-        if (key.equals("minPeriodo")) {
+        if (key.equals("reqweb.minPeriodo")) {
             Calendar minPeriodo = Calendar.getInstance();
             minPeriodo.add(Calendar.DAY_OF_MONTH, 1 - Integer.parseInt(conf.getProperty(key)));
             return minPeriodo.getTime();
         }
-        if (key.equals("maxPeriodo")) {
+        if (key.equals("reqweb.maxPeriodo")) {
             return Calendar.getInstance().getTime();
         }
         return conf.getProperty(key);
@@ -116,7 +116,7 @@ public class ConfigBean implements Serializable {
             return false;
         }
     }
-    
+
     public Properties getConf() {
         return conf;
     }
@@ -124,16 +124,18 @@ public class ConfigBean implements Serializable {
     public boolean isShowPassword() {
         return showPassword;
     }
-    
-    public void setShowPassword (boolean showPassword) {
+
+    public void setShowPassword(boolean showPassword) {
         this.showPassword = showPassword;
     }
 
     /**
      * @return the minPeriodo
      */
-    public int getMinPeriodo() {
-        return Integer.parseInt(conf.getProperty("reqweb.minPeriodo"));
+    public Date getMinPeriodo() {
+        Calendar minPeriodo = Calendar.getInstance();
+        minPeriodo.add(Calendar.DAY_OF_MONTH, 1 - Integer.parseInt(conf.getProperty("reqweb.minPeriodo")));
+        return minPeriodo.getTime();
     }
 
     /**
@@ -141,6 +143,10 @@ public class ConfigBean implements Serializable {
      */
     public void setMinPeriodo(int minPeriodo) {
         conf.setProperty("reqweb.minPeriodo", Integer.toString(minPeriodo));
+    }
+
+    public Date getMaxPeriodo() {
+        return Calendar.getInstance().getTime();
     }
 
     /**
@@ -380,7 +386,7 @@ public class ConfigBean implements Serializable {
         } catch (EncryptionOperationNotPossibleException e) {
             return conf.getProperty("mail.mailPassword");
         }
-        
+
     }
 
     /**
@@ -392,8 +398,7 @@ public class ConfigBean implements Serializable {
     }
 
     /**
-     * @return the mailScheduler
-     *Spring Scheduler cron like style 
+     * @return the mailScheduler Spring Scheduler cron like style
      */
     public String getMailScheduler() {
         return conf.getProperty("mail.mailScheduler");
@@ -405,6 +410,5 @@ public class ConfigBean implements Serializable {
     public void setMailScheduler(String mailScheduler) {
         conf.setProperty("mail.mailScheduler", mailScheduler);
     }
-    
 
 }

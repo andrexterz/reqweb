@@ -17,11 +17,13 @@ import br.ufg.reqweb.model.Perfil;
 import br.ufg.reqweb.model.PerfilEnum;
 import br.ufg.reqweb.model.Periodo;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
+import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Turma;
 import br.ufg.reqweb.model.Usuario;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,13 +62,13 @@ public class ReportBean {
 
     @Autowired
     private TurmaDao turmaDao;
-    
+
     private Curso curso;
-    
+
     private PerfilEnum perfil;
-    
+
     private Usuario usuario;
-    
+
     public ReportBean() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         curso = null;
@@ -79,7 +81,7 @@ public class ReportBean {
             }
         }
     }
-    
+
     public Curso getCurso() {
         return curso;
     }
@@ -235,7 +237,60 @@ public class ReportBean {
         return getUsuariosAsPDF(PerfilEnum.DISCENTE);
     }
 
-    
+    public StreamedContent getRelatorioTotalAsPDF() {
+        DefaultStreamedContent content = new DefaultStreamedContent();
+        try {
+            String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/resumo.jasper");
+            JRMapCollectionDataSource dataSource;
+            List<TipoRequerimentoEnum> tipoRequerimentoList;
+            List<RequerimentoStatusEnum> status;
+            if (curso == null) {
+                tipoRequerimentoList = Arrays.asList(new TipoRequerimentoEnum[]{
+                    TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA,
+                    TipoRequerimentoEnum.EXTRATO_ACADEMICO,
+                    TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO,
+                    TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA
+                });
+                status = Arrays.asList(new RequerimentoStatusEnum[]{
+                    RequerimentoStatusEnum.ABERTO
+                });
+            } else {
+                tipoRequerimentoList = Arrays.asList(new TipoRequerimentoEnum[]{
+                    TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA,
+                    TipoRequerimentoEnum.EXTRATO_ACADEMICO,
+                    TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO,
+                    TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA
+                });
+                status = Arrays.asList(new RequerimentoStatusEnum[]{
+                    RequerimentoStatusEnum.ABERTO,
+                    RequerimentoStatusEnum.EM_ANDAMENTO
+                });
+            }
+            dataSource = new JRMapCollectionDataSource(reportDao.listTotalRequerimento(curso, status, tipoRequerimentoList));
+            Map reportParameters = new HashMap();
+            reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("requerimentos"));
+            reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
+            reportParameters.put("REQUERIMENTO", LocaleBean.getMessageBundle().getString("requerimento"));
+            reportParameters.put("STATUS", LocaleBean.getMessageBundle().getString("status"));
+            reportParameters.put("ABERTO", LocaleBean.getMessageBundle().getString("aberto"));
+            reportParameters.put("EM_ANDAMENTO", LocaleBean.getMessageBundle().getString("emAndamento"));
+            reportParameters.put("TOTAL", LocaleBean.getMessageBundle().getString("total"));
+
+            reportParameters.put("DECLARACAO_DE_MATRICULA", TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA.getTipoLocale());
+            reportParameters.put("EXTRATO_ACADEMICO", TipoRequerimentoEnum.EXTRATO_ACADEMICO.getTipoLocale());
+            reportParameters.put("DOCUMENTO_DE_ESTAGIO", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.getTipoLocale());
+            reportParameters.put("EMENTA_DE_DISCIPLINA", TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA.getTipoLocale());
+            JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
+            InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
+            content.setName("reqweb_resumo.pdf");
+            content.setContentType("application/pdf");
+            content.setStream(inputStream);
+        } catch (JRException e) {
+            System.out.println("error: " + e.getMessage());
+        }
+        return content;
+    }
+
     public StreamedContent getIndicePrioridadeAsPDF() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         DefaultStreamedContent content = new DefaultStreamedContent();
@@ -285,7 +340,7 @@ public class ReportBean {
             content.setContentType("application/pdf");
             content.setStream(inputStream);
 
-        } catch (NullPointerException|JRException e) {
+        } catch (NullPointerException | JRException e) {
             System.out.println("error: " + e.getMessage());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);
@@ -320,7 +375,7 @@ public class ReportBean {
             content.setContentType("application/pdf");
             content.setStream(inputStream);
 
-        } catch (NullPointerException|JRException e) {
+        } catch (NullPointerException | JRException e) {
             System.out.println("error: " + e.getMessage());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);
@@ -359,7 +414,7 @@ public class ReportBean {
             content.setContentType("application/pdf");
             content.setStream(inputStream);
 
-        } catch (NullPointerException|JRException e) {
+        } catch (NullPointerException | JRException e) {
             System.out.println("error: " + e.getMessage());
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     LocaleBean.getMessageBundle().getString("operacaoCancelada"), null);

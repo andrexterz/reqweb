@@ -144,7 +144,7 @@
 				<textElement textAlignment="Right">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tipodeajuste}.equals("INCLUSAO_DE_DISCIPLINA") ? $P{INCLUIR}: $P{EXCLUIR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipodeajuste}.trim().equals("INCLUSAO_DE_DISCIPLINA") ? $P{INCLUIR}: $P{EXCLUIR}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

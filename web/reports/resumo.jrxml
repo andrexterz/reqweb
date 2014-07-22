@@ -1,62 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="documentoDeEstagio" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="1.4641000000000177"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
+	<property name="ireport.zoom" value="1.948717100000024"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<parameter name="MATRICULA" class="java.lang.String"/>
-	<parameter name="NOME" class="java.lang.String"/>
-	<parameter name="DOCENTE" class="java.lang.String"/>
-	<parameter name="TIPO_DE_DOCUMENTO" class="java.lang.String"/>
-	<parameter name="CONTRATO_DE_ESTAGIO" class="java.lang.String"/>
-	<parameter name="RELATORIO_DE_ESTAGIO" class="java.lang.String"/>
 	<parameter name="CURSO" class="java.lang.String"/>
+	<parameter name="REQUERIMENTO" class="java.lang.String"/>
+	<parameter name="STATUS" class="java.lang.String"/>
+	<parameter name="ABERTO" class="java.lang.String"/>
+	<parameter name="EM_ANDAMENTO" class="java.lang.String"/>
+	<parameter name="DECLARACAO_DE_MATRICULA" class="java.lang.String"/>
+	<parameter name="EXTRATO_ACADEMICO" class="java.lang.String"/>
+	<parameter name="DOCUMENTO_DE_ESTAGIO" class="java.lang.String"/>
+	<parameter name="EMENTA_DE_DISCIPLINA" class="java.lang.String"/>
+	<parameter name="TOTAL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="discente" class="java.lang.String"/>
-	<field name="matricula" class="java.lang.String"/>
-	<field name="docente" class="java.lang.String"/>
-	<field name="tipodedocumento" class="java.lang.String"/>
 	<field name="curso" class="java.lang.String"/>
-	<group name="tipoDeDocumento">
-		<groupExpression><![CDATA[$F{docente} + $F{tipodedocumento}]]></groupExpression>
+	<field name="requerimento" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="total" class="java.lang.Number"/>
+	<group name="curso">
+		<groupExpression><![CDATA[$F{curso}]]></groupExpression>
 		<groupHeader>
 			<band height="35">
 				<textField>
-					<reportElement x="39" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
+					<reportElement x="39" y="19" width="243" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
 					<textElement markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{REQUERIMENTO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="139" y="19" width="256" height="16" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
-					<textElement markup="none">
-						<font isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="395" y="19" width="160" height="16" uuid="a3c9c126-b286-4c7c-8ab9-9391c39d839e"/>
+					<reportElement x="507" y="19" width="48" height="16" uuid="a3c9c126-b286-4c7c-8ab9-9391c39d839e"/>
 					<textElement textAlignment="Right" markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{TIPO_DE_DOCUMENTO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{TOTAL}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="0" width="282" height="14" uuid="39db1725-948f-455e-a394-6067a48ed448"/>
+					<reportElement x="0" y="0" width="555" height="14" uuid="39db1725-948f-455e-a394-6067a48ed448"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{DOCENTE} + ": " + $F{docente}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="282" y="0" width="273" height="14" uuid="c8bd517b-2bce-41b3-85ec-c4ace487f9b7"/>
-					<textElement textAlignment="Right">
+					<reportElement x="283" y="19" width="224" height="16" uuid="c9deecd3-e4e8-41c9-b140-d3e1cabe49b0"/>
+					<textElement textAlignment="Center" markup="none">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{STATUS}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -135,25 +130,29 @@
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="39" y="0" width="100" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
+				<reportElement x="39" y="0" width="243" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{matricula}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{requerimento}.trim().equals("DECLARACAO_DE_MATRICULA") ?
+$P{DECLARACAO_DE_MATRICULA}: $F{requerimento}.trim().equals("EXTRATO_ACADEMICO") ?
+$P{EXTRATO_ACADEMICO}: $F{requerimento}.trim().equals("DOCUMENTO_DE_ESTAGIO") ?
+$P{DOCUMENTO_DE_ESTAGIO}: $F{requerimento}.trim().equals("EMENTA_DE_DISCIPLINA") ?
+$P{EMENTA_DE_DISCIPLINA}: "-"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="139" y="0" width="256" height="13" uuid="a2933322-b22d-48f5-ab56-80a33e426e87"/>
-				<textElement>
+				<reportElement x="283" y="0" width="224" height="13" uuid="229f02cf-7c1a-41cb-a104-dfa130c4fbc3"/>
+				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{discente}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{status}.trim().equals("EM_ANDAMENTO") ? $P{EM_ANDAMENTO}: $P{ABERTO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="395" y="0" width="160" height="13" uuid="eabc42dc-ac21-4a57-99f1-9c6c11b0ecf6"/>
+				<reportElement x="507" y="0" width="48" height="13" uuid="eabc42dc-ac21-4a57-99f1-9c6c11b0ecf6"/>
 				<textElement textAlignment="Right">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tipodedocumento}.trim().equals("RELATORIO_DE_ESTAGIO") ? $P{RELATORIO_DE_ESTAGIO}: $P{CONTRATO_DE_ESTAGIO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

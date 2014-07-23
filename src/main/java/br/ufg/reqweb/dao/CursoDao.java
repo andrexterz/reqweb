@@ -7,7 +7,6 @@ package br.ufg.reqweb.dao;
 import br.ufg.reqweb.model.Curso;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.HibernateException;

@@ -124,7 +124,6 @@ public class Periodo extends BaseModel {
         Calendar yearDataTermino = Calendar.getInstance();
         yearDataInicio.setTime(dataInicio);
         yearDataTermino.setTime(dataInicio);
-        System.out.println(String.format("corrente %d /inicio %d /termino %d", ano, yearDataInicio.get(Calendar.YEAR), yearDataTermino.get(Calendar.YEAR)));
         return (ano == yearDataInicio.get(Calendar.YEAR) && ano == yearDataTermino.get(Calendar.YEAR) && dataTermino.getTime() >= dataInicio.getTime());
     }
 

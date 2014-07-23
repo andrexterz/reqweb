@@ -34,9 +34,9 @@
     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
-        <property name="url" value="#{configBean.databaseString}" />
-        <property name="username" value="#{configBean.databaseUser}" />
-        <property name="password" value="#{configBean.databasePassword}" />
+        <property name="url" value="${jdbc.databaseString}" />
+        <property name="username" value="#{configDao.getValue('jdbc.databaseUser')}" />
+        <property name="password" value="#{configDao.getValue('jdbc.databasePassword')}" />
     </bean> 
 
 
@@ -62,7 +62,7 @@
     <!-- spring security configuration -->
     <!-- apenas verifica se usuario foi autenticado. ignora roles -->
 
-    <security:ldap-server id="ldapSource" url="#{configBean.url}" /> 
+    <security:ldap-server id="ldapSource" url="${ldap.url}" /> 
 
     <security:authentication-manager id="authManager">
         <security:ldap-authentication-provider user-search-filter="(uid={0})" />

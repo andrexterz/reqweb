@@ -69,8 +69,8 @@
                                                 beforeShowDay="disableSundays"
                                                 mode="inline"
                                                 disabled="#{configBean.isExpiredPeriodo(itemRequerimento.dataProvaA)}"
-                                                mindate="#{configBean.minPeriodo}"
-                                                maxdate="#{configBean.maxPeriodo}"
+                                                mindate="#{configBean.minDate}"
+                                                maxdate="#{configBean.maxDate}"
                                                 styleClass="calendarWidget"
                                                 value="#{itemRequerimento.dataProvaA}">
                                         <p:ajax update="dataProvaText" event="dateSelect" />

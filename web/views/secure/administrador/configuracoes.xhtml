@@ -15,8 +15,8 @@
             <h:panelGroup layout="block" id="configToolbar" styleClass="formToolbar">
                 <p:commandButton value="#{msg.salvar}"
                                  process="@form"
-                                 update=":formHeader:systemMessages"
-                                 actionListener="#{configBean.salvaSettings}" />
+                                 update=":formHeader:systemMessages configTab"
+                                 action="#{configBean.salvaSettings}" />
                 <p:selectBooleanButton onLabel="#{msg.showPassword}: #{msg.sim}" offLabel="#{msg.showPassword}: #{msg.nao}" value="#{configBean.showPassword}">
                     <p:ajax update="configTab:configBancoDeDados configTab:configMail" />
                 </p:selectBooleanButton>
@@ -65,7 +65,7 @@
                                 <h:outputLabel value="#{msg.url}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.url}" />
+                                <h:inputText value="#{configBean.ldapUrl}" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -73,7 +73,7 @@
                                 <h:outputLabel value="#{msg.servidorLDAP}" />
                             </p:column>
                             <p:column styleClass="col80">
-                                <h:inputText value="#{configBean.server}" />
+                                <h:inputText value="#{configBean.ldapServer}" />
                             </p:column>
                         </p:row>
                         <p:row>

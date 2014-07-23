@@ -32,7 +32,7 @@ public enum TipoRequerimentoEnum {
     }
     
     public String getTipoLocale() {
-        return LocaleBean.getMessageBundle().getString(tipo);
+        return LocaleBean.getDefaultMessageBundle().getString(tipo);
     }    
     
 }

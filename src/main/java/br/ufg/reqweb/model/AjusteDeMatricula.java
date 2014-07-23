@@ -51,7 +51,7 @@ public class AjusteDeMatricula extends ItemRequerimento {
         }
 
         public String getTipoLocale() {
-            return LocaleBean.getMessageBundle().getString(tipo);
+            return LocaleBean.getDefaultMessageBundle().getString(tipo);
         }        
     }
     

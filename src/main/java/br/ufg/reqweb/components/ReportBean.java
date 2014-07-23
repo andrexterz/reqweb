@@ -266,7 +266,7 @@ public class ReportBean {
                     RequerimentoStatusEnum.EM_ANDAMENTO
                 });
             }
-            dataSource = new JRMapCollectionDataSource(reportDao.listTotalRequerimento(curso, status, tipoRequerimentoList));
+            dataSource = new JRMapCollectionDataSource(reportDao.listTotalRequerimento(null, curso, status, tipoRequerimentoList));
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("requerimentos"));
             reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));

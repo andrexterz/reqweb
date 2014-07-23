@@ -11,8 +11,10 @@
 	<parameter name="EM_ANDAMENTO" class="java.lang.String"/>
 	<parameter name="DECLARACAO_DE_MATRICULA" class="java.lang.String"/>
 	<parameter name="EXTRATO_ACADEMICO" class="java.lang.String"/>
-	<parameter name="DOCUMENTO_DE_ESTAGIO" class="java.lang.String"/>
 	<parameter name="EMENTA_DE_DISCIPLINA" class="java.lang.String"/>
+	<parameter name="SEGUNDA_CHAMADA_DE_PROVA" class="java.lang.String"/>
+	<parameter name="DOCUMENTO_DE_ESTAGIO" class="java.lang.String"/>
+	<parameter name="AJUSTE_DE_MATRICULA" class="java.lang.String"/>
 	<parameter name="TOTAL" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
@@ -138,7 +140,9 @@
 $P{DECLARACAO_DE_MATRICULA}: $F{requerimento}.trim().equals("EXTRATO_ACADEMICO") ?
 $P{EXTRATO_ACADEMICO}: $F{requerimento}.trim().equals("DOCUMENTO_DE_ESTAGIO") ?
 $P{DOCUMENTO_DE_ESTAGIO}: $F{requerimento}.trim().equals("EMENTA_DE_DISCIPLINA") ?
-$P{EMENTA_DE_DISCIPLINA}: "-"]]></textFieldExpression>
+$P{EMENTA_DE_DISCIPLINA}: $F{requerimento}.trim().equals("SEGUNDA_CHAMADA_DE_PROVA") ?
+$P{SEGUNDA_CHAMADA_DE_PROVA}: $F{requerimento}.trim().equals("AJUSTE_DE_MATRICULA") ?
+$P{AJUSTE_DE_MATRICULA}: "-"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="283" y="0" width="224" height="13" uuid="229f02cf-7c1a-41cb-a104-dfa130c4fbc3"/>

@@ -16,6 +16,7 @@ import br.ufg.reqweb.model.Usuario;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
+import javax.servlet.ServletContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -48,55 +50,56 @@ import org.springframework.stereotype.Component;
 @Scope(value = "singleton")
 public class MailBean {
 
-    private int counter = 0;
-    
+    @Autowired
+    ServletContext context;
+
     @Autowired
     ReportDao reportDao;
 
     @Autowired
     UsuarioDao usuarioDao;
-    
+
     @Autowired
     ConfigDao configDao;
 
     Logger log;
-    
+
     public MailBean() {
         log = Logger.getLogger(MailBean.class);
     }
 
-    private void sendEmailToStaff(Map<String, String> content) {
-        for (String k : content.keySet()) {
-            MultiPartEmail email = new MultiPartEmail();
+    private void sendEmailToStaff(Map<String, List<Map<String, ?>>> messageMap) {
+        for (Entry message : messageMap.entrySet()) {
             JRMapCollectionDataSource dataSource;
             List<TipoRequerimentoEnum> tipoRequerimentoList;
             List<RequerimentoStatusEnum> status;
+            Map reportParameters = new HashMap();            
             tipoRequerimentoList = Arrays.asList(TipoRequerimentoEnum.values());
-            status = Arrays.asList(RequerimentoStatusEnum.values());
-            String reportPath = this.getClass().getResource("reports/resumo.jasper").getPath();
-            dataSource = new JRMapCollectionDataSource(reportDao.listTotalRequerimento(null, status, tipoRequerimentoList));
-            Map reportParameters = new HashMap();
+            status = Arrays.asList(new RequerimentoStatusEnum[]{RequerimentoStatusEnum.ABERTO, RequerimentoStatusEnum.EM_ANDAMENTO});
+            for (RequerimentoStatusEnum statusEnum : RequerimentoStatusEnum.values()) {
+                reportParameters.put(statusEnum.name(), LocaleBean.getDefaultMessageBundle().getString(statusEnum.getStatus()));
+            }
+            String reportPath = context.getRealPath("/reports/resumo.jasper");
+            System.out.println("path: " + reportPath);
+            dataSource = new JRMapCollectionDataSource((List<Map<String, ?>>) message.getValue());
             reportParameters.put("TITULO", LocaleBean.getDefaultMessageBundle().getString("requerimentos"));
             reportParameters.put("CURSO", LocaleBean.getDefaultMessageBundle().getString("curso"));
             reportParameters.put("REQUERIMENTO", LocaleBean.getDefaultMessageBundle().getString("requerimento"));
             reportParameters.put("STATUS", LocaleBean.getDefaultMessageBundle().getString("status"));
-            for (RequerimentoStatusEnum statusEnum: RequerimentoStatusEnum.values()) {
-                reportParameters.put(statusEnum.name(), LocaleBean.getDefaultMessageBundle().getString(statusEnum.getStatus()));
-            }
             reportParameters.put("TOTAL", LocaleBean.getDefaultMessageBundle().getString("total"));
-            reportParameters.put("DECLARACAO_DE_MATRICULA", TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA.getTipoLocale());
-            reportParameters.put("EXTRATO_ACADEMICO", TipoRequerimentoEnum.EXTRATO_ACADEMICO.getTipoLocale());
-            reportParameters.put("DOCUMENTO_DE_ESTAGIO", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.getTipoLocale());
-            reportParameters.put("EMENTA_DE_DISCIPLINA", TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA.getTipoLocale());
+            for (TipoRequerimentoEnum tipoRequerimento : tipoRequerimentoList) {
+                reportParameters.put(tipoRequerimento.name(), tipoRequerimento.getTipoLocale());
+            }
             JasperPrint jrp;
             try {
                 jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
                 InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
+                MultiPartEmail email = new MultiPartEmail();
                 DataSource ds = new ByteArrayDataSource(inputStream, "application/pdf");
                 email.attach(ds, "reqweb.pdf", LocaleBean.getDefaultMessageBundle().getString("relatorioDiario"));
-                email.setHostName(configDao.getValue("mail.HostName"));
+                email.setHostName(configDao.getValue("mail.mailHost"));
                 email.setSmtpPort(Integer.parseInt(configDao.getValue("mail.smtpPort")));
-                
+
                 String mailSender = configDao.getValue("mail.mailSender");
                 String user = configDao.getValue("mail.mailUser");
                 String password = configDao.getValue("mail.mailPassword");
@@ -105,13 +108,16 @@ public class MailBean {
                 email.setAuthenticator(new DefaultAuthenticator(user, password));
                 email.setSSLOnConnect(useSSL);
                 email.setFrom(mailSender);
-                email.addTo(k);
+                email.addTo(message.getKey().toString());
                 email.setSubject(LocaleBean.getDefaultMessageBundle().getString("subjectMail"));
-                String message = String.format("%s\n\n%s", LocaleBean.getDefaultMessageBundle().getString("subjectMail"), content.get(k));
-                email.setMsg(message);
+                String messageBody = String.format("%s\n\n%s",
+                        LocaleBean.getDefaultMessageBundle().getString("subjectMail"),
+                        LocaleBean.getDefaultMessageBundle().getString("messageMail")
+                );
+                email.setMsg(messageBody);
                 email.send();
-            } catch (IOException | JRException | EmailException e) {
-                System.out.println("erro ao gerar relatório de email");
+            } catch (IOException | NullPointerException | EmailException | JRException e) {
+                System.out.println("erro ao enviar email");
                 log.error(e);
             }
         }
@@ -147,7 +153,7 @@ public class MailBean {
         tipoRequerimentoList.add(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA);
         List<RequerimentoStatusEnum> status = Arrays
                 .asList(new RequerimentoStatusEnum[]{RequerimentoStatusEnum.ABERTO});
-        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, status, tipoRequerimentoList);
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, null, status, tipoRequerimentoList);
         for (Map<String, ?> item : rMap) {
             String k = item.get("curso").toString().trim();
             String v = String.format("\t%s - %s\n",
@@ -178,42 +184,24 @@ public class MailBean {
         return groups;
     }
 
-    private Map<String, String> messageCoordenadorDeCurso() {
+    private Map<String, List<Map<String, ?>>> messageCoordenadorDeCurso() {
         System.out.println("messsage to: coordenador_de_curso");
-        Map<String, String> cursoGroups = new HashMap();
-        Map<String, String> groups = new HashMap();
-        List<TipoRequerimentoEnum> tipoRequerimentoList = new ArrayList();
-        tipoRequerimentoList.add(TipoRequerimentoEnum.AJUSTE_DE_MATRICULA);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.EXTRATO_ACADEMICO);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA);
+        Map<String, List<Map<String, ?>>> groups = new HashMap();
+        List<TipoRequerimentoEnum> tipoRequerimentoList = Arrays.asList(TipoRequerimentoEnum.values());
         List<RequerimentoStatusEnum> status = Arrays.asList(new RequerimentoStatusEnum[]{
             RequerimentoStatusEnum.ABERTO,
             RequerimentoStatusEnum.EM_ANDAMENTO
         });
-        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, status, tipoRequerimentoList);
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(PerfilEnum.COORDENADOR_DE_CURSO, null, status, tipoRequerimentoList);
         for (Map<String, ?> item : rMap) {
-            String k = item.get("curso").toString();
-            String v = String.format("\t%s - %s\n",
-                    item.get("total").toString().trim(),
-                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString().trim()).getTipo())
-            );
-            if (!cursoGroups.containsKey(k)) {
-                cursoGroups.put(k, v);
+            String k = String.valueOf(item.get("email"));
+            if (!groups.containsKey(k)) {
+                List<Map<String, ?>> itemList = new ArrayList<>();
+                itemList.add(item);
+                groups.put(k, itemList);
             } else {
-                cursoGroups.put(k, String.format("%s%s", cursoGroups.get(k), v));
+                groups.get(k).add(item);
             }
-        }
-        StringBuilder message = new StringBuilder();
-        for (Entry<String, String> msgGroup : cursoGroups.entrySet()) {
-            message.append(msgGroup.getKey());
-            message.append("\n");
-            message.append(msgGroup.getValue());
-        }
-        for (Usuario usuario : usuarioDao.find(PerfilEnum.COORDENADOR_DE_CURSO)) {
-            groups.put(usuario.getEmail(), message.toString());
         }
         return groups;
     }
@@ -245,10 +233,7 @@ public class MailBean {
     @Scheduled(cron = "${mail.mailScheduler}")
     public void runTimer() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/Y");
-        System.out.format("scheduder%d executed at: %s\n", ++counter, dateFormat.format(Calendar.getInstance().getTime()));
+        System.out.format("scheduder executed at: %s\n", dateFormat.format(Calendar.getInstance().getTime()));
         sendEmailToStaff(messageCoordenadorDeCurso());
-        sendEmailToStaff(messageCoordenadorDeEstagio());
-        sendEmailToStaff(messageSecretaria());
-        //sendEmail(messageDiscente());
     }
 }

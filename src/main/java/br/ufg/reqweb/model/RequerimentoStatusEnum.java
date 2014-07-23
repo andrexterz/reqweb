@@ -29,6 +29,6 @@ public enum RequerimentoStatusEnum {
     }
     
     public String getStatusLocale() {
-        return LocaleBean.getMessageBundle().getString(status);
+        return LocaleBean.getDefaultMessageBundle().getString(status);
     }
 }

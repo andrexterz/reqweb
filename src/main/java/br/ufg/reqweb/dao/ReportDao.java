@@ -169,7 +169,7 @@ public class ReportDao {
     }
 
     @Transactional(readOnly = true)
-    public List<Map<String, ?>> listTotalRequerimento(Curso curso, List<RequerimentoStatusEnum> statusList, List<TipoRequerimentoEnum> tipoRequerimentoList) {
+    public List<Map<String, ?>> listTotalRequerimento(PerfilEnum perfil, Curso curso, List<RequerimentoStatusEnum> statusList, List<TipoRequerimentoEnum> tipoRequerimentoList) {
         List<String> tipoRequerimentoNames = new ArrayList<>();
         List<String> statusNames = new ArrayList<>();
         for (TipoRequerimentoEnum tipoRequerimento : tipoRequerimentoList) {
@@ -179,30 +179,42 @@ public class ReportDao {
             statusNames.add(status.name());
         }
         Query query;
-        if (curso == null) {
+        if (perfil == null) {
             query = this.sessionFactory.getCurrentSession().createSQLQuery(
-                    "select c.nome as curso, r.tiporequerimento as requerimento, r.status as status, count(r.tiporequerimento) as total from requerimento r\n"
+                    "select c.nome as curso, r.tiporequerimento as requerimento,\n"
+                    + "r.status as status, count(r.tiporequerimento) as total\n"
+                    + "from requerimento r\n"
                     + "join usuario u on u.id=r.usuario_id\n"
                     + "join perfil p on p.usuario_id=u.id\n"
                     + "join curso c on c.id=p.curso_id\n"
                     + "group by c.nome, r.tiporequerimento, r.status\n"
                     + "having r.status in :status\n"
                     + "and r.tiporequerimento in :tipoRequerimento\n"
+                    + (curso == null ? "" : "and c.id = :cursoId\n")
                     + "order by c.nome asc, r.tiporequerimento asc"
             );
+            if (curso != null) {
+                query.setLong("cursoId", curso.getId());
+            }
         } else {
             query = this.sessionFactory.getCurrentSession().createSQLQuery(
-                    "select c.nome as curso, r.tiporequerimento as requerimento, r.status as status, count(r.tiporequerimento) as total from requerimento r\n"
-                    + "join usuario u on u.id=r.usuario_id\n"
-                    + "join perfil p on p.usuario_id=u.id\n"
-                    + "join curso c on c.id=p.curso_id\n"
-                    + "group by c.id, c.nome, r.tiporequerimento, r.status\n"
+                    "select coord.email, cdis.nome as curso,\n"
+                    + "r.tiporequerimento as requerimento,\n"
+                    + "r.status as status,\n"
+                    + "count(r.tiporequerimento) as total\n"
+                    + "from requerimento r\n"
+                    + "join usuario dis on dis.id=r.usuario_id\n"
+                    + "join perfil pdis on pdis.usuario_id=dis.id\n"
+                    + "join curso cdis on cdis.id=pdis.curso_id\n"
+                    + "join perfil pcoord on pcoord.curso_id=cdis.id\n"
+                    + "and pcoord.tipoperfil = :perfil\n"
+                    + "join usuario coord on pcoord.usuario_id=coord.id\n"
+                    + "group by coord.email, cdis.nome, r.tiporequerimento, r.status\n"
                     + "having r.status in :status\n"
                     + "and r.tiporequerimento in :tipoRequerimento\n"
-                    + "and c.id = :cursoId\n"
-                    + "order by c.nome asc, r.tiporequerimento asc"
+                    + "order by cdis.nome asc, r.tiporequerimento asc;\n"
             );
-            query.setLong("cursoId", curso.getId());
+            query.setParameter("perfil", perfil.name());
         }
         query.setParameterList("status", statusNames);
         query.setParameterList("tipoRequerimento", tipoRequerimentoNames);

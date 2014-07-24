@@ -68,12 +68,31 @@ public class MailBean {
         log = Logger.getLogger(MailBean.class);
     }
 
+    private Map<String, String> sendMailToDiscente() {
+        System.out.println("messsage to: discente");
+        List<Map<String, ?>> rMap = reportDao.listRequerimentoByStatusMap(RequerimentoStatusEnum.FINALIZADO);
+        Map<String, String> groups = new HashMap();
+        for (Map<String, ?> item : rMap) {
+            String k = item.get("email").toString().trim();
+            String v = String.format("%s\t%s\n",
+                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString().trim()).getTipo()),
+                    LocaleBean.getDefaultMessageBundle().getString(RequerimentoStatusEnum.valueOf(item.get("status").toString().trim()).getStatus())
+            );
+            if (!groups.containsKey(k)) {
+                groups.put(k, v);
+            } else {
+                groups.put(k, String.format("%s%s", groups.get(k), v));
+            }
+        }
+        return groups;
+    }
+
     private void sendEmailToStaff(Map<String, List<Map<String, ?>>> messageMap) {
         for (Entry message : messageMap.entrySet()) {
             JRMapCollectionDataSource dataSource;
             List<TipoRequerimentoEnum> tipoRequerimentoList;
             List<RequerimentoStatusEnum> status;
-            Map reportParameters = new HashMap();            
+            Map reportParameters = new HashMap();
             tipoRequerimentoList = Arrays.asList(TipoRequerimentoEnum.values());
             status = Arrays.asList(new RequerimentoStatusEnum[]{RequerimentoStatusEnum.ABERTO, RequerimentoStatusEnum.EM_ANDAMENTO});
             for (RequerimentoStatusEnum statusEnum : RequerimentoStatusEnum.values()) {
@@ -123,67 +142,6 @@ public class MailBean {
         }
     }
 
-    private Map<String, String> messageDiscente() {
-        System.out.println("messsage to: discente");
-        List<Map<String, ?>> rMap = reportDao.listRequerimentoByStatusMap(RequerimentoStatusEnum.FINALIZADO);
-        Map<String, String> groups = new HashMap();
-        for (Map<String, ?> item : rMap) {
-            String k = item.get("email").toString().trim();
-            String v = String.format("%s\t%s\n",
-                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString().trim()).getTipo()),
-                    LocaleBean.getDefaultMessageBundle().getString(RequerimentoStatusEnum.valueOf(item.get("status").toString().trim()).getStatus())
-            );
-            if (!groups.containsKey(k)) {
-                groups.put(k, v);
-            } else {
-                groups.put(k, String.format("%s%s", groups.get(k), v));
-            }
-        }
-        return groups;
-    }
-
-    private Map<String, String> messageSecretaria() {
-        System.out.println("messsage to: secretaria");
-        Map<String, String> cursoGroups = new HashMap();
-        Map<String, String> groups = new HashMap();
-        List<TipoRequerimentoEnum> tipoRequerimentoList = new ArrayList();
-        tipoRequerimentoList.add(TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.EXTRATO_ACADEMICO);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO);
-        tipoRequerimentoList.add(TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA);
-        List<RequerimentoStatusEnum> status = Arrays
-                .asList(new RequerimentoStatusEnum[]{RequerimentoStatusEnum.ABERTO});
-        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, null, status, tipoRequerimentoList);
-        for (Map<String, ?> item : rMap) {
-            String k = item.get("curso").toString().trim();
-            String v = String.format("\t%s - %s\n",
-                    item.get("total").toString().trim(),
-                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString().trim()).getTipo())
-            );
-            if (!cursoGroups.containsKey(k)) {
-                cursoGroups.put(k, v);
-            } else {
-                cursoGroups.put(k, String.format("%s%s", cursoGroups.get(k), v));
-            }
-        }
-        StringBuilder message = new StringBuilder();
-        for (Entry<String, String> msgGroup : cursoGroups.entrySet()) {
-            message.append(msgGroup.getKey());
-            message.append("\n");
-            message.append(msgGroup.getValue());
-        }
-        for (Usuario usuario : usuarioDao.find(PerfilEnum.SECRETARIA)) {
-            groups.put(usuario.getEmail(), message.toString());
-        }
-        return groups;
-    }
-
-    private Map<String, String> messageDocente() {
-        System.out.println("messsage to: docente");
-        Map<String, String> groups = new HashMap();
-        return groups;
-    }
-
     private Map<String, List<Map<String, ?>>> messageCoordenadorDeCurso() {
         System.out.println("messsage to: coordenador_de_curso");
         Map<String, List<Map<String, ?>>> groups = new HashMap();
@@ -205,28 +163,51 @@ public class MailBean {
         }
         return groups;
     }
-
-    private Map<String, String> messageCoordenadorDeEstagio() {
-        List<Map<String, ?>> rMap = reportDao.listDocumentoDeEstagioMap(RequerimentoStatusEnum.EM_ANDAMENTO);
-        Map<String, String> groups = new HashMap();
+    private  Map<String, List<Map<String, ?>>> messageCoordenadorDeEstagio() {
+        System.out.println("messsage to: coordenador_de_estagio");
+        Map<String, List<Map<String, ?>>> groups = new HashMap();
+        List<TipoRequerimentoEnum> tipoRequerimentoList = Arrays.asList(TipoRequerimentoEnum.values());
+        List<RequerimentoStatusEnum> status = Arrays.asList(new RequerimentoStatusEnum[]{
+            RequerimentoStatusEnum.EM_ANDAMENTO
+        });
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(PerfilEnum.COORDENADOR_DE_ESTAGIO, null, status, tipoRequerimentoList);
         for (Map<String, ?> item : rMap) {
-            String k = item.get("email").toString();
-            String tipoDeDocumento = item.get("tipodedocumento")
-                    .toString().trim()
-                    .equals(DocumentoDeEstagio.TipoDeDocumento.CONTRATO_DE_ESTAGIO.name())
-                    ? LocaleBean.getDefaultMessageBundle().getString("contratoDeEstagio")
-                    : LocaleBean.getDefaultMessageBundle().getString("relatorioDeEstagio");
-            String v = String.format("%s\t%s\t%s\n",
-                    item.get("matricula"),
-                    item.get("discente"),
-                    tipoDeDocumento
-            );
+            String k = String.valueOf(item.get("email"));
             if (!groups.containsKey(k)) {
-                groups.put(k, v);
+                List<Map<String, ?>> itemList = new ArrayList<>();
+                itemList.add(item);
+                groups.put(k, itemList);
             } else {
-                groups.put(k, String.format("%s%s", groups.get(k), v));
+                groups.get(k).add(item);
             }
         }
+        return groups;
+    }
+
+    private Map<String, List<Map<String, ?>>> messageSecretaria() {
+        System.out.println("messsage to: secretaria");
+        Map<String, List<Map<String, ?>>> groups = new HashMap();
+        List<TipoRequerimentoEnum> tipoRequerimentoList = Arrays.asList(
+                new TipoRequerimentoEnum[]{
+                    TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA,
+                    TipoRequerimentoEnum.EXTRATO_ACADEMICO,
+                    TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO,
+                    TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA
+                });
+        List<RequerimentoStatusEnum> status = Arrays.asList(
+                new RequerimentoStatusEnum[]{
+                    RequerimentoStatusEnum.ABERTO
+                });
+        List<Map<String, ?>> rMap = reportDao.listTotalRequerimento(null, null, status, tipoRequerimentoList);
+        for (Usuario usuario: usuarioDao.find(PerfilEnum.SECRETARIA)) {
+            groups.put(usuario.getEmail(), rMap);
+        }
+        return groups;
+    }
+
+    private Map<String, String> messageDocente() {
+        System.out.println("messsage to: docente");
+        Map<String, String> groups = new HashMap();
         return groups;
     }
 
@@ -235,5 +216,7 @@ public class MailBean {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/Y");
         System.out.format("scheduder executed at: %s\n", dateFormat.format(Calendar.getInstance().getTime()));
         sendEmailToStaff(messageCoordenadorDeCurso());
+        sendEmailToStaff(messageCoordenadorDeEstagio());
+        sendEmailToStaff(messageSecretaria());
     }
 }

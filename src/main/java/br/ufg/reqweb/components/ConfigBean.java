@@ -29,6 +29,9 @@ public class ConfigBean implements Serializable {
     
     @Autowired
     ConfigDao configDao;
+
+    @Autowired
+    MailBean mailBean;
     
     private boolean showPassword;
     Logger log;
@@ -37,13 +40,19 @@ public class ConfigBean implements Serializable {
         showPassword = false;
         log = Logger.getLogger(this.getClass());
     }
+    
+    public void reagendaCron() {
+        mailBean.scheduleJob();
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("cronRescheduled"));
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
 
     public void salvaSettings() {
         FacesMessage msg;
         try {
             configDao.salva();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            log.info("reqweb.properties changed. restart app on server manager");
+            log.info("reqweb.properties changed. restart scheduler to take effect");
         } catch (IOException e) {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
         }

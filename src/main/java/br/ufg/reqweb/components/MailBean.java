@@ -68,17 +68,17 @@ public class MailBean implements Serializable {
 
     @Autowired
     ConfigDao configDao;
-    
+
     ThreadPoolTaskScheduler scheduler;
     private ScheduledFuture<Object> scheduleTask;
 
     Logger log;
-    
 
     public MailBean() {
         log = Logger.getLogger(this.getClass());
+        scheduleTask = null;
     }
-    
+
     @PostConstruct
     public void scheduleJob() {
         scheduler = (ThreadPoolTaskScheduler) applicationContext.getBean("reqwebTimer");
@@ -90,10 +90,11 @@ public class MailBean implements Serializable {
         };
         if (scheduleTask != null) {
             scheduleTask.cancel(false);
+            log.info("shutting down schedulder");
         }
-        System.out.println("cron expression: " + configDao.getValue("mail.mailScheduler"));
         CronTrigger cron = new CronTrigger(configDao.getValue("mail.mailScheduler"));
         scheduleTask = scheduler.schedule(job, cron);
+        log.info("starting schedulder");
     }
 
     private Map<String, String> sendMailToDiscente() {
@@ -115,7 +116,7 @@ public class MailBean implements Serializable {
         return groups;
     }
 
-    private void processEmailToStaff(Map<String, List<Map<String, ?>>> messageMap, String reportPath) {
+    private void processEmailToStaff(Map<String, List<Map<String, ?>>> messageMap, String reportPath, String reportTitle) {
         for (Entry message : messageMap.entrySet()) {
             JRMapCollectionDataSource dataSource;
             List<TipoRequerimentoEnum> tipoRequerimentoList;
@@ -128,7 +129,7 @@ public class MailBean implements Serializable {
             }
             System.out.println("path: " + reportPath);
             dataSource = new JRMapCollectionDataSource((List<Map<String, ?>>) message.getValue());
-            reportParameters.put("TITULO", LocaleBean.getDefaultMessageBundle().getString("requerimentos"));
+            reportParameters.put("TITULO", reportTitle);
             reportParameters.put("MATRICULA", LocaleBean.getDefaultMessageBundle().getString("usuarioMatricula"));
             reportParameters.put("NOME", LocaleBean.getDefaultMessageBundle().getString("discente"));
             reportParameters.put("DOCENTE", LocaleBean.getDefaultMessageBundle().getString("docente"));
@@ -272,11 +273,9 @@ public class MailBean implements Serializable {
     private void sendEmailtoStaff() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/Y");
         System.out.format("scheduder executed at: %s\t%s\n", dateFormat.format(Calendar.getInstance().getTime()), configDao.getValue("mail.mailScheduler"));
-        /*
-         processEmailToStaff(messageCoordenadorDeCurso(), "/reports/resumo.jasper");
-         processEmailToStaff(messageCoordenadorDeEstagio(), "/reports/resumo.jasper");
-         processEmailToStaff(messageSecretaria(), "/reports/resumo.jasper");
-         processEmailToStaff(messageDocente(), "/reports/segunda_chamada_de_prova.jasper");
-         */
+        processEmailToStaff(messageCoordenadorDeCurso(), "/reports/resumo.jasper", LocaleBean.getDefaultMessageBundle().getString("requerimentos"));
+        processEmailToStaff(messageCoordenadorDeEstagio(), "/reports/resumo.jasper", LocaleBean.getDefaultMessageBundle().getString("requerimentos"));
+        processEmailToStaff(messageSecretaria(), "/reports/resumo.jasper", LocaleBean.getDefaultMessageBundle().getString("requerimentos"));
+        processEmailToStaff(messageDocente(), "/reports/segunda_chamada_de_prova.jasper", LocaleBean.getDefaultMessageBundle().getString("segundaChamadaDeProva"));
     }
 }

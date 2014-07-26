@@ -533,7 +533,6 @@ public class RequerimentoBean implements Serializable {
     public void salvaAtendimento() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         requerimento.getAtendimento().setAtendente(((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario());
-        System.out.println("fired command");
     }
 
     public boolean isAtendimentoRequired() {

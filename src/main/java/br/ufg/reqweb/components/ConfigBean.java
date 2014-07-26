@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,14 +25,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(value = "session")
 public class ConfigBean implements Serializable {
+
     
     @Autowired
     ConfigDao configDao;
-
+    
     private boolean showPassword;
-
+    Logger log;
+    
     public ConfigBean() {
         showPassword = false;
+        log = Logger.getLogger(this.getClass());
     }
 
     public void salvaSettings() {
@@ -41,6 +43,7 @@ public class ConfigBean implements Serializable {
         try {
             configDao.salva();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
+            log.info("reqweb.properties changed. restart app on server manager");
         } catch (IOException e) {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroGravacao"), null);
         }
@@ -342,5 +345,4 @@ public class ConfigBean implements Serializable {
     public void setMailScheduler(String mailScheduler) {
         configDao.getConf().setProperty("mail.mailScheduler", mailScheduler);
     }
-
 }

@@ -5,7 +5,6 @@
  */
 package br.ufg.reqweb.dao;
 
-import br.ufg.reqweb.components.ConfigBean;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,7 @@ import org.springframework.stereotype.Repository;
 @Scope(value = "singleton")
 public class ConfigDao {
 
-    private static final Logger log = Logger.getLogger(ConfigBean.class);
+    private static final Logger log = Logger.getLogger(ConfigDao.class);
     private final String propertyFile = "/reqweb.properties";
     private final StandardPBEStringEncryptor encryptor;
     private final Properties conf;
@@ -45,6 +44,7 @@ public class ConfigDao {
             log.error("No config found: classpath:reqweb.properties");
         }
     }
+    
 
     public static ConfigDao getInstance() {
         if (instance == null) {

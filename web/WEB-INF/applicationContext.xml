@@ -23,7 +23,7 @@
     <!-- JSR-303 validator -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-    <!-- for scheduled annotation -->
+    <!-- configBean annotation -->
     <util:properties id="reqwebSettings" location="classpath:reqweb.properties" />
     <context:property-placeholder properties-ref="reqwebSettings" />
 
@@ -72,7 +72,10 @@
         <security:intercept-url pattern="/views/secure/**" access="isAuthenticated()" />
     </security:http>
     
-    <!-- spring scheduler -->
-    <!-- metodos anotados com @Scheduled -->
-    <task:annotation-driven />
+     <!-- spring scheduler -->
+    <task:scheduler id="reqwebTimer" pool-size="1" />
+    
+    <!-- metodos anotados com @Scheduled
+    <task:annotation-driven scheduler="reqwebTimer" />
+     -->
 </beans>

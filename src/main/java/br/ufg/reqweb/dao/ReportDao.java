@@ -128,7 +128,7 @@ public class ReportDao {
     public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, i.dataprovaa as data_prova, r.datacriacao as data_requerimento\n"
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, doc.email, d.nome as disciplina, t.nome as turma, c.nome as curso, i.dataprovaa as data_prova, r.datacriacao as data_requerimento\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join turma t on i.turma_id=t.id\n"
@@ -137,10 +137,13 @@ public class ReportDao {
                         + "join perfil p on p.usuario_id=dis.id\n"
                         + "join curso c on p.curso_id=c.id\n"
                         + "join usuario doc on t.docente_id=doc.id\n"
-                        + "where r.tiporequerimento = :tipoRequerimento and c.id = :cursoId and r.status = :status"
+                        + "where r.tiporequerimento = :tipoRequerimento and r.status = :status\n"
+                        + (curso == null ? "" : "and c.id = :cursoId")
                 );
+        if (curso != null) {
+            query.setLong("cursoId", curso.getId());
+        }
         query.setString("tipoRequerimento", TipoRequerimentoEnum.SEGUNDA_CHAMADA_DE_PROVA.name());
-        query.setLong("cursoId", curso.getId());
         query.setString("status", status.name());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();
@@ -150,7 +153,7 @@ public class ReportDao {
     public List<Map<String, ?>> listSegundaChamadaDeProvaMap(RequerimentoStatusEnum status, Usuario usuario) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select dis.nome as discente, dis.matricula, doc.nome as docente, d.nome as disciplina, t.nome as turma, c.nome as curso, i.dataprovaa as data_prova, r.datacriacao as data_requerimento\n"
+                        "select dis.nome as discente, dis.matricula, doc.nome as docente, doc.email, d.nome as disciplina, t.nome as turma, c.nome as curso, i.dataprovaa as data_prova, r.datacriacao as data_requerimento\n"
                         + "from requerimento r\n"
                         + "join itemrequerimento i on i.requerimento_id=r.id\n"
                         + "join turma t on i.turma_id=t.id\n"

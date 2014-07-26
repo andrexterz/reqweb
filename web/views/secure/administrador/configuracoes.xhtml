@@ -17,6 +17,7 @@
                                  process="@form"
                                  update=":formHeader:systemMessages configTab"
                                  action="#{configBean.salvaSettings}" />
+                <p:commandButton value="rescheduler" actionListener="#{mailBean.scheduleJob}" />
                 <p:selectBooleanButton onLabel="#{msg.showPassword}: #{msg.sim}" offLabel="#{msg.showPassword}: #{msg.nao}" value="#{configBean.showPassword}">
                     <p:ajax update="configTab:configBancoDeDados configTab:configMail" />
                 </p:selectBooleanButton>

@@ -177,7 +177,7 @@ public class UsuarioBean implements Serializable {
             log.error("erro de autenticação -> " + e.getLocalizedMessage());
         }
         if (autenticado) {
-            log.info(String.format("usuario %s: %s efetuou login", login, perfil.getPapel()));
+            log.info(String.format("usuario <%s: %s> efetuou login", login, perfil.getPapel()));
             return String.format("%s?faces-redirect=true", home());
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
@@ -197,7 +197,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public String authLogout() {
-        System.out.println("usuario efetuou logout");
+        log.info(String.format("usuario <%s: %s> efetuou logout", sessionUsuario.getLogin(), perfil.getPapel()));
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
         return "/views/login?faces-redirect=true";

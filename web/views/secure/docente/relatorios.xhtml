@@ -1,0 +1,26 @@
+<ui:composition template="#{usuarioBean.home()}.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="componentTitle">#{msg.relatorios}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#menuLinks\\:relatoriosLnk").addClass("menuItemSelected");
+            });
+        </script>
+        <h:form id="relatorioForm" styleClass="formBody">
+            <p:panel styleClass="relatorioPanel">
+                <p:commandLink id="reportSegundaChamadaDeProva" value="#{msg.segundaChamada}"  ajax="false"
+                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               styleClass="relatorioDownload" title="#{msg.segundaChamadaDeProva}">
+                    <p:fileDownload value="#{reportBean.segundaChamadaDeProvaAsPDF}" />
+                </p:commandLink>
+                <p:separator />
+                <p:outputLabel styleClass="reportLabel " value="#{msg.curso}: #{reportBean.curso.sigla}" />
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

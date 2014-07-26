@@ -51,7 +51,7 @@ public class AuthFilter implements Filter {
             }
         } catch (NullPointerException | ViewExpiredException e) {
             httpResponse.sendRedirect(String.format("%s/index.jsp", path));
-            System.out.println(String.format("error: %s", e.getLocalizedMessage()));            
+            System.out.println(String.format("error: %s", e.getCause()));            
         }
     }
 

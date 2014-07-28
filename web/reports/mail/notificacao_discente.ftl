@@ -10,7 +10,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
     </head>
-    <body style="padding: 8px; font-family: 'Lucida Grande', lucida, 'Helvetica CE', sans-serif!important; color: #555; background-color: #9c9c9c;">
+    <body style="padding: 8px; font-family: 'Lucida Grande', lucida, 'Helvetica CE', sans-serif!important; font-size: 10pt; color: #555; background-color: #9c9c9c;">
         <div id="header" style="background: #a8a8a8; border-bottom: thin solid #000">
             <table id="tableHeader" width="100%">
                 <tr>

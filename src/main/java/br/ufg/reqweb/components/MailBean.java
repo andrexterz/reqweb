@@ -161,7 +161,7 @@ public class MailBean implements Serializable {
                     );
                     email.setTextMsg(alternativeMessage);
                     email.send();
-                    log.info(String.format("messsage to discente: ", requerimento.getDiscente().getEmail()));
+                    log.info(String.format("message to discente:<%s: %s>", requerimento.getDiscente().getNome(), requerimento.getDiscente().getEmail()));
                 } catch (EmailException | IOException | TemplateException e) {
                     System.out.println("erro ao enviar email");
                     log.error(e);

@@ -10,13 +10,22 @@ import br.ufg.reqweb.dao.ReportDao;
 import br.ufg.reqweb.dao.UsuarioDao;
 import br.ufg.reqweb.model.Curso;
 import br.ufg.reqweb.model.PerfilEnum;
+import br.ufg.reqweb.model.Requerimento;
 import br.ufg.reqweb.model.RequerimentoStatusEnum;
 import br.ufg.reqweb.model.TipoRequerimentoEnum;
 import br.ufg.reqweb.model.Usuario;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +46,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.MultiPartEmail;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,23 +107,68 @@ public class MailBean implements Serializable {
         log.info("starting schedulder");
     }
 
-    private Map<String, String> sendMailToDiscente() {
+    public void sendMailToDiscente(final Requerimento requerimento) {
         System.out.println("messsage to: discente");
-        List<Map<String, ?>> rMap = reportDao.listRequerimentoByStatusMap(RequerimentoStatusEnum.FINALIZADO);
-        Map<String, String> groups = new HashMap();
-        for (Map<String, ?> item : rMap) {
-            String k = item.get("email").toString().trim();
-            String v = String.format("%s\t%s\n",
-                    LocaleBean.getDefaultMessageBundle().getString(TipoRequerimentoEnum.valueOf(item.get("requerimento").toString().trim()).getTipo()),
-                    LocaleBean.getDefaultMessageBundle().getString(RequerimentoStatusEnum.valueOf(item.get("status").toString().trim()).getStatus())
-            );
-            if (!groups.containsKey(k)) {
-                groups.put(k, v);
-            } else {
-                groups.put(k, String.format("%s%s", groups.get(k), v));
+        Thread sender = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Configuration templateConf = new Configuration();
+                    templateConf.setObjectWrapper(new DefaultObjectWrapper());
+                    templateConf.setDefaultEncoding("UTF-8");
+                    templateConf.setDirectoryForTemplateLoading(new File(context.getRealPath("/reports/mail")));
+                    Map objectRoot = new HashMap();
+                    objectRoot.put("TITULO", LocaleBean.getDefaultMessageBundle().getString("appTitle"));
+                    objectRoot.put("DISCENTE", LocaleBean.getDefaultMessageBundle().getString("discente"));
+                    objectRoot.put("REQUERIMENTO", LocaleBean.getDefaultMessageBundle().getString("requerimento"));
+                    objectRoot.put("STATUS", LocaleBean.getDefaultMessageBundle().getString("status"));
+                    objectRoot.put("ATENDENTE", LocaleBean.getDefaultMessageBundle().getString("atendente"));
+                    objectRoot.put("OBSERVACAO", LocaleBean.getDefaultMessageBundle().getString("observacao"));
+                    objectRoot.put("matricula", requerimento.getDiscente().getMatricula());
+                    objectRoot.put("discente", requerimento.getDiscente().getNome());
+                    objectRoot.put("tipoRequerimento", LocaleBean.getDefaultMessageBundle().getString(requerimento.getTipoRequerimento().getTipo()));
+                    objectRoot.put("status", LocaleBean.getDefaultMessageBundle().getString(requerimento.getStatus().getStatus()));
+                    objectRoot.put("atendente", requerimento.getAtendimento().getAtendente().getNome());
+                    objectRoot.put("observacao", requerimento.getAtendimento().getObservacao());
+                    URL logo = new File(context.getRealPath("/resources/img/logo-mono-mini.png")).toURI().toURL();
+                    Template template = templateConf.getTemplate("notificacao_discente.ftl");
+                    Writer writer = new StringWriter();
+                    HtmlEmail email = new HtmlEmail();
+                    String logoId = email.embed(logo, "logo");
+                    objectRoot.put("logo", logoId);
+                    template.process(objectRoot, writer);
+                    email.setHostName(configDao.getValue("mail.mailHost"));
+                    email.setSmtpPort(Integer.parseInt(configDao.getValue("mail.smtpPort")));
+                    String mailSender = configDao.getValue("mail.mailSender");
+                    String user = configDao.getValue("mail.mailUser");
+                    String password = configDao.getValue("mail.mailPassword");
+                    boolean useSSL = Boolean.parseBoolean(configDao.getValue("mail.useSSL"));
+                    email.setAuthenticator(new DefaultAuthenticator(user, password));
+                    email.setSSLOnConnect(useSSL);
+                    email.setFrom(mailSender);
+                    email.addTo(requerimento.getDiscente().getEmail());
+                    email.setSubject(LocaleBean.getDefaultMessageBundle().getString("subjectMail"));
+                    email.setHtmlMsg(writer.toString());
+                    String alternativeMessage = String.format("%s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
+                            LocaleBean.getDefaultMessageBundle().getString("messageMail"),
+                            objectRoot.get("REQUERIMENTO"),
+                            objectRoot.get("tipoRequerimento"),
+                            objectRoot.get("STATUS"),
+                            objectRoot.get("status"),
+                            objectRoot.get("ATENDENTE"),
+                            objectRoot.get("atendente"),
+                            objectRoot.get("OBSERVACAO"),
+                            objectRoot.get("observacao")
+                    );
+                    email.setTextMsg(alternativeMessage);
+                    email.send();
+                } catch (EmailException | IOException | TemplateException e) {
+                    System.out.println("erro ao enviar email");
+                    log.error(e);
+                }
             }
-        }
-        return groups;
+        };
+        sender.start();
     }
 
     private void processEmailToStaff(Map<String, List<Map<String, ?>>> messageMap, String reportPath, String reportTitle) {

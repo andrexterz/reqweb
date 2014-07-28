@@ -46,6 +46,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -76,6 +77,9 @@ public class RequerimentoBean implements Serializable {
     private Validator validator;
 
     @Autowired
+    private MailBean mailBean;
+
+    @Autowired
     private UsuarioDao usuarioDao;
 
     @Autowired
@@ -83,7 +87,9 @@ public class RequerimentoBean implements Serializable {
 
     @Autowired
     private TurmaDao turmaDao;
-
+    
+    Logger log = Logger.getLogger(RequerimentoBean.class);
+    
     private Requerimento requerimento;
     private Requerimento itemSelecionado;
     private TipoRequerimentoEnum tipoRequerimento;
@@ -389,10 +395,14 @@ public class RequerimentoBean implements Serializable {
                     requerimentoDao.atualizar(requerimento);
                 }
             }
+            if (requerimento.getStatus().equals(RequerimentoStatusEnum.FINALIZADO)) {
+                mailBean.sendMailToDiscente(requerimento);
+            }
         } catch (Exception e) {
             if (e.getClass().equals(HibernateOptimisticLockingFailureException.class)) {
                 msgError = String.format("%s: %s", msgError, LocaleBean.getMessageBundle().getString("erroVersao"));
             }
+            log.error(e.getMessage());
             setSaveStatus(false);
         }
         context.addCallbackParam("resultado", saveStatus);

@@ -328,7 +328,7 @@ public class UsuarioBean implements Serializable {
             Set<ConstraintViolation<Usuario>> errors = validator.validate(usuario);
             saveStatus = errors.isEmpty();
             if (saveStatus) {
-                if (usuario != null && perfil.equals(PerfilEnum.ADMINISTRADOR)) {
+                if (usuario != null) {
                     usuarioDao.atualizar(usuario);
                     itemSelecionado = usuario;
                 }

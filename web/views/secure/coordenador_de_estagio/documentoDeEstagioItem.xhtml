@@ -50,7 +50,7 @@
                        editor="true" saveLabel="#{msg.salvar}" cancelLabel="#{msg.cancelar}">
                 <p:ajax event="save" process="@this" update="formControls" listener="#{requerimentoBean.salvaAtendimento}" />
                 <p:inputTextarea id="observacaoAtendimento" rows="5" cols="32" autoResize="false"
-                                 required="#{requerimentoBean.atendimentoRequired}"
+                                 required="#{requerimentoBean.atendimentoRequired}" maxlength="255"
                                  value="#{requerimentoBean.requerimento.atendimento.observacao}">
                 </p:inputTextarea>
                 <p:watermark for="observacaoAtendimento" value="#{msg.observacao} #{msg.prepDo} #{msg.atendente}"/>

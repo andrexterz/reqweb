@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.faces.event.ActionEvent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +57,6 @@ public class CursoBean implements Serializable {
     public void novoCurso() {
         setOperation(ADICIONA);
         curso = new Curso();
-        Logger log = Logger.getLogger(CursoBean.class);
-        log.info("objeto curso criado: " + curso.toString());
     }
 
     public void editaCurso() {

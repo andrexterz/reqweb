@@ -34,28 +34,35 @@
                                  update=":dlgDetalheUsuarioForm"
                                  oncomplete="PF('dlgDetalheUsuarioVar').show()" />
 
+                <p:commandButton value="#{msg.cursoVincular}" icon="ui-icon-link"
+                                 process="@this"
+                                 disabled="#{cursoBean.cursos.size() == 0}"
+                                 update=":formHeader:systemMessages"
+                                 onstart="startProcess()" onsuccess="stopProcess()"
+                                 actionListener="#{usuarioBean.vinculaCurso}"/>
+
                 <p:menuButton value="#{msg.importar}/#{msg.exportar}">
                     <p:menuitem value="#{msg.importar} (#{msg.usuarioLDAP})"
                                 actionListener="#{usuarioBean.setupImportUsuarios}"
                                 icon="ui-icon-arrowthickstop-1-n"
                                 oncomplete="startImpDialog('importaUsuarioLDAPDialogVar','confirmImpButtonUsuario','pbImpUsuario')" />
                     <p:menuitem value="#{msg.docentes} #{msg.paraCSV}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.docentesAsCSV}" />
                     </p:menuitem>
                     <p:menuitem value="#{msg.docentes} #{msg.paraPDF}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.docentesAsPDF}" />
                     </p:menuitem>
                     <p:menuitem value="#{msg.discentes} #{msg.paraCSV}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.discentesAsCSV}" />
                     </p:menuitem>
                     <p:menuitem value="#{msg.discentes} #{msg.paraPDF}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.discentesAsPDF}" />
                     </p:menuitem>

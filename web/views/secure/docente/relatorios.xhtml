@@ -14,7 +14,7 @@
         <h:form id="relatorioForm" styleClass="formBody">
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportSegundaChamadaDeProva" value="#{msg.segundaChamada}"  ajax="false"
-                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                styleClass="relatorioDownload" title="#{msg.segundaChamadaDeProva}">
                     <p:fileDownload value="#{reportBean.segundaChamadaDeProvaAsPDF}" />
                 </p:commandLink>

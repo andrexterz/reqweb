@@ -24,7 +24,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -56,7 +55,6 @@ public class DisciplinaBean implements Serializable {
     @Autowired
     private Validator validator;
 
-    private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private String termoBusca;
     private static final String ADICIONA = "a";
     private static final String EDITA = "e";
@@ -323,7 +321,7 @@ public class DisciplinaBean implements Serializable {
             context.addMessage(null, msg);
 
         } catch (NullPointerException | InterruptedException e) {
-            log.error("no thread to cancel");
+            System.out.println("no thread to cancel");
         }
     }
 

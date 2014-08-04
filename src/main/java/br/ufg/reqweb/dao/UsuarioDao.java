@@ -57,6 +57,19 @@ public class UsuarioDao {
     }
 
     @Transactional
+    public void atualizar(List<Usuario> usuarios) {
+        Session session = this.sessionFactory.getCurrentSession();
+        int counter = 0;
+        for (Usuario u: usuarios) {
+            session.update(u);
+            if (++counter % 20 == 0) {
+                session.flush();
+                session.clear();
+            }
+        }
+    }
+
+    @Transactional
     public void excluir(Usuario usuario) {
         this.sessionFactory.getCurrentSession().delete(usuario);
     }
@@ -205,12 +218,15 @@ public class UsuarioDao {
     @Transactional(readOnly = true)
     public List<Usuario> find(PerfilEnum tipoPerfil, Curso curso) {
         try {
-            List<Usuario> usuarios = this.sessionFactory.getCurrentSession().
-                    createQuery("SELECT u FROM Usuario u JOIN u.perfilList p WHERE p.tipoPerfil = :tipoPerfil AND p.curso = :curso ORDER BY p.curso, u.nome ASC")
-                    .setParameter("tipoPerfil", tipoPerfil)
-                    .setParameter("curso", curso)
-                    .list();
-            return usuarios;
+            Criteria criteria = this.sessionFactory.getCurrentSession()
+                    .createCriteria(Usuario.class)
+                    .createCriteria("perfilList")
+                    .add(Restrictions.eq("tipoPerfil", tipoPerfil));
+            if (curso != null) {
+                criteria.add(Restrictions.eq("curso", curso));
+            }
+            return criteria.list();
+
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());
             return new ArrayList<>();

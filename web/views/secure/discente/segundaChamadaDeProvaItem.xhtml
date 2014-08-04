@@ -148,7 +148,7 @@
                                         <h:outputLabel value="#{msg.baixar}" />
                                     </f:facet>
                                     <p:commandLink title="#{msg.baixar} #{arq.nomeArquivo}" rel="#{arq.nomeArquivo}"
-                                                   onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" styleClass="iconFileType" ajax="false">
+                                                   onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)" styleClass="iconFileType" ajax="false">
                                         <f:setPropertyActionListener target="#{requerimentoBean.arquivo}" value="#{arq}" />
                                         <p:fileDownload value="#{requerimentoBean.arquivoContent}" />
                                     </p:commandLink>

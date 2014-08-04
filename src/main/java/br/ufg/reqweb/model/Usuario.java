@@ -116,6 +116,17 @@ public class Usuario extends BaseModel {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public Perfil getPerfil(PerfilEnum tipoPerfil) {
+        Perfil perfil = null;
+        for (Perfil p: perfilList) {
+            if (tipoPerfil.equals(p.getTipoPerfil())) {
+                perfil = p;
+                break;
+            }
+        }
+        return perfil;
+    }
 
     /**
      * @return the perfilList

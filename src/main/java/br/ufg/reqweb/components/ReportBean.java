@@ -165,15 +165,11 @@ public class ReportBean {
             String reportPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reports/usuarios.jasper");
             //JRBeanCollectionDataSource beanDataSource;
             JRMapCollectionDataSource dataSource;
-            if (curso != null) {
-                dataSource = new JRMapCollectionDataSource(reportDao.listUsuarioMap(perfilTipo, curso));
-            } else {
-                dataSource = new JRMapCollectionDataSource(reportDao.listUsuarioMap(perfilTipo));
-            }
+            dataSource = new JRMapCollectionDataSource(reportDao.listUsuarioMap(perfilTipo, curso));
             Map reportParameters = new HashMap();
             reportParameters.put("TITULO", LocaleBean.getMessageBundle().getString("usuarios"));
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
-            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
+            reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("nome"));
             reportParameters.put("CURSO", LocaleBean.getMessageBundle().getString("curso"));
             reportParameters.put("EMAIL", LocaleBean.getMessageBundle().getString("usuarioEmail"));
 

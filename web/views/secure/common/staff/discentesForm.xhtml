@@ -22,12 +22,12 @@
 
                 <p:menuButton value="#{msg.importar}/#{msg.exportar}">
                     <p:menuitem value="#{msg.discentes} #{msg.paraCSV}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.discentesAsCSV}" />
                     </p:menuitem>
                     <p:menuitem value="#{msg.discentes} #{msg.paraPDF}"
-                                onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                                onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                 icon="ui-icon-arrowthickstop-1-s" ajax="false">
                         <p:fileDownload value="#{reportBean.discentesAsPDF}" />
                     </p:menuitem>

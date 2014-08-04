@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import org.apache.log4j.Logger;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.properties.EncryptableProperties;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Repository;
 @Scope(value = "singleton")
 public class ConfigDao {
 
-    private static final Logger log = Logger.getLogger(ConfigDao.class);
     private final String propertyFile = "/reqweb.properties";
     private final StandardPBEStringEncryptor encryptor;
     private final Properties conf;
@@ -41,7 +39,7 @@ public class ConfigDao {
             InputStream inConf = this.getClass().getResourceAsStream(propertyFile);
             conf.load(inConf);
         } catch (IOException | NullPointerException e) {
-            log.error("No config found: classpath:reqweb.properties");
+            System.out.println("No config found: classpath:reqweb.properties");
         }
     }
     

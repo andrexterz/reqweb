@@ -241,30 +241,17 @@ public class ReportDao {
     public List<Map<String, ?>> listUsuarioMap(PerfilEnum tipoPerfil, Curso curso) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select u.matricula, u.nome as discente, c.nome as curso, u.email\n"
+                        "select u.matricula, u.nome, c.nome as curso, u.email, p.tipoperfil\n"
                         + "from usuario u\n"
                         + "join perfil p on p.usuario_id=u.id\n"
-                        + "join curso c on c.id=p.curso_id\n"
-                        + "where c.id = :cursoId and p.tipoperfil = :tipoPerfil\n"
-                        + "order by u.nome asc"
-                );
-        query.setLong("cursoId", curso.getId());
-        query.setString("tipoPerfil", tipoPerfil.name());
-        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-        return query.list();
-    }
-
-    @Transactional(readOnly = true)
-    public List<Map<String, ?>> listUsuarioMap(PerfilEnum tipoPerfil) {
-        Query query = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(
-                        "select u.matricula, u.nome as discente, c.nome as curso, u.email\n"
-                        + "from usuario u\n"
-                        + "join perfil p on p.usuario_id=u.id\n"
-                        + "join curso c on c.id=p.curso_id\n"
+                        + "full outer join curso c on p.curso_id=c.id\n"
                         + "where p.tipoperfil = :tipoPerfil\n"
-                        + "order by c.nome asc, u.nome asc"
+                        + (curso == null ? "" : "and c.id = :cursoId\n")
+                        + "order by c.nome asc, u.nome asc;"
                 );
+        if (curso != null) {
+            query.setLong("cursoId", curso.getId());
+        }
         query.setString("tipoPerfil", tipoPerfil.name());
         query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.list();

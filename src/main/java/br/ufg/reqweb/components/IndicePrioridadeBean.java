@@ -21,7 +21,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -49,7 +48,6 @@ public class IndicePrioridadeBean {
     @Autowired
     private Validator validator;
 
-    private static final Logger log = Logger.getLogger(IndicePrioridadeBean.class);
     String termoBusca;
     private Thread tImportJob;
     private int progress;
@@ -185,7 +183,7 @@ public class IndicePrioridadeBean {
             context.addMessage(null, msg);
 
         } catch (NullPointerException | InterruptedException e) {
-            log.error("no thread to cancel");
+            System.out.println("no thread to cancel");
         }
     }
 

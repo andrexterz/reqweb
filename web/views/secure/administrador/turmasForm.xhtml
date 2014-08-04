@@ -27,7 +27,7 @@
 
             <p:menuButton value="#{msg.importar}/#{msg.exportar}">
                 <p:menuitem value="#{msg.importar}" icon="ui-icon-arrowthickstop-1-n" oncomplete="startImpDialog('dlgImpTurmasVar','confirmImpButtonTurma','pbImpTurma')" />
-                <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)" icon="ui-icon-arrowthickstop-1-s" ajax="false">
+                <p:menuitem value="#{msg.exportar} #{msg.paraCSV}" onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)" icon="ui-icon-arrowthickstop-1-s" ajax="false">
                     <p:fileDownload value="#{reportBean.turmasAsCSV}" />
                 </p:menuitem>
             </p:menuButton>

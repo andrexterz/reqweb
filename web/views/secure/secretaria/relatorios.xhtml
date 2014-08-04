@@ -14,7 +14,7 @@
         <h:form id="relatorioForm" styleClass="formBody">
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportDocumentoDeEstagio" value="#{msg.documentoDeEstagio}"  ajax="false"
-                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                styleClass="relatorioDownload">
                     <p:fileDownload value="#{reportBean.documentoDeEstagioAsPDF}" />
                 </p:commandLink>
@@ -23,7 +23,7 @@
             </p:panel>
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportIndicePrioridade" value="#{msg.indicePrioridade}"  ajax="false"
-                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                styleClass="relatorioDownload">
                     <p:fileDownload value="#{reportBean.indicePrioridadeAsPDF}" />
                 </p:commandLink>
@@ -32,7 +32,7 @@
             </p:panel>
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportResumo" value="#{msg.resumo}"  ajax="false"
-                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                styleClass="relatorioDownload">
                     <p:fileDownload value="#{reportBean.relatorioTotalAsPDF}" />
                 </p:commandLink>
@@ -41,7 +41,7 @@
             </p:panel>
             <p:panel styleClass="relatorioPanel">
                 <p:commandLink id="reportUsuarios" value="#{msg.discentes}"  ajax="false"
-                               onclick="PrimeFaces.monitorDownload(startDownload, stopDownload)"
+                               onclick="PrimeFaces.monitorDownload(startProcess, stopProcess)"
                                styleClass="relatorioDownload">
                     <p:fileDownload value="#{reportBean.discentesAsPDF}" />
                 </p:commandLink>

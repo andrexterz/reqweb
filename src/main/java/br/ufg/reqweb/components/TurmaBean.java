@@ -29,7 +29,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -64,7 +63,6 @@ public class TurmaBean implements Serializable {
     @Autowired
     UsuarioDao usuarioDao;
 
-    private static final Logger log = Logger.getLogger(DisciplinaBean.class);
     private Turma turma;
     private Periodo periodo;
     private Turma itemSelecionado;
@@ -334,7 +332,7 @@ public class TurmaBean implements Serializable {
             context.addMessage(null, msg);
 
         } catch (NullPointerException | InterruptedException e) {
-            log.error("no thread to cancel");
+            System.out.println("no thread to cancel");
         }
     }
 

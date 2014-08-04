@@ -12,7 +12,7 @@
 		<![CDATA[]]>
 	</queryString>
 	<field name="matricula" class="java.lang.String"/>
-	<field name="discente" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
 	<field name="curso" class="java.lang.String"/>
 	<field name="email" class="java.lang.String"/>
 	<group name="curso">
@@ -24,7 +24,7 @@
 					<textElement markup="none">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{CURSO} + ": " + $F{curso}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{CURSO} + ": " + ($F{curso} == null ? "-": $F{curso})]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="0" y="20" width="64" height="15" uuid="18c6c6b7-2e7f-40dc-b2ee-91208a2eee50"/>
@@ -135,7 +135,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{discente}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="281" y="0" width="274" height="17" uuid="714812e5-6d6d-4ebc-a385-15a77224ab1a"/>

@@ -42,16 +42,17 @@ function progressBarCancel(widget, event) {
 /*
  * remove todos domingos do widget calendar
  * atributo de beforShowDay
+ * @param {type} date
  */
 function disableSundays(date) {
     var day = date.getDay();
     return eval("[(day !== 0),'']");
 }
 
-function startDownload() {
-    PF('downloadDialog').show();
+function startProcess() {
+    PF('processDialog').show();
 }
  
-function stopDownload() {
-    PF('downloadDialog').hide();
+function stopProcess() {
+    PF('processDialog').hide();
 }

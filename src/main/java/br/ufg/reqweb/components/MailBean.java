@@ -48,7 +48,6 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.MultiPartEmail;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -82,10 +81,7 @@ public class MailBean implements Serializable {
     ThreadPoolTaskScheduler scheduler;
     private ScheduledFuture<Object> scheduleTask;
 
-    Logger log;
-
     public MailBean() {
-        log = Logger.getLogger(this.getClass());
         scheduleTask = null;
     }
 
@@ -100,11 +96,11 @@ public class MailBean implements Serializable {
         };
         if (scheduleTask != null) {
             scheduleTask.cancel(false);
-            log.info("shutting down schedulder");
+            System.out.println("shutting down schedulder");
         }
         CronTrigger cron = new CronTrigger(configDao.getValue("mail.mailScheduler"));
         scheduleTask = scheduler.schedule(job, cron);
-        log.info("starting schedulder");
+        System.out.println("starting schedulder");
     }
 
     public void sendMailToDiscente(final Requerimento requerimento) {
@@ -161,10 +157,10 @@ public class MailBean implements Serializable {
                     );
                     email.setTextMsg(alternativeMessage);
                     email.send();
-                    log.info(String.format("message to discente:<%s: %s>", requerimento.getDiscente().getNome(), requerimento.getDiscente().getEmail()));
+                    System.out.println(String.format("message to discente:<%s: %s>", requerimento.getDiscente().getNome(), requerimento.getDiscente().getEmail()));
                 } catch (EmailException | IOException | TemplateException e) {
                     System.out.println("erro ao enviar email");
-                    log.error(e);
+                    System.out.println(e);
                 }
             }
         };
@@ -227,7 +223,7 @@ public class MailBean implements Serializable {
                 email.send();
             } catch (IOException | NullPointerException | EmailException | JRException e) {
                 System.out.println("erro ao enviar email");
-                log.error(e);
+                System.out.println(e);
             }
         }
     }

@@ -22,8 +22,8 @@
             <c:if test="#{usuarioBean.autenticado}" >
                 <ui:include src="secure/common/all/usuarioInfoForm.xhtml" />
             </c:if>
-            <p:dialog modal="true" widgetVar="downloadDialog" header="#{msg.processando}" draggable="false" closable="false" resizable="false">
-                <p:graphicImage alt="#{msg.carregando}" value="#{resource['img/download.gif']}" />
+            <p:dialog modal="true" widgetVar="processDialog" header="#{msg.processando}" draggable="false" closable="false" resizable="false">
+                <p:graphicImage alt="#{msg.carregando}" value="#{resource['img/process.gif']}" />
             </p:dialog>
             <h:panelGroup layout="block" id="header">
                 <p:panelGrid columns="2" columnClasses="headerColA,headerColB" id="mainHeader">

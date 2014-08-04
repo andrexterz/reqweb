@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -39,15 +38,15 @@ public class CSVParser {
                 }
                 data.add(row);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(CSVParser.class).error(ex.getMessage());
+        } catch (IOException e) {
+            System.out.println(e);
         } finally {
             try {
                 if (bReader != null) {
                     bReader.close();
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(CSVParser.class).error(ex.getMessage());
+            } catch (IOException e) {
+                System.out.println(e);
             }
         }
         return data;

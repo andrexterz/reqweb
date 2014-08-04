@@ -23,7 +23,6 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.LazyDataModel;
@@ -62,7 +61,6 @@ public class UsuarioBean implements Serializable {
     private final LazyDataModel<Usuario> usuariosDataModel;
     private List<Usuario> usuarios;
     private static final long serialVersionUID = 1L;
-    private static final Logger log = Logger.getLogger(UsuarioBean.class);
     private PerfilEnum perfil;
     private Usuario sessionUsuario;
     private Usuario usuario;
@@ -174,10 +172,10 @@ public class UsuarioBean implements Serializable {
             SecurityContextHolder.getContext().setAuthentication(auth);
             autenticado = auth.isAuthenticated() && grantedAuthorities.contains(perfilAuthority);
         } catch (AuthenticationException | NullPointerException e) {
-            log.error("erro de autenticação -> " + e.getLocalizedMessage());
+            System.out.println("erro de autenticação -> " + e.getLocalizedMessage());
         }
         if (autenticado) {
-            log.info(String.format("usuario <%s: %s> efetuou login", login, perfil.getPapel()));
+            System.out.println(String.format("usuario <%s: %s> efetuou login", login, perfil.getPapel()));
             return String.format("%s?faces-redirect=true", home());
         } else {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, LocaleBean.getMessageBundle().getString("erroAutenticacao"), "");
@@ -197,7 +195,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public String authLogout() {
-        log.info(String.format("usuario <%s: %s> efetuou logout", sessionUsuario.getLogin(), perfil.getPapel()));
+        System.out.println(String.format("usuario <%s: %s> efetuou logout", sessionUsuario.getLogin(), perfil.getPapel()));
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         session.invalidate();
         return "/views/login?faces-redirect=true";
@@ -279,7 +277,7 @@ public class UsuarioBean implements Serializable {
             context.addMessage(null, msg);
 
         } catch (NullPointerException | InterruptedException e) {
-            log.error("no thread to cancel");
+            System.out.println("no thread to cancel");
         }
     }
 
@@ -294,7 +292,7 @@ public class UsuarioBean implements Serializable {
         }
         context.addMessage(null, msg);
     }
-    
+
     public void editaUsuario() {
         if (getItemSelecionado() == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "info", LocaleBean.getMessageBundle().getString("itemSelecionar"));
@@ -302,6 +300,33 @@ public class UsuarioBean implements Serializable {
         } else {
             usuario = getItemSelecionado();
         }
+    }
+
+    public void vinculaCurso() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage msg;
+        Map<String, Curso> cursoMap = new HashMap();
+        List<Usuario> usuarioList = new ArrayList<>();
+        List<Usuario> usuarioResList = usuarioDao.find(PerfilEnum.DISCENTE, null);
+        System.out.format("resultado: %d\n", usuarioResList.size());
+        for (Curso c : cursoDao.findAll()) {
+            cursoMap.put(c.getSigla(), c);
+        }
+        for (Usuario u : usuarioResList) {
+            Pattern patt = Pattern.compile("\\D+(?=(\\d+))");
+            Matcher mat = patt.matcher(u.getLogin());
+            if (mat.find()) {
+                Perfil p = u.getPerfil(PerfilEnum.DISCENTE);
+                Curso c = cursoMap.get(mat.group().toUpperCase());
+                if (c != null) {
+                    p.setCurso(c);
+                    usuarioList.add(u);
+                }
+            }
+        }
+        usuarioDao.atualizar(usuarioList);
+        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, LocaleBean.getMessageBundle().getString("dadosSalvos"), "");
+        context.addMessage(null, msg);
     }
 
     public void excluiUsuario() {
@@ -378,7 +403,7 @@ public class UsuarioBean implements Serializable {
         CursoBean cb = (CursoBean) sessionMap.get("cursoBean");
         cb.setItemSelecionado(null);
     }
-   
+
     public boolean isCursoDisabled() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         PerfilBean pb = (PerfilBean) sessionMap.get("perfilBean");

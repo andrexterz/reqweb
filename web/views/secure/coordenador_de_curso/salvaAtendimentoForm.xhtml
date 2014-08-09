@@ -5,7 +5,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <p:dialog id="dlgAtendimentoForm" modal="true"  
-              widgetVar="dlgAtendimentoVar" width="auto" resizable="false" appendTo="@(body)">
+              widgetVar="dlgAtendimentoVar" width="70%" resizable="false" appendTo="@(body)">
         <p:ajax event="close" listener="#{requerimentoBean.cleanupRequerimento}"/>
         <f:facet name="header">
             <h:outputText value="#{msg.atendimento} #{msg.prepDe} #{requerimentoBean.requerimento.tipoRequerimento.tipoLocale}" />

@@ -255,7 +255,8 @@ public class ReportBean {
                     TipoRequerimentoEnum.DECLARACAO_DE_MATRICULA,
                     TipoRequerimentoEnum.EXTRATO_ACADEMICO,
                     TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO,
-                    TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA
+                    TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA,
+                    TipoRequerimentoEnum.AJUSTE_DE_MATRICULA
                 });
                 status = Arrays.asList(new RequerimentoStatusEnum[]{
                     RequerimentoStatusEnum.ABERTO,
@@ -276,6 +277,7 @@ public class ReportBean {
             reportParameters.put("EXTRATO_ACADEMICO", TipoRequerimentoEnum.EXTRATO_ACADEMICO.getTipoLocale());
             reportParameters.put("DOCUMENTO_DE_ESTAGIO", TipoRequerimentoEnum.DOCUMENTO_DE_ESTAGIO.getTipoLocale());
             reportParameters.put("EMENTA_DE_DISCIPLINA", TipoRequerimentoEnum.EMENTA_DE_DISCIPLINA.getTipoLocale());
+            reportParameters.put("AJUSTE_DE_MATRICULA", TipoRequerimentoEnum.AJUSTE_DE_MATRICULA.getTipoLocale());
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));
             content.setName("reqweb_resumo.pdf");

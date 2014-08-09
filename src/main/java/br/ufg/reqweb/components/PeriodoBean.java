@@ -132,6 +132,11 @@ public class PeriodoBean implements Serializable {
         } else {
             Periodo p = periodos.get(0);
             Calendar currentDate = Calendar.getInstance(LocaleBean.getMessageBundle().getLocale());
+            //no banco o a data nao contem hh mm ss
+            currentDate.set(Calendar.HOUR_OF_DAY, 0);
+            currentDate.set(Calendar.MINUTE, 0);
+            currentDate.set(Calendar.SECOND, 0);
+            currentDate.set(Calendar.MILLISECOND, 0);
             return (p.getDataInicio().compareTo(currentDate.getTime()) <= 0 && p.getDataTermino().compareTo(currentDate.getTime()) >= 0);
         }
     }

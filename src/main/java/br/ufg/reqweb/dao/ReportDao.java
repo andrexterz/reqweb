@@ -65,15 +65,18 @@ public class ReportDao {
     public List<Map<String, ?>> listAjusteDeMatriculaMap(Curso curso, Periodo periodo) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select d.nome as disciplina, u.matricula, u.nome as discente, t.nome as turma, i.tipodeajuste\n"
+                        "select d.nome as disciplina, t.nome as turma, c.sigla as curso, u.matricula, u.nome as discente, i.tipodeajuste, ip.indiceprioridade\n"
                         + "from itemrequerimento i\n"
                         + "join turma t on i.turma_id=t.id\n"
                         + "join periodo p on t.periodo_id=p.id\n"
                         + "join disciplina d on t.disciplina_id=d.id\n"
                         + "join requerimento r on i.requerimento_id=r.id\n"
+                        + "join curso c on c.id=d.curso_id\n"
                         + "join  usuario u on r.usuario_id=u.id\n"
-                        + "where r.tiporequerimento=:tipoRequerimento and d.curso_id=:cursoId and p.id=:periodoId\n"
-                        + "order by d.id asc, t.id asc, i.tipodeajuste asc, u.nome asc");
+                        + "join indiceprioridade ip on ip.discente_id=u.id\n"
+                        + "join perfil pdis on pdis.usuario_id=u.id\n"
+                        + "where r.tiporequerimento=:tipoRequerimento and p.id=:periodoId and pdis.curso_id=:cursoId\n"
+                        + "order by d.id asc, t.id asc, i.tipodeajuste asc, ip.indiceprioridade desc, u.nome asc");
         query.setString("tipoRequerimento", TipoRequerimentoEnum.AJUSTE_DE_MATRICULA.name());
         query.setLong("cursoId", curso.getId());
         query.setLong("periodoId", periodo.getId());
@@ -190,7 +193,7 @@ public class ReportDao {
                     + "join usuario u on u.id=r.usuario_id\n"
                     + "join perfil p on p.usuario_id=u.id\n"
                     + "join curso c on c.id=p.curso_id\n"
-                    + "group by c.nome, r.tiporequerimento, r.status\n"
+                    + "group by c.id, c.nome, r.tiporequerimento, r.status\n"
                     + "having r.status in :status\n"
                     + "and r.tiporequerimento in :tipoRequerimento\n"
                     + (curso == null ? "" : "and c.id = :cursoId\n")

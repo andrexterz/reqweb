@@ -101,6 +101,6 @@ public class Turma extends BaseModel {
     
     @Override
     public String toString() {
-        return String.format("%s: %s", getDisciplina().getNome(), getNome());
+        return String.format("%s: %s - %s", getDisciplina().getNome(), getNome(), getDisciplina().getCurso().getSigla());
     }
 }

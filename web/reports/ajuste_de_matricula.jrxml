@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ajusteDeMatricula" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
 	<property name="ireport.zoom" value="2.143588810000026"/>
-	<property name="ireport.x" value="362"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="68"/>
+	<property name="ireport.y" value="31"/>
 	<parameter name="TITULO" class="java.lang.String"/>
 	<parameter name="INCLUIR" class="java.lang.String"/>
 	<parameter name="EXCLUIR" class="java.lang.String"/>
@@ -17,6 +17,8 @@
 	<field name="discente" class="java.lang.String"/>
 	<field name="turma" class="java.lang.String"/>
 	<field name="tipodeajuste" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="indiceprioridade" class="java.lang.Float"/>
 	<group name="disciplinaTurma">
 		<groupExpression><![CDATA[$F{disciplina} + ":" + $F{turma}]]></groupExpression>
 		<groupHeader>
@@ -26,17 +28,17 @@
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{disciplina} + ": " + $F{turma}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{disciplina} + ": " + $F{turma} + " - " + $F{curso}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="39" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
+					<reportElement x="18" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
 					<textElement markup="none">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="139" y="19" width="256" height="16" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
+					<reportElement x="118" y="19" width="212" height="16" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
 					<textElement markup="none">
 						<font isBold="true"/>
 					</textElement>
@@ -49,6 +51,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{ACAO}]]></textFieldExpression>
 				</textField>
+				<staticText>
+					<reportElement x="330" y="19" width="65" height="15" uuid="3747a7f2-33d6-4506-9369-63b68cffc98d"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[IP]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -126,14 +135,14 @@
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="39" y="0" width="100" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
+				<reportElement x="18" y="0" width="100" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{matricula}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="139" y="0" width="256" height="13" uuid="a2933322-b22d-48f5-ab56-80a33e426e87"/>
+				<reportElement x="118" y="0" width="212" height="13" uuid="a2933322-b22d-48f5-ab56-80a33e426e87"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -145,6 +154,13 @@
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipodeajuste}.trim().equals("INCLUSAO_DE_DISCIPLINA") ? $P{INCLUIR}: $P{EXCLUIR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="330" y="0" width="65" height="13" uuid="b911070e-9d49-4c12-a289-ae508c54ec72"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indiceprioridade}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

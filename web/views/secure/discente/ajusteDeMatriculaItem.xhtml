@@ -50,7 +50,7 @@
                                             value="#{itemRequerimento.turma}"
                                             converter="#{turmaConverter}"
                                             minQueryLength="3" maxResults="10" var="t"
-                                            itemLabel="#{t}" itemValue="#{t}"
+                                            itemLabel="#{t}: #{t.disciplina.curso.sigla}" itemValue="#{t}"
                                             forceSelection="true" completeMethod="#{turmaBean.findTurmaByActivePeriodo}">
                                 <p:ajax event="itemSelect" listener="#{requerimentoBean.autoCompleteSelecionaObjectItem}" />
                             </p:autoComplete>

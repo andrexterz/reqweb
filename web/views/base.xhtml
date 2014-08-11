@@ -25,6 +25,25 @@
             <p:dialog modal="true" widgetVar="processDialog" header="#{msg.processando}" draggable="false" closable="false" resizable="false">
                 <p:graphicImage alt="#{msg.carregando}" value="#{resource['img/process.gif']}" />
             </p:dialog>
+            <p:idleMonitor timeout="#{session.maxInactiveInterval * 1000}">
+                <p:ajax event="idle" oncomplete="sessionExpiredDlgVar.show()" />
+            </p:idleMonitor>
+            <p:confirmDialog id="sessionExpiredDialog"
+                             closable="false"
+                             header="#{msg.aviso}"
+                             message="#{msg.sessaoExpirada}"
+                             severity="alert"
+                             widgetVar="sessionExpiredDlgVar">
+                <h:form id="sessionExpiredForm">
+                    <h:panelGroup layout="block" styleClass="alignCenter formFooterButtons">
+                        <p:commandButton value="#{msg.recarregar}"
+                                     process="@form"
+                                     ajax="false"
+                                     action="login?faces-redirect=true"
+                                     oncomplete="sessionExpiredDlgVar.hide()" />
+                    </h:panelGroup>
+                </h:form>
+            </p:confirmDialog>
             <h:panelGroup layout="block" id="header">
                 <p:panelGrid columns="2" columnClasses="headerColA,headerColB" id="mainHeader">
                     <p:column>

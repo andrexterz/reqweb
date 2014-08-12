@@ -72,13 +72,18 @@ public class DisciplinaBean implements Serializable {
     private final LazyDataModel<Disciplina> disciplinasDataModel;
 
     public DisciplinaBean() {
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        if (((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+            curso = ((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfil(PerfilEnum.COORDENADOR_DE_CURSO).getCurso();
+        } else {
+            curso = null;
+        }
         disciplinaListPreview = new HashMap();
         termoBusca = "";
         operation = null;
         saveStatus = false;
         tImportJob = null;
         disciplina = new Disciplina();
-        curso = null;
         itemSelecionado = null;
         itemPreviewSelecionado = null;
         disciplinas = new ArrayList<>();
@@ -198,6 +203,10 @@ public class DisciplinaBean implements Serializable {
     public void salvaDisciplina() {
         RequestContext context = RequestContext.getCurrentInstance();
         try {
+            Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+            if (((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil().equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
+                disciplina.setCurso(((UsuarioBean) sessionMap.get("usuarioBean")).getSessionUsuario().getPerfil(PerfilEnum.COORDENADOR_DE_CURSO).getCurso());
+            }
             Set<ConstraintViolation<Disciplina>> errors = validator.validate(disciplina);
             saveStatus = errors.isEmpty();
             if (saveStatus) {
@@ -226,8 +235,7 @@ public class DisciplinaBean implements Serializable {
     /**
      *
      * @param query
-     * @return the <code>List<Disciplina></code>
-     * method for autocomplete widget
+     * @return the <code>List<Disciplina></code> method for autocomplete widget
      */
     public List<Disciplina> findDisciplina(String query) {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -235,13 +243,13 @@ public class DisciplinaBean implements Serializable {
         PerfilEnum tipoPerfil = ((UsuarioBean) sessionMap.get("usuarioBean")).getPerfil();
         Curso c = null;
         if (tipoPerfil.equals(PerfilEnum.COORDENADOR_DE_CURSO)) {
-            for (Perfil p: usuario.getPerfilList()) {
+            for (Perfil p : usuario.getPerfilList()) {
                 if (tipoPerfil.equals(p.getTipoPerfil())) {
                     c = p.getCurso();
                     break;
                 }
             }
-            return disciplinaDao.findByCurso(query, c);            
+            return disciplinaDao.findByCurso(query, c);
         }
         return disciplinaDao.find(query);
     }

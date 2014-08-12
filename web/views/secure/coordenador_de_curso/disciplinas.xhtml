@@ -1,0 +1,77 @@
+<ui:composition template="coordenador_de_curso.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:define name="componentTitle">#{requerimentoBean.tipoRequerimento != null ? requerimentoBean.tipoRequerimento.tipoLocale: msg.requerimentos}</ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(function() {
+                $("#menuLinks\\:turmasLnk").addClass("menuItemSelected");
+            });
+        </script>
+
+        <ui:include src="salvaDisciplinaForm.xhtml" />
+        <ui:include src="excluiDisciplinaForm.xhtml" />
+        <h:form id="disciplinasForm" styleClass="formBody">
+            <h:panelGroup layout="block" id="disciplinasToolbar" styleClass="formToolbar">
+                <p:commandButton value="#{msg.novo}"
+                                 process="@this"
+                                 actionListener="#{disciplinaBean.novaDisciplina}"
+                                 oncomplete="PF('dlgDisciplinaVar').show()"
+                                 update=":salvaDisciplinaForm" />
+
+                <p:commandButton value="#{msg.editar}"
+                                 disabled="#{!disciplinaBean.selecionado}"
+                                 process="@this"
+                                 actionListener="#{disciplinaBean.editaDisciplina}"
+                                 oncomplete="PF('dlgDisciplinaVar').show()"
+                                 update=":salvaDisciplinaForm" />
+
+
+                <p:commandButton value="#{msg.excluir}"
+                                 styleClass="formToolbarButtons"
+                                 update=":excluiDisciplinaForm"
+                                 disabled="#{!disciplinaBean.selecionado}"
+                                 oncomplete="PF('excluirDisciplinaDialog').show()"
+                                 process="@this" />
+
+                <h:panelGroup id="searchPanel" layout="block" styleClass="searchBoxWrapper">
+                    <p:inputText id="disciplinaBusca"
+                                 styleClass="searchBox"
+                                 value="#{disciplinaBean.termoBusca}" />
+
+                    <p:watermark for="disciplinaBusca" value="#{msg.disciplina}" />
+                    <!-- ao pressionar <return>, o formulario submete o commandButton[id=turmaCommand] -->
+                    <p:commandButton style="visibility: hidden;"
+                                     id="disciplinaBuscaCommand"
+                                     styleClass="searchCommand floatRight"
+                                     update="tableDisciplinas" />
+
+                    <p:defaultCommand target="disciplinaBuscaCommand" />
+                </h:panelGroup>
+            </h:panelGroup>            
+            <p:dataTable id="tableDisciplinas"
+                         paginator="true"
+                         value="#{disciplinaBean.disciplinasDataModel}"
+                         var="disciplinaItem"
+                         lazy="true"
+                         emptyMessage="#{msg.emptyMessage}"
+                         selectionMode="single"
+                         selection="#{disciplinaBean.itemSelecionado}"
+                         paginatorPosition="bottom"
+                         rows="10" pageLinks="5">
+                <p:ajax event="rowSelect" update=":disciplinasForm:disciplinasToolbar" listener="#{disciplinaBean.selecionaItem}" />
+                <p:column headerText="#{msg.codigo}" styleClass="col5">
+                    <h:outputText value="#{disciplinaItem.codigo}" />
+                </p:column>
+                <p:column headerText="#{msg.disciplina}" styleClass="col50">
+                    <h:outputText value="#{disciplinaItem.nome}" />
+                </p:column>
+                <p:column headerText="#{msg.curso}" styleClass="col45">
+                    <h:outputText value="#{disciplinaItem.curso.nome}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

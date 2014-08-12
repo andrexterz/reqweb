@@ -42,6 +42,11 @@
                                 target="#{usuarioBean.tipoPerfilBusca}"
                                 value="DISCENTE" />
                         </h:commandLink>
+                        <h:commandLink id="disciplinasLnk"
+                                       action="disciplinas?faces-redirect=true"
+                                       value="#{msg.disciplinas}"
+                                       styleClass="disciplinas">
+                        </h:commandLink>
                         <h:commandLink id="turmasLnk"
                                        action="turmas?faces-redirect=true"
                                        value="#{msg.turmas}"

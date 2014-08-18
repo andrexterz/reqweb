@@ -20,14 +20,14 @@
                                  process="@this"
                                  actionListener="#{turmaBean.novaTurma}"
                                  oncomplete="PF('dlgTurmaVar').show()"
-                                 update="tableTurmas :salvaTurmaForm" />
+                                 update="tableTurmas :dlgTurmaFormCoord" />
 
                 <p:commandButton value="#{msg.editar}"
                                  disabled="#{!turmaBean.selecionado}"
                                  process="@this"
                                  actionListener="#{turmaBean.editaTurma}"
                                  oncomplete="PF('dlgTurmaVar').show()"
-                                 update="tableTurmas :salvaTurmaForm" />
+                                 update="tableTurmas :dlgTurmaFormCoord" />
 
                 <p:commandButton value="#{msg.excluir}"
                                  styleClass="formToolbarButtons"

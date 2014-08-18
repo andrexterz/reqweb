@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ajusteDeMatricula" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8859ad77-9c3b-4ec5-94df-1c4b95344d80">
-	<property name="ireport.zoom" value="2.143588810000026"/>
-	<property name="ireport.x" value="68"/>
-	<property name="ireport.y" value="31"/>
+	<property name="ireport.zoom" value="2.1435888100000278"/>
+	<property name="ireport.x" value="351"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="TITULO" class="java.lang.String"/>
 	<parameter name="INCLUIR" class="java.lang.String"/>
 	<parameter name="EXCLUIR" class="java.lang.String"/>
 	<parameter name="MATRICULA" class="java.lang.String"/>
 	<parameter name="NOME" class="java.lang.String"/>
 	<parameter name="ACAO" class="java.lang.String"/>
+	<parameter name="OBSERVACAO" class="java.lang.String"/>
+	<parameter name="STATUS" class="java.lang.String"/>
+	<parameter name="ABERTO" class="java.lang.String"/>
+	<parameter name="EM_ANDAMENTO" class="java.lang.String"/>
+	<parameter name="FINALIZADO" class="java.lang.String"/>
+	<parameter name="SIM" class="java.lang.String"/>
+	<parameter name="NAO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -19,6 +26,8 @@
 	<field name="tipodeajuste" class="java.lang.String"/>
 	<field name="curso" class="java.lang.String"/>
 	<field name="indiceprioridade" class="java.lang.Float"/>
+	<field name="observacao" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
 	<group name="disciplinaTurma">
 		<groupExpression><![CDATA[$F{disciplina} + ":" + $F{turma}]]></groupExpression>
 		<groupHeader>
@@ -31,33 +40,47 @@
 					<textFieldExpression><![CDATA[$F{disciplina} + ": " + $F{turma} + " - " + $F{curso}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="18" y="19" width="100" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
-					<textElement markup="none">
+					<reportElement x="18" y="19" width="75" height="16" uuid="b29fc54a-f73c-46c7-b75b-1b6b32e64ad8"/>
+					<textElement verticalAlignment="Middle" markup="none">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{MATRICULA}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="118" y="19" width="212" height="16" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
-					<textElement markup="none">
+					<reportElement x="93" y="20" width="209" height="15" uuid="056b0038-a4f9-4465-b6d8-ee736ee5d296"/>
+					<textElement verticalAlignment="Middle" markup="none">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{NOME}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="395" y="19" width="160" height="16" uuid="a3c9c126-b286-4c7c-8ab9-9391c39d839e"/>
-					<textElement textAlignment="Right" markup="none">
+					<reportElement x="494" y="19" width="61" height="16" uuid="a3c9c126-b286-4c7c-8ab9-9391c39d839e"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{ACAO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="330" y="19" width="65" height="15" uuid="3747a7f2-33d6-4506-9369-63b68cffc98d"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
+					<reportElement x="302" y="20" width="37" height="15" uuid="3747a7f2-33d6-4506-9369-63b68cffc98d"/>
+					<textElement verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[IP]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="339" y="20" width="76" height="15" uuid="ed8c876d-a844-4072-a885-e31290ad7504"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{OBSERVACAO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="415" y="19" width="79" height="16" uuid="2a52a3ec-d98f-4514-a861-76334cae2fa7"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{STATUS}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -135,32 +158,48 @@
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="18" y="0" width="100" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
+				<reportElement x="18" y="0" width="75" height="13" uuid="5da7dee4-62f4-46e2-a8c0-fd44fe32ee2f"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{matricula}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="118" y="0" width="212" height="13" uuid="a2933322-b22d-48f5-ab56-80a33e426e87"/>
+				<reportElement x="93" y="0" width="209" height="13" uuid="a2933322-b22d-48f5-ab56-80a33e426e87"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{discente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="395" y="0" width="160" height="13" uuid="eabc42dc-ac21-4a57-99f1-9c6c11b0ecf6"/>
+				<reportElement x="494" y="0" width="61" height="13" uuid="eabc42dc-ac21-4a57-99f1-9c6c11b0ecf6"/>
 				<textElement textAlignment="Right">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipodeajuste}.trim().equals("INCLUSAO_DE_DISCIPLINA") ? $P{INCLUIR}: $P{EXCLUIR}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00">
-				<reportElement x="330" y="0" width="65" height="13" uuid="b911070e-9d49-4c12-a289-ae508c54ec72"/>
-				<textElement textAlignment="Center">
+				<reportElement x="302" y="0" width="37" height="13" uuid="b911070e-9d49-4c12-a289-ae508c54ec72"/>
+				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{indiceprioridade}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="339" y="0" width="76" height="13" uuid="4daadbd7-ed59-49f9-bdfe-cef62db1597f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacao}.length() > 0  ? $P{SIM} : $P{NAO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="415" y="0" width="79" height="13" uuid="0adab454-38bd-4ca0-9301-26b2c0865b46"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}.trim().equals("ABERTO") ? $P{ABERTO}:
+$F{status}.trim().equals("EM_ANDAMENTO") ? $P{EM_ANDAMENTO}:
+$P{FINALIZADO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

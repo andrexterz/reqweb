@@ -3,8 +3,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dlgTurmaForm" modal="true" widgetVar="dlgTurmaVar"
-              width="360" resizable="false" appendTo="@(body)">
+    <p:dialog id="dlgTurmaFormAdmin" modal="true" widgetVar="dlgTurmaVar"
+               width="360" resizable="false" appendTo="@(body)">
         <f:facet name="header">
             <h:outputText value="#{msg.turmaNovo}" rendered="#{turmaBean.operation == 'a'}" />
             <h:outputText value="#{msg.turmaEditar}" rendered="#{turmaBean.operation == 'e'}" />
@@ -18,12 +18,12 @@
                     <p:inputText value="#{turmaBean.turma.nome}" id="turmaNome" />
                     <p:outputLabel for="disciplinaTurma" value="#{msg.disciplina}"  />
                     <p:autoComplete id="disciplinaTurma"
-                                     value="#{turmaBean.turma.disciplina}"
-                                     converter="#{disciplinaConverter}"
-                                     minQueryLength="3" maxResults="10" var="d"
-                                     itemLabel="#{d}" itemValue="#{d}"
-                                     forceSelection="true" completeMethod="#{disciplinaBean.findDisciplina}">
-                    <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaDisciplina}" />
+                                    value="#{turmaBean.turma.disciplina}"
+                                    converter="#{disciplinaConverter}"
+                                    minQueryLength="3" maxResults="10" var="d"
+                                    itemLabel="#{d}" itemValue="#{d}"
+                                    forceSelection="true" completeMethod="#{disciplinaBean.findDisciplina}">
+                        <p:ajax event="itemSelect" listener="#{turmaBean.autoCompleteSelecionaDisciplina}" />
                     </p:autoComplete>
                     <p:watermark value="#{msg.disciplina}" for="disciplinaTurma" />
                     <p:outputLabel for="periodoTurma" value="#{msg.periodo}" />

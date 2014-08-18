@@ -65,7 +65,7 @@ public class ReportDao {
     public List<Map<String, ?>> listAjusteDeMatriculaMap(Curso curso, Periodo periodo) {
         Query query = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(
-                        "select d.nome as disciplina, t.nome as turma, c.sigla as curso, u.matricula, u.nome as discente, i.tipodeajuste, ip.indiceprioridade\n"
+                        "select d.nome as disciplina, t.nome as turma, c.sigla as curso, u.matricula, u.nome as discente, i.tipodeajuste, r.observacao, r.status, ip.indiceprioridade\n"
                         + "from itemrequerimento i\n"
                         + "join turma t on i.turma_id=t.id\n"
                         + "join periodo p on t.periodo_id=p.id\n"

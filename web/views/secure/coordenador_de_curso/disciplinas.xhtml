@@ -19,14 +19,14 @@
                                  process="@this"
                                  actionListener="#{disciplinaBean.novaDisciplina}"
                                  oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update=":salvaDisciplinaForm" />
+                                 update=":dlgDisciplinaFormCoord" />
 
                 <p:commandButton value="#{msg.editar}"
                                  disabled="#{!disciplinaBean.selecionado}"
                                  process="@this"
                                  actionListener="#{disciplinaBean.editaDisciplina}"
                                  oncomplete="PF('dlgDisciplinaVar').show()"
-                                 update=":salvaDisciplinaForm" />
+                                 update=":dlgDisciplinaFormCoord" />
 
 
                 <p:commandButton value="#{msg.excluir}"

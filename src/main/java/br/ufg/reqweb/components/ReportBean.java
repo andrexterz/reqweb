@@ -333,6 +333,13 @@ public class ReportBean {
             reportParameters.put("MATRICULA", LocaleBean.getMessageBundle().getString("usuarioMatricula"));
             reportParameters.put("NOME", LocaleBean.getMessageBundle().getString("discente"));
             reportParameters.put("ACAO", LocaleBean.getMessageBundle().getString("acao"));
+            reportParameters.put("OBSERVACAO", LocaleBean.getMessageBundle().getString("observacao"));
+            reportParameters.put("SIM", LocaleBean.getMessageBundle().getString("sim"));
+            reportParameters.put("NAO", LocaleBean.getMessageBundle().getString("nao"));
+            reportParameters.put("STATUS", LocaleBean.getMessageBundle().getString("status"));
+            reportParameters.put("ABERTO", LocaleBean.getMessageBundle().getString("aberto"));
+            reportParameters.put("EM_ANDAMENTO", LocaleBean.getMessageBundle().getString("emAndamento"));
+            reportParameters.put("FINALIZADO", LocaleBean.getMessageBundle().getString("finalizado"));
 
             JasperPrint jrp = JasperFillManager.fillReport(reportPath, reportParameters, dataSource);
             InputStream inputStream = new ByteArrayInputStream(JasperExportManager.exportReportToPdf(jrp));

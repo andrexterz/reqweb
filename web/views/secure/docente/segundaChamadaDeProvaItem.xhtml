@@ -49,6 +49,7 @@
                                 <h:outputText id="dataProvaText" value="#{itemRequerimento.dataProvaB}">
                                     <f:convertDateTime locale="#{localeBean.locale}" />
                                 </h:outputText>
+                                <p:message for="provaReaplicadaInput" display="icon" severity="error" />
                             </p:column>
                         </p:row>
                         <p:row>
@@ -61,7 +62,7 @@
                                 </h:outputText>
                             </p:column>
                             <p:column colspan="2" rowspan="3">
-                                <p:calendar value="#{itemRequerimento.dataProvaB}"
+                                <p:calendar id="provaReaplicadaInput" value="#{itemRequerimento.dataProvaB}"
                                             beforeShowDay="disableSundays"
                                             mode="inline"
                                             required="true"

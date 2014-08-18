@@ -64,6 +64,7 @@
                                 <p:calendar value="#{itemRequerimento.dataProvaB}"
                                             beforeShowDay="disableSundays"
                                             mode="inline"
+                                            required="true"
                                             mindate="#{itemRequerimento.dataProvaA}"
                                             locale="#{localeBean.locale}" styleClass="calendarWidget">
                                     <p:ajax update="dataProvaText" event="dateSelect" />

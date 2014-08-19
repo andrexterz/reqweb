@@ -39,7 +39,7 @@ public class CursoBean implements Serializable {
     private Validator validator;
     @Autowired
     private CursoDao cursoDao;
-    
+
     private Curso curso;
     private Curso itemSelecionado;
     private String operation;//a: adiciona | e: edita
@@ -52,8 +52,8 @@ public class CursoBean implements Serializable {
         operation = null;
         termoBusca = "";
         cursos = new ArrayList<>();
-    }    
-    
+    }
+
     public void novoCurso() {
         setOperation(ADICIONA);
         curso = new Curso();
@@ -83,30 +83,37 @@ public class CursoBean implements Serializable {
     }
 
     public void salvaCurso() {
+        boolean saveStatus = false;
         FacesMessage msg;
         RequestContext context = RequestContext.getCurrentInstance();
         Set<ConstraintViolation<Curso>> errors = validator.validate(curso);
-        if (errors.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
-            context.addCallbackParam("resultado", true);
-            if (operation.equals(ADICIONA)) {
-                cursoDao.adicionar(curso);
-                itemSelecionado = curso;
-            } else {
-                cursoDao.atualizar(curso);
+        try {
+            if (errors.isEmpty()) {
+                context.addCallbackParam("resultado", true);
+                if (operation.equals(ADICIONA)) {
+                    cursoDao.adicionar(curso);
+                    itemSelecionado = curso;
+                } else {
+                    cursoDao.atualizar(curso);
+                }
+                saveStatus = true;
             }
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        if (saveStatus) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "info", LocaleBean.getMessageBundle().getString("dadosSalvos"));
         } else {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "info", LocaleBean.getMessageBundle().getString("dadosInvalidos"));
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            context.addCallbackParam("resultado", false);
         }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        context.addCallbackParam("resultado", saveStatus);
     }
 
     public void selecionaItem(SelectEvent event) {
         itemSelecionado = (Curso) event.getObject();
     }
-    
+
     public List<Curso> getFiltroCursos() {
         System.out.println("termo da busca: " + termoBusca);
         if (termoBusca.equals("")) {
@@ -115,11 +122,11 @@ public class CursoBean implements Serializable {
             return cursoDao.find(termoBusca);
         }
     }
-    
+
     public List<Curso> findCurso(String query) {
         return cursoDao.find(query);
     }
-    
+
     public List<Curso> getCursos() {
         if (cursos.isEmpty() | cursoDao.count() != cursos.size()) {
             cursos = cursoDao.findAll();
@@ -127,7 +134,6 @@ public class CursoBean implements Serializable {
         return cursos;
     }
 
-   
     /**
      * @return the curso
      */

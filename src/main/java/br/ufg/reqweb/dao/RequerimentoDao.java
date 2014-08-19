@@ -248,6 +248,7 @@ public class RequerimentoDao {
                     criteria.addOrder(Property.forName(sortField).desc());
                 }
             }
+            criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
             return criteria.list();
         } catch (HibernateException e) {
             System.out.println("query error: " + e.getMessage());

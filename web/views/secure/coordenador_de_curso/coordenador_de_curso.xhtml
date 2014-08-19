@@ -17,6 +17,9 @@
                             <f:setPropertyActionListener
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="SEGUNDA_CHAMADA_DE_PROVA" />
+                            <f:setPropertyActionListener
+                                target="#{requerimentoBean.itemSelecionado}"
+                                value="#{null}" />
                         </h:commandLink>
                         <h:commandLink id="ajusteDeMatriculaLnk"
                                        action="atendimentos?faces-redirect=true"
@@ -25,6 +28,9 @@
                             <f:setPropertyActionListener
                                 target="#{requerimentoBean.tipoRequerimento}"
                                 value="AJUSTE_DE_MATRICULA" />
+                            <f:setPropertyActionListener
+                                target="#{requerimentoBean.itemSelecionado}"
+                                value="#{null}" />
                         </h:commandLink>
                         <h:commandLink id="requerimentosLnk"
                                        action="atendimentos?faces-redirect=true"

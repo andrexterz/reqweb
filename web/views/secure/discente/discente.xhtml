@@ -20,6 +20,9 @@
                                 <f:setPropertyActionListener
                                     target="#{requerimentoBean.tipoRequerimento}"
                                     value="#{tipoRequerimentoItem}" />
+                                <f:setPropertyActionListener
+                                    target="#{requerimentoBean.itemSelecionado}"
+                                    value="#{null}" />
                             </h:commandLink>
                         </c:forEach>
                         <h:commandLink id="requerimentosLnk"
